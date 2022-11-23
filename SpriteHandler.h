@@ -2,6 +2,7 @@
 #include "Text.h"
 #include "Rectangle.h"
 #include "../Core Lib/StringHelper.h"
+#include "../Core Lib/TextBox.h"
 #include <array>
 
 class SpriteHandler
@@ -57,8 +58,16 @@ public:
   {
     return screen_buffer[r][c] == ' ';
   }
+  
+  // write_buffer using TextBox.
+  void write_buffer(const TextBox& tb, int r, int c, Text::Color fg_color, Text::Color bg_color = Text::Color::Transparent)
+  {
+    auto Nr = static_cast<int>(tb.text_lines.size());
+    for (int r_idx = 0; r_idx < Nr; ++r_idx)
+      write_buffer(tb.text_lines[r_idx], r + r_idx, c, fg_color, bg_color);
+  }
 
-  //Return copy of str but with spaces where tests failed.
+  // Return copy of str but with spaces where tests failed.
   std::string write_buffer(const std::string& str, int r, int c, Text::Color fg_color, Text::Color bg_color = Text::Color::Transparent)
   {
     if (str.empty())
