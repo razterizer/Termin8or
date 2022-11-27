@@ -4,7 +4,8 @@
 // Bresenham Algorithm.
 namespace bresenham
 {
-  void plot_line_low(SpriteHandler& sh, float x0, float y0, float x1, float y1,
+  template<int NR, int NC>
+  void plot_line_low(SpriteHandler<NR, NC>& sh, float x0, float y0, float x1, float y1,
                      const std::string& str, Text::Color fg_color, Text::Color bg_color)
   {
     auto dx = x1 - x0;
@@ -31,7 +32,8 @@ namespace bresenham
     }
   }
 
-  void plot_line_high(SpriteHandler& sh, float x0, float y0, float x1, float y1,
+  template<int NR, int NC>
+  void plot_line_high(SpriteHandler<NR, NC>& sh, float x0, float y0, float x1, float y1,
                       const std::string& str, Text::Color fg_color, Text::Color bg_color)
   {
     auto dx = x1 - x0;
@@ -58,7 +60,8 @@ namespace bresenham
     }
   }
 
-  void plot_line(SpriteHandler& sh, float x0, float y0, float x1, float y1,
+  template<int NR, int NC>
+  void plot_line(SpriteHandler<NR, NC>& sh, float x0, float y0, float x1, float y1,
                  const std::string& str, Text::Color fg_color, Text::Color bg_color)
   {
     if (std::abs(y1 - y0) < std::abs(x1 - x0))

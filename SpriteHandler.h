@@ -5,12 +5,14 @@
 #include "../Core Lib/TextBox.h"
 #include <array>
 
+
+template<int NR = 30, int NC = 80>
 class SpriteHandler
 {
   // Draw from top to bottom.
-  std::array<std::array<char, 80>, 30> screen_buffer;
-  std::array<std::array<Text::Color, 80>, 30> fg_color_buffer;
-  std::array<std::array<Text::Color, 80>, 30> bg_color_buffer;
+  std::array<std::array<char, NC>, NR> screen_buffer;
+  std::array<std::array<Text::Color, NC>, NR> fg_color_buffer;
+  std::array<std::array<Text::Color, NC>, NR> bg_color_buffer;
 
   std::string color2str(Text::Color col) const
   {
@@ -73,15 +75,15 @@ public:
     if (str.empty())
       return "";
     std::string str_out = str;
-    //if (c >= 0 && str.size() + c <= 80)
+    //if (c >= 0 && str.size() + c <= NC)
     {
-      if (r >= 0 && r < 30)
+      if (r >= 0 && r < NR)
       {
         int n = static_cast<int>(str.size());
         for (int ci = 0; ci < n; ++ci)
         {
           int c_tot = c + ci;
-          if (c_tot >= 0 && c_tot < 80
+          if (c_tot >= 0 && c_tot < NC
               && screen_buffer[r][c_tot] == ' '
               && bg_color_buffer[r][c_tot] == Text::Color::Transparent)
           {
@@ -89,7 +91,7 @@ public:
             fg_color_buffer[r][c_tot] = fg_color;
             bg_color_buffer[r][c_tot] = bg_color;
           }
-          else if (c_tot >= 0 && c_tot < 80
+          else if (c_tot >= 0 && c_tot < NC
                    && bg_color_buffer[r][c_tot] == Text::Color::Transparent2)
           {
             bg_color_buffer[r][c_tot] = bg_color;
@@ -111,9 +113,9 @@ public:
 
   void replace_bg_color(Text::Color from_bg_color, Text::Color to_bg_color, Rectangle box)
   {
-    for (int r = 0; r < 30; ++r)
+    for (int r = 0; r < NR; ++r)
     {
-      for (int c = 0; c < 80; ++c)
+      for (int c = 0; c < NC; ++c)
       {
         if (box.is_inside(r, c))
         {
@@ -127,11 +129,11 @@ public:
   void print_screen_buffer(Text& t, Text::Color bg_color) const
   {
     std::vector<std::tuple<char, Text::Color, Text::Color>> colored_str;
-    colored_str.resize(30*(80 + 1));
+    colored_str.resize(NR*(NC + 1));
     int i = 0;
-    for (int r = 0; r < 30; ++r)
+    for (int r = 0; r < NR; ++r)
     {
-      for (int c = 0; c < 80; ++c)
+      for (int c = 0; c < NC; ++c)
       {
         Text::Color bg_col_buf = bg_color_buffer[r][c];
         if (bg_col_buf == Text::Color::Transparent || bg_col_buf == Text::Color::Transparent2)
@@ -145,9 +147,9 @@ public:
 
   void print_screen_buffer_chars() const
   {
-    for (int r = 0; r < 30; ++r)
+    for (int r = 0; r < NR; ++r)
     {
-      for (int c = 0; c < 80; ++c)
+      for (int c = 0; c < NC; ++c)
         printf("%c", screen_buffer[r][c]);
       printf("\n");
     }
@@ -155,9 +157,9 @@ public:
 
   void print_screen_buffer_fg_colors() const
   {
-    for (int r = 0; r < 30; ++r)
+    for (int r = 0; r < NR; ++r)
     {
-      for (int c = 0; c < 80; ++c)
+      for (int c = 0; c < NC; ++c)
         printf("%s", color2str(fg_color_buffer[r][c]).c_str());
       printf("\n");
     }
@@ -165,12 +167,25 @@ public:
 
   void print_screen_buffer_bg_colors() const
   {
-    for (int r = 0; r < 30; ++r)
+    for (int r = 0; r < NR; ++r)
     {
-      for (int c = 0; c < 80; ++c)
+      for (int c = 0; c < NC; ++c)
         printf("%s", color2str(bg_color_buffer[r][c]).c_str());
       printf("\n");
     }
+  }
+  
+  constexpr int num_rows() const { return NR; }
+  constexpr int num_cols() const { return NC; }
+  constexpr int num_rows_inset() const
+  {
+    auto nri = static_cast<int>(NR) - 2;
+    return nri < 0 ? 0 : nri;
+  }
+  constexpr int num_cols_inset() const
+  {
+    auto nci = static_cast<int>(NC) - 2;
+    return nci < 0 ? 0 : nci;
   }
 };
 

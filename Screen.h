@@ -32,15 +32,18 @@ void gotorc(int r, int c)
   printf("%c[%d;%df", 0x1B, r, c);
 }
 
-void draw_frame(SpriteHandler& sh, Text::Color fg_color)
+template<int NR, int NC>
+void draw_frame(SpriteHandler<NR, NC>& sh, Text::Color fg_color)
 {
-  sh.write_buffer("+" + str::rep_char('-', 78) + "+", 0, 0, fg_color);
-  for (int r=1; r<29; ++r)
+  const int nc_inset = sh.num_cols_inset();
+  const int nr_inset = sh.num_rows_inset();
+  sh.write_buffer("+" + str::rep_char('-', nc_inset) + "+", 0, 0, fg_color);
+  for (int r = 1; r <= nr_inset; ++r)
   {
     sh.write_buffer("|", r, 0, fg_color);
-    sh.write_buffer("|", r, 79, fg_color);
+    sh.write_buffer("|", r, nc_inset+1, fg_color);
   }
-  sh.write_buffer("+" + str::rep_char('-', 78) + "+", 29, 0, fg_color);
+  sh.write_buffer("+" + str::rep_char('-', nc_inset) + "+", nr_inset+1, 0, fg_color);
 }
 
 // http://www.network-science.de/ascii/
@@ -57,7 +60,8 @@ void draw_frame(SpriteHandler& sh, Text::Color fg_color)
 ///    |    \     /   |        \ |    |   \
 //\_______  /\___/   /_______  / |____|_  /
 //        \/                 \/         \/
-void draw_game_over(SpriteHandler& sh)
+template<int NR, int NC>
+void draw_game_over(SpriteHandler<NR, NC>& sh)
 {
   auto wave_func = [](float c, int i)
   {
@@ -92,7 +96,8 @@ void draw_game_over(SpriteHandler& sh)
 // \____   (  <_> )  |  /  \        (  <_> )   |  \|
 // / ______|\____/|____/    \__/\  / \____/|___|  /_
 // \/                            \/             \/\/
-void draw_you_won(SpriteHandler& sh)
+template<int NR, int NC>
+void draw_you_won(SpriteHandler<NR, NC>& sh)
 {
   wave_f = 1.5f;//0.4f;
   wave_a = 1.f;//5.f;
@@ -119,7 +124,8 @@ void draw_you_won(SpriteHandler& sh)
     wave_x0 = 0.f;
 }
 
-void draw_paused(SpriteHandler& sh, int anim_ctr)
+template<int NR, int NC>
+void draw_paused(SpriteHandler<NR, NC>& sh, int anim_ctr)
 {
   int anim = anim_ctr % 10;
   std::string msg;
