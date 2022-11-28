@@ -1,7 +1,8 @@
 #pragma once
 #include <termios.h>
 //#include <ctype.h>
-//#include <stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
 //#include <errno.h>
 //#include <memory.h>
 #include <unistd.h>
