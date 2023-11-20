@@ -1,0 +1,934 @@
+char: ' ', width: 5
+
+char: '!', width: 4
+"__"
+0 1 I T2
+"/"
+1 0 SH SH
+"\ \"
+1 1 I I
+"\ "
+2 0 SH SH
+"\ \"
+2 2 I I
+"\ "
+3 1 SH SH
+"\ \"
+3 3 I I
+"\ "
+4 2 SH SH
+"\_\"
+4 4 I I
+"\"
+5 3 SH SH
+"/"
+5 4 DSH DSH
+"\_\"
+5 5 DI DI
+"\/"
+6 4 DSH DSH
+"_/"
+6 6 DSV DSV
+
+char: '#', width: 11
+"__ __"
+0 4 I T2
+"_"
+1 3 I T2
+"\ \\ \"
+1 4 I I
+"__"
+1 10 I T2
+"/"
+2 2 SH SH
+"\__  _  _\"
+2 3 I I
+"\/"
+3 2 SH SH
+"_"
+3 4 SV SV
+"L"
+3 5 SH SH
+"\ \\ \"
+3 6 I I
+"L"
+3 12 SV SV
+"_"
+3 13 I T2
+"/"
+4 4 SH SH
+"\_   _  _\"
+4 5 I I
+"\/"
+5 4 SH SH
+"_"
+5 6 SV SV
+"/"
+5 7 SH SH
+"\_\\_\"
+5 8 I I
+"/"
+5 14 SV SV
+"\/"
+6 7 SH SH
+"_/"
+6 9 SV SV
+"/"
+6 11 SH SH
+"_/"
+6 12 SV SV
+
+char: '+', width: 10
+"__"
+0 5 I T2
+"/"
+1 4 SH SH
+"\ \"
+1 5 I I
+"\_"
+2 4 SH SH
+"\ \"
+2 6 I I
+"___"
+2 9 I T2
+"/"
+3 3 SH SH
+"\___  __\"
+3 4 I I
+"\/"
+4 3 SH SH
+"__/"
+4 5 SV SV
+"\ \"
+4 8 I I
+"_/"
+4 11 SV SV
+"\ "
+5 7 SH SH
+"\_\"
+5 9 I I
+"\/"
+6 8 SH SH
+"_/"
+6 10 SV SV
+
+char: ',', width: 4
+"__"
+4 5 I T2
+"/"
+5 4 SH SH
+"\ \"
+5 5 I I
+"\ "
+6 4 SH SH
+"\/"
+6 6 I I
+"\/"
+7 5 SH SH
+
+char: '-', width: 9
+"_______"
+3 3 I T2
+"/"
+4 2 SH SH
+"\______\"
+4 3 I I
+"\/"
+5 2 SH SH
+"______/"
+5 4 SV SV
+
+char: '.', width: 4
+"__"
+4 5 I T2
+"/"
+5 4 SH SH
+"\ \"
+5 5 I I
+"\/"
+6 4 SH SH
+"_/"
+6 6 SV SV
+
+char: '0', width 8
+"__"
+0 3 I T2
+"/'__`\"
+1 1 I I
+"/"
+2 0 SH SH
+"\ \"
+2 1 I I
+"/"
+2 4 SH SH
+"\ \"
+2 5 I I
+"\ "
+3 0 SH SH
+"\ \"
+3 2 I I
+" "
+3 5 SH SH
+"\ \"
+3 6 I I
+"\ "
+4 1 SH SH
+"\ \"
+4 3 I I
+"_"
+4 6 SH SH
+"\ \"
+4 7 I I
+"\ "
+5 2 SH SH
+"\____/"
+5 4 I I
+"\/"
+6 3 SH SH
+"___/"
+6 5 SV SV
+
+char: '1', width: 7
+"_"
+0 5 I T2
+"/' \"
+1 3 I I
+"/"
+2 2 SH SH
+"\_, \"
+2 3 I I
+"\/"
+3 2 SH SH
+"_/"
+3 4 SV SV
+"\ \"
+3 6 I I
+"\ "
+4 5 SH SH
+"\ \"
+4 7 I I
+"\ "
+5 6 SH SH
+"\_\"
+5 8 I I
+"\/"
+6 7 SH SH
+"_/"
+6 9 SV SV
+
+char: '2', width: 10
+"___"
+0 5 I T2
+"/'___`\"
+1 3 I I
+"/"
+2 2 SH SH
+"\_\"
+2 3 I I
+" "
+2 6 SV SV
+"/"
+2 7 SH SH
+"\ \"
+2 8 I I
+"\/"
+3 2 SH SH
+"_/"
+3 4 SV SV
+"/"
+3 6 SH SH
+"/ /"
+3 7 I I
+"__"
+3 10 I T2
+"/"
+4 5 SH SH
+"/ /"
+4 6 I I
+"_"
+4 9 SH SH
+"\ \"
+4 10 I I
+"/"
+5 4 SH SH
+"\______/"
+5 5 I I
+"\/"
+6 4 SH SH
+"_____/"
+6 6 SV SV
+
+char: '3', width: 10
+"__"
+0 5 I T2
+"/'__`\"
+1 3 I I
+"/"
+2 2 SH SH
+"\_\"
+2 3 I I
+"L"
+2 6 SH SH
+"\ \"
+2 7 I I
+"\/"
+3 2 SH SH
+"_/"
+3 4 SV SV
+"_"
+3 6 SH SH
+"\_<"
+3 7 I I
+"/"
+4 4 SH SH
+"\ \"
+4 5 I I
+"L"
+4 8 SH SH
+"\ \"
+4 9 I I
+"\ "
+5 4 SH SH
+"\____/"
+5 6 I I
+"\/"
+6 5 SH SH
+"___/"
+6 7 SV SV
+
+char: '4', width: 9
+"__ __"
+0 1 I T2
+"/"
+1 0 SH SH
+"\ \\ \"
+1 1 I I
+"\ "
+2 0 SH SH
+"\ \\ \"
+2 2 I I
+"\ "
+3 1 SH SH
+"\ \\ \"
+3 3 I I
+"_"
+3 9 I T2
+"\ "
+4 2 SH SH
+"\__ ,__\"
+4 4 I I
+"\/"
+5 3 SH SH
+"_"
+5 5 SV SV
+"/"
+5 6 SH SH
+"\_\"
+5 7 I I
+"_/"
+5 10 SV SV
+"\/"
+6 6 SH SH
+"_/"
+6 8 SV SV
+
+char: '5', width: 8
+"______"
+0 1 I T2
+"/"
+1 0 SH SH
+"\  ___\"
+1 1 I I
+"\ "
+2 0 SH SH
+"\ \"
+2 2 I I
+"__/"
+2 5 SV SV
+"\ "
+3 1 SH SH
+"\___``\"
+3 3 I I
+"\/"
+4 2 SH SH
+"\ \"
+4 4 I I
+"L"
+4 7 SH SH
+"\ \"
+4 8 I I
+"\ "
+5 3 SH SH
+"\____/"
+5 5 I I
+"\/"
+6 4 SH SH
+"___/"
+6 6 SV SV
+
+char: '6', width: 8
+"____"
+0 3 I T2
+"/'___\"
+1 2 I I
+"/"
+2 1 SH SH
+"\ \"
+2 2 I I
+"__/"
+2 5 SV SV
+"\ "
+3 1 SH SH
+"\  _``\"
+3 3 I I
+"\ "
+4 2 SH SH
+"\ \"
+4 4 I I
+"L"
+4 7 SH SH
+"\ \"
+4 8 I I
+"\ "
+5 3 SH SH
+"\____/"
+5 5 I I
+"\/"
+6 4 SH SH
+"___/"
+6 6 SV SV
+
+char: '7', width: 10
+"________"
+0 1 I T2
+"/"
+1 0 SH SH
+"\_____  \"
+1 1 I I
+"\/"
+2 0 SH SH
+"___/"
+2 2 SV SV
+"/"
+2 6 SH SH
+"'/'"
+2 7 I I
+"/"
+3 5 SH SH
+"' /'"
+3 6 I I
+"/"
+4 3 SH SH
+"' /'"
+4 4 I I
+"/"
+5 2 SH SH
+"\_/"
+5 3 I I
+"\/"
+6 2 SH SH
+"/"
+6 4 SV SV
+
+char: '8', width: 8
+"__"
+0 3 I T2
+"/'_ `\"
+1 1 I I
+"/"
+2 0 SH SH
+"\ \"
+2 1 I I
+"L"
+2 4 SH SH
+"\ \"
+2 5 I I
+"\/"
+3 0 SH SH
+"_"
+3 2 SV SV
+"> _ <"
+3 3 I I
+"_"
+3 8 I T2
+"/"
+4 2 SH SH
+"\ \"
+4 3 I I
+"L"
+4 6 SH SH
+"\ \"
+4 7 I I
+"\ "
+5 3 SH SH
+"\____/"
+5 5 I I
+"\/"
+6 4 SH SH
+"___/"
+6 6 SV SV
+
+char: '9', width: 8
+"__"
+0 4 I T2
+"/'_ `\"
+1 2 I I
+"/"
+2 1 SH SH
+"\ \"
+2 2 I I
+"L"
+2 5 SH SH
+"\ \"
+2 6 I I
+"\ "
+3 1 SH SH
+"\___, \"
+3 3 I I
+"\/"
+4 2 SH SH
+"__,"
+4 4 SV SV
+"/"
+4 7 SH SH
+"\ \"
+4 8 I I
+"\ "
+5 7 SH SH
+"\_\"
+5 9 I I
+"\/"
+6 8 SH SH
+"_/"
+6 10 SV SV
+
+char: ':', width: 5
+"__"
+2 3 I T2
+"/"
+3 2 SH SH
+"\_\"
+3 3 I I
+"\/"
+4 2 SH SH
+"_/"
+4 4 SV SV
+"_"
+4 6 I T2
+"/"
+5 4 SH SH
+"\_\"
+5 5 I I
+"\/"
+6 4 SH SH
+"_/"
+6 6 SV SV
+
+char: '?', width: 7
+"_"
+0 3 I T2
+"/'_`\"
+1 1 I I
+"/"
+2 0 SH SH
+"\_\"
+2 1 I I
+"/"
+2 4 SH SH
+"\`\"
+2 5 I I
+"\/"
+3 0 SH SH
+"_/"
+3 2 SV SV
+"/"
+3 4 SH SH
+"'/'"
+3 5 I I
+"/"
+4 3 SH SH
+"\_\"
+4 4 I I
+"\"
+5 3 SH SH
+"/"
+5 4 DSH DSH
+"\_\"
+5 5 DI DI
+"\/"
+6 4 DSH DSH
+"_/"
+6 6 DSV DSV
+
+char: '@', width: 8
+"__"
+1 3 I T2
+"/'_`\"
+2 2 I I
+"_"
+2 7 I T2
+"/'/'_` \"
+3 1 I I
+"/"
+4 0 SH SH
+"\ \ \"
+4 1 I I
+"L"
+4 6 SH SH
+"\ \"
+4 7 I I
+"\ "
+5 0 SH SH
+"\ `\__,_\"
+5 2 I I
+"\ `"
+6 1 SH SH
+"\_____\"
+6 4 I I
+"`\/"
+7 2 SH SH
+"_____/"
+7 5 SV SV
+
+char: 'A', width: 8
+"______"
+0 1 I T2
+"/"
+1 0 SH SH
+"\  _  \"
+1 1 I I
+"\ "
+2 0 SH SH
+"\ \"
+2 2 I I
+"L"
+2 5 SH SH
+"\ \"
+2 6 I I
+"\ "
+3 1 SH SH
+"\  __ \"
+3 3 I I
+"\ "
+4 2 SH SH
+"\ \"
+4 4 I I
+"/"
+4 7 SH SH
+"\ \"
+4 8 I I
+"\ "
+5 3 SH SH
+"\_\"
+5 5 I I
+" "
+5 8 SH SH
+"\_\"
+5 9 I I
+"\/"
+6 4 SH SH
+"_/"
+6 6 SV SV
+"\/"
+6 8 SH SH
+"_/"
+6 10 SV SV
+
+char: 'B', width: 9
+"____"
+0 1 I T2
+"/"
+1 0 SH SH
+"\  _`\"
+1 1 I I
+"\ "
+2 0 SH SH
+"\ \"
+2 2 I I
+"L"
+2 5 SH SH
+"\ \"
+2 6 I I
+"\ "
+3 1 SH SH
+"\  _ <'"
+3 3 I I
+"\ "
+4 2 SH SH
+"\ \"
+4 4 I I
+"L"
+4 7 SH SH
+"\ \"
+4 8 I I
+"\ "
+5 3 SH SH
+"\____/"
+5 5 I I
+"\/"
+6 4 SH SH
+"___/"
+6 6 SV SV
+
+char: 'C', width: 9
+"____"
+0 1 I T2
+"/"
+1 0 SH SH
+"\  _`\"
+1 1 I I
+"\ "
+2 0 SH SH
+"\ \"
+2 2 I I
+"/"
+2 5 SH SH
+"\_\"
+2 6 I I
+"\ "
+3 1 SH SH
+"\ \"
+3 3 I I
+"/"
+3 6 SH SH
+"_/"
+3 7 SV SV
+"_"
+3 9 I T2
+"\ "
+4 2 SH SH
+"\ \"
+4 4 I I
+"L"
+4 7 SH SH
+"\ \"
+4 8 I I
+"\ "
+5 3 SH SH
+"\____/"
+5 5 I I
+"\/"
+6 4 SH SH
+"___/"
+6 6 SV SV
+
+char: 'D', width: 8
+"____"
+0 1 I T2
+"/"
+1 0 SH SH
+"\  _`\"
+1 1 I I
+"\ "
+2 0 SH SH
+"\ \"
+2 2 I I
+"/"
+2 5 SH SH
+"\ \"
+2 6 I I
+"\ "
+3 1 SH SH
+"\ \"
+3 3 I I
+" "
+3 6 SH SH
+"\ \"
+3 7 I I
+"\ "
+4 2 SH SH
+"\ \"
+4 4 I I
+"_"
+4 7 SH SH
+"\ \"
+4 8 I I
+"\ "
+5 3 SH SH
+"\____/"
+5 5 I I
+"\/"
+6 4 SH SH
+"___/"
+6 6 SV SV
+
+char: 'E', width: 8
+"____"
+0 1 I T2
+"/"
+1 0 SH SH
+"\  _`\"
+1 1 I I
+"\ "
+2 0 SH SH
+"\ \"
+2 2 I I
+"L"
+2 5 SH SH
+"\_\"
+2 6 I I
+"\ "
+3 1 SH SH
+"\  _"
+3 3 I I
+"\"
+3 7 SV SV
+"L"
+3 8 SV SV
+"\ "
+4 2 SH SH
+"\ \"
+4 4 I I
+"L"
+4 7 SH SH
+"\ \"
+4 8 I I
+"\ "
+5 3 SH SH
+"\____/"
+5 5 I I
+"\/"
+6 4 SH SH
+"___/"
+6 6 SV SV
+
+char: 'F', width: 8
+"____"
+0 1 I T2
+"/"
+1 0 SH SH
+"\  _`\"
+1 1 I I
+"\ "
+2 0 SH SH
+"\ \"
+2 2 I I
+"L"
+2 5 SH SH
+"\_\"
+2 6 I I
+"\ "
+3 1 SH SH
+"\  _"
+3 3 I I
+"\"
+3 7 SV SV
+"/"
+3 8 SV SV
+"\ "
+4 2 SH SH
+"\ \"
+4 4 I I
+"/"
+4 7 SV SV
+"\ "
+5 3 SH SH
+"\_\"
+5 5 I I
+"\/"
+6 4 SH SH
+"_/"
+6 6 SV SV
+
+char: 'G', width: 8
+"____"
+0 1 I T2
+"/"
+1 0 SH SH
+"\  _`\"
+1 1 I I
+"\ "
+2 0 SH SH
+"\ \"
+2 2 I I
+"L"
+2 5 SH SH
+"\_\"
+2 6 I I
+"\ "
+3 1 SH SH
+"\ \"
+3 3 I I
+"L"
+3 6 SH SH
+"_"
+3 7 SV SV
+"L"
+3 8 SV SV
+"\ "
+4 2 SH SH
+"\ \/, \"
+4 4 I I
+"\ "
+5 3 SH SH
+"\____/"
+5 5 I I
+"\/"
+6 4 SH SH
+"___/"
+6 6 SV SV
+
+char: 'H', width: 8
+"__"
+0 1 I T2
+"__"
+0 5 I T2
+"/"
+1 0 SH SH
+"\ \"
+1 1 I I
+"/"
+1 4 SH SH
+"\ \"
+1 5 I I
+"\ "
+2 0 SH SH
+"\ \"
+2 2 I I
+"_"
+2 5 SH SH
+"\ \"
+2 6 I I
+"\ "
+3 1 SH SH
+"\  _  \"
+3 3 I I
+"\ "
+4 2 SH SH
+"\ \"
+4 4 I I
+" "
+4 7 SH SH
+"\ \"
+4 8 I I
+"\ "
+5 3 SH SH
+"\_\"
+5 5 I I
+" "
+5 8 SH SH
+"\_\"
+5 9 I I
+"\/"
+6 4 SH SH
+"_/"
+6 6 SV SV
+"\/"
+6 8 SH SH
+"_/"
+6 10 SV SV
+
+char: 'I', width: 8
+
+kerning: '!' -> '#' = -1
+kerning: '+' -> ',' = -2
+kerning: ',' -> '-' = 1
+kerning: '-' -> '.' = -3
+kerning: '.' -> '0' = 2
+kerning: '0' -> '1' = 2
+kerning: '0' -> 'A' = 3
+kerning: '1' -> 'A' = 0
+kerning: '2' -> 'A' = 1
+kerning: '3' -> 'A' = 0
+kerning: 'A' -> 'B' = 0
+kerning: 'B' -> 'C' = 0
