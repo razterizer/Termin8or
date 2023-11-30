@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <iostream>
 
 // Color                    | Foreground | Background
 //--------------------------+------------+-------------
@@ -34,6 +35,10 @@ class Text
   }
 
 public:
+  Text()
+  {
+    std::ios_base::sync_with_stdio(false);
+  }
 
   enum class Color
   {
@@ -86,19 +91,22 @@ public:
   void print(const std::string& text, Color text_color, Color bg_color = Color::Default) const
   {
     std::string output = get_color_string(text_color, bg_color) + text + "\033[0m";
-    printf("%s", output.c_str());
+    //printf("%s", output.c_str());
+    std::cout << output;
   }
 
   void print_line(const std::string& text, Color text_color, Color bg_color = Color::Default) const
   {
     print(text, text_color, bg_color);
-    printf("\n");
+    //printf("\n");
+    std::cout << "\n";
   }
 
   void print_char(char c, Color text_color, Color bg_color = Color::Default) const
   {
     std::string output = get_color_string(text_color, bg_color) + c;
-    printf("%s", output.c_str());
+    //printf("%s", output.c_str());
+    std::cout << output;
   }
 
   void print_complex(const std::vector<std::tuple<char, Color, Color>>& text)
@@ -116,12 +124,14 @@ public:
       output += col_str + char_str;
     }
     output += "\033[0m";
-    printf("%s", output.c_str());
+    //printf("%s", output.c_str());
+    std::cout << output;
   }
 
   void print_reset() const
   {
-    printf("%s", "\033[0m");
+    //printf("%s", "\033[0m");
+    std::cout << "\033[0m";
   }
 };
 
