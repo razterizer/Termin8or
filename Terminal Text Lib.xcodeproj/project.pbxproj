@@ -6,6 +6,10 @@
 	objectVersion = 55;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		073CBCFE2B18C194003FEEAA /* Delay.h in Headers */ = {isa = PBXBuildFile; fileRef = 073CBCFD2B18C194003FEEAA /* Delay.h */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		07043C6F2B05240D00834CED /* ASCII_Fonts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ASCII_Fonts.h; sourceTree = "<group>"; };
 		07043C702B05735300834CED /* font_data_larry3d.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = font_data_larry3d.txt; sourceTree = "<group>"; };
@@ -20,6 +24,7 @@
 		071CC3DD290485FD007B4B98 /* LineData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LineData.h; sourceTree = "<group>"; };
 		071CC3DF29048851007B4B98 /* Keyboard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Keyboard.h; sourceTree = "<group>"; };
 		071CC3E329048C85007B4B98 /* Drawing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Drawing.h; sourceTree = "<group>"; };
+		073CBCFD2B18C194003FEEAA /* Delay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Delay.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +41,7 @@
 		071CC3C1290465B3007B4B98 = {
 			isa = PBXGroup;
 			children = (
+				073CBCFD2B18C194003FEEAA /* Delay.h */,
 				07043C6F2B05240D00834CED /* ASCII_Fonts.h */,
 				07043C702B05735300834CED /* font_data_larry3d.txt */,
 				071CC3E329048C85007B4B98 /* Drawing.h */,
@@ -67,6 +73,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				073CBCFE2B18C194003FEEAA /* Delay.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
