@@ -136,6 +136,7 @@ public:
   
   void set_color_win(Color text_color, Color bg_color = Color::Default)
   {
+#ifdef _WIN32
     int foreground = get_color_value_win(text_color);
     if (foreground == -1)
       foreground = get_color_value_win(Color::White);
@@ -144,7 +145,7 @@ public:
       background = get_color_value_win(Color::Black);
 
     int color = static_cast<int>(foreground) + static_cast<int>(background);
-#ifdef _WIN32
+    
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 #endif
   }
