@@ -17,7 +17,7 @@ namespace Delay
 {
   // Arguments:
   // int us : microseconds.
-  // #FIXME: Choose one.
+  // #FIXME: Choose one for all platforms if possible.
   void sleep(int us)
   {
 #ifdef _WIN32
