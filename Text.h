@@ -2,26 +2,32 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#ifdef _WIN32
+#include <conio.h>
+#include <Windows.h>
+#endif
 
-// Color                    | Foreground | Background
-//--------------------------+------------+-------------
-// Default                  | \033[39m   | \033[49m
-// Black                    | \033[30m   | \033[40m
-// Dark red                 | \033[31m   | \033[41m
-// Dark green               | \033[32m   | \033[42m
-// Dark yellow (Orange-ish) | \033[33m   | \033[43m
-// Dark blue                | \033[34m   | \033[44m
-// Dark magenta             | \033[35m   | \033[45m
-// Dark cyan                | \033[36m   | \033[46m
-// Light gray               | \033[37m   | \033[47m
-// Dark gray                | \033[90m   | \033[100m
-// Red                      | \033[91m   | \033[101m
-// Green                    | \033[92m   | \033[102m
-// Yellow                   | \033[93m   | \033[103m
-// Blue                     | \033[94m   | \033[104m
-// Magenta                  | \033[95m   | \033[105m
-// Cyan                     | \033[96m   | \033[106m
-// White                    | \033[97m   | \033[107m
+//--------------------------+------------+------------+--------+--------+
+// Color                    | Foreground | Background | FG Win | BG Win |
+//--------------------------+------------+------------+--------+--------+
+// Default                  | \033[39m   | \033[49m   |  N/A   |  N/A   |
+// Black                    | \033[30m   | \033[40m   |  0     |  0     |
+// Dark red                 | \033[31m   | \033[41m   |  4     |  64    |
+// Dark green               | \033[32m   | \033[42m   |  2     |  32    |
+// Dark yellow (Orange-ish) | \033[33m   | \033[43m   |  6     |  96    |
+// Dark blue                | \033[34m   | \033[44m   |  1     |  16    |
+// Dark magenta             | \033[35m   | \033[45m   |  5     |  80    |
+// Dark cyan                | \033[36m   | \033[46m   |  3     |  48    |
+// Light gray               | \033[37m   | \033[47m   |  7     |  112   |
+// Dark gray                | \033[90m   | \033[100m  |  8     |  128   |
+// Red                      | \033[91m   | \033[101m  |  12    |  192   |
+// Green                    | \033[92m   | \033[102m  |  10    |  160   |
+// Yellow                   | \033[93m   | \033[103m  |  14    |  224   |
+// Blue                     | \033[94m   | \033[104m  |  9     |  144   |
+// Magenta                  | \033[95m   | \033[105m  |  13    |  208   |
+// Cyan                     | \033[96m   | \033[106m  |  11    |  176   |
+// White                    | \033[97m   | \033[107m  |  15    |  240   |
+// -------------------------+------------+------------+-----
 //
 // Reset : \033[0m
 
@@ -87,12 +93,72 @@ public:
     bg += "m";
     return fg + bg;
   }
+  
+  int get_color_value_win(Color color)
+  {
+    switch (color)
+    {
+      case Color::DarkRed:
+        return 4;
+      case Color::DarkGreen:
+        return 2;
+      case Color::DarkYellow:
+        return 6;
+      case Color::DarkBlue:
+        return 1;
+      case Color::DarkMagenta:
+        return 5;
+      case Color::DarkCyan:
+        return 3;
+      case Color::LightGray:
+        return 7;
+      case Color::DarkGray:
+        return 8;
+      case Color::Red:
+        return 12;
+      case Color::Green:
+        return 10;
+      case Color::Yellow:
+        return 14;
+      case Color::Blue:
+        return 9;
+      case Color::Magenta:
+        return 13;
+      case Color::Cyan:
+        return 11;
+      case Color::White:
+        return 15;
+      case Color::Black:
+      default:
+        return 0;
+    }
+  }
+  
+  void set_color_win(Color text_color, Color bg_color = Color::Default)
+  {
+    int foreground = get_color_value_win(text_color);
+    if (foreground == -1)
+      foreground = get_color_value_win(Color::White);
+    int background = get_color_value_win(bg_color);
+    if (background == -1)
+      background = get_color_value_win(Color::Black);
+
+    int color = static_cast<int>(foreground) + static_cast<int>(background);
+#ifdef _WIN32
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+#endif
+  }
 
   void print(const std::string& text, Color text_color, Color bg_color = Color::Default) const
   {
+#ifdef _WIN32
+    set_color_win(text_color, bg_color);
+    std::cout << text;
+#else
     std::string output = get_color_string(text_color, bg_color) + text + "\033[0m";
     //printf("%s", output.c_str());
     std::cout << output;
+#endif
   }
 
   void print_line(const std::string& text, Color text_color, Color bg_color = Color::Default) const
@@ -104,34 +170,69 @@ public:
 
   void print_char(char c, Color text_color, Color bg_color = Color::Default) const
   {
+#ifdef _WIN32
+    set_color_win(text_color, bg_color);
+    std::cout << c;
+#else
     std::string output = get_color_string(text_color, bg_color) + c;
     //printf("%s", output.c_str());
     std::cout << output;
+#endif
   }
 
   void print_complex(const std::vector<std::tuple<char, Color, Color>>& text)
   {
     size_t n = text.size();
     std::string output;
+#ifdef _WIN32
+    auto fg_color_prev = Color::Default;
+    auto bg_color_prev = Color::Default;
+    char c_prev = -1;
+#endif
     for (size_t i = 0; i < n; ++i)
     {
       const auto& ti = text[i];
       char c = std::get<0>(ti);
       auto fg_color = std::get<1>(ti);
       auto bg_color = std::get<2>(ti);
+#ifdef _WIN32
+      if (i == 0)
+      {
+        c_prev = c;
+        fg_color_prev = fg_color;
+        bg_color_prev = bg_color;
+      }
+      output += c_prev;
+      if (fg_color != fg_color_prev || bg_color != bg_color_prev)
+      {
+        set_color_win(fg_color_prev, bg_color_prev);
+        std::cout << output;
+        output = "";
+      }
+      c_prev = c;
+      fg_color_prev = fg_color;
+      bg_color_prev = bg_color;
+#else
       auto col_str = get_color_string(fg_color, c == '\n' ? Color::Default : bg_color);
       std::string char_str(1, c);
       output += col_str + char_str;
+#endif
     }
+#ifndef _WIN32
     output += "\033[0m";
     //printf("%s", output.c_str());
     std::cout << output;
+#endif
   }
 
   void print_reset() const
   {
+#ifdef _WIN32
+    set_color_win(Color::White, Color::Black);
+#else
     //printf("%s", "\033[0m");
     std::cout << "\033[0m";
+#endif
   }
 };
 
