@@ -1854,6 +1854,259 @@ char: 'f', width: 8
 "_/"
 6 6 SV SV
 
+char: 'g', width: 5
+"__"
+2 3 I T2
+"/'_ `\"
+3 1 I I
+"/"
+4 0 SH SH
+"\ \"
+4 1 I I
+"L"
+4 4 SH SH
+"\ \"
+4 5 I I
+"\ "
+5 0 SH SH
+"\____ \"
+5 2 I I
+"\/"
+6 1 SH SH
+"___"
+6 3 SV SV
+"L"
+6 6 SH SH
+"\ \"
+6 7 I I
+"/"
+7 3 SH SH
+"\____/"
+7 4 I I
+"\/"
+8 3 SH SH
+"___/"
+8 5 SV SV
+
+char: 'h', width: 8
+"__"
+0 1 I T2
+"/"
+1 0 SH SH
+"\ \"
+1 1 I I
+"\ "
+2 0 SH SH
+"\ \"
+2 2 I I
+"___"
+2 5 I T2
+"\ "
+3 1 SH SH
+"\  _ `\"
+3 3 I I
+"\ "
+4 2 SH SH
+"\ \"
+4 4 I I
+" "
+4 7 SH SH
+"\ \"
+4 8 I I
+"\ "
+5 3 SH SH
+"\_\"
+5 5 I I
+" "
+5 8 SH SH
+"\_\"
+5 9 I I
+"\/"
+6 4 SH SH
+"_/"
+6 6 SV SV
+"\/"
+6 8 SH SH
+"_/"
+6 10 SV SV
+
+char: 'i', width: 4
+"__"
+1 2 DI T2
+"/"
+2 1 DSH DSH
+"\_\"
+2 2 DI DI
+"\/"
+3 1 DSH DSH
+"\ \"
+3 3 I I
+"\ "
+4 2 SH SH
+"\ \"
+4 4 I I
+"\ "
+5 3 SH SH
+"\_\"
+5 5 I I
+"\/"
+6 4 SH SH
+"_/"
+6 6 SV SV
+
+char: 'j', width: 6
+"__"
+1 4 DI T2
+"/"
+2 3 DSH DSH
+"\_\"
+2 4 DI DI
+"\/"
+3 3 DSH DSH
+"\ \"
+3 5 I I
+"\ "
+4 4 SH SH
+"\ \"
+4 6 I I
+"_"
+5 4 I T2
+"\ "
+5 5 SH SH
+"\ \"
+5 7 I I
+"/"
+6 3 SH SH
+"\ \"
+6 4 I I
+"_"
+6 7 SH SH
+"\ \"
+6 8 I I
+"\ "
+7 3 SH SH
+"\____/"
+7 5 I I
+"\/"
+8 4 SH SH
+"___/"
+8 6 SV SV
+
+char: 'k', width: 8
+"__"
+0 1 I T2
+"/"
+1 0 SH SH
+"\ \"
+1 1 I I
+"\ "
+2 0 SH SH
+"\ \/'\"
+2 2 I I
+"\ "
+3 1 SH SH
+"\ , <"
+3 3 I I
+"\ "
+4 2 SH SH
+"\ \\`\"
+4 4 I I
+"\ "
+5 3 SH SH
+"\_\"
+5 5 I I
+" "
+5 8 SH SH
+"\_\"
+5 9 I I
+"\/"
+6 4 SH SH
+"_/"
+6 6 SV SV
+"\/"
+6 8 SH SH
+"_/"
+6 10 SV SV
+
+
+char: 'l', width: 8
+"___"
+0 2 I T2
+"/"
+1 1 SH SH
+"\_ \"
+1 2 I I
+"\/"
+2 1 SH SH
+"/"
+2 3 SV SV
+"\ \"
+2 4 I I
+"\ "
+3 3 SH SH
+"\ \"
+3 5 I I
+"\_"
+4 4 SH SH
+"\ \"
+4 6 I I
+"_"
+4 9 I T2
+"/"
+5 4 SH SH
+"\____\"
+5 5 I I
+"\/"
+6 4 SH SH
+"____/"
+6 6 SV SV
+
+char: 'm', width: 11
+"___"
+2 4 I T2
+"___"
+2 8 I T2
+"/' __` __`\"
+3 2 I I
+"/"
+4 2 SH SH
+"\ \"
+4 3 I I
+"/"
+4 6 SH SH
+"\ \"
+4 7 I I
+"/"
+4 10 SH SH
+"\ \"
+4 11 I I
+"\ "
+5 2 SH SH
+"\_\"
+5 4 I I
+" "
+5 7 SH SH
+"\_\"
+5 8 I I
+" "
+5 11 SH SH
+"\_\"
+5 12 I I
+"\/"
+6 3 SH SH
+"_/"
+6 5 SV SV
+"\/"
+6 7 SH SH
+"_/"
+6 9 SV SV
+"\/"
+6 11 SH SH
+"_/"
+6 13 SV SV
+
+
+
 
 kerning: '!' -> '#' = -1
 kerning: '+' -> ',' = -2
