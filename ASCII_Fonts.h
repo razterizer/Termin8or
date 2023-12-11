@@ -152,6 +152,7 @@ namespace ASCII_Fonts
     int r, c;
     char fg[4];
     char bg[4];
+    bool kerning = false;
     
     if (txt_file.is_open())
     {
@@ -165,13 +166,16 @@ namespace ASCII_Fonts
       std::string line;
       while (std::getline(txt_file, line))
       {
-        sscanf(line.c_str(), "char: '%c', width: %i", &ch, &width);
-        if (sscanf(line.c_str(), "kerning: '%c' -> '%c' = %i", &kch0, &kch1, &kern) == 3)
+        if (sscanf(line.c_str(), "char: '%c', width: %i", &ch, &width) == 2)
+          kerning = false;
+        if (strcmp(line.c_str(), "kerning:") == 0)
         {
+          kerning = true;
           ch = -1;
-          curr_font.kernings[{kch0, kch1}] = kern;
         }
-        if (ch != -1)
+        if (kerning && sscanf(line.c_str(), "'%c' -> '%c' = %i", &kch0, &kch1, &kern) == 3)
+          curr_font.kernings[{kch0, kch1}] = kern;
+        else if (ch != -1)
         {
           auto& curr_char = curr_font.font_chars[ch];
           curr_char.width = width;
@@ -198,7 +202,8 @@ namespace ASCII_Fonts
   // (r, c) : top left corner of text.
   // returns the relative start column (top left corner) for the next character.
   template<int NR, int NC>
-  int draw_char(SpriteHandler<NR, NC>& sh, const FontDataColl& font_data, const char ch_curr, const char ch_next, int r, int c, Font font)
+  int draw_char(SpriteHandler<NR, NC>& sh, const FontDataColl& font_data, const char ch_curr, const char ch_next,
+                int r, int c, Font font, int custom_kerning = 0)
   {
     auto it_font = font_data.find(font);
     if (it_font != font_data.end())
@@ -217,7 +222,7 @@ namespace ASCII_Fonts
         {
           auto it_k = curr_font.kernings.find({ch_curr, ch_next});
           if (it_k != curr_font.kernings.end())
-            kerning = it_k->second;
+            kerning = it_k->second + custom_kerning;
         }
         
         return curr_char.width + kerning;
@@ -233,15 +238,20 @@ namespace ASCII_Fonts
 
   // (r, c) : top left corner of text.
   template<int NR, int NC>
-  void draw_text(SpriteHandler<NR, NC>& sh, const FontDataColl& font_data, const std::string& text, int r, int c, Font font)
+  void draw_text(SpriteHandler<NR, NC>& sh, const FontDataColl& font_data, const std::string& text,
+                 int r, int c, Font font, const std::vector<int>& custom_kerning = {})
   {
     int width = 0;
     int num_chars = static_cast<int>(text.size());
+    int num_custom_kernings = static_cast<int>(custom_kerning.size());
     for (int ch_idx = 0; ch_idx < num_chars; ++ch_idx)
     {
       char ch_curr = text[ch_idx];
       char ch_next = ch_idx + 1 < num_chars ? text[ch_idx + 1] : -1;
-      width += draw_char(sh, font_data, ch_curr, ch_next, r, c + width, font);
+      int ck = 0;
+      if (ch_idx < num_custom_kernings)
+        ck = custom_kerning[ch_idx];
+      width += draw_char(sh, font_data, ch_curr, ch_next, r, c + width, font, ck);
     }
   }
 
