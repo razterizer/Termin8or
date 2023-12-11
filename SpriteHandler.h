@@ -111,7 +111,7 @@ public:
     return str_out;
   }
 
-  void replace_bg_color(Text::Color from_bg_color, Text::Color to_bg_color, Rectangle box)
+  void replace_bg_color(Text::Color from_bg_color, Text::Color to_bg_color, ttl::Rectangle box)
   {
     for (int r = 0; r < NR; ++r)
     {

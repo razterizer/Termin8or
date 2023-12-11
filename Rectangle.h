@@ -1,18 +1,23 @@
 #pragma once
 
-struct Rectangle
+namespace ttl
 {
-  Rectangle(int r, int c, int w, int h)
-    : y(r), x(c), width(w), height(h)
-  {}
-
-  int x = 0;
-  int y = 0;
-  int width = 0;
-  int height = 0; // #NOTE: Downwards height!
-
-  bool is_inside(int r, int c)
+  
+  struct Rectangle
   {
-    return y <= r && r <= y + height && x <= c && c <= x + width;
-  }
-};
+    Rectangle(int r, int c, int w, int h)
+      : y(r), x(c), width(w), height(h)
+    {}
+  
+    int x = 0;
+    int y = 0;
+    int width = 0;
+    int height = 0; // #NOTE: Downwards height!
+  
+    bool is_inside(int r, int c)
+    {
+      return y <= r && r <= y + height && x <= c && c <= x + width;
+    }
+  };
+  
+}
