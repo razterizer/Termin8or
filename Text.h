@@ -94,7 +94,7 @@ public:
     return fg + bg;
   }
   
-  int get_color_value_win(Color color)
+  int get_color_value_win(Color color) const
   {
     switch (color)
     {
@@ -134,7 +134,7 @@ public:
     }
   }
   
-  void set_color_win(Color text_color, Color bg_color = Color::Default)
+  void set_color_win(Color text_color, Color bg_color = Color::Default) const
   {
 #ifdef _WIN32
     int foreground = get_color_value_win(text_color);
