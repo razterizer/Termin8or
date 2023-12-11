@@ -85,28 +85,27 @@ char readKeystroke()
   INPUT_RECORD irInput;
   DWORD cNumRead;
 
-  while (true)
+  if (!PeekConsoleInput(hStdin, &irInput, 1, &cNumRead))
   {
-    if (!PeekConsoleInput(hStdin, &irInput, 1, &cNumRead))
-    {
-      die("PeekConsoleInput");
-    }
+    die("PeekConsoleInput");
+  }
 
-    if (cNumRead)
+  if (cNumRead)
+  {
+    if (ReadConsoleInput(hStdin, &irInput, 1, &cNumRead))
     {
-      if (ReadConsoleInput(hStdin, &irInput, 1, &cNumRead))
+      if (irInput.EventType == KEY_EVENT && irInput.Event.KeyEvent.bKeyDown)
       {
-        if (irInput.EventType == KEY_EVENT && irInput.Event.KeyEvent.bKeyDown)
-        {
-          return irInput.Event.KeyEvent.uChar.AsciiChar;
-        }
+        return irInput.Event.KeyEvent.uChar.AsciiChar;
       }
-      else
-      {
-        die("ReadConsoleInput");
-      }
+    }
+    else
+    {
+      die("ReadConsoleInput");
     }
   }
+
+  return '\0'; // Return null character if no key is pressed
 #else
   char ch = '\0';
   if (read(STDIN_FILENO, &ch, 1) == -1 && errno != EAGAIN)
