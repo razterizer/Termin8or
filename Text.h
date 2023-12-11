@@ -140,9 +140,9 @@ public:
     int foreground = get_color_value_win(text_color);
     if (foreground == -1)
       foreground = get_color_value_win(Color::White);
-    int background = get_color_value_win(bg_color);
+    int background = 16 * get_color_value_win(bg_color);
     if (background == -1)
-      background = get_color_value_win(Color::Black);
+      background = 16 * get_color_value_win(Color::Black);
 
     int color = static_cast<int>(foreground) + static_cast<int>(background);
     
