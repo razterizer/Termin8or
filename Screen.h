@@ -1,6 +1,6 @@
 #pragma once
 #include "SpriteHandler.h"
-#include <cmath>
+#include "../Core Lib/Math.h"
 
 // Game Over
 int game_over_timer = 10;
