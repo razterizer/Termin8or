@@ -1,5 +1,6 @@
 #pragma once
 #include "Text.h"
+#include <assert.h>
 
 struct ColorGradient
 {
