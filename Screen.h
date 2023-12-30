@@ -1,6 +1,9 @@
 #pragma once
 #include "SpriteHandler.h"
-#include "../Core Lib/Math.h"
+#include <cmath>
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 // Game Over
 int game_over_timer = 10;
