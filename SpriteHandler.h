@@ -69,8 +69,43 @@ public:
       write_buffer(tb.text_lines[r_idx], r + r_idx, c, fg_color, bg_color);
   }
 
+  void write_buffer(const std::string& str, int r, int c, Text::Color fg_color, Text::Color bg_color = Text::Color::Transparent)
+  {
+    if (str.empty())
+      return;
+    //if (c >= 0 && str.size() + c <= NC)
+    {
+      if (r >= 0 && r < NR)
+      {
+        int n = static_cast<int>(str.size());
+        for (int ci = 0; ci < n; ++ci)
+        {
+          int c_tot = c + ci;
+          if (c_tot >= 0 && c_tot < NC
+            && screen_buffer[r][c_tot] == ' '
+            && bg_color_buffer[r][c_tot] == Text::Color::Transparent)
+          {
+            screen_buffer[r][c_tot] = str[ci];
+            fg_color_buffer[r][c_tot] = fg_color;
+            bg_color_buffer[r][c_tot] = bg_color;
+          }
+          else if (c_tot >= 0 && c_tot < NC
+            && bg_color_buffer[r][c_tot] == Text::Color::Transparent2)
+          {
+            bg_color_buffer[r][c_tot] = bg_color;
+            if (screen_buffer[r][c_tot] == ' ')
+            {
+              screen_buffer[r][c_tot] = str[ci];
+              fg_color_buffer[r][c_tot] = fg_color;
+            }
+          }
+        }
+      }
+    }
+  }
+  
   // Return copy of str but with spaces where tests failed.
-  std::string write_buffer(const std::string& str, int r, int c, Text::Color fg_color, Text::Color bg_color = Text::Color::Transparent)
+  std::string write_buffer_ret(const std::string& str, int r, int c, Text::Color fg_color, Text::Color bg_color = Text::Color::Transparent)
   {
     if (str.empty())
       return "";
