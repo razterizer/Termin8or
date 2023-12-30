@@ -52,6 +52,9 @@ public:
     Delay::update_loop(fps, update_func);
   }
   
+  int get_fps() const { return fps; }
+  int get_delay_us() const { return delay; }
+  
 private:
   bool engine_update()
   {
