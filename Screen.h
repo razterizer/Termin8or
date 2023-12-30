@@ -39,7 +39,13 @@ void clear_screen()
 
 void return_cursor()
 {
+#ifdef _WIN32
+  HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+  COORD coord = { 0, 0 };
+  SetConsoleCursorPosition(hStdOut, coord);
+#else
   printf("\x1b[H");
+#endif
 }
 
 void gotorc(int r, int c)
