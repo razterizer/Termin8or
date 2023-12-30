@@ -22,7 +22,19 @@ const float pix_ar2_sq = pix_ar2*pix_ar;
 
 void clear_screen()
 {
+#ifdef _WIN32
+  // Too slow and not necessary.
+  //HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+  //COORD coord = { 0, 0 };
+  //DWORD count;
+  //CONSOLE_SCREEN_BUFFER_INFO csbi;
+  //
+  //GetConsoleScreenBufferInfo(hStdOut, &csbi);
+  //FillConsoleOutputCharacterA(hStdOut, ' ', csbi.dwSize.X * csbi.dwSize.Y, coord, &count);
+  //SetConsoleCursorPosition(hStdOut, coord);
+#else
   printf("\x1b[2J");
+#endif
 }
 
 void return_cursor()
