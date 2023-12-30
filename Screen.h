@@ -50,7 +50,16 @@ void return_cursor()
 
 void gotorc(int r, int c)
 {
+#ifdef _WIN32
+  HANDLE hStdOut;
+  COORD coord;
+  hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+  coord.X = c;
+  coord.Y = r;
+  SetConsoleCursorPosition(hStdOut, coord);
+#else
   printf("%c[%d;%df", 0x1B, r, c);
+#endif
 }
 
 template<int NR, int NC>
