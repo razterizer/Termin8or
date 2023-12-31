@@ -81,22 +81,26 @@ public:
         for (int ci = 0; ci < n; ++ci)
         {
           int c_tot = c + ci;
-          if (c_tot >= 0 && c_tot < NC
-            && screen_buffer[r][c_tot] == ' '
-            && bg_color_buffer[r][c_tot] == Text::Color::Transparent)
+          if (c_tot >= 0 && c_tot < NC)
           {
-            screen_buffer[r][c_tot] = str[ci];
-            fg_color_buffer[r][c_tot] = fg_color;
-            bg_color_buffer[r][c_tot] = bg_color;
-          }
-          else if (c_tot >= 0 && c_tot < NC
-            && bg_color_buffer[r][c_tot] == Text::Color::Transparent2)
-          {
-            bg_color_buffer[r][c_tot] = bg_color;
-            if (screen_buffer[r][c_tot] == ' ')
+            auto& scr_ch = screen_buffer[r][c_tot];
+            auto& scr_fg = fg_color_buffer[r][c_tot];
+            auto& scr_bg = bg_color_buffer[r][c_tot];
+            if (scr_ch == ' '
+              && scr_bg == Text::Color::Transparent)
             {
-              screen_buffer[r][c_tot] = str[ci];
-              fg_color_buffer[r][c_tot] = fg_color;
+              scr_ch = str[ci];
+              scr_fg = fg_color;
+              scr_bg = bg_color;
+            }
+            else if (scr_bg == Text::Color::Transparent2)
+            {
+              scr_bg = bg_color;
+              if (scr_ch == ' ')
+              {
+                scr_ch = str[ci];
+                scr_fg = fg_color;
+              }
             }
           }
         }
@@ -118,22 +122,25 @@ public:
         for (int ci = 0; ci < n; ++ci)
         {
           int c_tot = c + ci;
+          auto& scr_ch = screen_buffer[r][c_tot];
+          auto& scr_fg = fg_color_buffer[r][c_tot];
+          auto& scr_bg = bg_color_buffer[r][c_tot];
           if (c_tot >= 0 && c_tot < NC
-              && screen_buffer[r][c_tot] == ' '
-              && bg_color_buffer[r][c_tot] == Text::Color::Transparent)
+              && scr_ch == ' '
+              && scr_bg == Text::Color::Transparent)
           {
-            screen_buffer[r][c_tot] = str[ci];
-            fg_color_buffer[r][c_tot] = fg_color;
-            bg_color_buffer[r][c_tot] = bg_color;
+            scr_ch = str[ci];
+            scr_fg = fg_color;
+            scr_bg = bg_color;
           }
           else if (c_tot >= 0 && c_tot < NC
-                   && bg_color_buffer[r][c_tot] == Text::Color::Transparent2)
+                   && scr_bg == Text::Color::Transparent2)
           {
-            bg_color_buffer[r][c_tot] = bg_color;
-            if (screen_buffer[r][c_tot] == ' ')
+            scr_bg = bg_color;
+            if (scr_ch == ' ')
             {
-              screen_buffer[r][c_tot] = str[ci];
-              fg_color_buffer[r][c_tot] = fg_color;
+              scr_ch = str[ci];
+              scr_fg = fg_color;
             }
           }
           else
