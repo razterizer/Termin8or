@@ -167,6 +167,34 @@ public:
       }
     }
   }
+  
+  void replace_bg_color(Text::Color to_bg_color, ttl::Rectangle box)
+  {
+    for (int r = 0; r < NR; ++r)
+    {
+      for (int c = 0; c < NC; ++c)
+      {
+        if (box.is_inside(r, c))
+        {
+          bg_color_buffer[r][c] = to_bg_color;
+        }
+      }
+    }
+  }
+  
+  void replace_fg_color(Text::Color to_fg_color, ttl::Rectangle box)
+  {
+    for (int r = 0; r < NR; ++r)
+    {
+      for (int c = 0; c < NC; ++c)
+      {
+        if (box.is_inside(r, c))
+        {
+          fg_color_buffer[r][c] = to_fg_color;
+        }
+      }
+    }
+  }
 
   void print_screen_buffer(Text& t, Text::Color bg_color) const
   {
