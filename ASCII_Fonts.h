@@ -105,6 +105,21 @@ namespace ASCII_Fonts
       return colors.bg_dot_side_v;
     return Text::Color::Transparent;
   }
+  
+  // Add the env variable RUNNING_FROM_XCODE to the Run section of the current scheme:
+  //   Product -> Scheme -> Edit Scheme... ->  Run (Debug) -> Arguments -> Environmental Variables -> + -> "RUNNING_FROM_XCODE", true.
+  // Perhaps script this procedure in the future.
+  std::string get_path_to_font_data()
+  {
+    std::string font_data_path;
+    const char* xcode_env = std::getenv("RUNNING_FROM_XCODE");
+    if (xcode_env != nullptr)
+      font_data_path = "../../../../../../../../Documents/xcode/lib/Terminal Text Lib";
+    else
+      font_data_path = "../../lib/Terminal Text Lib";
+      
+    return font_data_path;
+  }
 
   FontDataColl load_font_data(const ColorScheme& colors, const std::string& path_to_font_data)
   {
