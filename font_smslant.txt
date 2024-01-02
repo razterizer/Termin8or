@@ -1,0 +1,31 @@
+char: ' ', width: 5
+
+char: '!', width: 4
+"__"
+0 1 I T2
+"/"
+1 0 SH SH
+"\ \"
+1 1 I I
+"\ "
+2 0 SH SH
+"\ \"
+2 2 I I
+"\ "
+3 1 SH SH
+"\ \"
+3 3 I I
+"\ "
+4 2 SH SH
+"\_\"
+4 4 I I
+"\"
+5 3 SH SH
+"/"
+5 4 DSH DSH
+"\_\"
+5 5 DI DI
+"\/"
+6 4 DSH DSH
+"_/"
+6 6 DSV DSV
