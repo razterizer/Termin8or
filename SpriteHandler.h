@@ -89,7 +89,7 @@ public:
   
   void write_buffer_ordered()
   {
-    stlutils::sort(ordered_texts, [](const auto& tA, const auto& tB) { return tA.priority < tB.priority; });
+    stlutils::sort(ordered_texts, [](const auto& tA, const auto& tB) { return tA.priority > tB.priority; });
     for (const auto& text : ordered_texts)
       write_buffer(text.str, text.r, text.c, text.fg_color, text.bg_color);
     // Purge the text vector.
