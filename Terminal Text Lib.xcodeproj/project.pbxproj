@@ -14,7 +14,7 @@
 		07043C6F2B05240D00834CED /* ASCII_Fonts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ASCII_Fonts.h; sourceTree = "<group>"; };
 		07043C702B05735300834CED /* font_data_larry3d.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = font_data_larry3d.txt; sourceTree = "<group>"; };
 		070BE6892B406FB2009D9BFB /* GameEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameEngine.h; sourceTree = "<group>"; };
-		070BE68B2B4276C0009D9BFB /* font_smslant.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = font_smslant.txt; sourceTree = "<group>"; };
+		070BE68B2B4276C0009D9BFB /* font_data_smslant.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = font_data_smslant.txt; sourceTree = "<group>"; };
 		071CC3CA290465B3007B4B98 /* libTerminal Text Lib.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libTerminal Text Lib.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		071CC3D2290465E5007B4B98 /* Text.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Text.h; sourceTree = "<group>"; };
 		071CC3D5290466FE007B4B98 /* Screen.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Screen.h; sourceTree = "<group>"; };
@@ -46,7 +46,7 @@
 			isa = PBXGroup;
 			children = (
 				07043C702B05735300834CED /* font_data_larry3d.txt */,
-				070BE68B2B4276C0009D9BFB /* font_smslant.txt */,
+				070BE68B2B4276C0009D9BFB /* font_data_smslant.txt */,
 			);
 			path = fonts;
 			sourceTree = "<group>";
