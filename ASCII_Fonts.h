@@ -54,7 +54,8 @@ namespace ASCII_Fonts
   struct FontChar
   {
     std::vector<FontPiece> font_pieces;
-    int width = 0;
+    int width = -1;
+    int priority = -1;
   };
   
   struct FontData
@@ -174,6 +175,7 @@ namespace ASCII_Fonts
       char kch1 = -1;
       int kern = 0;
       int width = -1;
+      int priority = -1; // Higher number means higher priority.
       FontPiece piece;
       int r, c;
       char fg[4];
@@ -204,7 +206,7 @@ namespace ASCII_Fonts
         std::string line;
         while (std::getline(txt_file, line))
         {
-          if (sscanf(line.c_str(), "char: '%c', width: %i", &ch, &width) == 2)
+          if (sscanf(line.c_str(), "char: '%c', width: %i, priority: %i", &ch, &width, &priority) == 3)
             kerning = false;
           if (strcmp(line.c_str(), "kerning:") == 0)
           {
@@ -216,7 +218,10 @@ namespace ASCII_Fonts
           else if (ch != -1)
           {
             auto& curr_char = curr_font.font_chars[ch];
-            curr_char.width = width;
+            if (curr_char.width == -1)
+              curr_char.width = width;
+            if (curr_char.priority == -1)
+              curr_char.priority = priority;
             if (line.size() > 0 && line[0] == '"')
             {
               piece.part = line.substr(1, line.size() - 2);
@@ -254,7 +259,16 @@ namespace ASCII_Fonts
       {
         const auto& curr_char = it_char->second;
         for (const auto& piece : curr_char.font_pieces)
-          sh.write_buffer(piece.part, r + piece.r, c + piece.c, piece.fg_color, piece.bg_color);
+        {
+          OrderedText t;
+          t.str = piece.part;
+          t.r = r + piece.r;
+          t.c = c + piece.c;
+          t.fg_color = piece.fg_color;
+          t.bg_color = piece.bg_color;
+          t.priority = curr_char.priority;
+          sh.add_ordered_text(t);
+        }
         
         int kerning = 0;
         if (ch_next != -1)
@@ -292,6 +306,8 @@ namespace ASCII_Fonts
         ck = custom_kerning[ch_idx];
       width += draw_char(sh, font_data, ch_curr, ch_next, r, c + width, font, ck);
     }
+    
+    sh.write_buffer_ordered();
   }
 
 }
