@@ -3,7 +3,18 @@
 #include "Rectangle.h"
 #include "../Core Lib/StringHelper.h"
 #include "../Core Lib/TextBox.h"
+#include "../Core Lib/StlUtils.h"
 #include <array>
+
+struct OrderedText
+{
+  std::string str;
+  int r = -1;
+  int c = -1;
+  int priority = 0;
+  Text::Color fg_color = Text::Color::Default;
+  Text::Color bg_color = Text::Color::Transparent;
+};
 
 
 template<int NR = 30, int NC = 80>
@@ -42,6 +53,8 @@ class SpriteHandler
     return "";
   }
 
+  std::vector<OrderedText> ordered_texts;
+
 public:
   void clear()
   {
@@ -67,6 +80,20 @@ public:
     auto Nr = static_cast<int>(tb.text_lines.size());
     for (int r_idx = 0; r_idx < Nr; ++r_idx)
       write_buffer(tb.text_lines[r_idx], r + r_idx, c, fg_color, bg_color);
+  }
+  
+  void add_ordered_text(const OrderedText& text)
+  {
+    ordered_texts.emplace_back(text);
+  }
+  
+  void write_buffer_ordered()
+  {
+    stlutils::sort(ordered_texts, [](const auto& tA, const auto& tB) { return tA.priority < tB.priority; });
+    for (const auto& text : ordered_texts)
+      write_buffer(text.str, text.r, text.c, text.fg_color, text.bg_color);
+    // Purge the text vector.
+    ordered_texts.clear();
   }
 
   void write_buffer(const std::string& str, int r, int c, Text::Color fg_color, Text::Color bg_color = Text::Color::Transparent)
