@@ -1,8 +1,8 @@
-char: ' ', width: 5
+char: ' ', width: 1
 
-char: '!', width: 4
+char: '!', width: 5
 "__"
-0 1 I T2
+0 3 I T2
 "/"
 1 0 SH SH
 "\ \"
