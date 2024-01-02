@@ -130,7 +130,7 @@ namespace ASCII_Fonts
    
     std::vector<std::string> filename_vec;
     filename_vec.emplace_back(path_to_font_data + "/font_data_larry3d.txt");
-    filename_vec.emplace_back(path_to_font_data + "/font_smslant.txt");
+    filename_vec.emplace_back(path_to_font_data + "/font_data_smslant.txt");
     size_t num_fonts = filename_vec.size();
     //std::cout << filename << std::endl;
     char cwd[256];
