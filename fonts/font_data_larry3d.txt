@@ -1,6 +1,6 @@
-char: ' ', width: 5
+char: ' ', width: 5, priority: 0
 
-char: '!', width: 4
+char: '!', width: 4, priority: 0
 "__"
 0 1 I T2
 "/"
@@ -30,7 +30,7 @@ char: '!', width: 4
 "_/"
 6 6 DSV DSV
 
-char: '#', width: 12
+char: '#', width: 12, priority: 0
 "__ __"
 0 3 I T2
 "_"
@@ -78,7 +78,7 @@ char: '#', width: 12
 "_/"
 6 11 SV SV
 
-char: '+', width: 10
+char: '+', width: 10, priority: 0
 "__"
 0 5 I T2
 "/"
@@ -112,7 +112,7 @@ char: '+', width: 10
 "_/"
 6 10 SV SV
 
-char: ',', width: 4
+char: ',', width: 4, priority: 0
 "__"
 4 5 I T2
 "/"
@@ -126,7 +126,7 @@ char: ',', width: 4
 "\/"
 7 5 SH SH
 
-char: '-', width: 9
+char: '-', width: 9, priority: 0
 "_______"
 3 3 I T2
 "/"
@@ -138,7 +138,7 @@ char: '-', width: 9
 "______/"
 5 4 SV SV
 
-char: '.', width: 4
+char: '.', width: 4, priority: 0
 "__"
 4 5 DI T2
 "/"
@@ -150,7 +150,7 @@ char: '.', width: 4
 "_/"
 6 6 DSV DSV
 
-char: '0', width 8
+char: '0', width 8, priority: 0
 "__"
 0 3 I T2
 "/'__`\"
@@ -188,7 +188,7 @@ char: '0', width 8
 "___/"
 6 5 SV SV
 
-char: '1', width: 7
+char: '1', width: 7, priority: 0
 "_"
 0 5 I T2
 "/' \"
@@ -216,7 +216,7 @@ char: '1', width: 7
 "_/"
 6 9 SV SV
 
-char: '2', width: 10
+char: '2', width: 10, priority: 0
 "___"
 0 5 I T2
 "/'___`\"
@@ -258,7 +258,7 @@ char: '2', width: 10
 "_____/"
 6 6 SV SV
 
-char: '3', width: 10
+char: '3', width: 10, priority: 0
 "__"
 0 5 I T2
 "/'__`\"
@@ -298,7 +298,7 @@ char: '3', width: 10
 "___/"
 6 7 SV SV
 
-char: '4', width: 9
+char: '4', width: 9, priority: 0
 "__ __"
 0 1 I T2
 "/"
@@ -334,7 +334,7 @@ char: '4', width: 9
 "_/"
 6 8 SV SV
 
-char: '5', width: 8
+char: '5', width: 8, priority: 0
 "______"
 0 1 I T2
 "/"
@@ -368,7 +368,7 @@ char: '5', width: 8
 "___/"
 6 6 SV SV
 
-char: '6', width: 8
+char: '6', width: 8, priority: 0
 "____"
 0 3 I T2
 "/'___\"
@@ -400,7 +400,7 @@ char: '6', width: 8
 "___/"
 6 6 SV SV
 
-char: '7', width: 11
+char: '7', width: 11, priority: 0
 "________"
 0 2 I T2
 "/"
@@ -432,7 +432,7 @@ char: '7', width: 11
 "/"
 6 4 SV SV
 
-char: '8', width: 8
+char: '8', width: 8, priority: 0
 "__"
 0 3 I T2
 "/'_ `\"
@@ -470,7 +470,7 @@ char: '8', width: 8
 "___/"
 6 5 SV SV
 
-char: '9', width: 8
+char: '9', width: 8, priority: 0
 "__"
 0 4 I T2
 "/'_ `\"
@@ -504,7 +504,7 @@ char: '9', width: 8
 "_/"
 6 10 SV SV
 
-char: ':', width: 5
+char: ':', width: 5, priority: 0
 "__"
 2 3 DI T2
 "/"
@@ -526,7 +526,7 @@ char: ':', width: 5
 "_/"
 6 6 DSV DSV
 
-char: '?', width: 7
+char: '?', width: 7, priority: 0
 "_"
 0 3 I T2
 "/'_`\"
@@ -562,7 +562,7 @@ char: '?', width: 7
 "_/"
 6 6 DSV DSV
 
-char: '@', width: 8
+char: '@', width: 8, priority: 0
 "__"
 1 3 I T2
 "/'_`\"
@@ -594,7 +594,7 @@ char: '@', width: 8
 "_____/"
 7 5 SV SV
 
-char: 'A', width: 8
+char: 'A', width: 8, priority: 0
 "______"
 0 1 I T2
 "/"
@@ -638,7 +638,7 @@ char: 'A', width: 8
 "_/"
 6 10 SV SV
 
-char: 'B', width: 9
+char: 'B', width: 9, priority: 0
 "____"
 0 1 I T2
 "/"
@@ -676,7 +676,7 @@ char: 'B', width: 9
 "___/"
 6 6 SV SV
 
-char: 'C', width: 9
+char: 'C', width: 9, priority: 0
 "____"
 0 1 I T2
 "/"
@@ -718,7 +718,7 @@ char: 'C', width: 9
 "___/"
 6 6 SV SV
 
-char: 'D', width: 8
+char: 'D', width: 8, priority: 0
 "____"
 0 1 I T2
 "/"
@@ -758,7 +758,7 @@ char: 'D', width: 8
 "___/"
 6 6 SV SV
 
-char: 'E', width: 8
+char: 'E', width: 8, priority: 0
 "____"
 0 1 I T2
 "/"
@@ -798,7 +798,7 @@ char: 'E', width: 8
 "___/"
 6 6 SV SV
 
-char: 'F', width: 8
+char: 'F', width: 8, priority: 0
 "____"
 0 1 I T2
 "/"
@@ -836,7 +836,7 @@ char: 'F', width: 8
 "_/"
 6 6 SV SV
 
-char: 'G', width: 8
+char: 'G', width: 8, priority: 0
 "____"
 0 1 I T2
 "/"
@@ -874,7 +874,7 @@ char: 'G', width: 8
 "___/"
 6 6 SV SV
 
-char: 'H', width: 8
+char: 'H', width: 8, priority: 0
 "__"
 0 1 I T2
 "__"
@@ -924,7 +924,7 @@ char: 'H', width: 8
 "_/"
 6 10 SV SV
 
-char: 'I', width: 8
+char: 'I', width: 8, priority: 0
 "______"
 0 1 I T2
 "/"
@@ -960,7 +960,7 @@ char: 'I', width: 8
 "_____/"
 6 6 SV SV
 
-char: 'J', width: 8
+char: 'J', width: 8, priority: 0
 "_____"
 0 2 I T2
 "/"
@@ -998,7 +998,7 @@ char: 'J', width: 8
 "___/"
 6 6 SV SV
 
-char: 'K', width: 9
+char: 'K', width: 9, priority: 0
 "__"
 0 1 I T2
 "__"
@@ -1044,7 +1044,7 @@ char: 'K', width: 9
 "_/"
 6 10 SV SV
 
-char: 'L', width: 9
+char: 'L', width: 9, priority: 0
 "__"
 0 1 I T2
 "/"
@@ -1078,7 +1078,7 @@ char: 'L', width: 9
 "___/"
 6 6 SV SV
 
-char: 'M', width: 9
+char: 'M', width: 9, priority: 0
 "/'\"
 1 2 I I
 "_"
@@ -1120,7 +1120,7 @@ char: 'M', width: 9
 "_/"
 6 11 SV SV
 
-char: 'N', width: 8
+char: 'N', width: 8, priority: 0
 "__"
 0 1 I T2
 "__"
@@ -1166,7 +1166,7 @@ char: 'N', width: 8
 "_/"
 6 10 SV SV
 
-char: 'O', width: 8
+char: 'O', width: 8, priority: 0
 "_____"
 0 1 I T2
 "/"
@@ -1206,7 +1206,7 @@ char: 'O', width: 8
 "_____/"
 6 6 SV SV
 
-char: 'P', width: 8
+char: 'P', width: 8, priority: 0
 "____"
 0 1 I T2
 "/"
@@ -1240,7 +1240,7 @@ char: 'P', width: 8
 "_/"
 6 6 SV SV
 
-char: 'Q', width: 8
+char: 'Q', width: 8, priority: 0
 "_____"
 0 1 I T2
 "/"
@@ -1280,7 +1280,7 @@ char: 'Q', width: 8
 "_/"
 6 10 SV SV
 
-char: 'R', width: 8
+char: 'R', width: 8, priority: 0
 "____"
 0 1 I T2
 "/"
@@ -1320,7 +1320,7 @@ char: 'R', width: 8
 "_/"
 6 10 SV SV
 
-char: 'S', width: 8
+char: 'S', width: 8, priority: 0
 "____"
 0 1 I T2
 "/"
@@ -1358,7 +1358,7 @@ char: 'S', width: 8
 "_____/"
 6 6 SV SV
 
-char: 'T', width: 8
+char: 'T', width: 8, priority: 0
 "______"
 0 1 I T2
 "/"
@@ -1392,7 +1392,7 @@ char: 'T', width: 8
 "_/"
 6 8 SV SV
 
-char: 'U', width: 8
+char: 'U', width: 8, priority: 0
 "__"
 0 1 I T2
 "__"
@@ -1438,7 +1438,7 @@ char: 'U', width: 8
 "_____/"
 6 6 SV SV
 
-char: 'V', width: 8
+char: 'V', width: 8, priority: 0
 "__"
 0 1 I T2
 "__"
@@ -1486,7 +1486,7 @@ char: 'V', width: 8
 "__/"
 6 7 SV SV
 
-char: 'W', width: 12
+char: 'W', width: 12, priority: 0
 "__"
 0 1 I T2
 "__"
@@ -1548,7 +1548,7 @@ char: 'W', width: 12
 "__//__/"
 6 7 SV SV
 
-char: 'X', width: 11
+char: 'X', width: 11, priority: 0
 "__"
 0 2 I T2
 "__"
@@ -1604,7 +1604,7 @@ char: 'X', width: 11
 "_/"
 6 12 SV SV
 
-char: 'Y', width: 10
+char: 'Y', width: 10, priority: 0
 "__"
 0 1 I T2
 "__"
@@ -1652,7 +1652,7 @@ char: 'Y', width: 10
 "_/"
 6 8 SV SV
 
-char: 'Z', width: 11
+char: 'Z', width: 11, priority: 0
 "________"
 0 1 I T2
 "/"
@@ -1698,7 +1698,7 @@ char: 'Z', width: 11
 "_______/"
 6 6 SV SV
 
-char: '_', width: 10
+char: '_', width: 10, priority: 0
 "_______"
 6 5 I T2
 "/"
@@ -1710,7 +1710,7 @@ char: '_', width: 10
 "______/"
 8 6 SV SV
 
-char: 'a', width: 8
+char: 'a', width: 8, priority: 0
 "__"
 2 4 I T2
 "/'__`\"
@@ -1742,7 +1742,7 @@ char: 'a', width: 8
 "_/"
 6 9 SV SV
 
-char: 'b', width: 9
+char: 'b', width: 9, priority: 0
 "__"
 0 1 I T2
 "/"
@@ -1776,7 +1776,7 @@ char: 'b', width: 9
 "___/"
 6 6 SV SV
 
-char: 'c', width: 7
+char: 'c', width: 7, priority: 0
 "___"
 2 4 I T2
 "/'___\"
@@ -1796,7 +1796,7 @@ char: 'c', width: 7
 "____/"
 6 5 SV SV
 
-char: 'd', width: 7
+char: 'd', width: 7, priority: 0
 "__"
 0 4 I T2
 "/"
@@ -1826,7 +1826,7 @@ char: 'd', width: 7
 "__,_ /"
 6 5 SV SV
 
-char: 'e', width: 8
+char: 'e', width: 8, priority: 0
 "__"
 2 6 I T2
 "/'__`\"
@@ -1844,7 +1844,7 @@ char: 'e', width: 8
 "____/"
 6 6 SV SV
 
-char: 'f', width: 8
+char: 'f', width: 8, priority: 0
 "___"
 0 4 I T2
 "/'___\"
@@ -1874,7 +1874,7 @@ char: 'f', width: 8
 "_/"
 6 6 SV SV
 
-char: 'g', width: 5
+char: 'g', width: 5, priority: 0
 "__"
 2 3 I T2
 "/'_ `\"
@@ -1908,7 +1908,7 @@ char: 'g', width: 5
 "___/"
 8 5 SV SV
 
-char: 'h', width: 8
+char: 'h', width: 8, priority: 0
 "__"
 0 1 I T2
 "/"
@@ -1950,7 +1950,7 @@ char: 'h', width: 8
 "_/"
 6 10 SV SV
 
-char: 'i', width: 4
+char: 'i', width: 4, priority: 0
 "__"
 1 2 DI T2
 "/"
@@ -1974,7 +1974,7 @@ char: 'i', width: 4
 "_/"
 6 6 SV SV
 
-char: 'j', width: 6
+char: 'j', width: 6, priority: 0
 "__"
 1 4 DI T2
 "/"
@@ -2012,7 +2012,7 @@ char: 'j', width: 6
 "___/"
 8 6 SV SV
 
-char: 'k', width: 8
+char: 'k', width: 8, priority: 0
 "__"
 0 1 I T2
 "/"
@@ -2049,7 +2049,7 @@ char: 'k', width: 8
 6 10 SV SV
 
 
-char: 'l', width: 8
+char: 'l', width: 8, priority: 0
 "___"
 0 2 I T2
 "/"
@@ -2081,7 +2081,7 @@ char: 'l', width: 8
 "____/"
 6 6 SV SV
 
-char: 'm', width: 11
+char: 'm', width: 11, priority: 0
 "___"
 2 4 I T2
 "___"
@@ -2125,7 +2125,7 @@ char: 'm', width: 11
 "_/"
 6 13 SV SV
 
-char: 'n', width: 8
+char: 'n', width: 8, priority: 0
 "___"
 2 5 I T2
 "/' _ `\"
@@ -2155,7 +2155,7 @@ char: 'n', width: 8
 "_/"
 6 10 SV SV
 
-char: 'o', width: 8
+char: 'o', width: 8, priority: 0
 "___"
 2 5 I T2
 "/ __`\"
@@ -2177,7 +2177,7 @@ char: 'o', width: 8
 "___/"
 6 6 SV SV
 
-char: 'p', width: 8
+char: 'p', width: 8, priority: 0
 "_____"
 2 3 I T2
 "/"
@@ -2211,7 +2211,7 @@ char: 'p', width: 8
 "_/"
 8 8 SV SV
 
-char: 'q', width: 8
+char: 'q', width: 8, priority: 0
 "__"
 2 6 I T2
 "/'__`\"
@@ -2245,7 +2245,7 @@ char: 'q', width: 8
 "_/"
 8 12 SV SV
 
-char: 'r', width: 7
+char: 'r', width: 7, priority: 0
 "_"
 2 3 I T2
 "__"
@@ -2269,7 +2269,7 @@ char: 'r', width: 7
 "_/"
 6 6 SV SV
 
-char: 's', width: 7
+char: 's', width: 7, priority: 0
 "____"
 2 3 I T2
 "/',__\"
@@ -2287,7 +2287,7 @@ char: 's', width: 7
 "___/"
 6 4 SV SV
 
-char: 't', width: 6
+char: 't', width: 6, priority: 0
 "__"
 0 1 I T2
 "/"
@@ -2321,7 +2321,7 @@ char: 't', width: 6
 "__/"
 6 6 SV SV
 
-char: 'u', width: 9
+char: 'u', width: 9, priority: 0
 "__"
 2 3 I T2
 "__"
@@ -2351,7 +2351,7 @@ char: 'u', width: 9
 "___/"
 6 6 SV SV
 
-char: 'v', width: 8
+char: 'v', width: 8, priority: 0
 "__"
 2 2 I T2
 "__"
@@ -2381,7 +2381,7 @@ char: 'v', width: 8
 "__/"
 6 5 SV SV
 
-char: 'w', width: 13
+char: 'w', width: 13, priority: 0
 "__"
 2 3 I T2
 "__"
@@ -2423,7 +2423,7 @@ char: 'w', width: 13
 "__//__/"
 6 6 SV SV
 
-char: 'x', width: 7
+char: 'x', width: 7, priority: 0
 "__"
 2 2 I T2
 "_"
@@ -2451,7 +2451,7 @@ char: 'x', width: 7
 "_/"
 6 7 SV SV
 
-char: 'y', width: 8
+char: 'y', width: 8, priority: 0
 "__"
 2 2 I T2
 "__"
@@ -2497,7 +2497,7 @@ char: 'y', width: 8
 "__/"
 8 8 SV SV
 
-char: 'z', width: 7
+char: 'z', width: 7, priority: 0
 "____"
 2 2 I T2
 "/"
