@@ -22,7 +22,8 @@ namespace ASCII_Fonts
 
   enum class Font
   {
-    Larry3D
+    Larry3D,
+    SMSlant,
   };
 
   struct ColorScheme
@@ -127,90 +128,113 @@ namespace ASCII_Fonts
     
     std::fstream txt_file;
    
-    std::string filename = path_to_font_data + "/font_data_larry3d.txt";
+    std::vector<std::string> filename_vec;
+    filename_vec.emplace_back(path_to_font_data + "/font_data_larry3d.txt");
+    filename_vec.emplace_back(path_to_font_data + "/font_smslant.txt");
+    size_t num_fonts = filename_vec.size();
     //std::cout << filename << std::endl;
     char cwd[256];
     if (getcwd(cwd, sizeof(cwd)) != nullptr)
       std::cout << "Current working directory: " << cwd << std::endl;
     
-    if (std::filesystem::exists(filename) && std::filesystem::is_regular_file(filename))
-      std::cout << "File exists!" << std::endl;
-    else
-      std::cerr << "Error: File does not exist" << std::endl;
-    
-    txt_file.open(filename, std::ios::in);
-    
-    if (!txt_file.is_open())
+    for (size_t font_idx = 0; font_idx < num_fonts; ++font_idx)
     {
-      std::cerr << "Unable to open file." << std::endl;
-      txt_file.close();
-      return font_data;
-    }
-    
-    // Reset file pointer to the beginning
-    txt_file.seekg(0, std::ios::beg);
-    if (txt_file.peek() == std::ifstream::traits_type::eof())
-    {
-      std::cerr << "File is empty." << std::endl;
-      txt_file.close();
-      return font_data;
-    }
-    
-    auto& curr_font = font_data[Font::Larry3D];
-    
-    char ch = -1;
-    char kch0 = -1;
-    char kch1 = -1;
-    int kern = 0;
-    int width = -1;
-    FontPiece piece;
-    int r, c;
-    char fg[4];
-    char bg[4];
-    bool kerning = false;
-    
-    if (txt_file.is_open())
-    {
-      if (txt_file.eof())
-        std::cout << "End of file reached." << std::endl;
-      if (txt_file.fail())
-        std::cerr << "Non-fatal I/O error occurred." << std::endl;
-      if (txt_file.bad())
-        std::cerr << "Fatal I/O error occurred." << std::endl;
+      const auto& filename = filename_vec[font_idx];
       
-      std::string line;
-      while (std::getline(txt_file, line))
+      if (std::filesystem::exists(filename) && std::filesystem::is_regular_file(filename))
+        std::cout << "File exists!" << std::endl;
+      else
       {
-        if (sscanf(line.c_str(), "char: '%c', width: %i", &ch, &width) == 2)
-          kerning = false;
-        if (strcmp(line.c_str(), "kerning:") == 0)
+        std::cerr << "Error: File does not exist" << std::endl;
+        continue;
+      }
+      
+      txt_file.open(filename, std::ios::in);
+      
+      if (!txt_file.is_open())
+      {
+        std::cerr << "Unable to open file." << std::endl;
+        txt_file.close();
+        continue;
+      }
+      
+      // Reset file pointer to the beginning
+      txt_file.seekg(0, std::ios::beg);
+      if (txt_file.peek() == std::ifstream::traits_type::eof())
+      {
+        std::cerr << "File is empty." << std::endl;
+        txt_file.close();
+        continue;
+      }
+      
+      auto& curr_font = font_data[static_cast<Font>(font_idx)];
+      
+      char ch = -1;
+      char kch0 = -1;
+      char kch1 = -1;
+      int kern = 0;
+      int width = -1;
+      FontPiece piece;
+      int r, c;
+      char fg[4];
+      char bg[4];
+      bool kerning = false;
+      
+      if (txt_file.is_open())
+      {
+        if (txt_file.eof())
         {
-          kerning = true;
-          ch = -1;
+          std::cout << "End of file reached." << std::endl;
+          txt_file.close();
+          continue;
         }
-        if (kerning && sscanf(line.c_str(), "'%c' -> '%c' = %i", &kch0, &kch1, &kern) == 3)
-          curr_font.kernings[{kch0, kch1}] = kern;
-        else if (ch != -1)
+        if (txt_file.fail())
         {
-          auto& curr_char = curr_font.font_chars[ch];
-          curr_char.width = width;
-          if (line.size() > 0 && line[0] == '"')
+          std::cerr << "Non-fatal I/O error occurred." << std::endl;
+          txt_file.close();
+          continue;
+        }
+        if (txt_file.bad())
+        {
+          std::cerr << "Fatal I/O error occurred." << std::endl;
+          txt_file.close();
+          continue;
+        }
+      
+        std::string line;
+        while (std::getline(txt_file, line))
+        {
+          if (sscanf(line.c_str(), "char: '%c', width: %i", &ch, &width) == 2)
+            kerning = false;
+          if (strcmp(line.c_str(), "kerning:") == 0)
           {
-            piece.part = line.substr(1, line.size() - 2);
+            kerning = true;
+            ch = -1;
           }
-          else if (sscanf(line.c_str(), "%i %i %s %s", &r, &c, fg, bg) == 4)
+          if (kerning && sscanf(line.c_str(), "'%c' -> '%c' = %i", &kch0, &kch1, &kern) == 3)
+            curr_font.kernings[{kch0, kch1}] = kern;
+          else if (ch != -1)
           {
-            piece.r = r;
-            piece.c = c;
-            piece.fg_color = get_fg_color(fg, colors);
-            piece.bg_color = get_bg_color(bg, colors);
-            curr_char.font_pieces.emplace_back(piece);
+            auto& curr_char = curr_font.font_chars[ch];
+            curr_char.width = width;
+            if (line.size() > 0 && line[0] == '"')
+            {
+              piece.part = line.substr(1, line.size() - 2);
+            }
+            else if (sscanf(line.c_str(), "%i %i %s %s", &r, &c, fg, bg) == 4)
+            {
+              piece.r = r;
+              piece.c = c;
+              piece.fg_color = get_fg_color(fg, colors);
+              piece.bg_color = get_bg_color(bg, colors);
+              curr_char.font_pieces.emplace_back(piece);
+            }
           }
         }
       }
+      
+      txt_file.close();
     }
-    
-    txt_file.close();
     return font_data;
   }
 
