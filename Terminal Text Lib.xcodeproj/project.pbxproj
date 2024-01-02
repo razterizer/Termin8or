@@ -45,8 +45,8 @@
 		070BE68F2B445908009D9BFB /* fonts */ = {
 			isa = PBXGroup;
 			children = (
-				070BE6912B447309009D9BFB /* font_data_smslant.txt */,
 				070BE6902B4472F3009D9BFB /* font_data_larry3d.txt */,
+				070BE6912B447309009D9BFB /* font_data_smslant.txt */,
 			);
 			path = fonts;
 			sourceTree = "<group>";
