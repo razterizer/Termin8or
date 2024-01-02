@@ -115,9 +115,9 @@ namespace ASCII_Fonts
     std::string font_data_path;
     const char* xcode_env = std::getenv("RUNNING_FROM_XCODE");
     if (xcode_env != nullptr)
-      font_data_path = "../../../../../../../../Documents/xcode/lib/Terminal Text Lib";
+      font_data_path = "../../../../../../../../Documents/xcode/lib/Terminal Text Lib/fonts";
     else
-      font_data_path = "../../lib/Terminal Text Lib";
+      font_data_path = "../../lib/Terminal Text Lib/fonts";
       
     return font_data_path;
   }
