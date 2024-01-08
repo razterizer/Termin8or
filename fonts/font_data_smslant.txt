@@ -14,6 +14,20 @@ char: '!', width: 5
 ")"
 3 2 DSH DSH
 
+char: '!', width: 5, char_prev: '!'
+"__"
+0 3 I T2
+"/ /"
+1 2 I I
+"/_/"
+2 1 I I
+"|"
+3 0 DSH DSH
+"_"
+3 1 DI DI
+")"
+3 2 DSH DSH
+
 char: '#', width: 10
 "____"
 0 5 I T2
