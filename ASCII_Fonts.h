@@ -173,7 +173,8 @@ namespace ASCII_Fonts
       
       char ch = -1;
       char ch_prev = -1;
-      char ch_next = -1;
+      std::vector<char> ch_prev_vec;
+      int chars_read = 0;
       char kch0 = -1;
       char kch1 = -1;
       int kern = 0;
@@ -214,16 +215,29 @@ namespace ASCII_Fonts
         while (std::getline(txt_file, line))
         {
           // Data section.
-          if (sscanf(line.c_str(), "char: '%c', width: %i, char_prev: '%c'", &ch, &width, &ch_prev) == 3)
+          if (sscanf(line.c_str(), "char: '%c', width: %i, char_prev: '%c'%n", &ch, &width, &ch_prev, &chars_read) == 3)
           {
             kerning = false;
             ordering = false;
+            
+            // Loop to read additional characters after charPrev
+            while (line.c_str()[chars_read] == ',')
+            {
+              char additional_char;
+              ++chars_read;
+              int num = 0;
+              sscanf(line.c_str() + chars_read, " '%c'%n", &additional_char, &num);
+              ch_prev_vec.emplace_back(additional_char);
+              chars_read += num;
+              //std::cout << "Additional char after char_prev: '" << additionalChar << "'\n";
+            }
           }
           else if (sscanf(line.c_str(), "char: '%c', width: %i", &ch, &width) == 2)
           {
             kerning = false;
             ordering = false;
             ch_prev = -1;
+            ch_prev_vec.clear();
           }
           else if (strcmp(line.c_str(), "kerning:") == 0)
           {
@@ -231,6 +245,7 @@ namespace ASCII_Fonts
             ordering = false;
             ch = -1;
             ch_prev = -1;
+            ch_prev_vec.clear();
           }
           else if (strcmp(line.c_str(), "ordering:") == 0)
           {
@@ -238,6 +253,7 @@ namespace ASCII_Fonts
             ordering = true;
             ch = -1;
             ch_prev = -1;
+            ch_prev_vec.clear();
           }
           
           // Read data.
@@ -267,6 +283,11 @@ namespace ASCII_Fonts
                 piece.bg_color = get_bg_color(bg, colors);
                 curr_char->font_pieces.emplace_back(piece);
               }
+            }
+            if (!ch_prev_vec.empty())
+            {
+              for (char ch_p : ch_prev_vec)
+                curr_font.font_chars_by_prev_char[{ch_p, ch}] = *curr_char;
             }
           }
         }
