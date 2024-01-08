@@ -49,6 +49,7 @@ namespace ASCII_Fonts
     int c = 0;
     Text::Color fg_color = Text::Color::Black;
     Text::Color bg_color = Text::Color::Transparent;
+    int prio = 0;
   };
 
   struct FontChar
@@ -187,6 +188,7 @@ namespace ASCII_Fonts
       int r, c;
       char fg[4];
       char bg[4];
+      int glyph_part_prio = 0;
       bool kerning = false;
       bool ordering = false;
       
@@ -275,12 +277,16 @@ namespace ASCII_Fonts
                 curr_char->width = width;
               if (line.size() > 0 && line[0] == '"')
                 piece.part = line.substr(1, line.size() - 2);
-              else if (sscanf(line.c_str(), "%i %i %s %s", &r, &c, fg, bg) == 4)
+              else if (int num_read = sscanf(line.c_str(), "%i %i %s %s %i", &r, &c, fg, bg, &glyph_part_prio);
+                num_read >= 4)
               {
                 piece.r = r;
                 piece.c = c;
                 piece.fg_color = get_fg_color(fg, colors);
                 piece.bg_color = get_bg_color(bg, colors);
+                piece.prio = 0;
+                if (num_read > 4)
+                  piece.prio = glyph_part_prio;
                 curr_char->font_pieces.emplace_back(piece);
               }
             }
@@ -328,7 +334,7 @@ namespace ASCII_Fonts
         t.c = c + piece.c;
         t.fg_color = piece.fg_color;
         t.bg_color = piece.bg_color;
-        t.priority = ch_curr_order;
+        t.priority = ch_curr_order + piece.prio;
         sh.add_ordered_text(t);
       }
         
