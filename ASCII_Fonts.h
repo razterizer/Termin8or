@@ -342,6 +342,8 @@ namespace ASCII_Fonts
     int num_chars = static_cast<int>(text.size());
     for (int ch_idx = 1; ch_idx < num_chars; ++ch_idx)
     {
+      prev_prio = curr_prio;
+    
       char ch_curr = text[ch_idx];
       char ch_prev = text[ch_idx - 1];
       
@@ -351,7 +353,7 @@ namespace ASCII_Fonts
         auto [o0, o1] = it_o->second;
         if (o0 < o1)
           curr_prio = prev_prio + 1;
-        else if (o0 < o1)
+        else if (o0 > o1)
           curr_prio = prev_prio - 1;
         else
           curr_prio = prev_prio;
