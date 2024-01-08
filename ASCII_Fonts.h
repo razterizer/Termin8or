@@ -274,14 +274,12 @@ namespace ASCII_Fonts
       const auto& curr_char = it_char->second;
       for (const auto& piece : curr_char.font_pieces)
       {
-        // #FIXME: Glyphs should be ordered depending on sequence and character. Like the kerning. Perhaps add a separate section for such orderings. E.g. 'A' -> 'A' : 0, 1. Meaning the second glyph will be drawn on top of the first glyph. This may require a tree in order to sort the characters by global priority.
         OrderedText t;
         t.str = piece.part;
         t.r = r + piece.r;
         t.c = c + piece.c;
         t.fg_color = piece.fg_color;
         t.bg_color = piece.bg_color;
-        //t.priority = curr_char.priority;
         t.priority = ch_curr_order;
         sh.add_ordered_text(t);
       }
