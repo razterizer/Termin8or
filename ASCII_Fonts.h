@@ -60,6 +60,7 @@ namespace ASCII_Fonts
   struct FontData
   {
     std::map<char, FontChar> font_chars;
+    std::map<std::pair<char, char>, FontChar> font_chars_by_prev_char; // { ch_prev, ch_curr }.
     std::map<std::pair<char, char>, int> kernings;
     std::map<std::pair<char, char>, std::pair<int, int>> orderings;
   };
@@ -171,6 +172,8 @@ namespace ASCII_Fonts
       auto& curr_font = font_data[static_cast<Font>(font_idx)];
       
       char ch = -1;
+      char ch_prev = -1;
+      char ch_next = -1;
       char kch0 = -1;
       char kch1 = -1;
       int kern = 0;
@@ -211,22 +214,30 @@ namespace ASCII_Fonts
         while (std::getline(txt_file, line))
         {
           // Data section.
-          if (sscanf(line.c_str(), "char: '%c', width: %i", &ch, &width) == 2)
+          if (sscanf(line.c_str(), "char: '%c', width: %i, char_prev: '%c'", &ch, &width, &ch_prev) == 3)
           {
             kerning = false;
             ordering = false;
           }
-          if (strcmp(line.c_str(), "kerning:") == 0)
+          else if (sscanf(line.c_str(), "char: '%c', width: %i", &ch, &width) == 2)
+          {
+            kerning = false;
+            ordering = false;
+            ch_prev = -1;
+          }
+          else if (strcmp(line.c_str(), "kerning:") == 0)
           {
             kerning = true;
             ordering = false;
             ch = -1;
+            ch_prev = -1;
           }
-          if (strcmp(line.c_str(), "ordering:") == 0)
+          else if (strcmp(line.c_str(), "ordering:") == 0)
           {
             kerning = false;
             ordering = true;
             ch = -1;
+            ch_prev = -1;
           }
           
           // Read data.
@@ -236,20 +247,26 @@ namespace ASCII_Fonts
             curr_font.orderings[{och0, och1}] = {opri0, opri1};
           else if (ch != -1)
           {
-            auto& curr_char = curr_font.font_chars[ch];
-            if (curr_char.width == -1)
-              curr_char.width = width;
-            if (line.size() > 0 && line[0] == '"')
+            FontChar* curr_char = nullptr;
+            if (ch_prev != -1)
+              curr_char = &curr_font.font_chars_by_prev_char[{ch_prev, ch}];
+            else
+              curr_char = &curr_font.font_chars[ch];
+              
+            if (curr_char != nullptr)
             {
-              piece.part = line.substr(1, line.size() - 2);
-            }
-            else if (sscanf(line.c_str(), "%i %i %s %s", &r, &c, fg, bg) == 4)
-            {
-              piece.r = r;
-              piece.c = c;
-              piece.fg_color = get_fg_color(fg, colors);
-              piece.bg_color = get_bg_color(bg, colors);
-              curr_char.font_pieces.emplace_back(piece);
+              if (curr_char->width == -1)
+                curr_char->width = width;
+              if (line.size() > 0 && line[0] == '"')
+                piece.part = line.substr(1, line.size() - 2);
+              else if (sscanf(line.c_str(), "%i %i %s %s", &r, &c, fg, bg) == 4)
+              {
+                piece.r = r;
+                piece.c = c;
+                piece.fg_color = get_fg_color(fg, colors);
+                piece.bg_color = get_bg_color(bg, colors);
+                curr_char->font_pieces.emplace_back(piece);
+              }
             }
           }
         }
@@ -263,16 +280,26 @@ namespace ASCII_Fonts
   // (r, c) : top left corner of text.
   // returns the relative start column (top left corner) for the next character.
   template<int NR, int NC>
-  int draw_char(SpriteHandler<NR, NC>& sh, const FontData& curr_font, const char ch_curr, const char ch_next,
+  int draw_char(SpriteHandler<NR, NC>& sh, const FontData& curr_font,
+                const char ch_prev, const char ch_curr, const char ch_next,
                 int ch_curr_order,
                 int r, int c,
                 int custom_kerning = 0)
   {
-    auto it_char = curr_font.font_chars.find(ch_curr);
-    if (it_char != curr_font.font_chars.end())
+    FontChar const * curr_char = nullptr;
+    auto it_char_pc = curr_font.font_chars_by_prev_char.find({ch_prev, ch_curr});
+    if (it_char_pc != curr_font.font_chars_by_prev_char.end())
+      curr_char = &it_char_pc->second;
+    else
     {
-      const auto& curr_char = it_char->second;
-      for (const auto& piece : curr_char.font_pieces)
+      auto it_char = curr_font.font_chars.find(ch_curr);
+      if (it_char != curr_font.font_chars.end())
+        curr_char = &it_char->second;
+    }
+      
+    if (curr_char != nullptr)
+    {
+      for (const auto& piece : curr_char->font_pieces)
       {
         OrderedText t;
         t.str = piece.part;
@@ -292,7 +319,7 @@ namespace ASCII_Fonts
           kerning = it_k->second + custom_kerning;
       }
       
-      return curr_char.width + kerning;
+      return curr_char->width + kerning;
     }
     else
     {
@@ -354,14 +381,16 @@ namespace ASCII_Fonts
       auto ordered_text = sort_text(text, curr_font);
       for (int ch_idx = 0; ch_idx < num_chars; ++ch_idx)
       {
+        char ch_prev = ch_idx - 1 >= 0 ? text[ch_idx - 1] : -1;
         char ch_curr = text[ch_idx];
         char ch_next = ch_idx + 1 < num_chars ? text[ch_idx + 1] : -1;
         int ck = 0;
         if (ch_idx < num_custom_kernings)
           ck = custom_kerning[ch_idx];
         int ch_curr_order = ordered_text[ch_idx].second;
+        
         width += draw_char(sh, curr_font,
-          ch_curr, ch_next,
+          ch_prev, ch_curr, ch_next,
           ch_curr_order,
           r, c + width,
           ck);
