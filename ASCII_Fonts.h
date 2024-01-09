@@ -16,6 +16,8 @@
 #include <filesystem>
 #include <unistd.h>
 
+//#define DEBUG_PRINT
+
 
 namespace ASCII_Fonts
 {
@@ -136,16 +138,22 @@ namespace ASCII_Fonts
     filename_vec.emplace_back(path_to_font_data + "/font_data_smslant.txt");
     size_t num_fonts = filename_vec.size();
     //std::cout << filename << std::endl;
+#ifdef DEBUG_PRINT
     char cwd[256];
     if (getcwd(cwd, sizeof(cwd)) != nullptr)
       std::cout << "Current working directory: " << cwd << std::endl;
+#endif
     
     for (size_t font_idx = 0; font_idx < num_fonts; ++font_idx)
     {
       const auto& filename = filename_vec[font_idx];
       
       if (std::filesystem::exists(filename) && std::filesystem::is_regular_file(filename))
+      {
+#ifdef DEBUG_PRINT
         std::cout << "File exists!" << std::endl;
+#endif
+      }
       else
       {
         std::cerr << "Error: File does not exist" << std::endl;
