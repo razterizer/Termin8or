@@ -386,12 +386,8 @@ namespace ASCII_Fonts
       if (it_o != curr_font.orderings.end())
       {
         auto [o0, o1] = it_o->second;
-        if (o0 < o1)
-          curr_prio = prev_prio + 1;
-        else if (o0 > o1)
-          curr_prio = prev_prio - 1;
-        else
-          curr_prio = prev_prio;
+        auto diff = o1 - o0;
+        curr_prio = prev_prio + diff;
       }
       else
         curr_prio = prev_prio;
