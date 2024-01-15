@@ -1,6 +1,7 @@
 #pragma once
 #include "Screen.h"
 #include "RC.h"
+#include "ColorGradient.h"
 #include "../../lib/Core Lib/Rand.h"
 
 struct Particle
@@ -80,6 +81,17 @@ struct ParticleHandler
     for (const auto& particle : particle_stream)
       if (!particle.dead)
         particle.draw(sh, str, fg_color, bg_color, time);
+  }
+  
+  template<int NR, int NC>
+  void draw(SpriteHandler<NR, NC>& sh, const std::string& str, ColorGradient fg_color, ColorGradient bg_color, float time) const
+  {
+    for (const auto& particle : particle_stream)
+      if (!particle.dead && particle.alive(time))
+      {
+        auto t = (time - particle.time_stamp)/particle.life_time;
+        particle.draw(sh, str, fg_color(t), bg_color(t), time);
+      }
   }
   
   void set_num_active_particles(float amount_ratio_active)
