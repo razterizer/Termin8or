@@ -3,6 +3,7 @@
 #include "RC.h"
 #include "ColorGradient.h"
 #include "../../lib/Core Lib/Rand.h"
+#include "../../lib/Core Lib/Math.h"
 
 struct Particle
 {
@@ -84,13 +85,34 @@ struct ParticleHandler
   }
   
   template<int NR, int NC>
-  void draw(SpriteHandler<NR, NC>& sh, const std::string& str, ColorGradient fg_color, ColorGradient bg_color, float time) const
+  void draw(SpriteHandler<NR, NC>& sh, const std::vector<std::string>& str,
+    const ColorGradient& fg_color, const ColorGradient& bg_color, float time) const
   {
     for (const auto& particle : particle_stream)
       if (!particle.dead && particle.alive(time))
       {
         auto t = (time - particle.time_stamp)/particle.life_time;
-        particle.draw(sh, str, fg_color(t), bg_color(t), time);
+        int str_idx = static_cast<int>(std::round(t*str.size())) - 1;
+        str_idx = math::clamp(str_idx, 0, static_cast<int>(str.size()) - 1);
+        particle.draw(sh, str[str_idx], fg_color(t), bg_color(t), time);
+      }
+  }
+  
+  template<int NR, int NC>
+  void draw(SpriteHandler<NR, NC>& sh, const std::vector<std::string>& str,
+    const std::vector<std::pair<float, std::pair<ColorGradient, ColorGradient>>>& color_fg_bg_vec,
+    float time) const
+  {
+    for (const auto& particle : particle_stream)
+      if (!particle.dead && particle.alive(time))
+      {
+        auto t = (time - particle.time_stamp)/particle.life_time;
+        int str_idx = static_cast<int>(std::round(t*str.size())) - 1;
+        str_idx = math::clamp(str_idx, 0, static_cast<int>(str.size()) - 1);
+        const auto& col_fg_bg = rnd::rand_select(color_fg_bg_vec);
+        const ColorGradient& fg_color = col_fg_bg.first;
+        const ColorGradient& bg_color = col_fg_bg.second;
+        particle.draw(sh, str[str_idx], fg_color(t), bg_color(t), time);
       }
   }
   
