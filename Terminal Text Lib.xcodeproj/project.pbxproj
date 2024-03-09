@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		073CBCFE2B18C194003FEEAA /* Delay.h in Headers */ = {isa = PBXBuildFile; fileRef = 073CBCFD2B18C194003FEEAA /* Delay.h */; };
 		07A763112B555BE100705D31 /* ParticleSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 07A763102B555BE100705D31 /* ParticleSystem.h */; };
 /* End PBXBuildFile section */
 
@@ -27,7 +26,6 @@
 		071CC3DD290485FD007B4B98 /* LineData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LineData.h; sourceTree = "<group>"; };
 		071CC3DF29048851007B4B98 /* Keyboard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Keyboard.h; sourceTree = "<group>"; };
 		071CC3E329048C85007B4B98 /* Drawing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Drawing.h; sourceTree = "<group>"; };
-		073CBCFD2B18C194003FEEAA /* Delay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Delay.h; sourceTree = "<group>"; };
 		0799D81D2B32241C00E0A510 /* EULA_FIGlet */ = {isa = PBXFileReference; lastKnownFileType = text; path = EULA_FIGlet; sourceTree = "<group>"; };
 		0799D81E2B32249200E0A510 /* EULA */ = {isa = PBXFileReference; lastKnownFileType = text; path = EULA; sourceTree = "<group>"; };
 		07A763102B555BE100705D31 /* ParticleSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
@@ -59,7 +57,6 @@
 				0799D81E2B32249200E0A510 /* EULA */,
 				0799D81D2B32241C00E0A510 /* EULA_FIGlet */,
 				070BE6892B406FB2009D9BFB /* GameEngine.h */,
-				073CBCFD2B18C194003FEEAA /* Delay.h */,
 				07043C6F2B05240D00834CED /* ASCII_Fonts.h */,
 				070BE68F2B445908009D9BFB /* fonts */,
 				071CC3E329048C85007B4B98 /* Drawing.h */,
@@ -92,7 +89,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				073CBCFE2B18C194003FEEAA /* Delay.h in Headers */,
 				07A763112B555BE100705D31 /* ParticleSystem.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

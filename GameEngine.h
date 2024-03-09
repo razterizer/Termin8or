@@ -8,7 +8,7 @@
 #pragma once
 #include "Keyboard.h"
 #include "Screen.h"
-#include "Delay.h"
+#include "../Core Lib/Delay.h"
 #include "../Core Lib/Rand.h"
 
 template<int NR = 30, int NC = 80>
