@@ -3,7 +3,18 @@
 #include "Rectangle.h"
 #include "../Core Lib/StringHelper.h"
 #include "../Core Lib/TextBox.h"
+#include "../Core Lib/StlUtils.h"
 #include <array>
+
+struct OrderedText
+{
+  std::string str;
+  int r = -1;
+  int c = -1;
+  int priority = 0;
+  Text::Color fg_color = Text::Color::Default;
+  Text::Color bg_color = Text::Color::Transparent;
+};
 
 
 template<int NR = 30, int NC = 80>
@@ -42,6 +53,8 @@ class SpriteHandler
     return "";
   }
 
+  std::vector<OrderedText> ordered_texts;
+
 public:
   void clear()
   {
@@ -68,9 +81,62 @@ public:
     for (int r_idx = 0; r_idx < Nr; ++r_idx)
       write_buffer(tb.text_lines[r_idx], r + r_idx, c, fg_color, bg_color);
   }
+  
+  void add_ordered_text(const OrderedText& text)
+  {
+    ordered_texts.emplace_back(text);
+  }
+  
+  void write_buffer_ordered()
+  {
+    stlutils::sort(ordered_texts, [](const auto& tA, const auto& tB) { return tA.priority > tB.priority; });
+    for (const auto& text : ordered_texts)
+      write_buffer(text.str, text.r, text.c, text.fg_color, text.bg_color);
+    // Purge the text vector.
+    ordered_texts.clear();
+  }
 
+  void write_buffer(const std::string& str, int r, int c, Text::Color fg_color, Text::Color bg_color = Text::Color::Transparent)
+  {
+    if (str.empty())
+      return;
+    //if (c >= 0 && str.size() + c <= NC)
+    {
+      if (r >= 0 && r < NR)
+      {
+        int n = static_cast<int>(str.size());
+        for (int ci = 0; ci < n; ++ci)
+        {
+          int c_tot = c + ci;
+          if (c_tot >= 0 && c_tot < NC)
+          {
+            auto& scr_ch = screen_buffer[r][c_tot];
+            auto& scr_fg = fg_color_buffer[r][c_tot];
+            auto& scr_bg = bg_color_buffer[r][c_tot];
+            if (scr_ch == ' '
+              && scr_bg == Text::Color::Transparent)
+            {
+              scr_ch = str[ci];
+              scr_fg = fg_color;
+              scr_bg = bg_color;
+            }
+            else if (scr_bg == Text::Color::Transparent2)
+            {
+              scr_bg = bg_color;
+              if (scr_ch == ' ')
+              {
+                scr_ch = str[ci];
+                scr_fg = fg_color;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
   // Return copy of str but with spaces where tests failed.
-  std::string write_buffer(const std::string& str, int r, int c, Text::Color fg_color, Text::Color bg_color = Text::Color::Transparent)
+  std::string write_buffer_ret(const std::string& str, int r, int c, Text::Color fg_color, Text::Color bg_color = Text::Color::Transparent)
   {
     if (str.empty())
       return "";
@@ -83,22 +149,25 @@ public:
         for (int ci = 0; ci < n; ++ci)
         {
           int c_tot = c + ci;
+          auto& scr_ch = screen_buffer[r][c_tot];
+          auto& scr_fg = fg_color_buffer[r][c_tot];
+          auto& scr_bg = bg_color_buffer[r][c_tot];
           if (c_tot >= 0 && c_tot < NC
-              && screen_buffer[r][c_tot] == ' '
-              && bg_color_buffer[r][c_tot] == Text::Color::Transparent)
+              && scr_ch == ' '
+              && scr_bg == Text::Color::Transparent)
           {
-            screen_buffer[r][c_tot] = str[ci];
-            fg_color_buffer[r][c_tot] = fg_color;
-            bg_color_buffer[r][c_tot] = bg_color;
+            scr_ch = str[ci];
+            scr_fg = fg_color;
+            scr_bg = bg_color;
           }
           else if (c_tot >= 0 && c_tot < NC
-                   && bg_color_buffer[r][c_tot] == Text::Color::Transparent2)
+                   && scr_bg == Text::Color::Transparent2)
           {
-            bg_color_buffer[r][c_tot] = bg_color;
-            if (screen_buffer[r][c_tot] == ' ')
+            scr_bg = bg_color;
+            if (scr_ch == ' ')
             {
-              screen_buffer[r][c_tot] = str[ci];
-              fg_color_buffer[r][c_tot] = fg_color;
+              scr_ch = str[ci];
+              scr_fg = fg_color;
             }
           }
           else
@@ -121,6 +190,34 @@ public:
         {
           if (bg_color_buffer[r][c] == from_bg_color)
             bg_color_buffer[r][c] = to_bg_color;
+        }
+      }
+    }
+  }
+  
+  void replace_bg_color(Text::Color to_bg_color, ttl::Rectangle box)
+  {
+    for (int r = 0; r < NR; ++r)
+    {
+      for (int c = 0; c < NC; ++c)
+      {
+        if (box.is_inside(r, c))
+        {
+          bg_color_buffer[r][c] = to_bg_color;
+        }
+      }
+    }
+  }
+  
+  void replace_fg_color(Text::Color to_fg_color, ttl::Rectangle box)
+  {
+    for (int r = 0; r < NR; ++r)
+    {
+      for (int c = 0; c < NC; ++c)
+      {
+        if (box.is_inside(r, c))
+        {
+          fg_color_buffer[r][c] = to_fg_color;
         }
       }
     }

@@ -1,6 +1,9 @@
 #pragma once
 #include "SpriteHandler.h"
-#include "../Core Lib/Math.h"
+#include <cmath>
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 // Game Over
 int game_over_timer = 10;
@@ -19,17 +22,44 @@ const float pix_ar2_sq = pix_ar2*pix_ar;
 
 void clear_screen()
 {
+#ifdef _WIN32
+  // Too slow and not necessary.
+  //HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+  //COORD coord = { 0, 0 };
+  //DWORD count;
+  //CONSOLE_SCREEN_BUFFER_INFO csbi;
+  //
+  //GetConsoleScreenBufferInfo(hStdOut, &csbi);
+  //FillConsoleOutputCharacterA(hStdOut, ' ', csbi.dwSize.X * csbi.dwSize.Y, coord, &count);
+  //SetConsoleCursorPosition(hStdOut, coord);
+#else
   printf("\x1b[2J");
+#endif
 }
 
 void return_cursor()
 {
+#ifdef _WIN32
+  HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+  COORD coord = { 0, 0 };
+  SetConsoleCursorPosition(hStdOut, coord);
+#else
   printf("\x1b[H");
+#endif
 }
 
 void gotorc(int r, int c)
 {
+#ifdef _WIN32
+  HANDLE hStdOut;
+  COORD coord;
+  hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+  coord.X = c;
+  coord.Y = r;
+  SetConsoleCursorPosition(hStdOut, coord);
+#else
   printf("%c[%d;%df", 0x1B, r, c);
+#endif
 }
 
 template<int NR, int NC>

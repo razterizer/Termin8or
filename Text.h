@@ -197,13 +197,8 @@ public:
       auto fg_color = std::get<1>(ti);
       auto bg_color = std::get<2>(ti);
 #ifdef _WIN32
-      if (i == 0)
-      {
-        c_prev = c;
-        fg_color_prev = fg_color;
-        bg_color_prev = bg_color;
-      }
-      output += c_prev;
+      if (c_prev != -1)
+        output += c_prev;
       if (fg_color != fg_color_prev || bg_color != bg_color_prev)
       {
         set_color_win(fg_color_prev, bg_color_prev);
