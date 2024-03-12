@@ -1,3 +1,5 @@
+### XCode ###
+
 # Ignore Xcode worspace settings
 *.xcsettings
 
@@ -8,3 +10,7 @@ xcuserdata/
 # Ignore Xcode project shared data, including xcshareddata and xcdebugger
 xcshareddata/
 xcdebugger/
+
+### Visual Studio ###
+
+.vs/
