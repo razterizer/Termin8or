@@ -26,9 +26,9 @@
 		071CC3DD290485FD007B4B98 /* LineData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LineData.h; sourceTree = "<group>"; };
 		071CC3DF29048851007B4B98 /* Keyboard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Keyboard.h; sourceTree = "<group>"; };
 		071CC3E329048C85007B4B98 /* Drawing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Drawing.h; sourceTree = "<group>"; };
+		0739D9BF2BA2229100964E96 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		0739D9C02BA2229100964E96 /* LICENSE_FIGlet */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE_FIGlet; sourceTree = "<group>"; };
 		0760B6F02B9CEABC0032CACD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		0799D81D2B32241C00E0A510 /* EULA_FIGlet */ = {isa = PBXFileReference; lastKnownFileType = text; path = EULA_FIGlet; sourceTree = "<group>"; };
-		0799D81E2B32249200E0A510 /* EULA */ = {isa = PBXFileReference; lastKnownFileType = text; path = EULA; sourceTree = "<group>"; };
 		07A763102B555BE100705D31 /* ParticleSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -55,9 +55,9 @@
 		071CC3C1290465B3007B4B98 = {
 			isa = PBXGroup;
 			children = (
+				0739D9BF2BA2229100964E96 /* LICENSE */,
+				0739D9C02BA2229100964E96 /* LICENSE_FIGlet */,
 				0760B6F02B9CEABC0032CACD /* README.md */,
-				0799D81E2B32249200E0A510 /* EULA */,
-				0799D81D2B32241C00E0A510 /* EULA_FIGlet */,
 				070BE6892B406FB2009D9BFB /* GameEngine.h */,
 				07043C6F2B05240D00834CED /* ASCII_Fonts.h */,
 				070BE68F2B445908009D9BFB /* fonts */,
