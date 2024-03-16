@@ -2,8 +2,8 @@
 #include "Screen.h"
 #include "RC.h"
 #include "ColorGradient.h"
-#include "../../lib/Core Lib/Rand.h"
-#include "../../lib/Core Lib/Math.h"
+#include "../../lib/Core/Rand.h"
+#include "../../lib/Core/Math.h"
 
 struct Particle
 {

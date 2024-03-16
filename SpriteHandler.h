@@ -1,9 +1,9 @@
 #pragma once
 #include "Text.h"
 #include "Rectangle.h"
-#include "../Core Lib/StringHelper.h"
-#include "../Core Lib/TextBox.h"
-#include "../Core Lib/StlUtils.h"
+#include "../Core/StringHelper.h"
+#include "../Core/TextBox.h"
+#include "../Core/StlUtils.h"
 #include <array>
 
 struct OrderedText

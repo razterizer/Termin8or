@@ -1,5 +1,5 @@
 #pragma once
-#include "../../lib/Core Lib/Math.h"
+#include "../Core/Math.h"
 
 struct RC
 {
