@@ -114,3 +114,13 @@ char readKeystroke()
   return ch;
 #endif
 }
+
+char waitKeystroke()
+{
+  char ch = 0;
+  while (ch == 0)
+  {
+    ch = readKeystroke();
+  }
+  return ch;
+}
