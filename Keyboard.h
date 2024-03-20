@@ -22,6 +22,7 @@ DWORD fdwSaveOldMode;
 //https://viewsourcecode.org/snaptoken/kilo/02.enteringRawMode.html
 struct termios orig_termios;
 #endif
+static bool m_raw_mode = false;
 
 void die(const char* s)
 {
@@ -32,6 +33,7 @@ void die(const char* s)
 
 void disableRawMode()
 {
+  m_raw_mode = false;
 #ifdef _WIN32
   // Restore the original console mode.
   if (!SetConsoleMode(hStdin, fdwSaveOldMode))
@@ -44,6 +46,7 @@ void disableRawMode()
 
 void enableRawMode()
 {
+  m_raw_mode = true;
 #ifdef _WIN32
   // Get the handle to the input buffer.
   hStdin = GetStdHandle(STD_INPUT_HANDLE);
