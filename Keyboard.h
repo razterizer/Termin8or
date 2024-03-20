@@ -20,13 +20,13 @@ HANDLE hStdin;
 DWORD fdwSaveOldMode;
 #else
 //https://viewsourcecode.org/snaptoken/kilo/02.enteringRawMode.html
-
 struct termios orig_termios;
 #endif
 
 void die(const char* s)
 {
-  perror(s);
+  //perror(s);
+  std::cerr << s << "\n";
   exit(EXIT_FAILURE);
 }
 
