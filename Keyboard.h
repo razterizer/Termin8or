@@ -133,3 +133,9 @@ char waitKeystroke()
   }
   return ch;
 }
+
+void pressAnyKey(const std::string_view sv_msg = "Press any key to continue...")
+{
+  std::cout << sv_msg << "\n";
+  waitKeystroke();
+}
