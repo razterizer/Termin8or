@@ -2,6 +2,7 @@
 #ifdef _WIN32
 #define NOMINMAX // Should fix the std::min()/max() and std::numeric_limits<T>::min()/max() compilation problems.
 #include <windows.h>
+#include <conio.h>
 #else
 #include <termios.h>
 #endif
@@ -125,13 +126,20 @@ char waitKeystroke()
 {
   if (!m_raw_mode)
     die("You need to enable raw mode for waitKeystroke() to work properly!");
-    
+
+#ifdef _WIN32
+  // This works better on Windows as the lin/mac code below
+  //  seems to sometimes cause Windows to refocus on another window after
+  //  a key has been pressed.
+  return _getch();
+#else
+  // #FIXME: Find a way on lin/mac that doesn't require raw-mode
+  //  (and thus readKeystroke()).
   char ch = 0;
   while (ch == 0)
-  {
     ch = readKeystroke();
-  }
   return ch;
+#endif
 }
 
 void pressAnyKey(const std::string_view sv_msg = "Press any key to continue...")
