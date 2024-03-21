@@ -85,6 +85,9 @@ void enableRawMode()
 
 char readKeystroke()
 {
+  if (!m_raw_mode)
+    die("You need to enable raw mode for readKeystroke() to work properly!");
+    
 #ifdef _WIN32
   INPUT_RECORD irInput;
   DWORD cNumRead;
@@ -120,6 +123,9 @@ char readKeystroke()
 
 char waitKeystroke()
 {
+  if (!m_raw_mode)
+    die("You need to enable raw mode for waitKeystroke() to work properly!");
+    
   char ch = 0;
   while (ch == 0)
   {
