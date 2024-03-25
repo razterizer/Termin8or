@@ -1,6 +1,6 @@
 //
 //  ASCII_Fonts.h
-//  Terminal Text Lib
+//  Termin8or
 //
 //  Created by Rasmus Anthin on 2023-11-15.
 //
@@ -120,9 +120,9 @@ namespace ASCII_Fonts
     std::string font_data_path;
     const char* xcode_env = std::getenv("RUNNING_FROM_XCODE");
     if (xcode_env != nullptr)
-      font_data_path = "../../../../../../../../Documents/xcode/lib/Terminal Text Lib/fonts";
+      font_data_path = "../../../../../../../../Documents/xcode/lib/Termin8or/fonts";
     else
-      font_data_path = "../../lib/Terminal Text Lib/fonts";
+      font_data_path = "../../lib/Termin8or/fonts";
       
     return font_data_path;
   }

@@ -1,6 +1,6 @@
 //
 //  GameEngine.h
-//  Terminal Text Lib
+//  Termin8or
 //
 //  Created by Rasmus Anthin on 2023-12-30.
 //
