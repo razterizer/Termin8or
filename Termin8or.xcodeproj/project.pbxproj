@@ -7,6 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0739DA2E2BB2E9D600964E96 /* Physics.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA102BB2E9D400964E96 /* Physics.h */; };
+		0739DA2F2BB2E9D600964E96 /* Histogram.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA112BB2E9D500964E96 /* Histogram.h */; };
+		0739DA302BB2E9D600964E96 /* Rand.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA132BB2E9D500964E96 /* Rand.h */; };
+		0739DA312BB2E9D600964E96 /* MarkovChain.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA142BB2E9D500964E96 /* MarkovChain.h */; };
+		0739DA322BB2E9D600964E96 /* mnist_reader_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA152BB2E9D500964E96 /* mnist_reader_common.h */; };
+		0739DA332BB2E9D600964E96 /* mnist_reader.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA162BB2E9D500964E96 /* mnist_reader.h */; };
+		0739DA342BB2E9D600964E96 /* mnist_utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA172BB2E9D500964E96 /* mnist_utils.h */; };
+		0739DA352BB2E9D600964E96 /* MNIST_Loader.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA192BB2E9D500964E96 /* MNIST_Loader.h */; };
+		0739DA362BB2E9D600964E96 /* ann_cnn.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA1B2BB2E9D500964E96 /* ann_cnn.h */; };
+		0739DA372BB2E9D600964E96 /* ann_dense.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA1C2BB2E9D500964E96 /* ann_dense.h */; };
+		0739DA382BB2E9D600964E96 /* ann_utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA1D2BB2E9D500964E96 /* ann_utils.h */; };
+		0739DA392BB2E9D600964E96 /* LeNet.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA1E2BB2E9D500964E96 /* LeNet.h */; };
+		0739DA3A2BB2E9D600964E96 /* TextBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA202BB2E9D500964E96 /* TextBox.h */; };
+		0739DA3B2BB2E9D600964E96 /* FlankDetector.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA212BB2E9D500964E96 /* FlankDetector.h */; };
+		0739DA3C2BB2E9D600964E96 /* Math.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA222BB2E9D500964E96 /* Math.h */; };
+		0739DA3D2BB2E9D600964E96 /* Uuid.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA232BB2E9D500964E96 /* Uuid.h */; };
+		0739DA3E2BB2E9D600964E96 /* OneShot.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA242BB2E9D500964E96 /* OneShot.h */; };
+		0739DA3F2BB2E9D600964E96 /* StlUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA262BB2E9D500964E96 /* StlUtils.h */; };
+		0739DA402BB2E9D600964E96 /* DateTime.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA272BB2E9D500964E96 /* DateTime.h */; };
+		0739DA412BB2E9D600964E96 /* Delay.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA282BB2E9D500964E96 /* Delay.h */; };
+		0739DA422BB2E9D600964E96 /* StringHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA292BB2E9D500964E96 /* StringHelper.h */; };
+		0739DA432BB2E9D600964E96 /* DateTime_tests.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA2A2BB2E9D500964E96 /* DateTime_tests.h */; };
+		0739DA442BB2E9D600964E96 /* Histogram_tests.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA2B2BB2E9D500964E96 /* Histogram_tests.h */; };
+		0739DA452BB2E9D600964E96 /* MachineLearning_tests.h in Headers */ = {isa = PBXBuildFile; fileRef = 0739DA2C2BB2E9D500964E96 /* MachineLearning_tests.h */; };
 		07A763112B555BE100705D31 /* ParticleSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 07A763102B555BE100705D31 /* ParticleSystem.h */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +52,33 @@
 		071CC3E329048C85007B4B98 /* Drawing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Drawing.h; sourceTree = "<group>"; };
 		0739D9BF2BA2229100964E96 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		0739D9C02BA2229100964E96 /* LICENSE_FIGlet */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE_FIGlet; sourceTree = "<group>"; };
+		0739DA102BB2E9D400964E96 /* Physics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Physics.h; path = Core/Physics.h; sourceTree = "<group>"; };
+		0739DA112BB2E9D500964E96 /* Histogram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Histogram.h; path = Core/Histogram.h; sourceTree = "<group>"; };
+		0739DA122BB2E9D500964E96 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = Core/README.md; sourceTree = "<group>"; };
+		0739DA132BB2E9D500964E96 /* Rand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Rand.h; path = Core/Rand.h; sourceTree = "<group>"; };
+		0739DA142BB2E9D500964E96 /* MarkovChain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarkovChain.h; path = Core/MarkovChain.h; sourceTree = "<group>"; };
+		0739DA152BB2E9D500964E96 /* mnist_reader_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mnist_reader_common.h; sourceTree = "<group>"; };
+		0739DA162BB2E9D500964E96 /* mnist_reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mnist_reader.h; sourceTree = "<group>"; };
+		0739DA172BB2E9D500964E96 /* mnist_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mnist_utils.h; sourceTree = "<group>"; };
+		0739DA192BB2E9D500964E96 /* MNIST_Loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MNIST_Loader.h; sourceTree = "<group>"; };
+		0739DA1B2BB2E9D500964E96 /* ann_cnn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ann_cnn.h; sourceTree = "<group>"; };
+		0739DA1C2BB2E9D500964E96 /* ann_dense.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ann_dense.h; sourceTree = "<group>"; };
+		0739DA1D2BB2E9D500964E96 /* ann_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ann_utils.h; sourceTree = "<group>"; };
+		0739DA1E2BB2E9D500964E96 /* LeNet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeNet.h; sourceTree = "<group>"; };
+		0739DA202BB2E9D500964E96 /* TextBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextBox.h; path = Core/TextBox.h; sourceTree = "<group>"; };
+		0739DA212BB2E9D500964E96 /* FlankDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlankDetector.h; path = Core/FlankDetector.h; sourceTree = "<group>"; };
+		0739DA222BB2E9D500964E96 /* Math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Math.h; path = Core/Math.h; sourceTree = "<group>"; };
+		0739DA232BB2E9D500964E96 /* Uuid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Uuid.h; path = Core/Uuid.h; sourceTree = "<group>"; };
+		0739DA242BB2E9D500964E96 /* OneShot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OneShot.h; path = Core/OneShot.h; sourceTree = "<group>"; };
+		0739DA252BB2E9D500964E96 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = Core/LICENSE; sourceTree = "<group>"; };
+		0739DA262BB2E9D500964E96 /* StlUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StlUtils.h; path = Core/StlUtils.h; sourceTree = "<group>"; };
+		0739DA272BB2E9D500964E96 /* DateTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DateTime.h; path = Core/DateTime.h; sourceTree = "<group>"; };
+		0739DA282BB2E9D500964E96 /* Delay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Delay.h; path = Core/Delay.h; sourceTree = "<group>"; };
+		0739DA292BB2E9D500964E96 /* StringHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringHelper.h; path = Core/StringHelper.h; sourceTree = "<group>"; };
+		0739DA2A2BB2E9D500964E96 /* DateTime_tests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateTime_tests.h; sourceTree = "<group>"; };
+		0739DA2B2BB2E9D500964E96 /* Histogram_tests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Histogram_tests.h; sourceTree = "<group>"; };
+		0739DA2C2BB2E9D500964E96 /* MachineLearning_tests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MachineLearning_tests.h; sourceTree = "<group>"; };
+		0739DA462BB2E9FD00964E96 /* build.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = build.sh; path = Core/build.sh; sourceTree = "<group>"; };
 		0760B6F02B9CEABC0032CACD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		07A763102B555BE100705D31 /* ParticleSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -55,6 +106,7 @@
 		071CC3C1290465B3007B4B98 = {
 			isa = PBXGroup;
 			children = (
+				0739DA0F2BB2E9A700964E96 /* Core */,
 				0739D9BF2BA2229100964E96 /* LICENSE */,
 				0739D9C02BA2229100964E96 /* LICENSE_FIGlet */,
 				0760B6F02B9CEABC0032CACD /* README.md */,
@@ -84,6 +136,74 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		0739DA0F2BB2E9A700964E96 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				0739DA252BB2E9D500964E96 /* LICENSE */,
+				0739DA122BB2E9D500964E96 /* README.md */,
+				0739DA462BB2E9FD00964E96 /* build.sh */,
+				0739DA272BB2E9D500964E96 /* DateTime.h */,
+				0739DA282BB2E9D500964E96 /* Delay.h */,
+				0739DA212BB2E9D500964E96 /* FlankDetector.h */,
+				0739DA112BB2E9D500964E96 /* Histogram.h */,
+				0739DA1F2BB2E9D500964E96 /* MachineLearning */,
+				0739DA142BB2E9D500964E96 /* MarkovChain.h */,
+				0739DA222BB2E9D500964E96 /* Math.h */,
+				0739DA242BB2E9D500964E96 /* OneShot.h */,
+				0739DA102BB2E9D400964E96 /* Physics.h */,
+				0739DA132BB2E9D500964E96 /* Rand.h */,
+				0739DA262BB2E9D500964E96 /* StlUtils.h */,
+				0739DA292BB2E9D500964E96 /* StringHelper.h */,
+				0739DA2D2BB2E9D500964E96 /* Tests */,
+				0739DA202BB2E9D500964E96 /* TextBox.h */,
+				0739DA232BB2E9D500964E96 /* Uuid.h */,
+			);
+			name = Core;
+			sourceTree = "<group>";
+		};
+		0739DA182BB2E9D500964E96 /* wichtounet_mnist_reader */ = {
+			isa = PBXGroup;
+			children = (
+				0739DA152BB2E9D500964E96 /* mnist_reader_common.h */,
+				0739DA162BB2E9D500964E96 /* mnist_reader.h */,
+				0739DA172BB2E9D500964E96 /* mnist_utils.h */,
+			);
+			path = wichtounet_mnist_reader;
+			sourceTree = "<group>";
+		};
+		0739DA1A2BB2E9D500964E96 /* MNIST */ = {
+			isa = PBXGroup;
+			children = (
+				0739DA182BB2E9D500964E96 /* wichtounet_mnist_reader */,
+				0739DA192BB2E9D500964E96 /* MNIST_Loader.h */,
+			);
+			path = MNIST;
+			sourceTree = "<group>";
+		};
+		0739DA1F2BB2E9D500964E96 /* MachineLearning */ = {
+			isa = PBXGroup;
+			children = (
+				0739DA1A2BB2E9D500964E96 /* MNIST */,
+				0739DA1B2BB2E9D500964E96 /* ann_cnn.h */,
+				0739DA1C2BB2E9D500964E96 /* ann_dense.h */,
+				0739DA1D2BB2E9D500964E96 /* ann_utils.h */,
+				0739DA1E2BB2E9D500964E96 /* LeNet.h */,
+			);
+			name = MachineLearning;
+			path = Core/MachineLearning;
+			sourceTree = "<group>";
+		};
+		0739DA2D2BB2E9D500964E96 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				0739DA2A2BB2E9D500964E96 /* DateTime_tests.h */,
+				0739DA2B2BB2E9D500964E96 /* Histogram_tests.h */,
+				0739DA2C2BB2E9D500964E96 /* MachineLearning_tests.h */,
+			);
+			name = Tests;
+			path = Core/Tests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -91,7 +211,31 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0739DA362BB2E9D600964E96 /* ann_cnn.h in Headers */,
+				0739DA402BB2E9D600964E96 /* DateTime.h in Headers */,
+				0739DA322BB2E9D600964E96 /* mnist_reader_common.h in Headers */,
+				0739DA382BB2E9D600964E96 /* ann_utils.h in Headers */,
+				0739DA332BB2E9D600964E96 /* mnist_reader.h in Headers */,
+				0739DA2F2BB2E9D600964E96 /* Histogram.h in Headers */,
+				0739DA432BB2E9D600964E96 /* DateTime_tests.h in Headers */,
+				0739DA442BB2E9D600964E96 /* Histogram_tests.h in Headers */,
+				0739DA3E2BB2E9D600964E96 /* OneShot.h in Headers */,
+				0739DA302BB2E9D600964E96 /* Rand.h in Headers */,
+				0739DA3C2BB2E9D600964E96 /* Math.h in Headers */,
+				0739DA312BB2E9D600964E96 /* MarkovChain.h in Headers */,
+				0739DA2E2BB2E9D600964E96 /* Physics.h in Headers */,
+				0739DA3B2BB2E9D600964E96 /* FlankDetector.h in Headers */,
+				0739DA352BB2E9D600964E96 /* MNIST_Loader.h in Headers */,
+				0739DA372BB2E9D600964E96 /* ann_dense.h in Headers */,
+				0739DA3D2BB2E9D600964E96 /* Uuid.h in Headers */,
+				0739DA342BB2E9D600964E96 /* mnist_utils.h in Headers */,
 				07A763112B555BE100705D31 /* ParticleSystem.h in Headers */,
+				0739DA422BB2E9D600964E96 /* StringHelper.h in Headers */,
+				0739DA392BB2E9D600964E96 /* LeNet.h in Headers */,
+				0739DA412BB2E9D600964E96 /* Delay.h in Headers */,
+				0739DA452BB2E9D600964E96 /* MachineLearning_tests.h in Headers */,
+				0739DA3F2BB2E9D600964E96 /* StlUtils.h in Headers */,
+				0739DA3A2BB2E9D600964E96 /* TextBox.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
