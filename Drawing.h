@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/Math.h"
+#include "../Core/Math.h"
 
 // Bresenham Algorithm.
 namespace bresenham
