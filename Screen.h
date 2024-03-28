@@ -50,6 +50,13 @@ void return_cursor()
 #endif
 }
 
+void restore_cursor()
+{
+#ifndef _WIN32
+  printf("\x1b[2J");
+#endif
+}
+
 void gotorc(int r, int c)
 {
 #ifdef _WIN32

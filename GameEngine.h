@@ -63,7 +63,10 @@ private:
     sh.clear();
     
     if (!update())
+    {
+      restore_cursor();
       return false;
+    }
       
     sh.print_screen_buffer(t, bg_color);
     //sh.print_screen_buffer_chars();
