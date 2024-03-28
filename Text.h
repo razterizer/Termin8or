@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <tuple>
 #include <iostream>
 #ifdef _WIN32
 #include <conio.h>
