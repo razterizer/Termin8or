@@ -48,6 +48,7 @@ public:
   void run()
   {
     // RT-Loop
+    clear_screen();
     auto update_func = std::bind(&GameEngine::engine_update, this);
     Delay::update_loop(fps, update_func);
   }
@@ -58,7 +59,6 @@ public:
 private:
   bool engine_update()
   {
-    clear_screen();
     return_cursor();
     sh.clear();
     
