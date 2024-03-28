@@ -34,7 +34,8 @@ void clear_screen()
   //FillConsoleOutputCharacterA(hStdOut, ' ', csbi.dwSize.X * csbi.dwSize.Y, coord, &count);
   //SetConsoleCursorPosition(hStdOut, coord);
 #else
-  printf("\x1b[2J");
+  //printf("\x1b[2J");
+  std::cout << "\033[0;0H"; // Works on Ubuntu! #NOTE: must be std::cout instead of printf() here!
 #endif
 }
 
