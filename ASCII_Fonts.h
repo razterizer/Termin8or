@@ -10,11 +10,16 @@
 #include "Text.h"
 
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <map>
 #include <vector>
 #include <filesystem>
+#ifndef _WIN32
 #include <unistd.h>
+#endif
+#include "../Core/Utils.h"
+#include "../Core/FolderHelper.h"
 
 //#define DEBUG_PRINT
 
@@ -117,6 +122,11 @@ namespace ASCII_Fonts
   // Perhaps script this procedure in the future.
   std::string get_path_to_font_data()
   {
+#ifdef _WIN32
+    // Assume the font files are copied via post-build script to local bin / target folder.
+    // E.g. xcopy $(SolutionDir)\..\..\lib\Termin8or\fonts\* $(TargetDir)\fonts\ / Y
+    return folder::get_exe_dir() + "\\fonts\\";
+#else
     std::string font_data_path;
     const char* xcode_env = std::getenv("RUNNING_FROM_XCODE");
     if (xcode_env != nullptr)
@@ -125,6 +135,7 @@ namespace ASCII_Fonts
       font_data_path = "../../lib/Termin8or/fonts";
       
     return font_data_path;
+#endif
   }
 
   FontDataColl load_font_data(const ColorScheme& colors, const std::string& path_to_font_data)
@@ -220,34 +231,67 @@ namespace ASCII_Fonts
           txt_file.close();
           continue;
         }
+        
+        const std::vector<char> delim { ':', ',', ' ' };
+        const std::vector<char> scope_delim { '\'' };
       
         std::string line;
         while (std::getline(txt_file, line))
         {
           // Data section.
-          if (sscanf(line.c_str(), "char: '%c', width: %i, char_prev: '%c'%n", &ch, &width, &ch_prev, &chars_read) == 3)
+          auto tokens = str::tokenize(line, delim, scope_delim);
+          if (line.starts_with("char:"))
           {
-            kerning = false;
-            ordering = false;
+            std::cout << line << std::endl;
+            //for (const auto& tk : tokens)
+            //  std::cout << "token: " << tk << std::endl;
             
-            // Loop to read additional characters after charPrev
-            while (line.c_str()[chars_read] == ',')
-            {
-              char additional_char;
-              ++chars_read;
-              int num = 0;
-              sscanf(line.c_str() + chars_read, " '%c'%n", &additional_char, &num);
-              ch_prev_vec.emplace_back(additional_char);
-              chars_read += num;
-              //std::cout << "Additional char after char_prev: '" << additionalChar << "'\n";
-            }
-          }
-          else if (sscanf(line.c_str(), "char: '%c', width: %i", &ch, &width) == 2)
-          {
             kerning = false;
             ordering = false;
             ch_prev = -1;
             ch_prev_vec.clear();
+            
+            auto num_tokens = static_cast<int>(tokens.size());
+            for (int tk_idx = 0; tk_idx < num_tokens; tk_idx += 2)
+            {
+              const auto& tk_name = tokens[tk_idx + 0];
+              const auto& tk_val  = tokens[tk_idx + 1];
+              if (tk_name == "char")
+              {
+                if (tk_val.size() == 1)
+                  ch = tk_val[0];
+                else
+                  std::cerr << "Error in ASCII_Fonts::load_font_data() : 'char:' value token \"" << tk_val << "\" is not of size 1!" << std::endl;
+              }
+              else if (tk_name == "width")
+              {
+                std::istringstream iss(tk_val);
+                iss >> width;
+              }
+              else if (tk_name == "char_prev")
+              {
+                if (tk_val.size() == 1)
+                {
+                  ch_prev = tk_val[0];
+                  std::cout << "ch_prev: " << ch_prev << std::endl;
+                  for (int i = 1; tk_idx + 1 + i < num_tokens; ++i)
+                  {
+                    const auto& tk = tokens[tk_idx + 1 + i];
+                    if (tk.size() != 1)
+                    {
+                      std::cerr << "Error in ASCII_Fonts::load_font_data() : 'ch_prev' value token \"" << tk << "\" is not of size 1!" << std::endl;
+                      continue;
+                    }
+                    auto ch_i = tk[0];
+                    ch_prev_vec.emplace_back(ch_i);
+                    std::cout << "ch_prev_vec.back(): " << ch_prev_vec.back() << std::endl;
+                  }
+                  tk_idx = num_tokens;
+                }
+                else
+                  std::cerr << "Error in ASCII_Fonts::load_font_data() : 'char_prev:' value token \"" << tk_val << "\" is not of size 1!" << std::endl;
+              }
+            }
           }
           else if (strcmp(line.c_str(), "kerning:") == 0)
           {
@@ -267,9 +311,9 @@ namespace ASCII_Fonts
           }
           
           // Read data.
-          if (kerning && sscanf(line.c_str(), "'%c' -> '%c' = %i", &kch0, &kch1, &kern) == 3)
+          if (kerning && utils::sscanf(line.c_str(), "'%c' -> '%c' = %i", &kch0, &kch1, &kern) == 3)
             curr_font.kernings[{kch0, kch1}] = kern;
-          else if (ordering && sscanf(line.c_str(), "'%c' -> '%c' = %i, %i", &och0, &och1, &opri0, &opri1) == 4)
+          else if (ordering && utils::sscanf(line.c_str(), "'%c' -> '%c' = %i, %i", &och0, &och1, &opri0, &opri1) == 4)
             curr_font.orderings[{och0, och1}] = {opri0, opri1};
           else if (ch != -1)
           {
@@ -285,17 +329,26 @@ namespace ASCII_Fonts
                 curr_char->width = width;
               if (line.size() > 0 && line[0] == '"')
                 piece.part = line.substr(1, line.size() - 2);
-              else if (int num_read = sscanf(line.c_str(), "%i %i %s %s %i", &r, &c, fg, bg, &glyph_part_prio);
-                num_read >= 4)
+              else
               {
-                piece.r = r;
-                piece.c = c;
-                piece.fg_color = get_fg_color(fg, colors);
-                piece.bg_color = get_bg_color(bg, colors);
-                piece.prio = 0;
-                if (num_read > 4)
-                  piece.prio = glyph_part_prio;
-                curr_char->font_pieces.emplace_back(piece);
+                std::istringstream iss2(line);
+                int r, c;
+                std::string fg, bg;
+                int glyph_part_prio = 0;
+
+                if (iss2 >> r >> c >> fg >> bg)
+                {
+                  piece.r = r;
+                  piece.c = c;
+                  piece.fg_color = get_fg_color(fg, colors);
+                  piece.bg_color = get_bg_color(bg, colors);
+                  piece.prio = 0;
+
+                  if (iss2 >> glyph_part_prio)
+                    piece.prio = glyph_part_prio;
+
+                  curr_char->font_pieces.emplace_back(piece);
+                }
               }
             }
             if (!ch_prev_vec.empty())
