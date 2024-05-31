@@ -242,10 +242,6 @@ namespace ASCII_Fonts
           auto tokens = str::tokenize(line, delim, scope_delim);
           if (line.starts_with("char:"))
           {
-            std::cout << line << std::endl;
-            //for (const auto& tk : tokens)
-            //  std::cout << "token: " << tk << std::endl;
-            
             kerning = false;
             ordering = false;
             ch_prev = -1;
@@ -273,7 +269,6 @@ namespace ASCII_Fonts
                 if (tk_val.size() == 1)
                 {
                   ch_prev = tk_val[0];
-                  std::cout << "ch_prev: " << ch_prev << std::endl;
                   for (int i = 1; tk_idx + 1 + i < num_tokens; ++i)
                   {
                     const auto& tk = tokens[tk_idx + 1 + i];
@@ -284,7 +279,6 @@ namespace ASCII_Fonts
                     }
                     auto ch_i = tk[0];
                     ch_prev_vec.emplace_back(ch_i);
-                    std::cout << "ch_prev_vec.back(): " << ch_prev_vec.back() << std::endl;
                   }
                   tk_idx = num_tokens;
                 }
