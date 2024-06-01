@@ -194,7 +194,6 @@ namespace ASCII_Fonts
       char ch = -1;
       char ch_prev = -1;
       std::vector<char> ch_prev_vec;
-      int chars_read = 0;
       char kch0 = -1;
       char kch1 = -1;
       int kern = 0;
@@ -204,10 +203,6 @@ namespace ASCII_Fonts
       int opri1 = 0;
       int width = -1;
       FontPiece piece;
-      int r, c;
-      char fg[4];
-      char bg[4];
-      int glyph_part_prio = 0;
       bool kerning = false;
       bool ordering = false;
       
