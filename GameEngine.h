@@ -8,8 +8,8 @@
 #pragma once
 #include "Keyboard.h"
 #include "Screen.h"
-#include "../Core/Delay.h"
-#include "../Core/Rand.h"
+#include <Core/Delay.h>
+#include <Core/Rand.h>
 
 template<int NR = 30, int NC = 80>
 class GameEngine

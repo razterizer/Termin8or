@@ -18,8 +18,8 @@
 #ifndef _WIN32
 #include <unistd.h>
 #endif
-#include "../Core/Utils.h"
-#include "../Core/FolderHelper.h"
+#include <Core/Utils.h>
+#include <Core/FolderHelper.h>
 
 //#define DEBUG_PRINT
 
