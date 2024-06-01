@@ -54,7 +54,7 @@ struct Particle
 struct ParticleHandler
 {
   ParticleHandler(size_t N_particles)
-    : num_particles(N_particles), num_particles_active(N_particles), particle_stream(N_particles) {}
+    : particle_stream(N_particles), num_particles(N_particles), num_particles_active(N_particles) {}
   
   void update(const RC& start_pos, bool trigger,
               float vel_x, float vel_y, float g,

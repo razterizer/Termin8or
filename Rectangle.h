@@ -6,7 +6,7 @@ namespace ttl
   struct Rectangle
   {
     Rectangle(int r, int c, int w, int h)
-      : y(r), x(c), width(w), height(h)
+      : x(c), y(r), width(w), height(h)
     {}
   
     int x = 0;
