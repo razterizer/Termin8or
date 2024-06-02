@@ -938,7 +938,7 @@ char: 's', width: 5
 "/___/"
 3 0 I I
 
-char: 's', width: 5, prev_char: 'e'
+char: 's', width: 5, char_prev: 'e'
 "___"
 1 2 I T2
 "|"
