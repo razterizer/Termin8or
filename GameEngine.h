@@ -110,8 +110,10 @@ private:
     if (show_quit_confirm)
     {
       draw_confirm_quit(sh, quit_confirm_button);
-      if (kpd.curr_special_key == keyboard::SpecialKey::Left || kpd.curr_special_key == keyboard::SpecialKey::Right)
-        quit_confirm_button = static_cast<YesNoButtons>(1 - static_cast<int>(quit_confirm_button));
+      if (kpd.curr_special_key == keyboard::SpecialKey::Left)
+        quit_confirm_button = YesNoButtons::Yes;
+      else if (kpd.curr_special_key == keyboard::SpecialKey::Right)
+        quit_confirm_button = YesNoButtons::No;
       
       if (kpd.curr_special_key == keyboard::SpecialKey::Enter)
       {
