@@ -103,7 +103,10 @@ private:
     
     kpd = keyboard::register_keypresses(use_wasd_arrow_keys);
     if (kpd.quit)
-      show_quit_confirm = true;
+    {
+      math::toggle(show_quit_confirm);
+      quit_confirm_button = YesNoButtons::No;
+    }
     else if (kpd.pause)
       math::toggle(paused);
       
