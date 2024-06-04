@@ -14,10 +14,19 @@
 template<int NR = 30, int NC = 80>
 class GameEngine
 {
-protected:
   bool paused = false;
+  bool show_title = true;
+  bool show_instructions = false;
+  
+  const bool use_wasd_arrow_keys = false;
+  const Text::Color c_bg_color_default = Text::Color::Default;
+  const Text::Color c_bg_color_title = Text::Color::Default;
+  const Text::Color c_bg_color_instructions = Text::Color::Default;
+  
   int delay = 50'000; // 100'000 (10 FPS) // 60'000 (16.67 FPS);
   int fps = 12; // 5
+  
+protected:
   float dt = static_cast<float>(delay) / 1e6f;
   float time = 0.f;
   
@@ -27,14 +36,40 @@ protected:
   Text::Color bg_color = Text::Color::Default;
   
   int anim_ctr = 0;
-  int key_ctr = 0;
   
-  virtual bool update() = 0;
+  keyboard::KeyPressData kpd;
+  
+  void set_fps(float fps_val) { fps = fps_val; }
+  void set_delay_us(float delay_us)
+  {
+    delay = delay_us;
+    dt = static_cast<float>(delay) / 1e6f;
+  }
+  
+  // Callbacks
+  virtual void update() = 0;
+  virtual void on_quit() {}
+  virtual void draw_title() = 0;
+  virtual void draw_instructions() = 0;
+  virtual void on_exit_title() {}
+  virtual void on_exit_instructions() {}
   
 public:
+  GameEngine(bool use_wasd_keys,
+             const Text::Color bg_col_def,
+             const Text::Color bg_col_title,
+             const Text::Color bg_col_instr)
+    : use_wasd_arrow_keys(use_wasd_keys)
+    , c_bg_color_default(bg_col_def)
+    , c_bg_color_title(bg_col_title)
+    , c_bg_color_instructions(bg_col_instr)
+  {}
+  
+  virtual ~GameEngine() = default;
+
   void init()
   {
-    enableRawMode();
+    keyboard::enableRawMode();
     
     clear_screen(); return_cursor();
     
@@ -62,10 +97,41 @@ private:
     return_cursor();
     sh.clear();
     
-    if (!update())
+    kpd = keyboard::register_keypresses(use_wasd_arrow_keys);
+    if (kpd.quit)
     {
       restore_cursor();
+      on_quit();
       return false;
+    }
+    else
+    {
+      bg_color = c_bg_color_default;
+      if (show_title)
+      {
+        bg_color = c_bg_color_title;
+        draw_title();
+        if (kpd.curr_key == ' ')
+        {
+          on_exit_title();
+          show_title = false;
+          show_instructions = true;
+        }
+      }
+      else if (show_instructions)
+      {
+        bg_color = c_bg_color_instructions;
+        draw_instructions();
+        if (kpd.curr_key == ' ')
+        {
+          on_exit_instructions();
+          show_instructions = false;
+        }
+      }
+      else if (paused)
+        draw_paused(sh, anim_ctr);
+      else
+        update();
     }
       
     sh.print_screen_buffer(t, bg_color);
