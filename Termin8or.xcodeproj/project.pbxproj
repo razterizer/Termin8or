@@ -46,6 +46,7 @@
 		070BE68F2B445908009D9BFB /* fonts */ = {
 			isa = PBXGroup;
 			children = (
+				0739D9C02BA2229100964E96 /* LICENSE_FIGlet */,
 				070BE6902B4472F3009D9BFB /* font_data_larry3d.txt */,
 				070BE6912B447309009D9BFB /* font_data_smslant.txt */,
 			);
@@ -56,7 +57,6 @@
 			isa = PBXGroup;
 			children = (
 				0739D9BF2BA2229100964E96 /* LICENSE */,
-				0739D9C02BA2229100964E96 /* LICENSE_FIGlet */,
 				0760B6F02B9CEABC0032CACD /* README.md */,
 				070BE6892B406FB2009D9BFB /* GameEngine.h */,
 				07043C6F2B05240D00834CED /* ASCII_Fonts.h */,
