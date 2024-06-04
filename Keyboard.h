@@ -1,6 +1,5 @@
 #pragma once
 #include <Core/StringHelper.h>
-#include <Core/Math.h>
 #ifdef _WIN32
 #define NOMINMAX // Should fix the std::min()/max() and std::numeric_limits<T>::min()/max() compilation problems.
 #include <windows.h>
@@ -151,7 +150,7 @@ namespace keyboard
     waitKeystroke();
   }
   
-  enum class SpecialKey { None, Left, Right, Down, Up };
+  enum class SpecialKey { None, Left, Right, Down, Up, Enter };
   int arrow_key_ctr = 0;
   int key_ctr = 0;
   struct KeyPressData
@@ -159,7 +158,7 @@ namespace keyboard
     char curr_key = 0;
     SpecialKey curr_special_key = SpecialKey::None;
     std::array<SpecialKey, 3> arrow_key_buffer;
-    bool paused = false;
+    bool pause = false;
     bool quit = false;
     
     SpecialKey get_buffered_arrow_key() const
@@ -231,13 +230,11 @@ namespace keyboard
         arrow_key_ctr++;
       }
       else if (str::to_lower(ch) == 'p')
-      {
-        math::toggle(kpd.paused);
-      }
+        kpd.pause = true;
       else if (str::to_lower(ch) == 'q')
-      {
         kpd.quit = true;
-      }
+      else if (ch == 13)
+        kpd.curr_special_key = SpecialKey::Enter;
       else if (ch == -1 || ch == 0)
       {
         kpd.arrow_key_buffer[arrow_key_ctr % 3] = SpecialKey::None;

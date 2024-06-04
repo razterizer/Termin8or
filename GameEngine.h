@@ -10,6 +10,7 @@
 #include "Screen.h"
 #include <Core/Delay.h>
 #include <Core/Rand.h>
+#include <Core/Math.h>
 
 template<int NR = 30, int NC = 80>
 class GameEngine
@@ -17,6 +18,7 @@ class GameEngine
   bool paused = false;
   bool show_title = true;
   bool show_instructions = false;
+  bool show_quit_confirm = false;
   
   const bool use_wasd_arrow_keys = false;
   const Text::Color c_bg_color_default = Text::Color::Default;
@@ -25,6 +27,8 @@ class GameEngine
   
   int delay = 50'000; // 100'000 (10 FPS) // 60'000 (16.67 FPS);
   int fps = 12; // 5
+  
+  YesNoButtons quit_confirm_button = YesNoButtons::No;
   
 protected:
   float dt = static_cast<float>(delay) / 1e6f;
@@ -99,10 +103,27 @@ private:
     
     kpd = keyboard::register_keypresses(use_wasd_arrow_keys);
     if (kpd.quit)
+      show_quit_confirm = true;
+    else if (kpd.pause)
+      math::toggle(paused);
+      
+    if (show_quit_confirm)
     {
-      restore_cursor();
-      on_quit();
-      return false;
+      draw_confirm_quit(sh, quit_confirm_button);
+      if (kpd.curr_special_key == keyboard::SpecialKey::Left || kpd.curr_special_key == keyboard::SpecialKey::Right)
+        quit_confirm_button = static_cast<YesNoButtons>(1 - static_cast<int>(quit_confirm_button));
+      
+      if (kpd.curr_special_key == keyboard::SpecialKey::Enter)
+      {
+        if (quit_confirm_button == YesNoButtons::Yes)
+        {
+          restore_cursor();
+          on_quit();
+          return false;
+        }
+        else
+          show_quit_confirm = false;
+      }
     }
     else
     {

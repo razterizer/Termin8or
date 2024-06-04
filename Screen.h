@@ -181,3 +181,20 @@ void draw_paused(SpriteHandler<NR, NC>& sh, int anim_ctr)
   }
   sh.write_buffer(msg, 15, 36, Text::Color::White, Text::Color::DarkCyan);
 }
+
+enum class YesNoButtons { No = 0, Yes = 1 };
+template<int NR, int NC>
+void draw_confirm_quit(SpriteHandler<NR, NC>& sh, YesNoButtons button)
+{
+  std::string msg = "Are you sure you want to quit?";
+  sh.write_buffer(msg, NR/2, (NC - msg.length())/2, Text::Color::Black, Text::Color::DarkCyan);
+  // "[Yes]      [No]"
+  std::string yes = "[Yes]";
+  std::string no = "[No]";
+  Text::Color bg_color_yes = (button == YesNoButtons::Yes) ?
+    Text::Color::Cyan : Text::Color::DarkCyan;
+  Text::Color bg_color_no = (button == YesNoButtons::No) ?
+    Text::Color::Cyan : Text::Color::DarkCyan;
+  sh.write_buffer(yes, NR/2 + 2, (NC - 6)/2 - yes.length(), Text::Color::Black, bg_color_yes);
+  sh.write_buffer(no, NR/2 + 2, (NC - 6)/2 + no.length(), Text::Color::Black, bg_color_no);
+}
