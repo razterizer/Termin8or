@@ -30,6 +30,7 @@
 		0739D9C02BA2229100964E96 /* LICENSE_FIGlet */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE_FIGlet; sourceTree = "<group>"; };
 		0760B6F02B9CEABC0032CACD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		07A763102B555BE100705D31 /* ParticleSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
+		07E6EAA72C0F7502007BBC6B /* font_data_avatar.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = font_data_avatar.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +48,7 @@
 			isa = PBXGroup;
 			children = (
 				0739D9C02BA2229100964E96 /* LICENSE_FIGlet */,
+				07E6EAA72C0F7502007BBC6B /* font_data_avatar.txt */,
 				070BE6902B4472F3009D9BFB /* font_data_larry3d.txt */,
 				070BE6912B447309009D9BFB /* font_data_smslant.txt */,
 			);
