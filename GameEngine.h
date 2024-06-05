@@ -19,6 +19,10 @@ class GameEngine
   bool show_title = true;
   bool show_instructions = false;
   bool show_quit_confirm = false;
+  bool show_game_over = false;
+  bool show_you_won = false;
+  bool show_input_hiscore = false;
+  bool show_hiscores = false;
   
   const bool use_wasd_arrow_keys = false;
   const Text::Color c_bg_color_default = Text::Color::Default;
