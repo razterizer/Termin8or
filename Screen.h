@@ -1,5 +1,7 @@
 #pragma once
 #include "SpriteHandler.h"
+#include "Keyboard.h"
+#include <Core/TextIO.h>
 #include <cmath>
 #ifdef _WIN32
 #define NOMINMAX // Should fix the std::min()/max() and std::numeric_limits<T>::min()/max() compilation problems.
@@ -186,17 +188,120 @@ enum class YesNoButtons { No = 0, Yes = 1 };
 template<int NR, int NC>
 void draw_confirm_quit(SpriteHandler<NR, NC>& sh, YesNoButtons button)
 {
+  const auto nr = static_cast<int>(NR);
+  const auto nc = static_cast<int>(NC);
   std::string msg = "Are you sure you want to quit?";
-  sh.write_buffer(msg, NR/2 - 2, (NC - msg.length())/2, Text::Color::Black, Text::Color::DarkCyan);
+  auto msg_len = static_cast<int>(msg.length());
+  sh.write_buffer(msg, nr/2 - 2, (nc - msg_len)/2, Text::Color::Black, Text::Color::DarkCyan);
   // "[Yes]      [No]"
   std::string yes = "[Yes]";
   std::string no = "[No]";
+  const auto yes_len = static_cast<int>(yes.length());
+  const auto no_len = static_cast<int>(no.length());
   Text::Color bg_color_yes = (button == YesNoButtons::Yes) ?
     Text::Color::Cyan : Text::Color::DarkCyan;
   Text::Color bg_color_no = (button == YesNoButtons::No) ?
     Text::Color::Cyan : Text::Color::DarkCyan;
-  sh.write_buffer(yes, NR/2 + 1, (NC - 6)/2 - yes.length(), Text::Color::Black, bg_color_yes);
-  sh.write_buffer(no, NR/2 + 1, (NC - 6)/2 + no.length(), Text::Color::Black, bg_color_no);
+  sh.write_buffer(yes, nr/2 + 1, (nc - 6)/2 - yes_len, Text::Color::Black, bg_color_yes);
+  sh.write_buffer(no, nr/2 + 1, (nc - 6)/2 + no_len, Text::Color::Black, bg_color_no);
   msg = "Press arrow keys to select choice and then [Enter] key to confirm.";
-  sh.write_buffer(msg, NR/2 + 5, (NC - msg.length())/2, Text::Color::White, Text::Color::DarkCyan);
+  msg_len = static_cast<int>(msg.length());
+  sh.write_buffer(msg, nr/2 + 5, (nc - msg_len)/2, Text::Color::White, Text::Color::DarkCyan);
+}
+
+struct HiScoreItem
+{
+  std::string name;
+  int score = 0;
+  
+  void reset(int new_score, int num_name_chars)
+  {
+    name = str::rep_char(' ', num_name_chars);
+    score = new_score;
+  }
+};
+
+template<int NR, int NC>
+bool draw_input_hiscore(SpriteHandler<NR, NC>& sh,
+                        const keyboard::KeyPressData& kpd,
+                        HiScoreItem& hsi, int& caret_idx)
+{
+  const auto nr = static_cast<int>(NR);
+  const auto nc = static_cast<int>(NC);
+  const int num_max_name_chars = 5;
+  const int r = nr/2 - 2;
+  std::string msg = "Enter your name: ";
+  auto msg_len = static_cast<int>(msg.length());
+  const int c_base = (nc - msg_len)/2;
+  const int c_prompt = c_base + msg_len;
+  
+  sh.write_buffer(msg, r, c_base, Text::Color::Green, Text::Color::Black);
+  
+  if (str::is_letter(kpd.curr_key) || kpd.curr_key == ' ')
+  {
+    if (hsi.name.length() >= caret_idx + 1)
+      hsi.name[caret_idx] = str::to_upper(kpd.curr_key);
+  }
+  
+  sh.write_buffer(stlutils::try_get(hsi.name, caret_idx, ' '), r, c_prompt + caret_idx, Text::Color::Green, Text::Color::DarkGreen);
+  sh.write_buffer(hsi.name, r, c_prompt, Text::Color::Green, Text::Color::Black);
+  
+  msg = "Press arrow keys to change between characters,";
+  msg_len = static_cast<int>(msg.length());
+  sh.write_buffer(msg, nr/2 + 5, (nc - msg_len)/2, Text::Color::DarkGreen, Text::Color::Black);
+  msg = "then press the [Enter] key to confirm.";
+  msg_len = static_cast<int>(msg.length());
+  sh.write_buffer(msg, nr/2 + 6, (nc - msg_len)/2, Text::Color::DarkGreen, Text::Color::Black);
+  
+  if (kpd.curr_special_key == keyboard::SpecialKey::Left)
+  {
+    caret_idx--;
+    if (caret_idx < 0)
+      caret_idx = 0;
+  }
+  else if (kpd.curr_special_key == keyboard::SpecialKey::Right)
+  {
+    caret_idx++;
+    if (caret_idx >= num_max_name_chars)
+      caret_idx = num_max_name_chars - 1;
+  }
+  
+  return kpd.curr_special_key == keyboard::SpecialKey::Enter;
+}
+
+template<int NR, int NC>
+void draw_hiscores(SpriteHandler<NR, NC>& sh, const std::vector<HiScoreItem>& hiscore_list)
+{
+  const auto nr = static_cast<int>(NR);
+  const auto nc = static_cast<int>(NC);
+  std::string msg = "-=* HIGH SCORES *=-";
+  auto msg_len = static_cast<int>(msg.length());
+  int r_title = 3;
+  int c_title = (nc - msg_len)/2;
+  sh.write_buffer(msg, r_title, c_title, Text::Color::Green, Text::Color::Black);
+
+  int r = r_title + 2;
+  const int c_score_len = 10; // 8
+  const int c_name_len = 5;
+  const int c_padding = 5;
+  const int c_score = nc/2 - c_score_len - c_padding;
+  const int c_name = nc/2 + c_padding;
+  for (const auto& hsi : hiscore_list)
+  {
+    if (r + 3 >= nr)
+      break;
+    msg = std::to_string(hsi.score);
+    msg = str::adjust_str(msg, str::Adjustment::Right, c_score_len, 0, '0');
+    sh.write_buffer(msg, r, c_score, Text::Color::Green, Text::Color::Black);
+    
+    msg = str::trim_ret(hsi.name);
+    msg += str::rep_char('.', c_name_len - static_cast<int>(msg.length()));
+    sh.write_buffer(msg, r, c_name, Text::Color::Green, Text::Color::Black);
+    
+    r++;
+  }
+  
+  msg = "Press space-bar to quit...";
+  msg_len = static_cast<int>(msg.length());
+  sh.write_buffer(msg, nr - 2, (nc - msg_len)/2, Text::Color::DarkGreen, Text::Color::Black);
 }
