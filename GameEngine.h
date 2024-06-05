@@ -239,16 +239,15 @@ private:
       else if (show_game_over)
       {
         if (game_over_timer == 0)
-        {
           draw_game_over(sh);
-          update();
-        }
         else
         {
           game_over_timer--;
           if (game_over_timer == 0)
             on_enter_game_over();
         }
+        
+        update();
           
         if (kpd.curr_key == ' ')
         {
@@ -263,16 +262,15 @@ private:
       else if (show_you_won)
       {
         if (you_won_timer == 0)
-        {
           draw_you_won(sh);
-          update();
-        }
         else
         {
           you_won_timer--;
           if (you_won_timer == 0)
             on_enter_you_won();
         }
+        
+        update();
         
         if (kpd.curr_key == ' ')
         {
