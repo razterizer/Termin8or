@@ -71,7 +71,7 @@ class GameEngine
     // Sort hiscores.
     auto num_hiscores = static_cast<int>(hiscore_list.size());
     stlutils::sort(hiscore_list,
-      [](const auto& hsi_A, const auto& hsi_B) { return hsi_A.score < hsi_B.score; });
+      [](const auto& hsi_A, const auto& hsi_B) { return hsi_A.score > hsi_B.score; });
     if (num_hiscores >= 1)
       hiscore_list = stlutils::subset(hiscore_list, 0, std::min(num_hiscores, c_max_num_hiscores) - 1);
     else
