@@ -209,14 +209,16 @@ void draw_confirm_quit(SpriteHandler<NR, NC>& sh, YesNoButtons button)
   sh.write_buffer(msg, nr/2 + 5, (nc - msg_len)/2, Text::Color::White, Text::Color::DarkCyan);
 }
 
+static const int c_hiscore_name_len = 8;
+
 struct HiScoreItem
 {
   std::string name;
   int score = 0;
   
-  void reset(int new_score, int num_name_chars)
+  void reset(int new_score)
   {
-    name = str::rep_char(' ', num_name_chars);
+    name = str::rep_char(' ', c_hiscore_name_len);
     score = new_score;
   }
 };
@@ -282,8 +284,7 @@ void draw_hiscores(SpriteHandler<NR, NC>& sh, const std::vector<HiScoreItem>& hi
 
   int r = r_title + 2;
   const int c_score_len = 10; // 8
-  const int c_name_len = 5;
-  const int c_padding = 5;
+  const int c_padding = 2;
   const int c_score = nc/2 - c_score_len - c_padding;
   const int c_name = nc/2 + c_padding;
   for (const auto& hsi : hiscore_list)
@@ -295,7 +296,7 @@ void draw_hiscores(SpriteHandler<NR, NC>& sh, const std::vector<HiScoreItem>& hi
     sh.write_buffer(msg, r, c_score, Text::Color::Green, Text::Color::Black);
     
     msg = str::trim_ret(hsi.name);
-    msg += str::rep_char('.', c_name_len - static_cast<int>(msg.length()));
+    msg += str::rep_char('.', c_hiscore_name_len - static_cast<int>(msg.length()));
     sh.write_buffer(msg, r, c_name, Text::Color::Green, Text::Color::Black);
     
     r++;

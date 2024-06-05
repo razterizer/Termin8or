@@ -255,7 +255,7 @@ private:
           on_exit_game_over();
           show_game_over = false;
           show_input_hiscore = true;
-          curr_score_item.reset(score, 5);
+          curr_score_item.reset(score);
           hiscore_caret_idx = 0;
           on_enter_input_hiscore();
         }
@@ -279,7 +279,7 @@ private:
           on_exit_you_won();
           show_you_won = false;
           show_input_hiscore = true;
-          curr_score_item.reset(score, 5);
+          curr_score_item.reset(score);
           hiscore_caret_idx = 0;
           on_enter_input_hiscore();
         }
