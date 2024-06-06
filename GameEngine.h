@@ -284,7 +284,7 @@ private:
       }
       else if (show_input_hiscore)
       {
-        if (draw_input_hiscore(sh, kpd, curr_score_item, hiscore_caret_idx))
+        if (draw_input_hiscore(sh, kpd, curr_score_item, hiscore_caret_idx, anim_ctr))
         {
           on_exit_input_hiscore();
           handle_hiscores(curr_score_item);

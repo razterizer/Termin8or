@@ -226,7 +226,7 @@ struct HiScoreItem
 template<int NR, int NC>
 bool draw_input_hiscore(SpriteHandler<NR, NC>& sh,
                         const keyboard::KeyPressData& kpd,
-                        HiScoreItem& hsi, int& caret_idx)
+                        HiScoreItem& hsi, int& caret_idx, int anim_ctr)
 {
   const auto nr = static_cast<int>(NR);
   const auto nc = static_cast<int>(NC);
@@ -244,8 +244,10 @@ bool draw_input_hiscore(SpriteHandler<NR, NC>& sh,
       hsi.name[caret_idx] = str::to_upper(kpd.curr_key);
   }
   
-  sh.write_buffer(stlutils::try_get(hsi.name, caret_idx, ' '), r, c_prompt + caret_idx, Text::Color::Green, Text::Color::DarkGreen);
-  sh.write_buffer(hsi.name, r, c_prompt, Text::Color::Green, Text::Color::Black);
+  auto bg_color_caret = (anim_ctr/2) % 2 == 0 ? Text::Color::DarkGreen : Text::Color::Black;
+  sh.write_buffer(hsi.name.substr(0, caret_idx), r, c_prompt, Text::Color::Green, Text::Color::Black);
+  sh.write_buffer(hsi.name.substr(caret_idx, 1), r, c_prompt + caret_idx, Text::Color::Green, bg_color_caret);
+  sh.write_buffer(hsi.name.substr(caret_idx + 1), r, c_prompt + caret_idx + 1, Text::Color::Green, Text::Color::Black);
   
   msg = "Press arrow keys to change between characters,";
   msg_len = static_cast<int>(msg.length());
