@@ -1,1 +1,13 @@
-# Stub for font avatar
+char: ' ', width: 2
+
+char: '!', width: 3
+"_"
+0 1 I T2
+"/ \"
+1 0 I I
+"| |"
+2 0 I I
+"\_/"
+3 0 I I
+"(_)"
+4 0 DI DI
