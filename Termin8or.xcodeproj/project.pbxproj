@@ -31,6 +31,7 @@
 		0760B6F02B9CEABC0032CACD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		07A763102B555BE100705D31 /* ParticleSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
 		07E6EAA72C0F7502007BBC6B /* font_data_avatar.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = font_data_avatar.txt; sourceTree = "<group>"; };
+		07E6EAA92C1241DC007BBC6B /* Styles.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Styles.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +75,7 @@
 				071CC3D72904679E007B4B98 /* SpriteHandler.h */,
 				071CC3DA2904851A007B4B98 /* Pixel.h */,
 				071CC3D92904839C007B4B98 /* RC.h */,
+				07E6EAA92C1241DC007BBC6B /* Styles.h */,
 				071CC3CB290465B3007B4B98 /* Products */,
 			);
 			sourceTree = "<group>";
