@@ -205,7 +205,7 @@ namespace keyboard
     else
     {
       kpd.curr_key = ch;
-      else if (str::to_lower(ch) == 'p')
+      if (str::to_lower(ch) == 'p')
         kpd.pause = true;
       else if (str::to_lower(ch) == 'q')
         kpd.quit = true;
