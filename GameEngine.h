@@ -26,7 +26,6 @@ class GameEngine
   bool show_hiscores = false;
   
   std::string_view path_to_exe;
-  const bool use_wasd_arrow_keys = false;
   const Text::Color c_bg_color_default = Text::Color::Default;
   const Text::Color c_bg_color_title = Text::Color::Default;
   const Text::Color c_bg_color_instructions = Text::Color::Default;
@@ -135,12 +134,10 @@ protected:
   
 public:
   GameEngine(std::string_view exe_path,
-             bool use_wasd_keys,
              const Text::Color bg_col_def,
              const Text::Color bg_col_title,
              const Text::Color bg_col_instr)
     : path_to_exe(exe_path)
-    , use_wasd_arrow_keys(use_wasd_keys)
     , c_bg_color_default(bg_col_def)
     , c_bg_color_title(bg_col_title)
     , c_bg_color_instructions(bg_col_instr)
@@ -181,7 +178,7 @@ private:
     return_cursor();
     sh.clear();
     
-    kpd = keyboard::register_keypresses(use_wasd_arrow_keys);
+    kpd = keyboard::register_keypresses();
     if (kpd.quit)
     {
       math::toggle(show_quit_confirm);

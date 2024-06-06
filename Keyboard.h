@@ -179,7 +179,7 @@ namespace keyboard
     }
   };
   
-  KeyPressData register_keypresses(bool use_wasd_arrow_keys)
+  KeyPressData register_keypresses()
   {
     KeyPressData kpd;
   
@@ -205,30 +205,6 @@ namespace keyboard
     else
     {
       kpd.curr_key = ch;
-      if (use_wasd_arrow_keys && str::to_lower(ch) == 'a')
-      {
-        kpd.curr_special_key = SpecialKey::Left;
-        kpd.arrow_key_buffer[arrow_key_ctr % 3] = SpecialKey::Left;
-        arrow_key_ctr++;
-      }
-      else if (use_wasd_arrow_keys && str::to_lower(ch) == 'd')
-      {
-        kpd.curr_special_key = SpecialKey::Right;
-        kpd.arrow_key_buffer[arrow_key_ctr % 3] = SpecialKey::Right;
-        arrow_key_ctr++;
-      }
-      else if (use_wasd_arrow_keys && str::to_lower(ch) == 's')
-      {
-        kpd.curr_special_key = SpecialKey::Down;
-        kpd.arrow_key_buffer[arrow_key_ctr % 3] = SpecialKey::Down;
-        arrow_key_ctr++;
-      }
-      else if (use_wasd_arrow_keys && str::to_lower(ch) == 'w')
-      {
-        kpd.curr_special_key = SpecialKey::Up;
-        kpd.arrow_key_buffer[arrow_key_ctr % 3] = SpecialKey::Up;
-        arrow_key_ctr++;
-      }
       else if (str::to_lower(ch) == 'p')
         kpd.pause = true;
       else if (str::to_lower(ch) == 'q')
