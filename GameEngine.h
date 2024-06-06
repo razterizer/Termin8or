@@ -286,7 +286,6 @@ private:
       {
         if (draw_input_hiscore(sh, kpd, curr_score_item, hiscore_caret_idx))
         {
-          std::cout << "hiscore name: " << curr_score_item.name << std::endl;
           on_exit_input_hiscore();
           handle_hiscores(curr_score_item);
           show_input_hiscore = false;
