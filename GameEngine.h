@@ -15,7 +15,7 @@
 
 struct GameEngineParams
 {
-  bool use_quit_confirm_screen = true;
+  bool enable_quit_confirm_screen = true;
   Text::Color bg_color_default = Text::Color::Default;
   Text::Color bg_color_title = Text::Color::Default;
   Text::Color bg_color_instructions = Text::Color::Default;
@@ -189,7 +189,7 @@ private:
     else if (kpd.pause)
       math::toggle(paused);
       
-    if (!m_params.use_quit_confirm_screen && kpd.quit)
+    if (!m_params.enable_quit_confirm_screen && kpd.quit)
     {
       restore_cursor();
       on_quit();
