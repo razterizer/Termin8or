@@ -209,7 +209,7 @@ void draw_confirm_quit(SpriteHandler<NR, NC>& sh, YesNoButtons button)
   sh.write_buffer(msg, nr/2 + 5, (nc - msg_len)/2, Text::Color::White, Text::Color::DarkCyan);
 }
 
-static const int c_hiscore_name_len = 8;
+static const int c_hiscore_name_max_len = 8;
 
 struct HiScoreItem
 {
@@ -218,7 +218,7 @@ struct HiScoreItem
   
   void reset(int new_score)
   {
-    name = str::rep_char(' ', c_hiscore_name_len);
+    name = str::rep_char(' ', c_hiscore_name_max_len);
     score = new_score;
   }
 };
@@ -230,7 +230,6 @@ bool draw_input_hiscore(SpriteHandler<NR, NC>& sh,
 {
   const auto nr = static_cast<int>(NR);
   const auto nc = static_cast<int>(NC);
-  const int num_max_name_chars = 5;
   const int r = nr/2 - 2;
   std::string msg = "Enter your name: ";
   auto msg_len = static_cast<int>(msg.length());
@@ -264,8 +263,8 @@ bool draw_input_hiscore(SpriteHandler<NR, NC>& sh,
   else if (kpd.curr_special_key == keyboard::SpecialKey::Right)
   {
     caret_idx++;
-    if (caret_idx >= num_max_name_chars)
-      caret_idx = num_max_name_chars - 1;
+    if (caret_idx >= c_hiscore_name_max_len)
+      caret_idx = c_hiscore_name_max_len - 1;
   }
   
   return kpd.curr_special_key == keyboard::SpecialKey::Enter;
@@ -296,7 +295,7 @@ void draw_hiscores(SpriteHandler<NR, NC>& sh, const std::vector<HiScoreItem>& hi
     sh.write_buffer(msg, r, c_score, Text::Color::Green, Text::Color::Black);
     
     msg = str::trim_ret(hsi.name);
-    msg += str::rep_char('.', c_hiscore_name_len - static_cast<int>(msg.length()));
+    msg += str::rep_char('.', c_hiscore_name_max_len - static_cast<int>(msg.length()));
     sh.write_buffer(msg, r, c_name, Text::Color::Green, Text::Color::Black);
     
     r++;
