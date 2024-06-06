@@ -294,7 +294,7 @@ private:
       {
         draw_hiscores(sh, hiscore_list);
         
-        if (kpd.curr_key == ' ')
+        if (kpd.curr_key == ' ' || kpd.quit)
         {
           restore_cursor();
           on_quit();
