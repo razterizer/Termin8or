@@ -16,9 +16,29 @@
 struct GameEngineParams
 {
   bool enable_quit_confirm_screen = true;
-  Text::Color bg_color_default = Text::Color::Default;
-  Text::Color bg_color_title = Text::Color::Default;
-  Text::Color bg_color_instructions = Text::Color::Default;
+  bool enable_hiscores = true;
+  
+  Text::Color screen_bg_color_default = Text::Color::Default;
+  Text::Color screen_bg_color_title = Text::Color::Default;
+  Text::Color screen_bg_color_instructions = Text::Color::Default;
+  
+  std::optional<Text::Color> screen_bg_color_paused = std::nullopt;
+  
+  std::optional<Text::Color> screen_bg_color_quit_confirm = Text::Color::DarkCyan;
+  styles::WidgetStyle quit_confirm_title_style { Text::Color::Black, Text::Color::DarkCyan };
+  styles::ButtonStyle quit_confirm_button_style { Text::Color::Black, Text::Color::DarkCyan, Text::Color::Cyan };
+  styles::WidgetStyle quit_confirm_info_style { Text::Color::White, Text::Color::DarkCyan };
+  
+  std::optional<Text::Color> screen_bg_color_input_hiscore = Text::Color::DarkGray;
+  styles::WidgetStyle input_hiscore_title_style { Text::Color::Green, Text::Color::Black };
+  styles::PromptStyle input_hiscore_prompt_style { Text::Color::Green, Text::Color::Black, Text::Color::DarkGreen };
+  styles::WidgetStyle input_hiscore_info_style { Text::Color::DarkGreen, Text::Color::Black };
+  
+  std::optional<Text::Color> screen_bg_color_hiscores = Text::Color::DarkGray;
+  styles::WidgetStyle hiscores_title_style { Text::Color::Green, Text::Color::Black };
+  styles::WidgetStyle hiscores_score_style { Text::Color::Green, Text::Color::Black };
+  styles::WidgetStyle hiscores_name_style { Text::Color::Green, Text::Color::Black };
+  styles::WidgetStyle hiscores_info_style { Text::Color::DarkGreen, Text::Color::Black };
 };
 
 template<int NR = 30, int NC = 80>
@@ -197,7 +217,11 @@ private:
     }
     else if (show_quit_confirm && !show_hiscores)
     {
-      draw_confirm_quit(sh, quit_confirm_button);
+      bg_color = m_params.screen_bg_color_quit_confirm.value_or(bg_color);
+      draw_confirm_quit(sh, quit_confirm_button,
+                        m_params.quit_confirm_title_style,
+                        m_params.quit_confirm_button_style,
+                        m_params.quit_confirm_info_style);
       if (kpd.curr_special_key == keyboard::SpecialKey::Left)
         quit_confirm_button = YesNoButtons::Yes;
       else if (kpd.curr_special_key == keyboard::SpecialKey::Right)
@@ -217,10 +241,10 @@ private:
     }
     else
     {
-      bg_color = m_params.bg_color_default;
+      bg_color = m_params.screen_bg_color_default;
       if (show_title)
       {
-        bg_color = m_params.bg_color_title;
+        bg_color = m_params.screen_bg_color_title;
         draw_title();
         if (kpd.curr_key == ' ')
         {
@@ -231,7 +255,7 @@ private:
       }
       else if (show_instructions)
       {
-        bg_color = m_params.bg_color_instructions;
+        bg_color = m_params.screen_bg_color_instructions;
         draw_instructions();
         if (kpd.curr_key == ' ')
         {
@@ -240,7 +264,10 @@ private:
         }
       }
       else if (paused)
+      {
+        bg_color = m_params.screen_bg_color_paused.value_or(bg_color);
         draw_paused(sh, anim_ctr);
+      }
       else if (show_game_over)
       {
         if (game_over_timer == 0)
@@ -254,7 +281,7 @@ private:
         
         update();
           
-        if (kpd.curr_key == ' ')
+        if (m_params.enable_hiscores && kpd.curr_key == ' ')
         {
           on_exit_game_over();
           show_game_over = false;
@@ -277,7 +304,7 @@ private:
         
         update();
         
-        if (kpd.curr_key == ' ')
+        if (m_params.enable_hiscores && kpd.curr_key == ' ')
         {
           on_exit_you_won();
           show_you_won = false;
@@ -289,7 +316,11 @@ private:
       }
       else if (show_input_hiscore)
       {
-        if (draw_input_hiscore(sh, kpd, curr_score_item, hiscore_caret_idx, anim_ctr))
+        bg_color = m_params.screen_bg_color_input_hiscore.value_or(bg_color);
+        if (draw_input_hiscore(sh, kpd, curr_score_item, hiscore_caret_idx, anim_ctr,
+                               m_params.input_hiscore_title_style,
+                               m_params.input_hiscore_prompt_style,
+                               m_params.input_hiscore_info_style))
         {
           on_exit_input_hiscore();
           handle_hiscores(curr_score_item);
@@ -300,7 +331,12 @@ private:
       }
       else if (show_hiscores)
       {
-        draw_hiscores(sh, hiscore_list);
+        bg_color = m_params.screen_bg_color_hiscores.value_or(bg_color);
+        draw_hiscores(sh, hiscore_list,
+                      m_params.hiscores_title_style,
+                      m_params.hiscores_score_style,
+                      m_params.hiscores_name_style,
+                      m_params.hiscores_info_style);
         
         if (kpd.curr_key == ' ' || kpd.quit)
         {
