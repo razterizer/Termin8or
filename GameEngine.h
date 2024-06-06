@@ -13,6 +13,14 @@
 #include <Core/Math.h>
 #include <Core/FolderHelper.h>
 
+struct GameEngineParams
+{
+  bool use_quit_confirm_screen = true;
+  Text::Color bg_color_default = Text::Color::Default;
+  Text::Color bg_color_title = Text::Color::Default;
+  Text::Color bg_color_instructions = Text::Color::Default;
+};
+
 template<int NR = 30, int NC = 80>
 class GameEngine
 {
@@ -26,9 +34,7 @@ class GameEngine
   bool show_hiscores = false;
   
   std::string_view path_to_exe;
-  const Text::Color c_bg_color_default = Text::Color::Default;
-  const Text::Color c_bg_color_title = Text::Color::Default;
-  const Text::Color c_bg_color_instructions = Text::Color::Default;
+  GameEngineParams m_params;
   
   int delay = 50'000; // 100'000 (10 FPS) // 60'000 (16.67 FPS);
   int fps = 12; // 5
@@ -134,13 +140,9 @@ protected:
   
 public:
   GameEngine(std::string_view exe_path,
-             const Text::Color bg_col_def,
-             const Text::Color bg_col_title,
-             const Text::Color bg_col_instr)
+             const GameEngineParams& params)
     : path_to_exe(exe_path)
-    , c_bg_color_default(bg_col_def)
-    , c_bg_color_title(bg_col_title)
-    , c_bg_color_instructions(bg_col_instr)
+    , m_params(params)
   {}
   
   virtual ~GameEngine() = default;
@@ -187,7 +189,13 @@ private:
     else if (kpd.pause)
       math::toggle(paused);
       
-    if (show_quit_confirm && !show_hiscores)
+    if (!m_params.use_quit_confirm_screen && kpd.quit)
+    {
+      restore_cursor();
+      on_quit();
+      return false;
+    }
+    else if (show_quit_confirm && !show_hiscores)
     {
       draw_confirm_quit(sh, quit_confirm_button);
       if (kpd.curr_special_key == keyboard::SpecialKey::Left)
@@ -209,10 +217,10 @@ private:
     }
     else
     {
-      bg_color = c_bg_color_default;
+      bg_color = m_params.bg_color_default;
       if (show_title)
       {
-        bg_color = c_bg_color_title;
+        bg_color = m_params.bg_color_title;
         draw_title();
         if (kpd.curr_key == ' ')
         {
@@ -223,7 +231,7 @@ private:
       }
       else if (show_instructions)
       {
-        bg_color = c_bg_color_instructions;
+        bg_color = m_params.bg_color_instructions;
         draw_instructions();
         if (kpd.curr_key == ' ')
         {
