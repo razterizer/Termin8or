@@ -8,6 +8,7 @@
 #pragma once
 #include "SpriteHandler.h"
 #include "Text.h"
+#include "Styles.h"
 
 #include <iostream>
 #include <sstream>
@@ -36,18 +37,12 @@ namespace ASCII_Fonts
 
   struct ColorScheme
   {
-    Text::Color fg_internal = Text::Color::White;
-    Text::Color bg_internal = Text::Color::DarkGray;
-    Text::Color fg_side_h = Text::Color::White;
-    Text::Color bg_side_h = Text::Color::Black;
-    Text::Color fg_side_v = Text::Color::LightGray;
-    Text::Color bg_side_v = Text::Color::White;
-    Text::Color fg_dot_internal = Text::Color::White;
-    Text::Color bg_dot_internal = Text::Color::Red;
-    Text::Color fg_dot_side_h = Text::Color::White;
-    Text::Color bg_dot_side_h = Text::Color::DarkRed;
-    Text::Color fg_dot_side_v = Text::Color::LightGray;
-    Text::Color bg_dot_side_v = Text::Color::White;
+    styles::Style internal { Text::Color::White, Text::Color::DarkGray };
+    styles::Style side_h { Text::Color::White, Text::Color::Black };
+    styles::Style side_v { Text::Color::LightGray, Text::Color::White };
+    styles::Style dot_internal { Text::Color::White, Text::Color::Red };
+    styles::Style dot_side_h { Text::Color::White, Text::Color::DarkRed };
+    styles::Style dot_side_v { Text::Color::LightGray, Text::Color::White };
   };
 
   struct FontPiece
@@ -55,8 +50,7 @@ namespace ASCII_Fonts
     std::string part;
     int r = 0;
     int c = 0;
-    Text::Color fg_color = Text::Color::Black;
-    Text::Color bg_color = Text::Color::Transparent;
+    styles::Style style { Text::Color::Black, Text::Color::Transparent };
     int prio = 0;
   };
 
@@ -83,17 +77,17 @@ namespace ASCII_Fonts
     if (col_type == "T2")
       return Text::Color::Transparent2;
     if (col_type == "I")
-      return colors.fg_internal;
+      return colors.internal.fg_color;
     if (col_type == "SH")
-      return colors.fg_side_h;
+      return colors.side_h.fg_color;
     if (col_type == "SV")
-      return colors.fg_side_v;
+      return colors.side_v.fg_color;
     if (col_type == "DI")
-      return colors.fg_dot_internal;
+      return colors.dot_internal.fg_color;
     if (col_type == "DSH")
-      return colors.fg_dot_side_h;
+      return colors.dot_side_h.fg_color;
     if (col_type == "DSV")
-      return colors.fg_dot_side_v;
+      return colors.dot_side_v.fg_color;
     return Text::Color::Transparent;
   }
 
@@ -104,17 +98,17 @@ namespace ASCII_Fonts
     if (col_type == "T2")
       return Text::Color::Transparent2;
     if (col_type == "I")
-      return colors.bg_internal;
+      return colors.internal.bg_color;
     if (col_type == "SH")
-      return colors.bg_side_h;
+      return colors.side_h.bg_color;
     if (col_type == "SV")
-      return colors.bg_side_v;
+      return colors.side_v.bg_color;
     if (col_type == "DI")
-      return colors.bg_dot_internal;
+      return colors.dot_internal.bg_color;
     if (col_type == "DSH")
-      return colors.bg_dot_side_h;
+      return colors.dot_side_h.bg_color;
     if (col_type == "DSV")
-      return colors.bg_dot_side_v;
+      return colors.dot_side_v.bg_color;
     return Text::Color::Transparent;
   }
   
@@ -331,8 +325,8 @@ namespace ASCII_Fonts
                 {
                   piece.r = r;
                   piece.c = c;
-                  piece.fg_color = get_fg_color(fg, colors);
-                  piece.bg_color = get_bg_color(bg, colors);
+                  piece.style.fg_color = get_fg_color(fg, colors);
+                  piece.style.bg_color = get_bg_color(bg, colors);
                   piece.prio = 0;
 
                   if (iss2 >> glyph_part_prio)
@@ -384,8 +378,7 @@ namespace ASCII_Fonts
         t.str = piece.part;
         t.r = r + piece.r;
         t.c = c + piece.c;
-        t.fg_color = piece.fg_color;
-        t.bg_color = piece.bg_color;
+        t.style = piece.style;
         t.priority = ch_curr_order + piece.prio;
         sh.add_ordered_text(t);
       }

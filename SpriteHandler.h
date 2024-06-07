@@ -1,6 +1,7 @@
 #pragma once
 #include "Text.h"
 #include "Rectangle.h"
+#include "Styles.h"
 #include <Core/StringHelper.h>
 #include <Core/TextBox.h>
 #include <Core/StlUtils.h>
@@ -12,8 +13,7 @@ struct OrderedText
   int r = -1;
   int c = -1;
   int priority = 0;
-  Text::Color fg_color = Text::Color::Default;
-  Text::Color bg_color = Text::Color::Transparent;
+  styles::Style style;
 };
 
 
@@ -91,7 +91,7 @@ public:
   {
     stlutils::sort(ordered_texts, [](const auto& tA, const auto& tB) { return tA.priority > tB.priority; });
     for (const auto& text : ordered_texts)
-      write_buffer(text.str, text.r, text.c, text.fg_color, text.bg_color);
+      write_buffer(text.str, text.r, text.c, text.style.fg_color, text.style.bg_color);
     // Purge the text vector.
     ordered_texts.clear();
   }
