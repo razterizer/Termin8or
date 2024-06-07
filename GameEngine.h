@@ -25,20 +25,20 @@ struct GameEngineParams
   std::optional<Text::Color> screen_bg_color_paused = std::nullopt;
   
   std::optional<Text::Color> screen_bg_color_quit_confirm = Text::Color::DarkCyan;
-  styles::WidgetStyle quit_confirm_title_style { Text::Color::Black, Text::Color::DarkCyan };
+  styles::Style quit_confirm_title_style { Text::Color::Black, Text::Color::DarkCyan };
   styles::ButtonStyle quit_confirm_button_style { Text::Color::Black, Text::Color::DarkCyan, Text::Color::Cyan };
-  styles::WidgetStyle quit_confirm_info_style { Text::Color::White, Text::Color::DarkCyan };
+  styles::Style quit_confirm_info_style { Text::Color::White, Text::Color::DarkCyan };
   
   std::optional<Text::Color> screen_bg_color_input_hiscore = Text::Color::DarkGray;
-  styles::WidgetStyle input_hiscore_title_style { Text::Color::Green, Text::Color::Black };
+  styles::Style input_hiscore_title_style { Text::Color::Green, Text::Color::Black };
   styles::PromptStyle input_hiscore_prompt_style { Text::Color::Green, Text::Color::Black, Text::Color::DarkGreen };
-  styles::WidgetStyle input_hiscore_info_style { Text::Color::DarkGreen, Text::Color::Black };
+  styles::Style input_hiscore_info_style { Text::Color::DarkGreen, Text::Color::Black };
   
   std::optional<Text::Color> screen_bg_color_hiscores = Text::Color::DarkGray;
-  styles::WidgetStyle hiscores_title_style { Text::Color::Green, Text::Color::Black };
-  styles::WidgetStyle hiscores_score_style { Text::Color::Green, Text::Color::Black };
-  styles::WidgetStyle hiscores_name_style { Text::Color::Green, Text::Color::Black };
-  styles::WidgetStyle hiscores_info_style { Text::Color::DarkGreen, Text::Color::Black };
+  styles::Style hiscores_title_style { Text::Color::Green, Text::Color::Black };
+  styles::Style hiscores_score_style { Text::Color::Green, Text::Color::Black };
+  styles::Style hiscores_name_style { Text::Color::Green, Text::Color::Black };
+  styles::Style hiscores_info_style { Text::Color::DarkGreen, Text::Color::Black };
 };
 
 template<int NR = 30, int NC = 80>

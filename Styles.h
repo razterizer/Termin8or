@@ -11,24 +11,24 @@
 namespace styles
 {
 
-  struct WidgetStyle
+  struct Style
   {
-    WidgetStyle(Text::Color fg, Text::Color bg) : fg_color(fg), bg_color(bg) {}
+    Style(Text::Color fg, Text::Color bg) : fg_color(fg), bg_color(bg) {}
     Text::Color fg_color = Text::Color::Default;
     Text::Color bg_color = Text::Color::Transparent;
   };
   
-  struct ButtonStyle : WidgetStyle
+  struct ButtonStyle : Style
   {
     ButtonStyle(Text::Color fg, Text::Color bg, Text::Color bg_sel)
-      : WidgetStyle(fg, bg), bg_color_selected(bg_sel) {}
+      : Style(fg, bg), bg_color_selected(bg_sel) {}
     Text::Color bg_color_selected = Text::Color::Transparent;
   };
   
-  struct PromptStyle : WidgetStyle
+  struct PromptStyle : Style
   {
     PromptStyle(Text::Color fg, Text::Color bg, Text::Color bg_cursor)
-      : WidgetStyle(fg, bg), bg_color_cursor(bg_cursor) {}
+      : Style(fg, bg), bg_color_cursor(bg_cursor) {}
     Text::Color bg_color_cursor = Text::Color::Transparent;
   };
   

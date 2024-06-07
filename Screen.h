@@ -188,9 +188,9 @@ void draw_paused(SpriteHandler<NR, NC>& sh, int anim_ctr)
 enum class YesNoButtons { No = 0, Yes = 1 };
 template<int NR, int NC>
 void draw_confirm_quit(SpriteHandler<NR, NC>& sh, YesNoButtons button,
-                       const styles::WidgetStyle& title_style,
+                       const styles::Style& title_style,
                        const styles::ButtonStyle& button_style,
-                       const styles::WidgetStyle& info_style)
+                       const styles::Style& info_style)
 {
   const auto nr = static_cast<int>(NR);
   const auto nc = static_cast<int>(NC);
@@ -231,9 +231,9 @@ template<int NR, int NC>
 bool draw_input_hiscore(SpriteHandler<NR, NC>& sh,
                         const keyboard::KeyPressData& kpd,
                         HiScoreItem& hsi, int& caret_idx, int anim_ctr,
-                        const styles::WidgetStyle& title_style,
+                        const styles::Style& title_style,
                         const styles::PromptStyle& prompt_style,
-                        const styles::WidgetStyle& info_style)
+                        const styles::Style& info_style)
 {
   const auto nr = static_cast<int>(NR);
   const auto nc = static_cast<int>(NC);
@@ -281,10 +281,10 @@ bool draw_input_hiscore(SpriteHandler<NR, NC>& sh,
 
 template<int NR, int NC>
 void draw_hiscores(SpriteHandler<NR, NC>& sh, const std::vector<HiScoreItem>& hiscore_list,
-                   const styles::WidgetStyle& title_style,
-                   const styles::WidgetStyle& score_style,
-                   const styles::WidgetStyle& name_style,
-                   const styles::WidgetStyle& info_style)
+                   const styles::Style& title_style,
+                   const styles::Style& score_style,
+                   const styles::Style& name_style,
+                   const styles::Style& info_style)
 {
   const auto nr = static_cast<int>(NR);
   const auto nc = static_cast<int>(NC);
