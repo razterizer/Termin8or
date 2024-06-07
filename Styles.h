@@ -13,6 +13,7 @@ namespace styles
 
   struct Style
   {
+    Style() = default;
     Style(Text::Color fg, Text::Color bg) : fg_color(fg), bg_color(bg) {}
     Text::Color fg_color = Text::Color::Default;
     Text::Color bg_color = Text::Color::Transparent;
@@ -20,6 +21,7 @@ namespace styles
   
   struct ButtonStyle : Style
   {
+    ButtonStyle() = default;
     ButtonStyle(Text::Color fg, Text::Color bg, Text::Color bg_sel)
       : Style(fg, bg), bg_color_selected(bg_sel) {}
     Text::Color bg_color_selected = Text::Color::Transparent;
@@ -27,6 +29,7 @@ namespace styles
   
   struct PromptStyle : Style
   {
+    PromptStyle() = default;
     PromptStyle(Text::Color fg, Text::Color bg, Text::Color bg_cursor)
       : Style(fg, bg), bg_color_cursor(bg_cursor) {}
     Text::Color bg_color_cursor = Text::Color::Transparent;
