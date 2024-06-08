@@ -36,8 +36,8 @@ struct GameEngineParams
   
   std::optional<Text::Color> screen_bg_color_hiscores = Text::Color::DarkGray;
   styles::Style hiscores_title_style { Text::Color::Green, Text::Color::Black };
-  styles::Style hiscores_score_style { Text::Color::Green, Text::Color::Black };
-  styles::Style hiscores_name_style { Text::Color::Green, Text::Color::Black };
+  styles::HiliteFGStyle hiscores_score_style { Text::Color::Green, Text::Color::Black, Text::Color::Cyan };
+  styles::HiliteFGStyle hiscores_name_style { Text::Color::Green, Text::Color::Black, Text::Color::Cyan };
   styles::Style hiscores_info_style { Text::Color::DarkGreen, Text::Color::Black };
 };
 
@@ -286,7 +286,7 @@ private:
           on_exit_game_over();
           show_game_over = false;
           show_input_hiscore = true;
-          curr_score_item.reset(score);
+          curr_score_item.init(score);
           hiscore_caret_idx = 0;
           on_enter_input_hiscore();
         }
@@ -309,7 +309,7 @@ private:
           on_exit_you_won();
           show_you_won = false;
           show_input_hiscore = true;
-          curr_score_item.reset(score);
+          curr_score_item.init(score);
           hiscore_caret_idx = 0;
           on_enter_input_hiscore();
         }

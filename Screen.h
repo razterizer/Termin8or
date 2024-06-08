@@ -219,11 +219,13 @@ struct HiScoreItem
 {
   std::string name;
   int score = 0;
+  bool current_game = false;
   
-  void reset(int new_score)
+  void init(int new_score)
   {
     name = str::rep_char(' ', c_hiscore_name_max_len);
     score = new_score;
+    current_game = true;
   }
 };
 
@@ -282,8 +284,8 @@ bool draw_input_hiscore(SpriteHandler<NR, NC>& sh,
 template<int NR, int NC>
 void draw_hiscores(SpriteHandler<NR, NC>& sh, const std::vector<HiScoreItem>& hiscore_list,
                    const styles::Style& title_style,
-                   const styles::Style& score_style,
-                   const styles::Style& name_style,
+                   const styles::HiliteFGStyle& score_style,
+                   const styles::HiliteFGStyle& name_style,
                    const styles::Style& info_style)
 {
   const auto nr = static_cast<int>(NR);
@@ -305,11 +307,15 @@ void draw_hiscores(SpriteHandler<NR, NC>& sh, const std::vector<HiScoreItem>& hi
       break;
     msg = std::to_string(hsi.score);
     msg = str::adjust_str(msg, str::Adjustment::Right, c_score_len, 0, '0');
-    sh.write_buffer(msg, r, c_score, score_style.fg_color, score_style.bg_color);
+    sh.write_buffer(msg, r, c_score,
+                    hsi.current_game ? score_style.fg_color_hilite : score_style.fg_color,
+                    score_style.bg_color);
     
     msg = str::trim_ret(hsi.name);
     msg += str::rep_char('.', c_hiscore_name_max_len - static_cast<int>(msg.length()));
-    sh.write_buffer(msg, r, c_name, name_style.fg_color, name_style.bg_color);
+    sh.write_buffer(msg, r, c_name,
+                    hsi.current_game ? name_style.fg_color_hilite : name_style.fg_color,
+                    name_style.bg_color);
     
     r++;
   }
