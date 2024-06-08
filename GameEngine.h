@@ -15,6 +15,8 @@
 
 struct GameEngineParams
 {
+  bool enable_title_screen = true;
+  bool enable_instructions_screen = true;
   bool enable_quit_confirm_screen = true;
   bool enable_hiscores = true;
   
@@ -242,7 +244,7 @@ private:
     else
     {
       bg_color = m_params.screen_bg_color_default;
-      if (show_title)
+      if (m_params.enable_title_screen && show_title)
       {
         bg_color = m_params.screen_bg_color_title;
         draw_title();
@@ -253,7 +255,7 @@ private:
           show_instructions = true;
         }
       }
-      else if (show_instructions)
+      else if (m_params.enable_instructions_screen & show_instructions)
       {
         bg_color = m_params.screen_bg_color_instructions;
         draw_instructions();
