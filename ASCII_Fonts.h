@@ -230,13 +230,14 @@ namespace ASCII_Fonts
         while (std::getline(txt_file, line))
         {
           // Data section.
-          auto tokens = str::tokenize(line, delim, scope_delim);
           if (line.starts_with("char:"))
           {
             kerning = false;
             ordering = false;
             ch_prev = -1;
             ch_prev_vec.clear();
+            
+            auto tokens = str::tokenize(line, delim, scope_delim);
             
             auto num_tokens = static_cast<int>(tokens.size());
             for (int tk_idx = 0; tk_idx < num_tokens; tk_idx += 2)
