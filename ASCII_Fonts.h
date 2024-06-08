@@ -50,7 +50,7 @@ namespace ASCII_Fonts
     std::string part;
     int r = 0;
     int c = 0;
-    styles::Style style { Text::Color::Black, Text::Color::Transparent };
+    std::string fg, bg;
     int prio = 0;
   };
 
@@ -133,7 +133,7 @@ namespace ASCII_Fonts
 #endif
   }
 
-  FontDataColl load_font_data(const ColorScheme& colors, const std::string& path_to_font_data)
+  FontDataColl load_font_data(const std::string& path_to_font_data)
   {
     FontDataColl font_data;
     
@@ -325,8 +325,8 @@ namespace ASCII_Fonts
                 {
                   piece.r = r;
                   piece.c = c;
-                  piece.style.fg_color = get_fg_color(fg, colors);
-                  piece.style.bg_color = get_bg_color(bg, colors);
+                  piece.fg = fg;
+                  piece.bg = bg;
                   piece.prio = 0;
 
                   if (iss2 >> glyph_part_prio)
@@ -353,7 +353,7 @@ namespace ASCII_Fonts
   // (r, c) : top left corner of text.
   // returns the relative start column (top left corner) for the next character.
   template<int NR, int NC>
-  int draw_char(SpriteHandler<NR, NC>& sh, const FontData& curr_font,
+  int draw_char(SpriteHandler<NR, NC>& sh, const FontData& curr_font, const ColorScheme& colors,
                 const char ch_prev, const char ch_curr, const char ch_next,
                 int ch_curr_order,
                 int r, int c,
@@ -378,7 +378,11 @@ namespace ASCII_Fonts
         t.str = piece.part;
         t.r = r + piece.r;
         t.c = c + piece.c;
-        t.style = piece.style;
+        t.style =
+        {
+          get_fg_color(piece.fg, colors),
+          get_bg_color(piece.bg, colors)
+        };
         t.priority = ch_curr_order + piece.prio;
         sh.add_ordered_text(t);
       }
@@ -437,7 +441,8 @@ namespace ASCII_Fonts
 
   // (r, c) : top left corner of text.
   template<int NR, int NC>
-  void draw_text(SpriteHandler<NR, NC>& sh, const FontDataColl& font_data, const std::string& text,
+  void draw_text(SpriteHandler<NR, NC>& sh, const FontDataColl& font_data, const ColorScheme& colors,
+                 const std::string& text,
                  int r, int c, Font font, const std::vector<int>& custom_kerning = {})
   {
     int width = 0;
@@ -459,7 +464,7 @@ namespace ASCII_Fonts
           ck = custom_kerning[ch_idx];
         int ch_curr_order = ordered_text[ch_idx].second;
         
-        width += draw_char(sh, curr_font,
+        width += draw_char(sh, curr_font, colors,
           ch_prev, ch_curr, ch_next,
           ch_curr_order,
           r, c + width,
