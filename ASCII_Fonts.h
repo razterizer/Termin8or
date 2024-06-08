@@ -66,6 +66,7 @@ namespace ASCII_Fonts
     std::map<std::pair<char, char>, FontChar> font_chars_by_prev_char; // { ch_prev, ch_curr }.
     std::map<std::pair<char, char>, int> kernings;
     std::map<std::pair<char, char>, std::pair<int, int>> orderings;
+    bool treat_lower_case_as_upper_case = false;
   };
 
   using FontDataColl = std::map<Font, FontData>;
@@ -201,6 +202,7 @@ namespace ASCII_Fonts
       FontPiece piece;
       bool kerning = false;
       bool ordering = false;
+      bool treat_lower_case_as_upper_case = false;
       
       if (txt_file.is_open())
       {
@@ -230,7 +232,15 @@ namespace ASCII_Fonts
         while (std::getline(txt_file, line))
         {
           // Data section.
-          if (line.starts_with("char:"))
+          if (line.starts_with("treat_lower_case_as_upper_case"))
+          {
+            auto tokens = str::tokenize(line, { ' ', '=' });
+            if (tokens.size() != 2)
+              std::cerr << "Error in ASCII_Fonts::load_font_data() : Expected two tokens, not " << tokens.size() << "!" << std::endl;
+            if (str::to_lower(tokens[1]) == "true")
+              treat_lower_case_as_upper_case = true;
+          }
+          else if (line.starts_with("char:"))
           {
             kerning = false;
             ordering = false;
@@ -346,6 +356,8 @@ namespace ASCII_Fonts
         }
       }
       
+      curr_font.treat_lower_case_as_upper_case = treat_lower_case_as_upper_case;
+      
       txt_file.close();
     }
     return font_data;
@@ -355,11 +367,18 @@ namespace ASCII_Fonts
   // returns the relative start column (top left corner) for the next character.
   template<int NR, int NC>
   int draw_char(SpriteHandler<NR, NC>& sh, const FontData& curr_font, const ColorScheme& colors,
-                const char ch_prev, const char ch_curr, const char ch_next,
+                char ch_prev, char ch_curr, char ch_next,
                 int ch_curr_order,
                 int r, int c,
                 int custom_kerning = 0)
   {
+    if (curr_font.treat_lower_case_as_upper_case)
+    {
+      ch_prev = str::to_upper(ch_prev);
+      ch_curr = str::to_upper(ch_curr);
+      ch_next = str::to_upper(ch_next);
+    }
+    
     FontChar const * curr_char = nullptr;
     auto it_char_pc = curr_font.font_chars_by_prev_char.find({ch_prev, ch_curr});
     if (it_char_pc != curr_font.font_chars_by_prev_char.end())
@@ -423,6 +442,12 @@ namespace ASCII_Fonts
     
       char ch_curr = text[ch_idx];
       char ch_prev = text[ch_idx - 1];
+      
+      if (curr_font.treat_lower_case_as_upper_case)
+      {
+        ch_prev = str::to_upper(ch_prev);
+        ch_curr = str::to_upper(ch_curr);
+      }
       
       auto it_o = curr_font.orderings.find({ ch_prev, ch_curr });
       if (it_o != curr_font.orderings.end())
