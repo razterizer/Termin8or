@@ -35,4 +35,12 @@ namespace styles
     Text::Color bg_color_cursor = Text::Color::Transparent;
   };
   
+  struct HiliteFGStyle : Style
+  {
+    HiliteFGStyle() = default;
+    HiliteFGStyle(Text::Color fg, Text::Color bg, Text::Color fg_hilite)
+      : Style(fg, bg), fg_color_hilite(fg_hilite) {}
+    Text::Color fg_color_hilite = Text::Color::Default;
+  };
+  
 }
