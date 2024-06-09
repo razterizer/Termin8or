@@ -5,6 +5,7 @@ namespace ttl
   
   struct Rectangle
   {
+    Rectangle() = default;
     Rectangle(int rr, int cc, int rr_len, int cc_len)
       : r(rr), c(cc), r_len(rr_len), c_len(cc_len)
     {}
