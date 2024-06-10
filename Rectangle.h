@@ -15,7 +15,7 @@ namespace ttl
     int r_len = 0; // #NOTE: Downwards height!
     int c_len = 0;
   
-    bool is_inside(int rr, int cc)
+    bool is_inside(int rr, int cc) const
     {
       return r <= rr && rr <= r + r_len && c <= cc && cc <= c + c_len;
     }
