@@ -19,6 +19,11 @@ namespace ttl
     {
       return r <= rr && rr <= r + r_len && c <= cc && cc <= c + c_len;
     }
+    
+    bool is_empty() const
+    {
+      return r_len == 0 && c_len == 0;
+    }
   };
   
 }
