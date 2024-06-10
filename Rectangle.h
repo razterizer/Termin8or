@@ -24,6 +24,14 @@ namespace ttl
     {
       return r_len == 0 && c_len == 0;
     }
+    
+    RC center() const
+    {
+      RC pc;
+      pc.r = r + r_len/2;
+      pc.c = c + c_len/2;
+      return pc;
+    }
   };
   
 }
