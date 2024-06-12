@@ -38,6 +38,7 @@ struct GameEngineParams
   
   std::optional<Text::Color> screen_bg_color_hiscores = Text::Color::DarkGray;
   styles::Style hiscores_title_style { Text::Color::Green, Text::Color::Black };
+  styles::HiliteFGStyle hiscores_nr_style { Text::Color::Green, Text::Color::Black, Text::Color::Cyan };
   styles::HiliteFGStyle hiscores_score_style { Text::Color::Green, Text::Color::Black, Text::Color::Cyan };
   styles::HiliteFGStyle hiscores_name_style { Text::Color::Green, Text::Color::Black, Text::Color::Cyan };
   styles::Style hiscores_info_style { Text::Color::DarkGreen, Text::Color::Black };
@@ -331,6 +332,7 @@ private:
         bg_color = m_params.screen_bg_color_hiscores.value_or(bg_color);
         draw_hiscores(sh, hiscore_list,
                       m_params.hiscores_title_style,
+                      m_params.hiscores_nr_style,
                       m_params.hiscores_score_style,
                       m_params.hiscores_name_style,
                       m_params.hiscores_info_style);

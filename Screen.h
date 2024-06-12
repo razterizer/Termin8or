@@ -284,6 +284,7 @@ bool draw_input_hiscore(SpriteHandler<NR, NC>& sh,
 template<int NR, int NC>
 void draw_hiscores(SpriteHandler<NR, NC>& sh, const std::vector<HiScoreItem>& hiscore_list,
                    const styles::Style& title_style,
+                   const styles::HiliteFGStyle& nr_style,
                    const styles::HiliteFGStyle& score_style,
                    const styles::HiliteFGStyle& name_style,
                    const styles::Style& info_style)
@@ -299,26 +300,38 @@ void draw_hiscores(SpriteHandler<NR, NC>& sh, const std::vector<HiScoreItem>& hi
   int r = r_title + 2;
   const int c_score_len = 10; // 8
   const int c_padding = 2;
-  const int c_score = nc/2 - c_score_len - c_padding;
-  const int c_name = nc/2 + c_padding;
+  const int c_score = 2 + nc/2 - c_score_len - c_padding;
+  const int c_name = 2 + nc/2 + c_padding;
+  int hs_nr = 1;
   for (const auto& hsi : hiscore_list)
   {
     if (r + 3 >= nr)
       break;
+      
+    auto nr_fg_color = hsi.current_game ? nr_style.fg_color_hilite : nr_style.fg_color;
+    auto score_fg_color = hsi.current_game ? score_style.fg_color_hilite : score_style.fg_color;
+    auto name_fg_color = hsi.current_game ? name_style.fg_color_hilite : name_style.fg_color;
+    
+    msg = std::to_string(hs_nr++);
+    msg = str::adjust_str(msg, str::Adjustment::Right, 2, 0, '0');
+    msg += ". ";
+    sh.write_buffer(msg, r, c_score - 4,
+                    nr_fg_color, nr_style.bg_color);
+    
     msg = std::to_string(hsi.score);
     msg = str::adjust_str(msg, str::Adjustment::Right, c_score_len, 0, '0');
     sh.write_buffer(msg, r, c_score,
-                    hsi.current_game ? score_style.fg_color_hilite : score_style.fg_color,
-                    score_style.bg_color);
+                    score_fg_color, score_style.bg_color);
                     
-    sh.write_buffer(str::rep_char(' ', c_padding), r, c_score + c_score_len, hsi.current_game ? score_style.fg_color_hilite : score_style.fg_color, score_style.bg_color);
-    sh.write_buffer(str::rep_char(' ', c_padding), r, c_score + c_score_len + c_padding, hsi.current_game ? name_style.fg_color_hilite : name_style.fg_color, name_style.bg_color);
+    sh.write_buffer(str::rep_char(' ', c_padding), r, c_score + c_score_len,
+                    score_fg_color, score_style.bg_color);
+    sh.write_buffer(str::rep_char(' ', c_padding), r, c_score + c_score_len + c_padding,
+                    name_fg_color, name_style.bg_color);
     
     msg = str::trim_ret(hsi.name);
     msg += str::rep_char('.', c_hiscore_name_max_len - static_cast<int>(msg.length()));
     sh.write_buffer(msg, r, c_name,
-                    hsi.current_game ? name_style.fg_color_hilite : name_style.fg_color,
-                    name_style.bg_color);
+                    name_fg_color, name_style.bg_color);
     
     r++;
   }
