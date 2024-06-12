@@ -265,11 +265,6 @@ private:
           show_instructions = false;
         }
       }
-      else if (paused)
-      {
-        bg_color = m_params.screen_bg_color_paused.value_or(bg_color);
-        draw_paused(sh, anim_ctr);
-      }
       else if (show_game_over)
       {
         if (game_over_timer == 0)
@@ -346,6 +341,11 @@ private:
           on_quit();
           return false;
         }
+      }
+      else if (paused)
+      {
+        bg_color = m_params.screen_bg_color_paused.value_or(bg_color);
+        draw_paused(sh, anim_ctr);
       }
       else
         update();
