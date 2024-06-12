@@ -1470,7 +1470,7 @@ char: 'Z', width: 6, char_prev: 'L'
 "|____/"
 4 0 I I
 
-char: 'Z', width: 6, char_prev: 'T'
+char: 'Z', width: 6, char_prev: 'T', 'V'
 "____"
 0 1 I T2
 "Y_   \"
@@ -1729,6 +1729,9 @@ kerning:
 'T' -> '_' = -2
 '_' -> 'T' = -3
 '_' -> 'U' = -1
+'V' -> 'Z' = -1
+'V' -> '_' = -2
+'_' -> 'V' = -1
 
 ordering:
 '-' -> '#' = 0, 1
@@ -1834,3 +1837,4 @@ ordering:
 'T' -> 'W' = 0, 1
 'T' -> 'Z' = 0, 1
 'Z' -> 'T' = 0, 1
+'V' -> 'Z' = 0, 1
