@@ -310,6 +310,9 @@ void draw_hiscores(SpriteHandler<NR, NC>& sh, const std::vector<HiScoreItem>& hi
     sh.write_buffer(msg, r, c_score,
                     hsi.current_game ? score_style.fg_color_hilite : score_style.fg_color,
                     score_style.bg_color);
+                    
+    sh.write_buffer(str::rep_char(' ', c_padding), r, c_score + c_score_len, hsi.current_game ? score_style.fg_color_hilite : score_style.fg_color, score_style.bg_color);
+    sh.write_buffer(str::rep_char(' ', c_padding), r, c_score + c_score_len + c_padding, hsi.current_game ? name_style.fg_color_hilite : name_style.fg_color, name_style.bg_color);
     
     msg = str::trim_ret(hsi.name);
     msg += str::rep_char('.', c_hiscore_name_max_len - static_cast<int>(msg.length()));
