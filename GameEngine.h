@@ -217,7 +217,7 @@ private:
       on_quit();
       return false;
     }
-    else if (show_quit_confirm && !show_hiscores)
+    else if (show_quit_confirm && !show_hiscores && !show_input_hiscore)
     {
       bg_color = m_params.screen_bg_color_quit_confirm.value_or(bg_color);
       draw_confirm_quit(sh, quit_confirm_button,
