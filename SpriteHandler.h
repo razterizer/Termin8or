@@ -113,6 +113,11 @@ public:
     // Purge the text vector.
     ordered_texts.clear();
   }
+  
+  void write_buffer(const std::string& str, int r, int c, const styles::Style& style)
+  {
+    write_buffer(str, r, c, style.fg_color, style.bg_color);
+  }
 
   void write_buffer(const std::string& str, int r, int c, Text::Color fg_color, Text::Color bg_color = Text::Color::Transparent)
   {
