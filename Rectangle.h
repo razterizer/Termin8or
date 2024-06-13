@@ -33,6 +33,11 @@ namespace ttl
       pc.c = c + c_len/2;
       return pc;
     }
+    
+    int top() const { return r; }
+    int bottom() const { return r + r_len; }
+    int left() const { return c; }
+    int right() const { return c + c_len; }
   };
   
 }
