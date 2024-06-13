@@ -1,5 +1,6 @@
 #pragma once
 #include <Core/Math.h>
+#include "Styles.h"
 
 // Bresenham Algorithm.
 namespace bresenham
@@ -78,5 +79,145 @@ namespace bresenham
       else
         plot_line_high(sh, x0, y0, x1, y1, str, fg_color, bg_color);
     }
+  }
+}
+ 
+namespace drawing
+{
+
+  enum class OutlineType { Line, Masonry, Masonry2, Masonry3, Masonry4, Temple, Hash };
+  enum class ShadowType { None, S, SE, E, NE, N, NW, W, SW };
+  template<int NR, int NC>
+  void draw_box(SpriteHandler<NR, NC>& sh,
+                int r, int c, int len_r, int len_c,
+                OutlineType outline_type,
+                const styles::Style& outline_style = { Text::Color::Default, Text::Color::Transparent2 },
+                const styles::Style& fill_style = { Text::Color::Default, Text::Color::Transparent2 },
+                char fill_char = ' ',
+                ShadowType shadow_type = ShadowType::None,
+                const styles::Style& shadow_style = { Text::Color::Default, Text::Color::Transparent2 },
+                char shadow_char = ' ')
+  {
+    // len_r = 3, len_c = 2
+    // ###
+    // # #
+    // # #
+    // ###
+    //
+    // len_r = 4, len_c = 4 (smallest room size by default)
+    // #####
+    // #   #
+    // #   #
+    // #   #
+    // #####
+    
+    char outline_n = '#';
+    char outline_s = '#';
+    std::string outline_w = "#";
+    std::string outline_e = "#";
+    std::string outline_se = "#";
+    std::string outline_ne = "#";
+    std::string outline_nw = "#";
+    std::string outline_sw = "#";
+    switch (outline_type)
+    {
+      case OutlineType::Line:
+        outline_n = '-';
+        outline_s = '-';
+        outline_w = '|';
+        outline_e = '|';
+        outline_se = '+';
+        outline_ne = '+';
+        outline_nw = '+';
+        outline_sw = '+';
+        break;
+      case OutlineType::Masonry:
+        outline_n = '=';
+        outline_s = '=';
+        outline_w = 'H';
+        outline_e = 'H';
+        outline_se = '#';
+        outline_ne = '#';
+        outline_nw = '#';
+        outline_sw = '#';
+        break;
+      case OutlineType::Masonry2:
+        outline_n = '=';
+        outline_s = '=';
+        outline_w = '=';
+        outline_e = '=';
+        outline_se = '=';
+        outline_ne = '=';
+        outline_nw = '=';
+        outline_sw = '=';
+        break;
+      case OutlineType::Masonry3:
+        outline_n = 'M';
+        outline_s = 'W';
+        outline_w = 'H';
+        outline_e = 'H';
+        outline_se = '@';
+        outline_ne = '@';
+        outline_nw = '@';
+        outline_sw = '@';
+        break;
+      case OutlineType::Masonry4:
+        outline_n = 'H';
+        outline_s = 'H';
+        outline_w = 'H';
+        outline_e = 'H';
+        outline_se = 'H';
+        outline_ne = 'H';
+        outline_nw = 'H';
+        outline_sw = 'H';
+        break;
+      case OutlineType::Temple:
+        outline_n = 'I';
+        outline_s = 'I';
+        outline_w = 'H';
+        outline_e = 'H';
+        outline_se = 'O';
+        outline_ne = 'O';
+        outline_nw = 'O';
+        outline_sw = 'O';
+        break;
+      case OutlineType::Hash:
+      default:
+        break;
+    }
+    
+    int num_horiz = len_c + 1;
+    int num_horiz_inset = num_horiz - 2;
+    auto str_horiz_n = outline_nw + str::rep_char(outline_n, num_horiz_inset) + (len_c >= 1 ? outline_ne : "");
+    auto str_horiz_s = outline_sw + str::rep_char(outline_s, num_horiz_inset) + (len_c >= 1 ? outline_se : "");
+    auto str_fill = str::rep_char(fill_char, num_horiz_inset);
+    auto str_shadow_ns = str::rep_char(shadow_char, num_horiz_inset);
+    auto str_shadow_ew = std::string(1, shadow_char);
+    
+    sh.write_buffer(str_horiz_n, r, c, outline_style.fg_color, outline_style.bg_color);
+    
+    if (len_r >= 2)
+    {
+      if (shadow_type == ShadowType::NW || shadow_type == ShadowType::N || shadow_type == ShadowType::NE)
+        sh.write_buffer(str_shadow_ns, r + 1, c + 1, shadow_style.fg_color, shadow_style.bg_color);
+      else if (shadow_type == ShadowType::SW || shadow_type == ShadowType::S || shadow_type == ShadowType::SE)
+        sh.write_buffer(str_shadow_ns, r + len_r - 1, c + 1, shadow_style.fg_color, shadow_style.bg_color);
+    }
+    
+    bool has_west_shadow = len_c >= 2 && (shadow_type == ShadowType::SW || shadow_type == ShadowType::W || shadow_type == ShadowType::NW);
+    bool has_east_shadow = len_c >= 2 && (shadow_type == ShadowType::SE || shadow_type == ShadowType::E || shadow_type == ShadowType::NE);
+      
+    for (int i = r + 1; i <= r + len_r - 1; ++i)
+    {
+      if (has_west_shadow)
+        sh.write_buffer(str_shadow_ew, i, c + 1, shadow_style.fg_color, shadow_style.bg_color);
+      else if (has_east_shadow)
+        sh.write_buffer(str_shadow_ew, i, c + len_c - 1, shadow_style.fg_color, shadow_style.bg_color);
+        
+      sh.write_buffer(outline_w, i, c, outline_style.fg_color, outline_style.bg_color);
+      sh.write_buffer(str_fill, i, c + 1, fill_style.fg_color, fill_style.bg_color);
+      sh.write_buffer(outline_e, i, c + len_c, outline_style.fg_color, outline_style.bg_color);
+    }
+    sh.write_buffer(str_horiz_s, r + len_r, c, outline_style.fg_color, outline_style.bg_color);
   }
 }
