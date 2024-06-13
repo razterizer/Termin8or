@@ -194,14 +194,14 @@ namespace drawing
     auto str_shadow_ns = str::rep_char(shadow_char, num_horiz_inset);
     auto str_shadow_ew = std::string(1, shadow_char);
     
-    sh.write_buffer(str_horiz_n, r, c, outline_style.fg_color, outline_style.bg_color);
+    sh.write_buffer(str_horiz_n, r, c, outline_style);
     
     if (len_r >= 2)
     {
       if (shadow_type == ShadowType::NW || shadow_type == ShadowType::N || shadow_type == ShadowType::NE)
-        sh.write_buffer(str_shadow_ns, r + 1, c + 1, shadow_style.fg_color, shadow_style.bg_color);
+        sh.write_buffer(str_shadow_ns, r + 1, c + 1, shadow_style);
       else if (shadow_type == ShadowType::SW || shadow_type == ShadowType::S || shadow_type == ShadowType::SE)
-        sh.write_buffer(str_shadow_ns, r + len_r - 1, c + 1, shadow_style.fg_color, shadow_style.bg_color);
+        sh.write_buffer(str_shadow_ns, r + len_r - 1, c + 1, shadow_style);
     }
     
     bool has_west_shadow = len_c >= 2 && (shadow_type == ShadowType::SW || shadow_type == ShadowType::W || shadow_type == ShadowType::NW);
@@ -210,14 +210,14 @@ namespace drawing
     for (int i = r + 1; i <= r + len_r - 1; ++i)
     {
       if (has_west_shadow)
-        sh.write_buffer(str_shadow_ew, i, c + 1, shadow_style.fg_color, shadow_style.bg_color);
+        sh.write_buffer(str_shadow_ew, i, c + 1, shadow_style);
       else if (has_east_shadow)
-        sh.write_buffer(str_shadow_ew, i, c + len_c - 1, shadow_style.fg_color, shadow_style.bg_color);
+        sh.write_buffer(str_shadow_ew, i, c + len_c - 1, shadow_style);
         
-      sh.write_buffer(outline_w, i, c, outline_style.fg_color, outline_style.bg_color);
-      sh.write_buffer(str_fill, i, c + 1, fill_style.fg_color, fill_style.bg_color);
-      sh.write_buffer(outline_e, i, c + len_c, outline_style.fg_color, outline_style.bg_color);
+      sh.write_buffer(outline_w, i, c, outline_style);
+      sh.write_buffer(str_fill, i, c + 1, fill_style);
+      sh.write_buffer(outline_e, i, c + len_c, outline_style);
     }
-    sh.write_buffer(str_horiz_s, r + len_r, c, outline_style.fg_color, outline_style.bg_color);
+    sh.write_buffer(str_horiz_s, r + len_r, c, outline_style);
   }
 }

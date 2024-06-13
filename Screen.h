@@ -196,7 +196,7 @@ void draw_confirm_quit(SpriteHandler<NR, NC>& sh, YesNoButtons button,
   const auto nc = static_cast<int>(NC);
   std::string msg = "Are you sure you want to quit?";
   auto msg_len = static_cast<int>(msg.length());
-  sh.write_buffer(msg, nr/2 - 2, (nc - msg_len)/2, title_style.fg_color, title_style.bg_color);
+  sh.write_buffer(msg, nr/2 - 2, (nc - msg_len)/2, title_style);
   // "[Yes]      [No]"
   std::string yes = "[Yes]";
   std::string no = "[No]";
@@ -210,7 +210,7 @@ void draw_confirm_quit(SpriteHandler<NR, NC>& sh, YesNoButtons button,
   sh.write_buffer(no, nr/2 + 1, (nc - 6)/2 + no_len, button_style.fg_color, bg_color_no);
   msg = "Press arrow keys to select choice and then [Enter] key to confirm.";
   msg_len = static_cast<int>(msg.length());
-  sh.write_buffer(msg, nr/2 + 5, (nc - msg_len)/2, info_style.fg_color, info_style.bg_color);
+  sh.write_buffer(msg, nr/2 + 5, (nc - msg_len)/2, info_style);
 }
 
 static const int c_hiscore_name_max_len = 8;
@@ -245,7 +245,7 @@ bool draw_input_hiscore(SpriteHandler<NR, NC>& sh,
   const int c_base = (nc - msg_len)/2;
   const int c_prompt = c_base + msg_len;
   
-  sh.write_buffer(msg, r, c_base, title_style.fg_color, title_style.bg_color);
+  sh.write_buffer(msg, r, c_base, title_style);
   
   if (str::is_letter(kpd.curr_key) || kpd.curr_key == ' ')
   {
@@ -254,16 +254,16 @@ bool draw_input_hiscore(SpriteHandler<NR, NC>& sh,
   }
   
   auto bg_color_caret = (anim_ctr/2) % 2 == 0 ? prompt_style.bg_color_cursor : prompt_style.bg_color;
-  sh.write_buffer(hsi.name.substr(0, caret_idx), r, c_prompt, prompt_style.fg_color, prompt_style.bg_color);
+  sh.write_buffer(hsi.name.substr(0, caret_idx), r, c_prompt, prompt_style);
   sh.write_buffer(hsi.name.substr(caret_idx, 1), r, c_prompt + caret_idx, prompt_style.fg_color, bg_color_caret);
-  sh.write_buffer(hsi.name.substr(caret_idx + 1), r, c_prompt + caret_idx + 1, prompt_style.fg_color, prompt_style.bg_color);
+  sh.write_buffer(hsi.name.substr(caret_idx + 1), r, c_prompt + caret_idx + 1, prompt_style);
   
   msg = "Press arrow keys to change between characters,";
   msg_len = static_cast<int>(msg.length());
-  sh.write_buffer(msg, nr/2 + 5, (nc - msg_len)/2, info_style.fg_color, info_style.bg_color);
+  sh.write_buffer(msg, nr/2 + 5, (nc - msg_len)/2, info_style);
   msg = "then press the [Enter] key to confirm.";
   msg_len = static_cast<int>(msg.length());
-  sh.write_buffer(msg, nr/2 + 6, (nc - msg_len)/2, info_style.fg_color, info_style.bg_color);
+  sh.write_buffer(msg, nr/2 + 6, (nc - msg_len)/2, info_style);
   
   if (kpd.curr_special_key == keyboard::SpecialKey::Left)
   {
@@ -295,7 +295,7 @@ void draw_hiscores(SpriteHandler<NR, NC>& sh, const std::vector<HiScoreItem>& hi
   auto msg_len = static_cast<int>(msg.length());
   int r_title = 3;
   int c_title = (nc - msg_len)/2;
-  sh.write_buffer(msg, r_title, c_title, title_style.fg_color, title_style.bg_color);
+  sh.write_buffer(msg, r_title, c_title, title_style);
 
   int r = r_title + 2;
   const int c_score_len = 10; // 8
@@ -338,5 +338,5 @@ void draw_hiscores(SpriteHandler<NR, NC>& sh, const std::vector<HiScoreItem>& hi
   
   msg = "Press space-bar to quit...";
   msg_len = static_cast<int>(msg.length());
-  sh.write_buffer(msg, nr - 2, (nc - msg_len)/2, info_style.fg_color, info_style.bg_color);
+  sh.write_buffer(msg, nr - 2, (nc - msg_len)/2, info_style);
 }
