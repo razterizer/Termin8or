@@ -85,8 +85,8 @@ namespace bresenham
 namespace drawing
 {
 
-  enum class OutlineType { Line, Masonry, Masonry2, Masonry3, Masonry4, Temple, Hash };
-  enum class ShadowType { None, S, SE, E, NE, N, NW, W, SW };
+  enum class OutlineType { Line, Masonry, Masonry2, Masonry3, Masonry4, Temple, Hash, NUM_ITEMS };
+  enum class ShadowType { None, S, SE, E, NE, N, NW, W, SW, NUM_ITEMS };
   template<int NR, int NC>
   void draw_box(SpriteHandler<NR, NC>& sh,
                 int r, int c, int len_r, int len_c,
