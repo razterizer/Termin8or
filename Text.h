@@ -8,6 +8,7 @@
 #define NOMINMAX // Should fix the std::min()/max() and std::numeric_limits<T>::min()/max() compilation problems.
 #include <Windows.h>
 #endif
+#include <Core/Rand.h>
 
 //--------------------------+------------+------------+--------+--------+
 // Color                    | Foreground | Background | FG Win | BG Win |
@@ -70,6 +71,15 @@ public:
     Cyan,
     White
   };
+  
+  static Color get_random_color(const std::vector<Color>& palette)
+  {
+    auto num = static_cast<int>(palette.size());
+    if (num == 0)
+      return Color::Default;
+    auto idx = rnd::rand_int(0, num - 1);
+    return palette[idx];
+  }
 
   std::string get_color_string(Color text_color, Color bg_color = Color::Default) const
   {
