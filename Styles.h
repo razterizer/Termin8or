@@ -43,4 +43,14 @@ namespace styles
     Text::Color fg_color_hilite = Text::Color::Default;
   };
   
+  Style get_random_style(const std::vector<Style>& palette)
+  {
+    auto num = static_cast<int>(palette.size());
+    if (num == 0)
+      return Style {};
+    auto idx = rnd::rand_int(0, num - 1);
+    return palette[idx];
+  }
+  
+  
 }
