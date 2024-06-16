@@ -20,6 +20,26 @@ struct RC
   {
     return { r - pt.r, c - pt.c };
   }
+  RC& operator+=(const RC& pt)
+  {
+    this->r += pt.r;
+    this->c += pt.c;
+    return *this;
+  }
+  RC& operator-=(const RC& pt)
+  {
+    this->r -= pt.r;
+    this->c -= pt.c;
+    return *this;
+  }
+  RC operator*(int v) const
+  {
+    return { r * v, c * v };
+  }
+  RC operator/(int v) const
+  {
+    return { r / v, c / v };
+  }
   
   RC abs() const
   {
