@@ -12,6 +12,8 @@
 #include <Core/Rand.h>
 #include <Core/Math.h>
 #include <Core/FolderHelper.h>
+#include <Core/OneShot.h>
+#include <chrono>
 
 struct GameEngineParams
 {
@@ -127,6 +129,9 @@ class GameEngine
 protected:
   float dt = static_cast<float>(delay) / 1e6f;
   float time = 0.f;
+  double sim_time_s = 0.;
+  std::chrono::time_point<std::chrono::steady_clock> sim_start_time_s;
+  OneShot time_inited;
   
   Text t;
   SpriteHandler<NR, NC> sh;
@@ -138,6 +143,8 @@ protected:
   keyboard::KeyPressData kpd;
   
   void set_fps(float fps_val) { fps = fps_val; }
+  
+  // Used for dynamics and stuff.
   void set_delay_us(float delay_us)
   {
     delay = delay_us;
@@ -145,6 +152,8 @@ protected:
   }
   
   int& ref_score() { return score; }
+  
+  double get_sim_time_s() const { return sim_time_s; }
   
   // Callbacks
   virtual void update() = 0;
@@ -179,6 +188,9 @@ public:
     //nodelay(stdscr, TRUE);
     
     rnd::srand_time();
+    
+    if (time_inited.once())
+      sim_start_time_s = std::chrono::steady_clock::now();
   }
   
   virtual void generate_data() = 0;
@@ -200,6 +212,13 @@ public:
 private:
   bool engine_update()
   {
+    if (time_inited.was_triggered())
+    {
+      auto curr_time = std::chrono::steady_clock::now();
+      std::chrono::duration<double> elapsed_seconds = curr_time - sim_start_time_s;
+      sim_time_s = elapsed_seconds.count();
+    }
+  
     return_cursor();
     sh.clear();
     
