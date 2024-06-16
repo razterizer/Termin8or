@@ -21,6 +21,21 @@ namespace ttl
       return r <= rr && rr <= r + r_len && c <= cc && cc <= c + c_len;
     }
     
+    bool is_inside(const RC& pos) const
+    {
+      return is_inside(pos.r, pos.c);
+    }
+    
+    bool is_inside_offs(int rr, int cc, int offs) const
+    {
+      return r - offs <= rr && rr <= r + r_len + offs && c - offs <= cc && cc <= c + c_len + offs;
+    }
+    
+    bool is_inside_offs(const RC& pos, int offs) const
+    {
+      return is_inside_offs(pos.r, pos.c, offs);
+    }
+    
     bool is_empty() const
     {
       return r_len == 0 && c_len == 0;
