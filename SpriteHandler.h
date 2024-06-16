@@ -2,6 +2,7 @@
 #include "Text.h"
 #include "Rectangle.h"
 #include "Styles.h"
+#include "RC.h"
 #include <Core/StringHelper.h>
 #include <Core/TextBox.h>
 #include <Core/StlUtils.h>
@@ -297,6 +298,7 @@ public:
   
   constexpr int num_rows() const { return NR; }
   constexpr int num_cols() const { return NC; }
+  constexpr RC size() const { return { NR, NC }; }
   constexpr int num_rows_inset() const
   {
     auto nri = static_cast<int>(NR) - 2;
