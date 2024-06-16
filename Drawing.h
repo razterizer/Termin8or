@@ -86,7 +86,7 @@ namespace drawing
 {
 
   enum class OutlineType { Line, Masonry, Masonry2, Masonry3, Masonry4, Temple, Hash, NUM_ITEMS };
-  enum class ShadowType { None, S, SE, E, NE, N, NW, W, SW, NUM_ITEMS };
+  enum class Direction { None, S, SE, E, NE, N, NW, W, SW, NUM_ITEMS };
   template<int NR, int NC>
   void draw_box(SpriteHandler<NR, NC>& sh,
                 int r, int c, int len_r, int len_c,
@@ -94,7 +94,7 @@ namespace drawing
                 const styles::Style& outline_style = { Text::Color::Default, Text::Color::Transparent2 },
                 const styles::Style& fill_style = { Text::Color::Default, Text::Color::Transparent2 },
                 char fill_char = ' ',
-                ShadowType shadow_type = ShadowType::None,
+                Direction shadow_type = Direction::None,
                 const styles::Style& shadow_style = { Text::Color::Default, Text::Color::Transparent2 },
                 char shadow_char = ' ')
   {
@@ -198,14 +198,14 @@ namespace drawing
     
     if (len_r >= 2)
     {
-      if (shadow_type == ShadowType::NW || shadow_type == ShadowType::N || shadow_type == ShadowType::NE)
+      if (shadow_type == Direction::NW || shadow_type == Direction::N || shadow_type == Direction::NE)
         sh.write_buffer(str_shadow_ns, r + 1, c + 1, shadow_style);
-      else if (shadow_type == ShadowType::SW || shadow_type == ShadowType::S || shadow_type == ShadowType::SE)
+      else if (shadow_type == Direction::SW || shadow_type == Direction::S || shadow_type == Direction::SE)
         sh.write_buffer(str_shadow_ns, r + len_r - 1, c + 1, shadow_style);
     }
     
-    bool has_west_shadow = len_c >= 2 && (shadow_type == ShadowType::SW || shadow_type == ShadowType::W || shadow_type == ShadowType::NW);
-    bool has_east_shadow = len_c >= 2 && (shadow_type == ShadowType::SE || shadow_type == ShadowType::E || shadow_type == ShadowType::NE);
+    bool has_west_shadow = len_c >= 2 && (shadow_type == Direction::SW || shadow_type == Direction::W || shadow_type == Direction::NW);
+    bool has_east_shadow = len_c >= 2 && (shadow_type == Direction::SE || shadow_type == Direction::E || shadow_type == Direction::NE);
       
     for (int i = r + 1; i <= r + len_r - 1; ++i)
     {
