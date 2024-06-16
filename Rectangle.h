@@ -53,6 +53,9 @@ namespace ttl
     int bottom() const { return r + r_len; }
     int left() const { return c; }
     int right() const { return c + c_len; }
+    
+    RC pos() const { return { r, c }; }
+    RC size() const { return { r_len, c_len }; }
   };
   
 }
