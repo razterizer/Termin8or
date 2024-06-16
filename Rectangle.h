@@ -56,6 +56,18 @@ namespace ttl
     
     RC pos() const { return { r, c }; }
     RC size() const { return { r_len, c_len }; }
+    
+    void set_pos(const RC& rc_pos)
+    {
+      r = rc_pos.r;
+      c = rc_pos.c;
+    }
+    
+    void set_size(const RC& rc_size)
+    {
+      r_len = rc_size.r;
+      c_len = rc_size.c;
+    }
   };
   
 }
