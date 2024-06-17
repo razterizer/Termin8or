@@ -56,6 +56,16 @@ namespace ttl
       return is_inside_offs(pos.r, pos.c, top_offs, bottom_offs, left_offs, right_offs);
     }
     
+    bool is_on_border(int rr, int cc) const
+    {
+      return r == rr || rr == r + r_len || c == cc || cc == c + c_len;
+    }
+    
+    bool is_on_border(const RC& pos) const
+    {
+      return is_on_border(pos.r, pos.c);
+    }
+    
     bool is_empty() const
     {
       return r_len == 0 && c_len == 0;
