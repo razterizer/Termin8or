@@ -54,3 +54,8 @@ struct RC
     return rc;
   }
 };
+
+static float distance(const RC& ptA, const RC& ptB)
+{
+  return math::distance<float>(ptA.r, ptA.c, ptB.r, ptB.c);
+}
