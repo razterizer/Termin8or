@@ -36,6 +36,26 @@ namespace ttl
       return is_inside_offs(pos.r, pos.c, offs);
     }
     
+    bool is_inside_offs(int rr, int cc, int r_offs, int c_offs) const
+    {
+      return r - r_offs <= rr && rr <= r + r_len + r_offs && c - c_offs <= cc && cc <= c + c_len + c_offs;
+    }
+    
+    bool is_inside_offs(const RC& pos, int r_offs, int c_offs) const
+    {
+      return is_inside_offs(pos.r, pos.c, r_offs, c_offs);
+    }
+    
+    bool is_inside_offs(int rr, int cc, int top_offs, int bottom_offs, int left_offs, int right_offs) const
+    {
+      return r - top_offs <= rr && rr <= r + r_len + bottom_offs && c - left_offs <= cc && cc <= c + c_len + right_offs;
+    }
+    
+    bool is_inside_offs(const RC& pos, int top_offs, int bottom_offs, int left_offs, int right_offs) const
+    {
+      return is_inside_offs(pos.r, pos.c, top_offs, bottom_offs, left_offs, right_offs);
+    }
+    
     bool is_empty() const
     {
       return r_len == 0 && c_len == 0;
