@@ -68,7 +68,7 @@ public:
       c = std::round((NC - str_len)/2.f);
     }
     
-    if (time - trg_time <= duration)
+    if (time - trg_time <= duration && !curr_message.empty())
     {
       auto fg_color = get_fg_color();
       //const auto tr2 = Text::Color::Transparent2;
