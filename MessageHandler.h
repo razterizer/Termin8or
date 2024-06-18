@@ -56,7 +56,7 @@ public:
   }
   
   template<int NR, int NC>
-  void update(SpriteHandler<NR, NC>& sh, float time)
+  void update(SpriteHandler<NR, NC>& sh, float time, bool boxed = false)
   {
     if (message_empty && !messages.empty())
     {
@@ -71,10 +71,9 @@ public:
     if (time - trg_time <= duration && !curr_message.empty())
     {
       auto fg_color = get_fg_color();
-      //const auto tr2 = Text::Color::Transparent2;
-      //sh.write_buffer(rep_char('_', str_len), r-1, c, fg_color, tr2);
       sh.write_buffer(curr_message, r, c, fg_color, get_bg_color());
-      //sh.write_buffer(rep_char('-', str_len), r+1, c, fg_color, tr2);
+      if (boxed)
+        drawing::draw_box(sh, r-1, c-2, 2, str_len + 3, drawing::OutlineType::Line, { fg_color, get_bg_color() }, { fg_color, get_bg_color() });
     }
     else
       message_empty = true;
