@@ -2,7 +2,6 @@
 #include <Core/StringHelper.h>
 #ifdef _WIN32
 #define NOMINMAX // Should fix the std::min()/max() and std::numeric_limits<T>::min()/max() compilation problems.
-#include <windows.h>
 #include <conio.h>
 #else
 #include <termios.h>
@@ -92,29 +91,23 @@ namespace keyboard
       die("You need to enable raw mode for readKeystroke() to work properly!");
     
 #ifdef _WIN32
-    INPUT_RECORD irInput;
-    DWORD cNumRead;
-    
-    if (!PeekConsoleInput(hStdin, &irInput, 1, &cNumRead))
+
+    if (_kbhit())
     {
-      die("PeekConsoleInput");
-    }
-    
-    if (cNumRead)
-    {
-      if (ReadConsoleInput(hStdin, &irInput, 1, &cNumRead))
-      {
-        if (irInput.EventType == KEY_EVENT && irInput.Event.KeyEvent.bKeyDown)
+      int ch = _getch();
+      if (ch == 0 || ch == 224)
+      { // Handle arrow keys
+        int ch2 = _getch();
+        switch (ch2)
         {
-          return irInput.Event.KeyEvent.uChar.AsciiChar;
+          case 75: return 0x44; // Left
+          case 77: return 0x43; // Right
+          case 80: return 0x42; // Down
+          case 72: return 0x41; // Up
         }
       }
-      else
-      {
-        die("ReadConsoleInput");
-      }
+      return ch;
     }
-    
     return '\0'; // Return null character if no key is pressed
 #else
     char ch = '\0';
@@ -184,6 +177,21 @@ namespace keyboard
     KeyPressData kpd;
   
     char ch = readKeystroke();
+    kpd.curr_special_key = SpecialKey::None;
+#if _WIN32
+    key_ctr = 0;
+    switch (ch)
+    {
+      case 0x44: kpd.curr_special_key = SpecialKey::Left; break;
+      case 0x43: kpd.curr_special_key = SpecialKey::Right; break;
+      case 0x42: kpd.curr_special_key = SpecialKey::Down; break;
+      case 0x41: kpd.curr_special_key = SpecialKey::Up; break;
+      default: break;
+    }
+    kpd.arrow_key_buffer[arrow_key_ctr % 3] = kpd.curr_special_key;
+    arrow_key_ctr++;
+    if (kpd.curr_special_key != SpecialKey::None) {}
+#else
     if (key_ctr == 0 && ch == 0x1B)
       key_ctr++;
     else if (key_ctr == 1 && ch == 0x5B)
@@ -202,6 +210,7 @@ namespace keyboard
       kpd.arrow_key_buffer[arrow_key_ctr % 3] = kpd.curr_special_key;
       arrow_key_ctr++;
     }
+#endif
     else
     {
       kpd.curr_key = ch;
