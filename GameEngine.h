@@ -58,7 +58,9 @@ class GameEngine
   bool show_input_hiscore = false;
   bool show_hiscores = false;
   
-  std::string_view path_to_exe;
+  std::string_view path_to_exe; // Includes the <program>.exe file.
+  std::string exe_file; // Only the <program>.exe file.
+  std::string exe_path; // Excludes the <program>.exe file.
   GameEngineParams m_params;
   
   int delay = 50'000; // 100'000 (10 FPS) // 60'000 (16.67 FPS);
@@ -74,7 +76,6 @@ class GameEngine
   bool handle_hiscores(const HiScoreItem& curr_hsi)
   {
     const int c_max_num_hiscores = 20;
-    const auto [exe_path, exe_file] = folder::split_file_path(std::string(path_to_exe));
     const std::string c_file_path = folder::join_file_path({ exe_path, "hiscores.txt" });
   
     // Read saved hiscores.
@@ -155,6 +156,8 @@ protected:
   
   double get_sim_time_s() const { return sim_time_s; }
   
+  std::string get_exe_folder() const { return exe_path; }
+  
   // Callbacks
   virtual void update() = 0;
   virtual void draw_title() = 0;
@@ -188,6 +191,8 @@ public:
     //nodelay(stdscr, TRUE);
     
     rnd::srand_time();
+    
+    std::tie(exe_path, exe_file) = folder::split_file_path(std::string(path_to_exe));
     
     if (time_inited.once())
       sim_start_time_s = std::chrono::steady_clock::now();
