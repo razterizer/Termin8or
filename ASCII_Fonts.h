@@ -116,7 +116,7 @@ namespace ASCII_Fonts
   // Add the env variable RUNNING_FROM_XCODE to the Run section of the current scheme:
   //   Product -> Scheme -> Edit Scheme... ->  Run (Debug) -> Arguments -> Environmental Variables -> + -> "RUNNING_FROM_XCODE", true.
   // Perhaps script this procedure in the future.
-  std::string get_path_to_font_data()
+  std::string get_path_to_font_data(const std::string& exe_folder)
   {
 #ifdef _WIN32
     // Assume the font files are copied via post-build script to local bin / target folder.
@@ -128,7 +128,10 @@ namespace ASCII_Fonts
     if (xcode_env != nullptr)
       font_data_path = "../../../../../../../../Documents/xcode/lib/Termin8or/fonts";
     else
-      font_data_path = "../../lib/Termin8or/fonts";
+    {
+      //font_data_path = "../../lib/Termin8or/fonts";
+      font_data_path = folder::join_path({ exe_folder, "fonts" });
+    }
       
     return font_data_path;
 #endif
