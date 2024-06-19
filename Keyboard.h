@@ -157,7 +157,7 @@ namespace keyboard
   {
     char curr_key = 0;
     SpecialKey curr_special_key = SpecialKey::None;
-    std::array<SpecialKey, 3> arrow_key_buffer;
+    std::array<SpecialKey, 3> arrow_key_buffer { SpecialKey::None, SpecialKey::None, SpecialKey::None };
     bool pause = false;
     bool quit = false;
     
