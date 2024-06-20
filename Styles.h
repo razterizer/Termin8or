@@ -42,9 +42,26 @@ namespace styles
     HiliteFGStyle(Color fg, Color bg, Color fg_hilite)
       : Style(fg, bg), fg_color_hilite(fg_hilite) {}
     Color fg_color_hilite = Color::Default;
-    Style get_style(bool selected) const
+    Style get_style(bool hilited) const
     {
-      return { selected ? fg_color_hilite : fg_color, bg_color };
+      return { hilited ? fg_color_hilite : fg_color, bg_color };
+    }
+  };
+  
+  struct HiliteSelectFGStyle : HiliteFGStyle
+  {
+    HiliteSelectFGStyle(Color fg, Color bg, Color fg_hilite, Color fg_select, Color fg_select_hilite)
+      : HiliteFGStyle(fg, bg, fg_hilite)
+      , fg_color_select(fg_select)
+      , fg_color_select_hilite(fg_select_hilite)
+      {}
+    Color fg_color_select = Color::Default;
+    Color fg_color_select_hilite = Color::Default;
+    Style get_style(bool hilited, bool selected) const
+    {
+      if (selected)
+        return { hilited ? fg_color_select_hilite : fg_color_select, bg_color };
+      return HiliteFGStyle::get_style(hilited);
     }
   };
   
