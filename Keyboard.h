@@ -3,6 +3,7 @@
 #ifdef _WIN32
 #define NOMINMAX // Should fix the std::min()/max() and std::numeric_limits<T>::min()/max() compilation problems.
 #include <conio.h>
+#include <windows.h>
 #else
 #include <termios.h>
 #endif
