@@ -17,6 +17,7 @@ namespace styles
     Style(Text::Color fg, Text::Color bg) : fg_color(fg), bg_color(bg) {}
     Text::Color fg_color = Text::Color::Default;
     Text::Color bg_color = Text::Color::Transparent;
+    void swap() { std::swap(fg_color, bg_color); }
   };
   
   struct ButtonStyle : Style
