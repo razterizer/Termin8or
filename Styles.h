@@ -42,6 +42,10 @@ namespace styles
     HiliteFGStyle(Color fg, Color bg, Color fg_hilite)
       : Style(fg, bg), fg_color_hilite(fg_hilite) {}
     Color fg_color_hilite = Color::Default;
+    Style get_style(bool selected) const
+    {
+      return { selected ? fg_color_hilite : fg_color, bg_color };
+    }
   };
   
   // ////
