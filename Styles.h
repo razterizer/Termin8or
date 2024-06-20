@@ -44,6 +44,42 @@ namespace styles
     Color fg_color_hilite = Color::Default;
   };
   
+  // ////
+  
+  Style make_shaded_style(Color base_color, color::ShadeType shade)
+  {
+    Style ret;
+    switch (shade)
+    {
+      case color::ShadeType::Bright:
+        ret.fg_color = color::shade_color(base_color, color::ShadeType::Dark);
+        ret.bg_color = color::shade_color(base_color, color::ShadeType::Bright);
+        break;
+      case color::ShadeType::Dark:
+        ret.fg_color = color::shade_color(base_color, color::ShadeType::Bright);
+        ret.bg_color = color::shade_color(base_color, color::ShadeType::Dark);
+        break;
+    }
+    return ret;
+  }
+  
+  Style shade_style(const Style& style, color::ShadeType shade)
+  {
+    Style ret;
+    switch (shade)
+    {
+      case color::ShadeType::Bright:
+        ret.fg_color = color::shade_color(style.fg_color, color::ShadeType::Dark);
+        ret.bg_color = color::shade_color(style.bg_color, color::ShadeType::Bright);
+        break;
+      case color::ShadeType::Dark:
+        ret.fg_color = color::shade_color(style.fg_color, color::ShadeType::Bright);
+        ret.bg_color = color::shade_color(style.bg_color, color::ShadeType::Dark);
+        break;
+    }
+    return ret;
+  }
+  
   Style get_random_style(const std::vector<Style>& palette)
   {
     auto num = static_cast<int>(palette.size());
