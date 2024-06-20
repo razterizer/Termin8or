@@ -70,24 +70,28 @@ namespace color
   
   enum class ShadeType { Bright, Dark };
   // #NOTE: Returns Color::Default if no matching color was found.
-  Color find_color_shade(Color color, ShadeType shade)
+  // If inputting a bright color and ShadeType is Bright, then you will get the same color.
+  // If inputting a dark color and ShadeType is Bright, then you will get the corresponding bright color.
+  // If inputting a bright color and ShadeType is Dark, then you will get the corresponding dark color.
+  // If inputting a dark color and ShadeType is Dark, then you will get the same color.
+  Color shade_color(Color color, ShadeType shade)
   {
     int idx = -1;
     switch (shade)
     {
       case ShadeType::Bright:
-        idx = stlutils::find_idx(colors_bright, color);
-        if (0 <= idx)
-          return colors_dark[idx];
         if (stlutils::contains(colors_bright, color))
           return color;
-        break;
-      case ShadeType::Dark:
         idx = stlutils::find_idx(colors_dark, color);
         if (0 <= idx)
           return colors_bright[idx];
+        break;
+      case ShadeType::Dark:
         if (stlutils::contains(colors_dark, color))
           return color;
+        idx = stlutils::find_idx(colors_bright, color);
+        if (0 <= idx)
+          return colors_dark[idx];
         break;
     }
     return Color::Default;
