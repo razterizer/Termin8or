@@ -7,7 +7,7 @@ namespace bresenham
 {
   template<int NR, int NC>
   void plot_line_low(SpriteHandler<NR, NC>& sh, float x0, float y0, float x1, float y1,
-                     const std::string& str, Text::Color fg_color, Text::Color bg_color)
+                     const std::string& str, Color fg_color, Color bg_color)
   {
     auto dx = x1 - x0;
     auto dy = y1 - y0;
@@ -35,7 +35,7 @@ namespace bresenham
 
   template<int NR, int NC>
   void plot_line_high(SpriteHandler<NR, NC>& sh, float x0, float y0, float x1, float y1,
-                      const std::string& str, Text::Color fg_color, Text::Color bg_color)
+                      const std::string& str, Color fg_color, Color bg_color)
   {
     auto dx = x1 - x0;
     auto dy = y1 - y0;
@@ -63,7 +63,7 @@ namespace bresenham
 
   template<int NR, int NC>
   void plot_line(SpriteHandler<NR, NC>& sh, float x0, float y0, float x1, float y1,
-                 const std::string& str, Text::Color fg_color, Text::Color bg_color)
+                 const std::string& str, Color fg_color, Color bg_color)
   {
     if (std::abs(y1 - y0) < std::abs(x1 - x0))
     {
@@ -91,11 +91,11 @@ namespace drawing
   void draw_box(SpriteHandler<NR, NC>& sh,
                 int r, int c, int len_r, int len_c,
                 OutlineType outline_type,
-                const styles::Style& outline_style = { Text::Color::Default, Text::Color::Transparent2 },
-                const styles::Style& fill_style = { Text::Color::Default, Text::Color::Transparent2 },
+                const styles::Style& outline_style = { Color::Default, Color::Transparent2 },
+                const styles::Style& fill_style = { Color::Default, Color::Transparent2 },
                 char fill_char = ' ',
                 Direction shadow_type = Direction::None,
-                const styles::Style& shadow_style = { Text::Color::Default, Text::Color::Transparent2 },
+                const styles::Style& shadow_style = { Color::Default, Color::Transparent2 },
                 char shadow_char = ' ')
   {
     // len_r = 3, len_c = 2

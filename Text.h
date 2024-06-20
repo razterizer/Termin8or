@@ -1,4 +1,5 @@
 #pragma once
+#include "Color.h"
 #include <string>
 #include <vector>
 #include <tuple>
@@ -8,7 +9,6 @@
 #define NOMINMAX // Should fix the std::min()/max() and std::numeric_limits<T>::min()/max() compilation problems.
 #include <Windows.h>
 #endif
-#include <Core/Rand.h>
 
 //--------------------------+------------+------------+--------+--------+
 // Color                    | Foreground | Background | FG Win | BG Win |
@@ -47,38 +47,6 @@ public:
   Text()
   {
     std::ios_base::sync_with_stdio(false);
-  }
-
-  enum class Color
-  {
-    Transparent = -1,
-    Transparent2 = -2,
-    Default = 0,
-    Black,
-    DarkRed,
-    DarkGreen,
-    DarkYellow,
-    DarkBlue,
-    DarkMagenta,
-    DarkCyan,
-    LightGray,
-    DarkGray,
-    Red,
-    Green,
-    Yellow,
-    Blue,
-    Magenta,
-    Cyan,
-    White
-  };
-  
-  static Color get_random_color(const std::vector<Color>& palette)
-  {
-    auto num = static_cast<int>(palette.size());
-    if (num == 0)
-      return Color::Default;
-    auto idx = rnd::rand_int(0, num - 1);
-    return palette[idx];
   }
 
   std::string get_color_string(Color text_color, Color bg_color = Color::Default) const

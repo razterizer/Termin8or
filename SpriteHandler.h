@@ -41,32 +41,32 @@ class SpriteHandler
 {
   // Draw from top to bottom.
   std::array<std::array<char, NC>, NR> screen_buffer;
-  std::array<std::array<Text::Color, NC>, NR> fg_color_buffer;
-  std::array<std::array<Text::Color, NC>, NR> bg_color_buffer;
+  std::array<std::array<Color, NC>, NR> fg_color_buffer;
+  std::array<std::array<Color, NC>, NR> bg_color_buffer;
 
-  std::string color2str(Text::Color col) const
+  std::string color2str(Color col) const
   {
     switch (col)
     {
-      case Text::Color::Transparent:  return "---:";
-      case Text::Color::Transparent2: return "===:";
-      case Text::Color::Default:      return "Def:";
-      case Text::Color::Black:        return "Blk:";
-      case Text::Color::DarkRed:      return "DRd:";
-      case Text::Color::DarkGreen:    return "DGn:";
-      case Text::Color::DarkYellow:   return "DYw:";
-      case Text::Color::DarkBlue:     return "DBu:";
-      case Text::Color::DarkMagenta:  return "DMa:";
-      case Text::Color::DarkCyan:     return "DCn:";
-      case Text::Color::LightGray:    return "LGy:";
-      case Text::Color::DarkGray:     return "DGy:";
-      case Text::Color::Red:          return "Red:";
-      case Text::Color::Green:        return "Grn:";
-      case Text::Color::Yellow:       return "Ylw:";
-      case Text::Color::Blue:         return "Blu:";
-      case Text::Color::Magenta:      return "Mga:";
-      case Text::Color::Cyan:         return "Cyn:";
-      case Text::Color::White:        return "Wht:";
+      case Color::Transparent:  return "---:";
+      case Color::Transparent2: return "===:";
+      case Color::Default:      return "Def:";
+      case Color::Black:        return "Blk:";
+      case Color::DarkRed:      return "DRd:";
+      case Color::DarkGreen:    return "DGn:";
+      case Color::DarkYellow:   return "DYw:";
+      case Color::DarkBlue:     return "DBu:";
+      case Color::DarkMagenta:  return "DMa:";
+      case Color::DarkCyan:     return "DCn:";
+      case Color::LightGray:    return "LGy:";
+      case Color::DarkGray:     return "DGy:";
+      case Color::Red:          return "Red:";
+      case Color::Green:        return "Grn:";
+      case Color::Yellow:       return "Ylw:";
+      case Color::Blue:         return "Blu:";
+      case Color::Magenta:      return "Mga:";
+      case Color::Cyan:         return "Cyn:";
+      case Color::White:        return "Wht:";
       default: break;
     }
     return "";
@@ -82,10 +82,10 @@ public:
         col = ' ';
     for (auto& row : fg_color_buffer)
       for (auto& col : row)
-        col = Text::Color::Default;
+        col = Color::Default;
     for (auto& row : bg_color_buffer)
       for (auto& col : row)
-        col = Text::Color::Transparent;
+        col = Color::Transparent;
   }
 
   bool test_empty(int r, int c) const
@@ -94,7 +94,7 @@ public:
   }
   
   // write_buffer using TextBox.
-  void write_buffer(const TextBox& tb, int r, int c, Text::Color fg_color, Text::Color bg_color = Text::Color::Transparent)
+  void write_buffer(const TextBox& tb, int r, int c, Color fg_color, Color bg_color = Color::Transparent)
   {
     auto Nr = static_cast<int>(tb.text_lines.size());
     for (int r_idx = 0; r_idx < Nr; ++r_idx)
@@ -120,7 +120,7 @@ public:
     write_buffer(str, r, c, style.fg_color, style.bg_color);
   }
 
-  void write_buffer(const std::string& str, int r, int c, Text::Color fg_color, Text::Color bg_color = Text::Color::Transparent)
+  void write_buffer(const std::string& str, int r, int c, Color fg_color, Color bg_color = Color::Transparent)
   {
     if (str.empty())
       return;
@@ -138,13 +138,13 @@ public:
             auto& scr_fg = fg_color_buffer[r][c_tot];
             auto& scr_bg = bg_color_buffer[r][c_tot];
             if (scr_ch == ' '
-              && scr_bg == Text::Color::Transparent)
+              && scr_bg == Color::Transparent)
             {
               scr_ch = str[ci];
               scr_fg = fg_color;
               scr_bg = bg_color;
             }
-            else if (scr_bg == Text::Color::Transparent2)
+            else if (scr_bg == Color::Transparent2)
             {
               scr_bg = bg_color;
               if (scr_ch == ' ')
@@ -160,7 +160,7 @@ public:
   }
   
   // Return copy of str but with spaces where tests failed.
-  std::string write_buffer_ret(const std::string& str, int r, int c, Text::Color fg_color, Text::Color bg_color = Text::Color::Transparent)
+  std::string write_buffer_ret(const std::string& str, int r, int c, Color fg_color, Color bg_color = Color::Transparent)
   {
     if (str.empty())
       return "";
@@ -178,14 +178,14 @@ public:
           auto& scr_bg = bg_color_buffer[r][c_tot];
           if (c_tot >= 0 && c_tot < NC
               && scr_ch == ' '
-              && scr_bg == Text::Color::Transparent)
+              && scr_bg == Color::Transparent)
           {
             scr_ch = str[ci];
             scr_fg = fg_color;
             scr_bg = bg_color;
           }
           else if (c_tot >= 0 && c_tot < NC
-                   && scr_bg == Text::Color::Transparent2)
+                   && scr_bg == Color::Transparent2)
           {
             scr_bg = bg_color;
             if (scr_ch == ' ')
@@ -204,7 +204,7 @@ public:
     return str_out;
   }
 
-  void replace_bg_color(Text::Color from_bg_color, Text::Color to_bg_color, ttl::Rectangle box)
+  void replace_bg_color(Color from_bg_color, Color to_bg_color, ttl::Rectangle box)
   {
     for (int r = 0; r < NR; ++r)
     {
@@ -219,7 +219,7 @@ public:
     }
   }
   
-  void replace_bg_color(Text::Color to_bg_color, ttl::Rectangle box)
+  void replace_bg_color(Color to_bg_color, ttl::Rectangle box)
   {
     for (int r = 0; r < NR; ++r)
     {
@@ -233,7 +233,7 @@ public:
     }
   }
   
-  void replace_fg_color(Text::Color to_fg_color, ttl::Rectangle box)
+  void replace_fg_color(Color to_fg_color, ttl::Rectangle box)
   {
     for (int r = 0; r < NR; ++r)
     {
@@ -247,21 +247,21 @@ public:
     }
   }
 
-  void print_screen_buffer(Text& t, Text::Color bg_color) const
+  void print_screen_buffer(Text& t, Color bg_color) const
   {
-    std::vector<std::tuple<char, Text::Color, Text::Color>> colored_str;
+    std::vector<std::tuple<char, Color, Color>> colored_str;
     colored_str.resize(NR*(NC + 1));
     int i = 0;
     for (int r = 0; r < NR; ++r)
     {
       for (int c = 0; c < NC; ++c)
       {
-        Text::Color bg_col_buf = bg_color_buffer[r][c];
-        if (bg_col_buf == Text::Color::Transparent || bg_col_buf == Text::Color::Transparent2)
+        Color bg_col_buf = bg_color_buffer[r][c];
+        if (bg_col_buf == Color::Transparent || bg_col_buf == Color::Transparent2)
           bg_col_buf = bg_color;
         colored_str[i++] = { screen_buffer[r][c], fg_color_buffer[r][c], bg_col_buf };
       }
-      colored_str[i++] = { '\n', Text::Color::Default, Text::Color::Default };
+      colored_str[i++] = { '\n', Color::Default, Color::Default };
     }
     t.print_complex(colored_str);
   }
@@ -311,8 +311,8 @@ public:
   }
   
   void overwrite_data(const std::array<std::array<char, NC>, NR>& new_screen_buffer,
-                      const std::array<std::array<Text::Color, NC>, NR>& new_fg_color_buffer,
-                      const std::array<std::array<Text::Color, NC>, NR>& new_bg_color_buffer)
+                      const std::array<std::array<Color, NC>, NR>& new_fg_color_buffer,
+                      const std::array<std::array<Color, NC>, NR>& new_bg_color_buffer)
   {
     screen_buffer = new_screen_buffer;
     fg_color_buffer = new_fg_color_buffer;
@@ -323,31 +323,31 @@ public:
   inline void resample_to(SpriteHandler<NRo, NCo>& sh_scaled)
   {
     auto new_screen_buffer = resample_data<char, double, NRo, NCo>(screen_buffer, 0);
-    auto new_fg_color_buffer = resample_data<Text::Color, RGBA, NRo, NCo>(fg_color_buffer, 0);
-    auto new_bg_color_buffer = resample_data<Text::Color, RGBA, NRo, NCo>(bg_color_buffer, 0);
+    auto new_fg_color_buffer = resample_data<Color, RGBA, NRo, NCo>(fg_color_buffer, 0);
+    auto new_bg_color_buffer = resample_data<Color, RGBA, NRo, NCo>(bg_color_buffer, 0);
     sh_scaled.overwrite_data(new_screen_buffer, new_fg_color_buffer, new_bg_color_buffer);
   }
   
 private:
-  std::map<Text::Color, RGBA> color2rgba
+  std::map<Color, RGBA> color2rgba
   {
-    { Text::Color::White, RGBA { 1, 1, 1 } },
-    { Text::Color::Cyan, RGBA { 0, 1, 1 } },
-    { Text::Color::Magenta, RGBA { 1, 0, 1 } },
-    { Text::Color::Blue, RGBA { 0, 0, 1 } },
-    { Text::Color::Yellow, RGBA { 1, 1, 0 } },
-    { Text::Color::Green, RGBA { 0, 1, 0 } },
-    { Text::Color::Red, RGBA { 1, 0, 0 } },
-    { Text::Color::LightGray, RGBA { 0.8, 0.8, 0.8 } },
-    { Text::Color::DarkGray, RGBA { 0.4, 0.4, 0.4 } },
-    { Text::Color::DarkCyan, RGBA { 0, 0.4, 0.4 } },
-    { Text::Color::DarkMagenta, RGBA { 0.4, 0, 0.4 } },
-    { Text::Color::DarkBlue, RGBA { 0, 0, 0.4 } },
-    { Text::Color::DarkYellow, RGBA { 0.4, 0.4, 0 } },
-    { Text::Color::DarkGreen, RGBA { 0, 0.4, 0 } },
-    { Text::Color::DarkRed, RGBA { 0.4, 0, 0 } },
-    { Text::Color::Black, RGBA { 0, 0, 0 } },
-    { Text::Color::Transparent2, RGBA { 0, 0, 0, 0 } },
+    { Color::White, RGBA { 1, 1, 1 } },
+    { Color::Cyan, RGBA { 0, 1, 1 } },
+    { Color::Magenta, RGBA { 1, 0, 1 } },
+    { Color::Blue, RGBA { 0, 0, 1 } },
+    { Color::Yellow, RGBA { 1, 1, 0 } },
+    { Color::Green, RGBA { 0, 1, 0 } },
+    { Color::Red, RGBA { 1, 0, 0 } },
+    { Color::LightGray, RGBA { 0.8, 0.8, 0.8 } },
+    { Color::DarkGray, RGBA { 0.4, 0.4, 0.4 } },
+    { Color::DarkCyan, RGBA { 0, 0.4, 0.4 } },
+    { Color::DarkMagenta, RGBA { 0.4, 0, 0.4 } },
+    { Color::DarkBlue, RGBA { 0, 0, 0.4 } },
+    { Color::DarkYellow, RGBA { 0.4, 0.4, 0 } },
+    { Color::DarkGreen, RGBA { 0, 0.4, 0 } },
+    { Color::DarkRed, RGBA { 0.4, 0, 0 } },
+    { Color::Black, RGBA { 0, 0, 0 } },
+    { Color::Transparent2, RGBA { 0, 0, 0, 0 } },
   };
 
   template<typename T, typename P>
@@ -360,11 +360,11 @@ private:
     auto index = static_cast<int>((1-t) * (shading_charset.size() - 1));
     return shading_charset[index];
   }
-  template<> Text::Color find_closest_val(RGBA shading_value) const
+  template<> Color find_closest_val(RGBA shading_value) const
   {
     // Character set representing different shades
     auto t = shading_value;
-    auto distance_squared = [&](Text::Color color, const RGBA& rgba1)
+    auto distance_squared = [&](Color color, const RGBA& rgba1)
     {
       auto it = color2rgba.find(color);
       if (it != color2rgba.end())
@@ -375,10 +375,10 @@ private:
       }
       return math::get_max<double>();
     };
-    for (int color = static_cast<int>(Text::Color::Black); color <= static_cast<int>(Text::Color::White); ++color)
-      if (distance_squared(static_cast<Text::Color>(color), t) < 0.5)
-        return static_cast<Text::Color>(color);
-    return Text::Color::Transparent2;
+    for (int color = static_cast<int>(Color::Black); color <= static_cast<int>(Color::White); ++color)
+      if (distance_squared(static_cast<Color>(color), t) < 0.5)
+        return static_cast<Color>(color);
+    return Color::Transparent2;
   }
   
   template<typename T, typename P>
@@ -411,10 +411,10 @@ private:
       default: return 0.5;
     }
   }
-  template<> RGBA find_closest_shading_value(Text::Color color) const
+  template<> RGBA find_closest_shading_value(Color color) const
   {
     auto col_idx = static_cast<int>(color);
-    if (math::in_range<int>(col_idx, static_cast<int>(Text::Color::Black), static_cast<int>(Text::Color::White), Range::Closed))
+    if (math::in_range<int>(col_idx, static_cast<int>(Color::Black), static_cast<int>(Color::White), Range::Closed))
     {
       auto it = color2rgba.find(color);
       if (it != color2rgba.end())

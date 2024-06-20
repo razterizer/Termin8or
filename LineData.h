@@ -4,10 +4,10 @@
 struct LineData
 {
   std::string str;
-  std::vector<Text::Color> fg_colors;
-  std::vector<Text::Color> bg_colors;
+  std::vector<Color> fg_colors;
+  std::vector<Color> bg_colors;
   
-  LineData(const std::string& s, const std::vector<Text::Color>& fg, const std::vector<Text::Color>& bg)
+  LineData(const std::string& s, const std::vector<Color>& fg, const std::vector<Color>& bg)
     : str(s), fg_colors(fg), bg_colors(bg) { }
   
   std::vector<Pixel> get_pixels() const

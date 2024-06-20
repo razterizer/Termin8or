@@ -75,7 +75,7 @@ void gotorc(int r, int c)
 }
 
 template<int NR, int NC>
-void draw_frame(SpriteHandler<NR, NC>& sh, Text::Color fg_color)
+void draw_frame(SpriteHandler<NR, NC>& sh, Color fg_color)
 {
   const int nc_inset = sh.num_cols_inset();
   const int nr_inset = sh.num_rows_inset();
@@ -114,18 +114,18 @@ void draw_game_over(SpriteHandler<NR, NC>& sh)
   };
 
   int c = 18;
-  sh.write_buffer("  ________    _____      _____  ___________", 7,  wave_func(c, 0), Text::Color::DarkRed, Text::Color::White);
-  sh.write_buffer(" /  _____/   /  _  \\    /     \\ \\_   _____/", 8,  wave_func(c, 1), Text::Color::DarkRed, Text::Color::Yellow);
-  sh.write_buffer("/   \\  ___  /  /_\\  \\  /  \\ /  \\ |    __)_ ",9,  wave_func(c, 2), Text::Color::DarkRed, Text::Color::Yellow);
-  sh.write_buffer("\\    \\_\\  \\/    |    \\/    Y    \\|        \\", 10, wave_func(c, 3), Text::Color::DarkRed, Text::Color::DarkYellow);
-  sh.write_buffer(" \\______  /\\____|__  /\\____|__  /_______  /", 11, wave_func(c, 4), Text::Color::DarkRed, Text::Color::DarkYellow);
-  sh.write_buffer("        \\/         \\/         \\/        \\/ ", 12, wave_func(c, 5), Text::Color::DarkRed, Text::Color::DarkYellow);
-  sh.write_buffer("____________   _________________________   ", 13, wave_func(c, 6), Text::Color::DarkRed, Text::Color::DarkYellow);
-  sh.write_buffer("\\_____  \\   \\ /   /\\_   _____/\\______   \\  ", 14, wave_func(c, 7), Text::Color::DarkRed, Text::Color::DarkYellow);
-  sh.write_buffer(" /   |   \\   Y   /  |    __)_  |       _/  ", 15, wave_func(c, 8), Text::Color::DarkRed, Text::Color::DarkYellow);
-  sh.write_buffer("/    |    \\     /   |        \\ |    |   \\  ", 16, wave_func(c, 9), Text::Color::DarkRed, Text::Color::Yellow);
-  sh.write_buffer("\\_______  /\\___/   /_______  / |____|_  /  ", 17, wave_func(c, 10), Text::Color::DarkRed, Text::Color::Yellow);
-  sh.write_buffer("        \\/                 \\/         \\/   ", 18, wave_func(c, 11), Text::Color::DarkRed, Text::Color::White);
+  sh.write_buffer("  ________    _____      _____  ___________", 7,  wave_func(c, 0), Color::DarkRed, Color::White);
+  sh.write_buffer(" /  _____/   /  _  \\    /     \\ \\_   _____/", 8,  wave_func(c, 1), Color::DarkRed, Color::Yellow);
+  sh.write_buffer("/   \\  ___  /  /_\\  \\  /  \\ /  \\ |    __)_ ",9,  wave_func(c, 2), Color::DarkRed, Color::Yellow);
+  sh.write_buffer("\\    \\_\\  \\/    |    \\/    Y    \\|        \\", 10, wave_func(c, 3), Color::DarkRed, Color::DarkYellow);
+  sh.write_buffer(" \\______  /\\____|__  /\\____|__  /_______  /", 11, wave_func(c, 4), Color::DarkRed, Color::DarkYellow);
+  sh.write_buffer("        \\/         \\/         \\/        \\/ ", 12, wave_func(c, 5), Color::DarkRed, Color::DarkYellow);
+  sh.write_buffer("____________   _________________________   ", 13, wave_func(c, 6), Color::DarkRed, Color::DarkYellow);
+  sh.write_buffer("\\_____  \\   \\ /   /\\_   _____/\\______   \\  ", 14, wave_func(c, 7), Color::DarkRed, Color::DarkYellow);
+  sh.write_buffer(" /   |   \\   Y   /  |    __)_  |       _/  ", 15, wave_func(c, 8), Color::DarkRed, Color::DarkYellow);
+  sh.write_buffer("/    |    \\     /   |        \\ |    |   \\  ", 16, wave_func(c, 9), Color::DarkRed, Color::Yellow);
+  sh.write_buffer("\\_______  /\\___/   /_______  / |____|_  /  ", 17, wave_func(c, 10), Color::DarkRed, Color::Yellow);
+  sh.write_buffer("        \\/                 \\/         \\/   ", 18, wave_func(c, 11), Color::DarkRed, Color::White);
 
   wave_x0 += wave_step;
   if (std::abs(wave_x0 - 100.f) < 1e-4f)
@@ -154,12 +154,12 @@ void draw_you_won(SpriteHandler<NR, NC>& sh)
   };
 
   int c = 15;
-  sh.write_buffer("_____.___.               __      __            ._.", 10, wave_func(c, 0), Text::Color::DarkBlue, Text::Color::Cyan);
-  sh.write_buffer("\\__  |   | ____  __ __  /  \\    /  \\____   ____| |", 11, wave_func(c, 1), Text::Color::DarkBlue, Text::Color::Cyan);
-  sh.write_buffer(" /   |   |/  _ \\|  |  \\ \\   \\/\\/   /  _ \\ /    \\ |", 12, wave_func(c, 2), Text::Color::DarkBlue, Text::Color::Cyan);
-  sh.write_buffer(" \\____   (  <_> )  |  /  \\        (  <_> )   |  \\|", 13, wave_func(c, 3), Text::Color::DarkBlue, Text::Color::DarkCyan);
-  sh.write_buffer(" / ______|\\____/|____/    \\__/\\  / \\____/|___|  /_", 14, wave_func(c, 4), Text::Color::DarkBlue, Text::Color::DarkCyan);
-  sh.write_buffer(" \\/                            \\/             \\/\\/", 15, wave_func(c, 5), Text::Color::DarkBlue, Text::Color::DarkCyan);
+  sh.write_buffer("_____.___.               __      __            ._.", 10, wave_func(c, 0), Color::DarkBlue, Color::Cyan);
+  sh.write_buffer("\\__  |   | ____  __ __  /  \\    /  \\____   ____| |", 11, wave_func(c, 1), Color::DarkBlue, Color::Cyan);
+  sh.write_buffer(" /   |   |/  _ \\|  |  \\ \\   \\/\\/   /  _ \\ /    \\ |", 12, wave_func(c, 2), Color::DarkBlue, Color::Cyan);
+  sh.write_buffer(" \\____   (  <_> )  |  /  \\        (  <_> )   |  \\|", 13, wave_func(c, 3), Color::DarkBlue, Color::DarkCyan);
+  sh.write_buffer(" / ______|\\____/|____/    \\__/\\  / \\____/|___|  /_", 14, wave_func(c, 4), Color::DarkBlue, Color::DarkCyan);
+  sh.write_buffer(" \\/                            \\/             \\/\\/", 15, wave_func(c, 5), Color::DarkBlue, Color::DarkCyan);
 
   wave_x0 += wave_step;
   if (std::abs(wave_x0 - 100.f) < 1e-4f)
@@ -182,7 +182,7 @@ void draw_paused(SpriteHandler<NR, NC>& sh, int anim_ctr)
     case 0: msg = "      "; break;
     default: msg = "PAUSED"; break;
   }
-  sh.write_buffer(msg, 15, 36, Text::Color::White, Text::Color::DarkCyan);
+  sh.write_buffer(msg, 15, 36, Color::White, Color::DarkCyan);
 }
 
 enum class YesNoButtons { No = 0, Yes = 1 };
@@ -202,9 +202,9 @@ void draw_confirm_quit(SpriteHandler<NR, NC>& sh, YesNoButtons button,
   std::string no = "[No]";
   const auto yes_len = static_cast<int>(yes.length());
   const auto no_len = static_cast<int>(no.length());
-  Text::Color bg_color_yes = (button == YesNoButtons::Yes) ?
+  Color bg_color_yes = (button == YesNoButtons::Yes) ?
     button_style.bg_color_selected : button_style.bg_color;
-  Text::Color bg_color_no = (button == YesNoButtons::No) ?
+  Color bg_color_no = (button == YesNoButtons::No) ?
     button_style.bg_color_selected : button_style.bg_color;
   sh.write_buffer(yes, nr/2 + 1, (nc - 6)/2 - yes_len, button_style.fg_color, bg_color_yes);
   sh.write_buffer(no, nr/2 + 1, (nc - 6)/2 + no_len, button_style.fg_color, bg_color_no);

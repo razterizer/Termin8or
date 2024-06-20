@@ -25,25 +25,25 @@ private:
   int str_len = 0;
   Level curr_level;
   
-  Text::Color get_fg_color() const
+  Color get_fg_color() const
   {
     switch (curr_level)
     {
-      case Level::Guide:   return Text::Color::White;
-      case Level::Warning: return Text::Color::White;
-      case Level::Fatal:   return Text::Color::White;
-      default:             return Text::Color::Default;
+      case Level::Guide:   return Color::White;
+      case Level::Warning: return Color::White;
+      case Level::Fatal:   return Color::White;
+      default:             return Color::Default;
     }
   }
   
-  Text::Color get_bg_color() const
+  Color get_bg_color() const
   {
     switch (curr_level)
     {
-      case Level::Guide:   return Text::Color::DarkBlue;
-      case Level::Warning: return Text::Color::DarkYellow;
-      case Level::Fatal:   return Text::Color::DarkRed;
-      default:             return Text::Color::Default;
+      case Level::Guide:   return Color::DarkBlue;
+      case Level::Warning: return Color::DarkYellow;
+      case Level::Fatal:   return Color::DarkRed;
+      default:             return Color::Default;
     }
   }
   

@@ -22,28 +22,28 @@ struct GameEngineParams
   bool enable_quit_confirm_screen = true;
   bool enable_hiscores = true;
   
-  Text::Color screen_bg_color_default = Text::Color::Default;
-  Text::Color screen_bg_color_title = Text::Color::Default;
-  Text::Color screen_bg_color_instructions = Text::Color::Default;
+  Color screen_bg_color_default = Color::Default;
+  Color screen_bg_color_title = Color::Default;
+  Color screen_bg_color_instructions = Color::Default;
   
-  std::optional<Text::Color> screen_bg_color_paused = std::nullopt;
+  std::optional<Color> screen_bg_color_paused = std::nullopt;
   
-  std::optional<Text::Color> screen_bg_color_quit_confirm = Text::Color::DarkCyan;
-  styles::Style quit_confirm_title_style { Text::Color::Black, Text::Color::DarkCyan };
-  styles::ButtonStyle quit_confirm_button_style { Text::Color::Black, Text::Color::DarkCyan, Text::Color::Cyan };
-  styles::Style quit_confirm_info_style { Text::Color::White, Text::Color::DarkCyan };
+  std::optional<Color> screen_bg_color_quit_confirm = Color::DarkCyan;
+  styles::Style quit_confirm_title_style { Color::Black, Color::DarkCyan };
+  styles::ButtonStyle quit_confirm_button_style { Color::Black, Color::DarkCyan, Color::Cyan };
+  styles::Style quit_confirm_info_style { Color::White, Color::DarkCyan };
   
-  std::optional<Text::Color> screen_bg_color_input_hiscore = Text::Color::DarkGray;
-  styles::Style input_hiscore_title_style { Text::Color::Green, Text::Color::Black };
-  styles::PromptStyle input_hiscore_prompt_style { Text::Color::Green, Text::Color::Black, Text::Color::DarkGreen };
-  styles::Style input_hiscore_info_style { Text::Color::DarkGreen, Text::Color::Black };
+  std::optional<Color> screen_bg_color_input_hiscore = Color::DarkGray;
+  styles::Style input_hiscore_title_style { Color::Green, Color::Black };
+  styles::PromptStyle input_hiscore_prompt_style { Color::Green, Color::Black, Color::DarkGreen };
+  styles::Style input_hiscore_info_style { Color::DarkGreen, Color::Black };
   
-  std::optional<Text::Color> screen_bg_color_hiscores = Text::Color::DarkGray;
-  styles::Style hiscores_title_style { Text::Color::Green, Text::Color::Black };
-  styles::HiliteFGStyle hiscores_nr_style { Text::Color::Green, Text::Color::Black, Text::Color::Cyan };
-  styles::HiliteFGStyle hiscores_score_style { Text::Color::Green, Text::Color::Black, Text::Color::Cyan };
-  styles::HiliteFGStyle hiscores_name_style { Text::Color::Green, Text::Color::Black, Text::Color::Cyan };
-  styles::Style hiscores_info_style { Text::Color::DarkGreen, Text::Color::Black };
+  std::optional<Color> screen_bg_color_hiscores = Color::DarkGray;
+  styles::Style hiscores_title_style { Color::Green, Color::Black };
+  styles::HiliteFGStyle hiscores_nr_style { Color::Green, Color::Black, Color::Cyan };
+  styles::HiliteFGStyle hiscores_score_style { Color::Green, Color::Black, Color::Cyan };
+  styles::HiliteFGStyle hiscores_name_style { Color::Green, Color::Black, Color::Cyan };
+  styles::Style hiscores_info_style { Color::DarkGreen, Color::Black };
 };
 
 template<int NR = 30, int NC = 80>
@@ -137,7 +137,7 @@ protected:
   Text t;
   SpriteHandler<NR, NC> sh;
   
-  Text::Color bg_color = Text::Color::Default;
+  Color bg_color = Color::Default;
   
   int anim_ctr = 0;
   

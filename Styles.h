@@ -6,7 +6,7 @@
 //
 
 #pragma once
-#include "Text.h"
+#include "Color.h"
 
 namespace styles
 {
@@ -14,34 +14,34 @@ namespace styles
   struct Style
   {
     Style() = default;
-    Style(Text::Color fg, Text::Color bg) : fg_color(fg), bg_color(bg) {}
-    Text::Color fg_color = Text::Color::Default;
-    Text::Color bg_color = Text::Color::Transparent;
+    Style(Color fg, Color bg) : fg_color(fg), bg_color(bg) {}
+    Color fg_color = Color::Default;
+    Color bg_color = Color::Transparent;
     void swap() { std::swap(fg_color, bg_color); }
   };
   
   struct ButtonStyle : Style
   {
     ButtonStyle() = default;
-    ButtonStyle(Text::Color fg, Text::Color bg, Text::Color bg_sel)
+    ButtonStyle(Color fg, Color bg, Color bg_sel)
       : Style(fg, bg), bg_color_selected(bg_sel) {}
-    Text::Color bg_color_selected = Text::Color::Transparent;
+    Color bg_color_selected = Color::Transparent;
   };
   
   struct PromptStyle : Style
   {
     PromptStyle() = default;
-    PromptStyle(Text::Color fg, Text::Color bg, Text::Color bg_cursor)
+    PromptStyle(Color fg, Color bg, Color bg_cursor)
       : Style(fg, bg), bg_color_cursor(bg_cursor) {}
-    Text::Color bg_color_cursor = Text::Color::Transparent;
+    Color bg_color_cursor = Color::Transparent;
   };
   
   struct HiliteFGStyle : Style
   {
     HiliteFGStyle() = default;
-    HiliteFGStyle(Text::Color fg, Text::Color bg, Text::Color fg_hilite)
+    HiliteFGStyle(Color fg, Color bg, Color fg_hilite)
       : Style(fg, bg), fg_color_hilite(fg_hilite) {}
-    Text::Color fg_color_hilite = Text::Color::Default;
+    Color fg_color_hilite = Color::Default;
   };
   
   Style get_random_style(const std::vector<Style>& palette)

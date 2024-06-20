@@ -37,12 +37,12 @@ namespace ASCII_Fonts
 
   struct ColorScheme
   {
-    styles::Style internal { Text::Color::White, Text::Color::DarkGray };
-    styles::Style side_h { Text::Color::White, Text::Color::Black };
-    styles::Style side_v { Text::Color::LightGray, Text::Color::White };
-    styles::Style dot_internal { Text::Color::White, Text::Color::Red };
-    styles::Style dot_side_h { Text::Color::White, Text::Color::DarkRed };
-    styles::Style dot_side_v { Text::Color::LightGray, Text::Color::White };
+    styles::Style internal { Color::White, Color::DarkGray };
+    styles::Style side_h { Color::White, Color::Black };
+    styles::Style side_v { Color::LightGray, Color::White };
+    styles::Style dot_internal { Color::White, Color::Red };
+    styles::Style dot_side_h { Color::White, Color::DarkRed };
+    styles::Style dot_side_v { Color::LightGray, Color::White };
   };
 
   struct FontPiece
@@ -71,12 +71,12 @@ namespace ASCII_Fonts
 
   using FontDataColl = std::map<Font, FontData>;
 
-  Text::Color get_fg_color(const std::string& col_type, const ColorScheme& colors)
+  Color get_fg_color(const std::string& col_type, const ColorScheme& colors)
   {
     if (col_type == "T")
-      return Text::Color::Transparent;
+      return Color::Transparent;
     if (col_type == "T2")
-      return Text::Color::Transparent2;
+      return Color::Transparent2;
     if (col_type == "I")
       return colors.internal.fg_color;
     if (col_type == "SH")
@@ -89,15 +89,15 @@ namespace ASCII_Fonts
       return colors.dot_side_h.fg_color;
     if (col_type == "DSV")
       return colors.dot_side_v.fg_color;
-    return Text::Color::Transparent;
+    return Color::Transparent;
   }
 
-  Text::Color get_bg_color(const std::string& col_type, const ColorScheme& colors)
+  Color get_bg_color(const std::string& col_type, const ColorScheme& colors)
   {
     if (col_type == "T")
-      return Text::Color::Transparent;
+      return Color::Transparent;
     if (col_type == "T2")
-      return Text::Color::Transparent2;
+      return Color::Transparent2;
     if (col_type == "I")
       return colors.internal.bg_color;
     if (col_type == "SH")
@@ -110,7 +110,7 @@ namespace ASCII_Fonts
       return colors.dot_side_h.bg_color;
     if (col_type == "DSV")
       return colors.dot_side_v.bg_color;
-    return Text::Color::Transparent;
+    return Color::Transparent;
   }
   
   // Add the env variable RUNNING_FROM_XCODE to the Run section of the current scheme:
