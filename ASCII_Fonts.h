@@ -7,7 +7,6 @@
 
 #pragma once
 #include "SpriteHandler.h"
-#include "Text.h"
 #include "Styles.h"
 
 #include <iostream>

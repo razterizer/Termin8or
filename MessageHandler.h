@@ -6,7 +6,7 @@
 //
 
 #pragma once
-#include "Text.h"
+#include "Color.h"
 #include <execution>
 
 class MessageHandler
