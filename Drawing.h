@@ -87,6 +87,7 @@ namespace drawing
 
   enum class OutlineType { Line, Masonry, Masonry2, Masonry3, Masonry4, Temple, Hash, NUM_ITEMS };
   enum class Direction { None, S, SE, E, NE, N, NW, W, SW, NUM_ITEMS };
+  
   template<int NR, int NC>
   void draw_box(SpriteHandler<NR, NC>& sh,
                 int r, int c, int len_r, int len_c,
@@ -219,5 +220,27 @@ namespace drawing
       sh.write_buffer(outline_e, i, c + len_c, outline_style);
     }
     sh.write_buffer(str_horiz_s, r + len_r, c, outline_style);
+  }
+  
+  template<int NR, int NC>
+  void draw_box(SpriteHandler<NR, NC>& sh,
+                const ttl::Rectangle& bb,
+                OutlineType outline_type,
+                const styles::Style& outline_style = { Color::Default, Color::Transparent2 },
+                const styles::Style& fill_style = { Color::Default, Color::Transparent2 },
+                char fill_char = ' ',
+                Direction shadow_type = Direction::None,
+                const styles::Style& shadow_style = { Color::Default, Color::Transparent2 },
+                char shadow_char = ' ')
+  {
+    draw_box(sh,
+             bb.r, bb.c, bb.r_len, bb.c_len,
+             outline_type,
+             outline_style,
+             fill_style,
+             fill_char,
+             shadow_type,
+             shadow_style,
+             shadow_char);
   }
 }
