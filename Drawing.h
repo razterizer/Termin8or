@@ -1,5 +1,6 @@
 #pragma once
 #include <Core/Math.h>
+#include <Core/bool_vector.h>
 #include "Styles.h"
 
 // Bresenham Algorithm.
@@ -97,7 +98,8 @@ namespace drawing
                 char fill_char = ' ',
                 Direction shadow_type = Direction::None,
                 const styles::Style& shadow_style = { Color::Default, Color::Transparent2 },
-                char shadow_char = ' ')
+                char shadow_char = ' ',
+                const bool_vector& light_field = {})
   {
     // len_r = 3, len_c = 2
     // ###
@@ -187,39 +189,67 @@ namespace drawing
         break;
     }
     
+    auto f_has_light = [&](int r0, int c0)
+    {
+      if (light_field.empty())
+        return false;
+      return static_cast<bool>(light_field[r0 * (len_c + 1) + c0]);
+    };
+    
+    auto f_shade_style = [&](const styles::Style& style, int r0, int c0)
+    {
+      return shade_style(style, f_has_light(r0, c0) ?
+          color::ShadeType::Bright : color::ShadeType::Unchanged);
+    };
+    
+    // Outline
     int num_horiz = len_c + 1;
     int num_horiz_inset = num_horiz - 2;
     auto str_horiz_n = outline_nw + str::rep_char(outline_n, num_horiz_inset) + (len_c >= 1 ? outline_ne : "");
     auto str_horiz_s = outline_sw + str::rep_char(outline_s, num_horiz_inset) + (len_c >= 1 ? outline_se : "");
-    auto str_fill = str::rep_char(fill_char, num_horiz_inset);
-    auto str_shadow_ns = str::rep_char(shadow_char, num_horiz_inset);
-    auto str_shadow_ew = std::string(1, shadow_char);
+
+    for (int j = 0; j <= len_c; ++j)
+    {
+      sh.write_buffer(std::string(1, str_horiz_n[j]), r, j + c, f_shade_style(outline_style, 0, j));
+      sh.write_buffer(std::string(1, str_horiz_s[j]), r + len_r, j + c, f_shade_style(outline_style, len_r, j));
+    }
+    for (int i = r + 1; i <= r + len_r - 1; ++i)
+    {
+      auto r0 = i - r;
+      sh.write_buffer(outline_w, i, c, f_shade_style(outline_style, r0, 0));
+      sh.write_buffer(outline_e, i, c + len_c, f_shade_style(outline_style, r0, len_c));
+    }
     
-    sh.write_buffer(str_horiz_n, r, c, outline_style);
+    // Filling
+    auto str_fill = std::string(1, fill_char); //str::rep_char(fill_char, num_horiz_inset);
+    auto str_shadow_ns = std::string(1, shadow_char);//str::rep_char(shadow_char, num_horiz_inset);
+    auto str_shadow_ew = std::string(1, shadow_char);
     
     if (len_r >= 2)
     {
-      if (shadow_type == Direction::NW || shadow_type == Direction::N || shadow_type == Direction::NE)
-        sh.write_buffer(str_shadow_ns, r + 1, c + 1, shadow_style);
-      else if (shadow_type == Direction::SW || shadow_type == Direction::S || shadow_type == Direction::SE)
-        sh.write_buffer(str_shadow_ns, r + len_r - 1, c + 1, shadow_style);
+      for (int i = 1; i <= len_c - 1; ++i)
+      {
+        if (shadow_type == Direction::NW || shadow_type == Direction::N || shadow_type == Direction::NE)
+          sh.write_buffer(str_shadow_ns, r + 1, i + c, f_shade_style(shadow_style, 1, i));
+        else if (shadow_type == Direction::SW || shadow_type == Direction::S || shadow_type == Direction::SE)
+          sh.write_buffer(str_shadow_ns, r + len_r - 1, i + c, f_shade_style(shadow_style, len_r - 1, i));
+      }
     }
     
     bool has_west_shadow = len_c >= 2 && (shadow_type == Direction::SW || shadow_type == Direction::W || shadow_type == Direction::NW);
     bool has_east_shadow = len_c >= 2 && (shadow_type == Direction::SE || shadow_type == Direction::E || shadow_type == Direction::NE);
-      
+    
     for (int i = r + 1; i <= r + len_r - 1; ++i)
     {
+      auto r0 = i - r;
       if (has_west_shadow)
-        sh.write_buffer(str_shadow_ew, i, c + 1, shadow_style);
+        sh.write_buffer(str_shadow_ew, i, c + 1, f_shade_style(shadow_style, r0, 1));
       else if (has_east_shadow)
-        sh.write_buffer(str_shadow_ew, i, c + len_c - 1, shadow_style);
-        
-      sh.write_buffer(outline_w, i, c, outline_style);
-      sh.write_buffer(str_fill, i, c + 1, fill_style);
-      sh.write_buffer(outline_e, i, c + len_c, outline_style);
+        sh.write_buffer(str_shadow_ew, i, c + len_c - 1, f_shade_style(shadow_style, r0, len_c - 1));
+      
+      for (int j = 1; j <= len_c - 1; ++j)
+        sh.write_buffer(str_fill, i, j + c, f_shade_style(fill_style, r0, j));
     }
-    sh.write_buffer(str_horiz_s, r + len_r, c, outline_style);
   }
   
   template<int NR, int NC>
@@ -231,7 +261,8 @@ namespace drawing
                 char fill_char = ' ',
                 Direction shadow_type = Direction::None,
                 const styles::Style& shadow_style = { Color::Default, Color::Transparent2 },
-                char shadow_char = ' ')
+                char shadow_char = ' ',
+                const bool_vector& light_field = {})
   {
     draw_box(sh,
              bb.r, bb.c, bb.r_len, bb.c_len,
@@ -241,6 +272,7 @@ namespace drawing
              fill_char,
              shadow_type,
              shadow_style,
-             shadow_char);
+             shadow_char,
+             light_field);
   }
 }
