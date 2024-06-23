@@ -68,8 +68,9 @@ namespace color
     Color::DarkBlue,
   };
   
-  enum class ShadeType { Bright, Dark };
+  enum class ShadeType { Unchanged, Bright, Dark };
   // #NOTE: Returns Color::Default if no matching color was found.
+  //   If shade = ShadeType::Unchanged, then it will return the same color as the argument.
   // If inputting a bright color and ShadeType is Bright, then you will get the same color.
   // If inputting a dark color and ShadeType is Bright, then you will get the corresponding bright color.
   // If inputting a bright color and ShadeType is Dark, then you will get the corresponding dark color.
@@ -79,6 +80,8 @@ namespace color
     int idx = -1;
     switch (shade)
     {
+      case ShadeType::Unchanged:
+        return color;
       case ShadeType::Bright:
         if (stlutils::contains(colors_bright, color))
           return color;

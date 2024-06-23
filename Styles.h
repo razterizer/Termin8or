@@ -72,6 +72,10 @@ namespace styles
     Style ret;
     switch (shade)
     {
+      case color::ShadeType::Unchanged:
+        ret.fg_color = base_color;
+        ret.bg_color = base_color;
+        break;
       case color::ShadeType::Bright:
         ret.fg_color = color::shade_color(base_color, color::ShadeType::Dark);
         ret.bg_color = color::shade_color(base_color, color::ShadeType::Bright);
@@ -89,6 +93,9 @@ namespace styles
     Style ret;
     switch (shade)
     {
+      case color::ShadeType::Unchanged:
+        ret = style;
+        break;
       case color::ShadeType::Bright:
         ret.fg_color = color::shade_color(style.fg_color, color::ShadeType::Dark);
         ret.bg_color = color::shade_color(style.bg_color, color::ShadeType::Bright);
