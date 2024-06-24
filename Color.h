@@ -83,18 +83,18 @@ namespace color
       case ShadeType::Unchanged:
         return color;
       case ShadeType::Bright:
-        if (stlutils::contains(colors_bright, color))
-          return color;
         idx = stlutils::find_idx(colors_dark, color);
         if (0 <= idx)
           return colors_bright[idx];
+        if (stlutils::contains(colors_bright, color))
+          return color;
         break;
       case ShadeType::Dark:
-        if (stlutils::contains(colors_dark, color))
-          return color;
         idx = stlutils::find_idx(colors_bright, color);
         if (0 <= idx)
           return colors_dark[idx];
+        if (stlutils::contains(colors_dark, color))
+          return color;
         break;
     }
     return Color::Default;
