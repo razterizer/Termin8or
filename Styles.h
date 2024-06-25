@@ -88,7 +88,7 @@ namespace styles
     return ret;
   }
   
-  Style shade_style(const Style& style, color::ShadeType shade)
+  Style shade_style(const Style& style, color::ShadeType shade, bool only_swap_if_fg_bg_same = false)
   {
     Style ret;
     switch (shade)
@@ -104,6 +104,11 @@ namespace styles
         ret.fg_color = color::shade_color(style.fg_color, color::ShadeType::Bright);
         ret.bg_color = color::shade_color(style.bg_color, color::ShadeType::Dark);
         break;
+    }
+    if (only_swap_if_fg_bg_same && ret.fg_color == ret.bg_color)
+    {
+      ret = style;
+      ret.swap();
     }
     return ret;
   }
