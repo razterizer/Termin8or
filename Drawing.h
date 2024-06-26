@@ -2,6 +2,7 @@
 #include <Core/Math.h>
 #include <Core/bool_vector.h>
 #include "Styles.h"
+#include "Texture.h"
 
 // Bresenham Algorithm.
 namespace bresenham
@@ -82,6 +83,8 @@ namespace bresenham
     }
   }
 }
+
+// ////////////////////////////////
  
 namespace drawing
 {
@@ -89,6 +92,7 @@ namespace drawing
   enum class OutlineType { Line, Masonry, Masonry2, Masonry3, Masonry4, Temple, Hash, NUM_ITEMS };
   enum class Direction { None, S, SE, E, NE, N, NW, W, SW, NUM_ITEMS };
   
+  // len_r = 0, len_c = 0 yields a 1x1 rectangle.
   template<int NR, int NC>
   void draw_box(SpriteHandler<NR, NC>& sh,
                 int r, int c, int len_r, int len_c,
@@ -274,5 +278,20 @@ namespace drawing
              shadow_style,
              shadow_char,
              light_field);
+  }
+  
+  template<int NR, int NC>
+  void draw_box(SpriteHandler<NR, NC>& sh,
+                const ttl::Rectangle& bb,
+                OutlineType outline_type,
+                const styles::Style& outline_style = { Color::Default, Color::Transparent2 },
+                Direction shadow_type = Direction::None,
+                const Texture& fill_texture = {},
+                const Texture& shadow_texture = {},
+                const bool_vector& light_field = {})
+  {
+   
+   
+
   }
 }
