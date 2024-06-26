@@ -199,7 +199,7 @@ namespace drawing
     auto f_shade_style = [&](const styles::Style& style, int r0, int c0)
     {
       return shade_style(style, f_has_light(r0, c0) ?
-          color::ShadeType::Bright : color::ShadeType::Unchanged);
+          color::ShadeType::Bright : color::ShadeType::Unchanged, true);
     };
     
     // Outline
