@@ -8,6 +8,7 @@
 #pragma once
 #include "RC.h"
 #include "Color.h"
+#include "Styles.h"
 #include <Core/TextIO.h>
 
 
@@ -21,6 +22,8 @@ namespace drawing
     Color fg_color = Color::Default;
     Color bg_color = Color::Transparent2;
     int mat = -1;
+    
+    styles::Style get_style() const { return { fg_color, bg_color }; }
   };
   
   struct Texture
