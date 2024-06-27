@@ -15,7 +15,7 @@ namespace drawing
 {
 
   // size.r = 1, size.c = 1 yields a 1x1 texture.
-  struct Texel
+  struct Textel
   {
     char ch = ' ';
     Color fg_color = Color::Default;
@@ -49,9 +49,9 @@ namespace drawing
       , materials(area, -1)
     {}
     
-    Texel operator()(int r, int c) const
+    Textel operator()(int r, int c) const
     {
-      Texel tex;
+      Textel tex;
       int idx = r * size.c + c;
       tex.ch = characters[idx];
       tex.fg_color = fg_colors[idx];
@@ -60,23 +60,23 @@ namespace drawing
       return tex;
     }
     
-    Texel operator()(const RC& pos) const
+    Textel operator()(const RC& pos) const
     {
       return operator()(pos.r, pos.c);
     }
     
-    void set_texel(const Texel& texel, int r, int c)
+    void set_textel(const Texel& textel, int r, int c)
     {
       int idx = r * size.c + c;
-      characters[idx] = texel.ch;
-      fg_colors[idx] = texel.fg_color;
-      bg_colors[idx] = texel.bg_color;
-      materials[idx] = texel.mat;
+      characters[idx] = textel.ch;
+      fg_colors[idx] = textel.fg_color;
+      bg_colors[idx] = textel.bg_color;
+      materials[idx] = textel.mat;
     }
     
-    void set_texel(const Texel& texel, const RC& pos)
+    void set_textel(const Textel& textel, const RC& pos)
     {
-      set_texel(texel, pos.r, pos.c);
+      set_textel(textel, pos.r, pos.c);
     }
     
     // File format:
