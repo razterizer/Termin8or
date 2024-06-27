@@ -92,18 +92,12 @@ namespace drawing
   enum class OutlineType { Line, Masonry, Masonry2, Masonry3, Masonry4, Temple, Hash, NUM_ITEMS };
   enum class Direction { None, S, SE, E, NE, N, NW, W, SW, NUM_ITEMS };
   
-  // len_r = 0, len_c = 0 yields a 1x1 rectangle.
   template<int NR, int NC>
-  void draw_box(SpriteHandler<NR, NC>& sh,
-                int r, int c, int len_r, int len_c,
-                OutlineType outline_type,
-                const styles::Style& outline_style = { Color::Default, Color::Transparent2 },
-                const styles::Style& fill_style = { Color::Default, Color::Transparent2 },
-                char fill_char = ' ',
-                Direction shadow_type = Direction::None,
-                const styles::Style& shadow_style = { Color::Default, Color::Transparent2 },
-                char shadow_char = ' ',
-                const bool_vector& light_field = {})
+  void draw_box_outline(SpriteHandler<NR, NC>& sh,
+                        int r, int c, int len_r, int len_c,
+                        OutlineType outline_type,
+                        const styles::Style& outline_style = { Color::Default, Color::Transparent2 },
+                        const bool_vector& light_field = {})
   {
     // len_r = 3, len_c = 2
     // ###
@@ -223,6 +217,36 @@ namespace drawing
       sh.write_buffer(outline_w, i, c, f_shade_style(outline_style, r0, 0));
       sh.write_buffer(outline_e, i, c + len_c, f_shade_style(outline_style, r0, len_c));
     }
+  }
+  
+  // len_r = 0, len_c = 0 yields a 1x1 rectangle.
+  template<int NR, int NC>
+  void draw_box(SpriteHandler<NR, NC>& sh,
+                int r, int c, int len_r, int len_c,
+                OutlineType outline_type,
+                const styles::Style& outline_style = { Color::Default, Color::Transparent2 },
+                const styles::Style& fill_style = { Color::Default, Color::Transparent2 },
+                char fill_char = ' ',
+                Direction shadow_type = Direction::None,
+                const styles::Style& shadow_style = { Color::Default, Color::Transparent2 },
+                char shadow_char = ' ',
+                const bool_vector& light_field = {})
+  {
+  
+    auto f_has_light = [&](int r0, int c0)
+    {
+      if (light_field.empty())
+        return false;
+      return static_cast<bool>(light_field[r0 * (len_c + 1) + c0]);
+    };
+    
+    auto f_shade_style = [&](const styles::Style& style, int r0, int c0)
+    {
+      return shade_style(style, f_has_light(r0, c0) ?
+          color::ShadeType::Bright : color::ShadeType::Unchanged, true);
+    };
+    
+    draw_box_outline(sh, r, c, len_r, len_c, outline_type, outline_style, light_field);
     
     // Filling
     auto str_fill = std::string(1, fill_char); //str::rep_char(fill_char, num_horiz_inset);
@@ -280,18 +304,96 @@ namespace drawing
              light_field);
   }
   
+  // E.g.
+  // r = 5, c = 6, len_r = 10, len_c = 8,
+  // fill_texture.size.r = 9, fill_texture.size.c = 7,
+  // shadow_texture.size.r = 9, shadow_texture.size.c = 6.
   template<int NR, int NC>
-  void draw_box(SpriteHandler<NR, NC>& sh,
-                const ttl::Rectangle& bb,
-                OutlineType outline_type,
-                const styles::Style& outline_style = { Color::Default, Color::Transparent2 },
-                Direction shadow_type = Direction::None,
-                const Texture& fill_texture = {},
-                const Texture& shadow_texture = {},
-                const bool_vector& light_field = {})
+  void draw_box_textured(SpriteHandler<NR, NC>& sh,
+                         int r, int c, int len_r, int len_c,
+                         OutlineType outline_type,
+                         const styles::Style& outline_style = { Color::Default, Color::Transparent2 },
+                         Direction shadow_type = Direction::None,
+                         const Texture& fill_texture = {},
+                         const Texture& shadow_texture = {},
+                         const bool_vector& light_field = {})
   {
-   
-   
-
+    
+    auto f_has_light = [&](int r0, int c0)
+    {
+      if (light_field.empty())
+        return false;
+      return static_cast<bool>(light_field[r0 * (len_c + 1) + c0]);
+    };
+    
+    auto f_shade_style = [&](const styles::Style& style, int r0, int c0)
+    {
+      return shade_style(style, f_has_light(r0, c0) ?
+                         color::ShadeType::Bright : color::ShadeType::Unchanged, true);
+    };
+    
+    draw_box_outline(sh, r, c, len_r, len_c, outline_type, outline_style, light_field);
+    
+    // Filling
+    if (len_r >= 2)
+    {
+      for (int i = 1; i <= len_c - 1; ++i)
+      {
+        if (shadow_type == Direction::NW || shadow_type == Direction::N || shadow_type == Direction::NE)
+        {
+          auto textel = shadow_texture(0, i - 1);
+          sh.write_buffer(textel.ch, r + 1, i + c, f_shade_style(textel.get_style(), 1, i));
+        }
+        else if (shadow_type == Direction::SW || shadow_type == Direction::S || shadow_type == Direction::SE)
+        {
+          auto textel = shadow_texture(len_r - 2, i - 1);
+          sh.write_buffer(textel.ch, r + len_r - 1, i + c, f_shade_style(textel.get_style(), len_r - 1, i));
+        }
+      }
+    }
+    
+    bool has_west_shadow = len_c >= 2 && (shadow_type == Direction::SW || shadow_type == Direction::W || shadow_type == Direction::NW);
+    bool has_east_shadow = len_c >= 2 && (shadow_type == Direction::SE || shadow_type == Direction::E || shadow_type == Direction::NE);
+    
+    for (int i = r + 1; i <= r + len_r - 1; ++i)
+    {
+      auto r0 = i - r;
+      if (has_west_shadow)
+      {
+        auto textel = shadow_texture(r0 - 1, 0);
+        sh.write_buffer(textel.ch, i, c + 1, f_shade_style(textel.get_style(), r0, 1));
+      }
+      else if (has_east_shadow)
+      {
+        auto textel = shadow_texture(r0 - 1, len_c - 2);
+        sh.write_buffer(textel.ch, i, c + len_c - 1, f_shade_style(textel.get_style(), r0, len_c - 1));
+      }
+      
+      for (int j = 1; j <= len_c - 1; ++j)
+      {
+        auto textel = fill_texture(r0 - 1, j - 1);
+        sh.write_buffer(textel.ch, i, j + c, f_shade_style(textel.get_style(), r0, j));
+      }
+    }
   }
+  
+  template<int NR, int NC>
+  void draw_box_textured(SpriteHandler<NR, NC>& sh,
+                         const ttl::Rectangle& bb,
+                         OutlineType outline_type,
+                         const styles::Style& outline_style = { Color::Default, Color::Transparent2 },
+                         Direction shadow_type = Direction::None,
+                         const Texture& fill_texture = {},
+                         const Texture& shadow_texture = {},
+                         const bool_vector& light_field = {})
+  {
+    draw_box_textured(sh,
+                      bb.r, bb.c, bb.r_len, bb.c_len,
+             outline_type,
+             outline_style,
+             shadow_type,
+             shadow_texture,
+             light_field);
+  }
+  
 }
