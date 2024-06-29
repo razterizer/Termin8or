@@ -333,8 +333,6 @@ namespace drawing
     
     Texture subset(const ttl::Rectangle& bb_subset, bool zero_area_is_one_char = false)
     {
-      Texture sub_texture;
-      
       auto bb = bb_subset; //
       if (zero_area_is_one_char)
       {
@@ -342,7 +340,7 @@ namespace drawing
         bb.c_len++;
       }
       
-      sub_texture.size = bb.size();
+      Texture sub_texture(bb.size());
       for (int r = bb.r; r <= bb.r_len; ++r)
       {
         for (int c = bb.c; c <= bb.c_len; ++c)
