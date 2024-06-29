@@ -24,6 +24,7 @@ namespace drawing
     int mat = -1;
     
     styles::Style get_style() const { return { fg_color, bg_color }; }
+    std::string str() const { return std::string(1, ch); }
   };
   
   struct Texture
