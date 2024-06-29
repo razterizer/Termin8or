@@ -174,11 +174,13 @@ protected:
   virtual void on_enter_hiscores() {}
   
 public:
-  GameEngine(std::string_view exe_path,
+  GameEngine(std::string_view exe_full_path,
              const GameEngineParams& params)
-    : path_to_exe(exe_path)
+    : path_to_exe(exe_full_path)
     , m_params(params)
-  {}
+  {
+    std::tie(exe_path, exe_file) = folder::split_file_path(std::string(path_to_exe));
+  }
   
   virtual ~GameEngine() = default;
 
@@ -191,8 +193,6 @@ public:
     //nodelay(stdscr, TRUE);
     
     rnd::srand_time();
-    
-    std::tie(exe_path, exe_file) = folder::split_file_path(std::string(path_to_exe));
     
     if (time_inited.once())
       sim_start_time_s = std::chrono::steady_clock::now();
