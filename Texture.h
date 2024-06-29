@@ -56,6 +56,10 @@ namespace drawing
     
     Textel operator()(int r, int c) const
     {
+      if (!math::in_range<int>(r, 0, size.r, Range::ClosedOpen))
+        return {};
+      if (!math::in_range<int>(c, 0, size.c, Range::ClosedOpen))
+        return {};
       Textel tex;
       int idx = r * size.c + c;
       tex.ch = characters[idx];
