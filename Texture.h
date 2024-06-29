@@ -156,6 +156,11 @@ namespace drawing
         {
           std::istringstream iss(l);
           iss >> size.r >> size.c;
+          area = size.r * size.c;
+          characters.resize(area, ' ');
+          fg_colors.resize(area, Color::Default);
+          bg_colors.resize(area, Color::Transparent2);
+          materials.resize(area, -1);
           section = 1;
           r = 0;
         }
