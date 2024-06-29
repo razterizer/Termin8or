@@ -74,7 +74,7 @@ namespace drawing
       return operator()(pos.r, pos.c);
     }
     
-    void set_textel(const Textel& textel, int r, int c)
+    void set_textel(int r, int c, const Textel& textel)
     {
       int idx = r * size.c + c;
       characters[idx] = textel.ch;
