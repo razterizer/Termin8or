@@ -87,9 +87,9 @@ namespace drawing
       materials[idx] = textel.mat;
     }
     
-    void set_textel(const Textel& textel, const RC& pos)
+    void set_textel(const RC& pos, const Textel& textel)
     {
-      set_textel(textel, pos.r, pos.c);
+      set_textel(pos.r, pos.c, textel);
     }
     
     // File format:
