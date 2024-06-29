@@ -48,6 +48,7 @@ namespace drawing
     Texture(int tex_rows, int tex_cols)
       : size({ tex_rows, tex_cols })
       , area(tex_rows*tex_cols)
+      , characters(area, ' ')
       , fg_colors(area, Color::Default)
       , bg_colors(area, Color::Transparent2)
       , materials(area, -1)
