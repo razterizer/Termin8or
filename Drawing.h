@@ -342,16 +342,16 @@ namespace drawing
         if (shadow_type == Direction::NW || shadow_type == Direction::N || shadow_type == Direction::NE)
         {
           auto textel = shadow_texture(0, i - 1);
-          sh.write_buffer(textel.ch, r + 1, i + c, f_shade_style(textel.get_style(), 1, i));
+          sh.write_buffer(textel.str(), r + 1, i + c, f_shade_style(textel.get_style(), 1, i));
         }
         else if (shadow_type == Direction::SW || shadow_type == Direction::S || shadow_type == Direction::SE)
         {
           auto textel = shadow_texture(len_r - 2, i - 1);
-          sh.write_buffer(textel.ch, r + len_r - 1, i + c, f_shade_style(textel.get_style(), len_r - 1, i));
+          sh.write_buffer(textel.str(), r + len_r - 1, i + c, f_shade_style(textel.get_style(), len_r - 1, i));
         }
       }
     }
-    
+
     bool has_west_shadow = len_c >= 2 && (shadow_type == Direction::SW || shadow_type == Direction::W || shadow_type == Direction::NW);
     bool has_east_shadow = len_c >= 2 && (shadow_type == Direction::SE || shadow_type == Direction::E || shadow_type == Direction::NE);
     
@@ -361,18 +361,18 @@ namespace drawing
       if (has_west_shadow)
       {
         auto textel = shadow_texture(r0 - 1, 0);
-        sh.write_buffer(textel.ch, i, c + 1, f_shade_style(textel.get_style(), r0, 1));
+        sh.write_buffer(textel.str(), i, c + 1, f_shade_style(textel.get_style(), r0, 1));
       }
       else if (has_east_shadow)
       {
         auto textel = shadow_texture(r0 - 1, len_c - 2);
-        sh.write_buffer(textel.ch, i, c + len_c - 1, f_shade_style(textel.get_style(), r0, len_c - 1));
+        sh.write_buffer(textel.str(), i, c + len_c - 1, f_shade_style(textel.get_style(), r0, len_c - 1));
       }
       
       for (int j = 1; j <= len_c - 1; ++j)
       {
         auto textel = fill_texture(r0 - 1, j - 1);
-        sh.write_buffer(textel.ch, i, j + c, f_shade_style(textel.get_style(), r0, j));
+        sh.write_buffer(textel.str(), i, j + c, f_shade_style(textel.get_style(), r0, j));
       }
     }
   }
