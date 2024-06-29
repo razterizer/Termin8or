@@ -222,7 +222,8 @@ namespace drawing
             for (int c = 0; c <= size.c; ++c)
             {
               int idx = r * size.c + c;
-              materials[idx] = l[c] - 48; // #FIXME: Use hex to int conversion instead!
+              if ('0' <= l[c] && l[c] <= '9')
+                materials[idx] = l[c] - '0'; // #FIXME: Use hex to int conversion instead!
             }
             r++;
           }
