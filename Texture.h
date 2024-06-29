@@ -76,6 +76,10 @@ namespace drawing
     
     void set_textel(int r, int c, const Textel& textel)
     {
+      if (!math::in_range<int>(r, 0, size.r, Range::ClosedOpen))
+        return;
+      if (!math::in_range<int>(c, 0, size.c, Range::ClosedOpen))
+        return;
       int idx = r * size.c + c;
       characters[idx] = textel.ch;
       fg_colors[idx] = textel.fg_color;
