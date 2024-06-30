@@ -144,6 +144,8 @@ protected:
   
   keyboard::KeyPressData kpd;
   
+  bool exit_requested = false;
+  
   void set_fps(float fps_val) { fps = fps_val; }
   
   // Used for dynamics and stuff.
@@ -215,9 +217,14 @@ public:
   void set_state_game_over() { show_game_over = true; }
   void set_state_you_won() { show_you_won = true; }
   
+  void request_exit() { exit_requested = true; }
+  
 private:
   bool engine_update()
   {
+    if (exit_requested)
+      return false;
+  
     if (time_inited.was_triggered())
     {
       auto curr_time = std::chrono::steady_clock::now();
