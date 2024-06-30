@@ -14,6 +14,7 @@
 #include <Core/FolderHelper.h>
 #include <Core/OneShot.h>
 #include <chrono>
+#include <sstream>
 
 struct GameEngineParams
 {

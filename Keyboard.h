@@ -13,6 +13,7 @@
 #ifndef _WIN32
 #include <unistd.h>
 #endif
+#include <iostream>
 
 
 namespace keyboard
