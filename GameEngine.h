@@ -189,6 +189,9 @@ public:
 
   void init()
   {
+    if (exit_requested)
+      return;
+    
     keyboard::enableRawMode();
     
     clear_screen(); return_cursor();
@@ -205,6 +208,9 @@ public:
   
   void run()
   {
+    if (exit_requested)
+      return;
+      
     // RT-Loop
     clear_screen();
     auto update_func = std::bind(&GameEngine::engine_update, this);
