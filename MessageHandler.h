@@ -73,7 +73,10 @@ public:
       auto fg_color = get_fg_color();
       sh.write_buffer(curr_message, r, c, fg_color, get_bg_color());
       if (boxed)
-        drawing::draw_box(sh, r-1, c-2, 2, str_len + 3, drawing::OutlineType::Line, { fg_color, get_bg_color() }, { fg_color, get_bg_color() });
+      {
+        drawing::draw_box_outline(sh, r-1, c-2, 2, str_len + 3, drawing::OutlineType::Line, { fg_color, get_bg_color() });
+        drawing::draw_box(sh, r-1, c-2, 2, str_len + 3, { fg_color, get_bg_color() });
+      }
     }
     else
       message_empty = true;
