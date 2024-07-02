@@ -219,12 +219,20 @@ namespace drawing
     }
   }
   
+  template<int NR, int NC>
+  void draw_box_outline(SpriteHandler<NR, NC>& sh,
+                        const ttl::Rectangle& bb,
+                        OutlineType outline_type,
+                        const styles::Style& outline_style = { Color::Default, Color::Transparent2 },
+                        const bool_vector& light_field = {})
+  {
+    draw_box_outline(sh, bb.r, bb.c, bb.r_len, bb.c_len, outline_type, outline_style, light_field);
+  }
+  
   // len_r = 0, len_c = 0 yields a 1x1 rectangle.
   template<int NR, int NC>
   void draw_box(SpriteHandler<NR, NC>& sh,
                 int r, int c, int len_r, int len_c,
-                OutlineType outline_type,
-                const styles::Style& outline_style = { Color::Default, Color::Transparent2 },
                 const styles::Style& fill_style = { Color::Default, Color::Transparent2 },
                 char fill_char = ' ',
                 Direction shadow_type = Direction::None,
@@ -245,8 +253,6 @@ namespace drawing
       return shade_style(style, f_has_light(r0, c0) ?
           color::ShadeType::Bright : color::ShadeType::Unchanged, true);
     };
-    
-    draw_box_outline(sh, r, c, len_r, len_c, outline_type, outline_style, light_field);
     
     // Filling
     auto str_fill = std::string(1, fill_char); //str::rep_char(fill_char, num_horiz_inset);
@@ -283,8 +289,6 @@ namespace drawing
   template<int NR, int NC>
   void draw_box(SpriteHandler<NR, NC>& sh,
                 const ttl::Rectangle& bb,
-                OutlineType outline_type,
-                const styles::Style& outline_style = { Color::Default, Color::Transparent2 },
                 const styles::Style& fill_style = { Color::Default, Color::Transparent2 },
                 char fill_char = ' ',
                 Direction shadow_type = Direction::None,
@@ -294,8 +298,6 @@ namespace drawing
   {
     draw_box(sh,
              bb.r, bb.c, bb.r_len, bb.c_len,
-             outline_type,
-             outline_style,
              fill_style,
              fill_char,
              shadow_type,
@@ -311,8 +313,6 @@ namespace drawing
   template<int NR, int NC>
   void draw_box_textured(SpriteHandler<NR, NC>& sh,
                          int r, int c, int len_r, int len_c,
-                         OutlineType outline_type,
-                         const styles::Style& outline_style = { Color::Default, Color::Transparent2 },
                          Direction shadow_type = Direction::None,
                          const Texture& fill_texture = {},
                          const Texture& shadow_texture = {},
@@ -331,8 +331,6 @@ namespace drawing
       return shade_style(style, f_has_light(r0, c0) ?
                          color::ShadeType::Bright : color::ShadeType::Unchanged, true);
     };
-    
-    draw_box_outline(sh, r, c, len_r, len_c, outline_type, outline_style, light_field);
     
     // Filling
     if (len_r >= 2)
@@ -380,8 +378,6 @@ namespace drawing
   template<int NR, int NC>
   void draw_box_textured(SpriteHandler<NR, NC>& sh,
                          const ttl::Rectangle& bb,
-                         OutlineType outline_type,
-                         const styles::Style& outline_style = { Color::Default, Color::Transparent2 },
                          Direction shadow_type = Direction::None,
                          const Texture& fill_texture = {},
                          const Texture& shadow_texture = {},
@@ -389,11 +385,9 @@ namespace drawing
   {
     draw_box_textured(sh,
                       bb.r, bb.c, bb.r_len, bb.c_len,
-             outline_type,
-             outline_style,
-             shadow_type,
-             shadow_texture,
-             light_field);
+                      shadow_type,
+                      shadow_texture,
+                      light_field);
   }
   
 }
