@@ -149,6 +149,16 @@ namespace drawing
         }
       };
       
+      // 0 to 15 is hexadecimal, then just continue down the alphabet.
+      auto f_char_to_mat = [](int ch) -> int
+      {
+        if ('0' <= ch && ch <= '9')
+          return ch - '0';
+        else if ('A' <= ch)
+          return ch - 'A' + 10;
+        return 0;
+      };
+      
       bool ret = TextIO::read_file(file_path, lines);
       if (!ret)
         return false;
@@ -227,8 +237,7 @@ namespace drawing
             for (int c = 0; c < size.c; ++c)
             {
               int idx = r * size.c + c;
-              if ('0' <= l[c] && l[c] <= '9')
-                materials[idx] = l[c] - '0'; // #FIXME: Use hex to int conversion instead!
+              materials[idx] = f_char_to_mat(l[c]);
             }
             r++;
           }
@@ -271,6 +280,16 @@ namespace drawing
           case Color::White:        return 'F';
           default: return '*';
         }
+      };
+      
+      // 0 to 15 is hexadecimal, then just continue down the alphabet.
+      auto f_mat_to_char = [](int mat) -> char
+      {
+        if (0 <= mat && mat <= 9)
+          return '0' + static_cast<char>(mat);
+        else if (10 <= mat)
+          return 'A' + static_cast<char>(mat) - 10;
+        return '0';
       };
       
       std::ostringstream oss;
@@ -316,7 +335,7 @@ namespace drawing
         for (int c = 0; c < size.c; ++c)
         {
           int idx = r * size.c + c;
-          curr_line += std::to_string(materials[idx]); // #FIXME: Use hex to int conversion instead!
+          curr_line += f_mat_to_char(materials[idx]);
         }
         lines.emplace_back(curr_line);
       }
