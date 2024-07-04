@@ -54,6 +54,11 @@ namespace drawing
       , materials(area, 0)
     {}
     
+    void init_materials(int mat)
+    {
+      stlutils::memset(materials, mat);
+    }
+    
     Textel operator()(int r, int c) const
     {
       if (!math::in_range<int>(r, 0, size.r, Range::ClosedOpen))
