@@ -21,7 +21,7 @@ namespace drawing
     char ch = ' ';
     Color fg_color = Color::Default;
     Color bg_color = Color::Transparent2;
-    int mat = -1;
+    int mat = 0;
     
     styles::Style get_style() const { return { fg_color, bg_color }; }
     std::string str() const { return std::string(1, ch); }
@@ -43,7 +43,7 @@ namespace drawing
       , characters(area, ' ')
       , fg_colors(area, Color::Default)
       , bg_colors(area, Color::Transparent2)
-      , materials(area, -1)
+      , materials(area, 0)
     {}
     Texture(int tex_rows, int tex_cols)
       : size({ tex_rows, tex_cols })
@@ -51,7 +51,7 @@ namespace drawing
       , characters(area, ' ')
       , fg_colors(area, Color::Default)
       , bg_colors(area, Color::Transparent2)
-      , materials(area, -1)
+      , materials(area, 0)
     {}
     
     Textel operator()(int r, int c) const
