@@ -168,7 +168,7 @@ namespace drawing
         {
           if (!l.empty())
           {
-            for (int c = 0; c <= size.c; ++c)
+            for (int c = 0; c < size.c; ++c)
             {
               int idx = r * size.c + c;
               characters[idx] = l[c];
@@ -185,7 +185,7 @@ namespace drawing
         {
           if (!l.empty())
           {
-            for (int c = 0; c <= size.c; ++c)
+            for (int c = 0; c < size.c; ++c)
             {
               int idx = r * size.c + c;
               fg_colors[idx] = f_char_to_color(l[c]);
@@ -202,7 +202,7 @@ namespace drawing
         {
           if (!l.empty())
           {
-            for (int c = 0; c <= size.c; ++c)
+            for (int c = 0; c < size.c; ++c)
             {
               int idx = r * size.c + c;
               bg_colors[idx] = f_char_to_color(l[c]);
@@ -219,7 +219,7 @@ namespace drawing
         {
           if (!l.empty())
           {
-            for (int c = 0; c <= size.c; ++c)
+            for (int c = 0; c < size.c; ++c)
             {
               int idx = r * size.c + c;
               if ('0' <= l[c] && l[c] <= '9')
@@ -272,10 +272,10 @@ namespace drawing
       oss << size.r << " " << size.c;
       lines.emplace_back(oss.str());
       lines.emplace_back("");
-      for (int r = 0; r <= size.r; ++r)
+      for (int r = 0; r < size.r; ++r)
       {
         std::string curr_line;
-        for (int c = 0; c <= size.c; ++c)
+        for (int c = 0; c < size.c; ++c)
         {
           int idx = r * size.c + c;
           curr_line += characters[idx];
@@ -283,10 +283,10 @@ namespace drawing
         lines.emplace_back(curr_line);
       }
       lines.emplace_back("");
-      for (int r = 0; r <= size.r; ++r)
+      for (int r = 0; r < size.r; ++r)
       {
         std::string curr_line;
-        for (int c = 0; c <= size.c; ++c)
+        for (int c = 0; c < size.c; ++c)
         {
           int idx = r * size.c + c;
           curr_line += f_color_to_char(fg_colors[idx]);
@@ -294,10 +294,10 @@ namespace drawing
         lines.emplace_back(curr_line);
       }
       lines.emplace_back("");
-      for (int r = 0; r <= size.r; ++r)
+      for (int r = 0; r < size.r; ++r)
       {
         std::string curr_line;
-        for (int c = 0; c <= size.c; ++c)
+        for (int c = 0; c < size.c; ++c)
         {
           int idx = r * size.c + c;
           curr_line += f_color_to_char(bg_colors[idx]);
@@ -305,10 +305,10 @@ namespace drawing
         lines.emplace_back(curr_line);
       }
       lines.emplace_back("");
-      for (int r = 0; r <= size.r; ++r)
+      for (int r = 0; r < size.r; ++r)
       {
         std::string curr_line;
-        for (int c = 0; c <= size.c; ++c)
+        for (int c = 0; c < size.c; ++c)
         {
           int idx = r * size.c + c;
           curr_line += std::to_string(materials[idx]); // #FIXME: Use hex to int conversion instead!
