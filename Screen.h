@@ -187,14 +187,16 @@ void draw_paused(SpriteHandler<NR, NC>& sh, int anim_ctr)
 
 enum class YesNoButtons { No = 0, Yes = 1 };
 template<int NR, int NC>
-void draw_confirm_quit(SpriteHandler<NR, NC>& sh, YesNoButtons button,
-                       const styles::Style& title_style,
-                       const styles::ButtonStyle& button_style,
-                       const styles::Style& info_style)
+void draw_confirm(SpriteHandler<NR, NC>& sh,
+                  const std::string& title,
+                  YesNoButtons button,
+                  const styles::Style& title_style,
+                  const styles::ButtonStyle& button_style,
+                  const styles::Style& info_style)
 {
   const auto nr = static_cast<int>(NR);
   const auto nc = static_cast<int>(NC);
-  std::string msg = "Are you sure you want to quit?";
+  std::string msg = title;
   auto msg_len = static_cast<int>(msg.length());
   sh.write_buffer(msg, nr/2 - 2, (nc - msg_len)/2, title_style);
   // "[Yes]      [No]"

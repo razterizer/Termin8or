@@ -259,10 +259,10 @@ private:
     else if (show_quit_confirm && !show_hiscores && !show_input_hiscore)
     {
       bg_color = m_params.screen_bg_color_quit_confirm.value_or(bg_color);
-      draw_confirm_quit(sh, quit_confirm_button,
-                        m_params.quit_confirm_title_style,
-                        m_params.quit_confirm_button_style,
-                        m_params.quit_confirm_info_style);
+      draw_confirm(sh, "Are you sure you want to quit?", quit_confirm_button,
+                   m_params.quit_confirm_title_style,
+                   m_params.quit_confirm_button_style,
+                   m_params.quit_confirm_info_style);
       if (kpd.curr_special_key == keyboard::SpecialKey::Left)
         quit_confirm_button = YesNoButtons::Yes;
       else if (kpd.curr_special_key == keyboard::SpecialKey::Right)
