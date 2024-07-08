@@ -19,8 +19,6 @@ private:
   const float duration = 1.5f; //4.f;
   float trg_time = 0.f;
   bool message_empty = true;
-  int r = 15;
-  int c = 0;
   std::vector<std::pair<std::string, Level>> messages;
   std::string curr_message;
   ui::TextBox tb;
@@ -58,7 +56,7 @@ public:
   }
   
   template<int NR, int NC>
-  void update(SpriteHandler<NR, NC>& sh, float time, bool boxed = false)
+  void update(SpriteHandler<NR, NC>& sh, float time, ui::VerticalAlignment v_align = ui::VerticalAlignment::CENTER, ui::HorizontalAlignment h_align = ui::HorizontalAlignment::CENTER, bool draw_box_outline = true, bool draw_box_bkg = true, int box_padding_lr = 1, int box_padding_ud = 0, drawing::OutlineType outline_type = drawing::OutlineType::Line)
   {
     if (message_empty && !messages.empty())
     {
@@ -67,7 +65,6 @@ public:
       messages.pop_back();
       str_len = static_cast<int>(curr_message.size());
       message_empty = false;
-      c = std::round((NC - str_len)/2.f);
     }
     
     if (time - trg_time <= duration && !curr_message.empty())
@@ -76,7 +73,7 @@ public:
       auto bg_color = get_bg_color();
       tb.set_text(curr_message);
       tb.calc_pre_draw(str::Adjustment::Center);
-      tb.draw(sh, { r, c }, { fg_color, bg_color }, true, true, 1);
+      tb.draw(sh, v_align, h_align, { fg_color, bg_color }, draw_box_outline, draw_box_bkg, box_padding_lr, box_padding_ud, std::nullopt, outline_type);
     }
     else
       message_empty = true;
