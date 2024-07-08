@@ -7,6 +7,7 @@
 
 #pragma once
 #include "Color.h"
+#include "UI.h"
 #include <execution>
 
 class MessageHandler
@@ -22,6 +23,7 @@ private:
   int c = 0;
   std::vector<std::pair<std::string, Level>> messages;
   std::string curr_message;
+  ui::TextBox tb;
   int str_len = 0;
   Level curr_level;
   
@@ -71,12 +73,10 @@ public:
     if (time - trg_time <= duration && !curr_message.empty())
     {
       auto fg_color = get_fg_color();
-      sh.write_buffer(curr_message, r, c, fg_color, get_bg_color());
-      if (boxed)
-      {
-        drawing::draw_box_outline(sh, r-1, c-2, 2, str_len + 3, drawing::OutlineType::Line, { fg_color, get_bg_color() });
-        drawing::draw_box(sh, r-1, c-2, 2, str_len + 3, { fg_color, get_bg_color() });
-      }
+      auto bg_color = get_bg_color();
+      tb.set_text(curr_message);
+      tb.calc_pre_draw(str::Adjustment::Center);
+      tb.draw(sh, { r, c }, { fg_color, bg_color }, true, true, 1);
     }
     else
       message_empty = true;
