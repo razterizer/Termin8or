@@ -4,7 +4,7 @@
 #include "Styles.h"
 #include "RC.h"
 #include <Core/StringHelper.h>
-#include <Core/TextBox.h>
+#include <Core/StringBox.h>
 #include <Core/StlUtils.h>
 #include <Core/Math.h>
 #include <array>
@@ -93,12 +93,12 @@ public:
     return screen_buffer[r][c] == ' ';
   }
   
-  // write_buffer using TextBox.
-  void write_buffer(const TextBox& tb, int r, int c, Color fg_color, Color bg_color = Color::Transparent)
+  // write_buffer using StringBox.
+  void write_buffer(const str::StringBox& sb, int r, int c, Color fg_color, Color bg_color = Color::Transparent)
   {
-    auto Nr = static_cast<int>(tb.text_lines.size());
+    auto Nr = static_cast<int>(sb.text_lines.size());
     for (int r_idx = 0; r_idx < Nr; ++r_idx)
-      write_buffer(tb.text_lines[r_idx], r + r_idx, c, fg_color, bg_color);
+      write_buffer(sb.text_lines[r_idx], r + r_idx, c, fg_color, bg_color);
   }
   
   void add_ordered_text(const OrderedText& text)
