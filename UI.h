@@ -23,6 +23,7 @@ namespace ui
     }
     
   public:
+    TextBox() = default;
     TextBox(const std::vector<std::string>& text_lines)
       : sb(text_lines)
     {
