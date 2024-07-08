@@ -35,6 +35,18 @@ namespace ui
       init();
     }
     
+    void set_text(const std::vector<std::string>& text_lines)
+    {
+      sb = str::StringBox { text_lines };
+      init();
+    }
+    
+    void set_text(const std::string& text)
+    {
+      sb = str::StringBox { text };
+      init();
+    }
+    
     void calc_pre_draw(str::Adjustment adjustment)
     {
       len_max = 0;
