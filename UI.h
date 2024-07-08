@@ -60,7 +60,7 @@ namespace ui
     }
     
     template<int NR, int NC>
-    void draw(SpriteHandler<NR, NC>& sh, const RC& pos, const styles::Style& box_style, bool draw_box_outline, bool draw_box_bkg, int box_padding_lr = 0, int box_padding_ud = 0, std::optional<styles::Style> box_outline_style = std::nullopt, drawing::OutlineType outline_type = drawing::OutlineType::Line)
+    void draw(SpriteHandler<NR, NC>& sh, const RC& pos, const styles::Style& box_style, bool draw_box_outline, bool draw_box_bkg, int box_padding_ud = 0, int box_padding_lr = 0, std::optional<styles::Style> box_outline_style = std::nullopt, drawing::OutlineType outline_type = drawing::OutlineType::Line)
     {
       for (size_t l_idx = 0; l_idx < N; ++l_idx)
         sh.write_buffer(sb[l_idx], pos.r + l_idx, pos.c, box_style);
@@ -71,9 +71,12 @@ namespace ui
     }
     
     template<int NR, int NC>
-    void draw(SpriteHandler<NR, NC>& sh, VerticalAlignment v_align, HorizontalAlignment h_align, const styles::Style& style, bool draw_box_outline, bool draw_box_bkg, int box_padding_lr = 0, int box_padding_ud = 0, std::optional<styles::Style> box_outline_style = std::nullopt, drawing::OutlineType outline_type = drawing::OutlineType::Line)
+    void draw(SpriteHandler<NR, NC>& sh, VerticalAlignment v_align, HorizontalAlignment h_align, const styles::Style& style, bool draw_box_outline, bool draw_box_bkg, int box_padding_ud = 0, int box_padding_lr = 0, std::optional<styles::Style> box_outline_style = std::nullopt, drawing::OutlineType outline_type = drawing::OutlineType::Line)
     {
       RC pos { 0, 0 };
+      
+      auto mid_v = std::round((NR - N)*0.5f) - (NR%2 == 0)*0.5f;
+      auto mid_h = std::round((NC - len_max)*0.5f) - (NC%2 == 1)*0.5f; // Why NC%2 == 1 here?!?!
       
       switch (v_align)
       {
@@ -81,10 +84,10 @@ namespace ui
           pos.r = 0;
           break;
         case VerticalAlignment::CENTER:
-          pos.r = std::round((NR - N)*0.5f);
+          pos.r = mid_v - box_padding_ud/2 - 1;
           break;
         case VerticalAlignment::BOTTOM:
-          pos.r = NR - N;
+          pos.r = 2*mid_v - box_padding_ud - 2;
           break;
       }
       
@@ -94,14 +97,14 @@ namespace ui
           pos.c = 0;
           break;
         case HorizontalAlignment::CENTER:
-          pos.c = std::round((NC - len_max)*0.5f);
+          pos.c = mid_h - box_padding_lr/2 - 1;
           break;
         case HorizontalAlignment::RIGHT:
-          pos.c = NC - len_max;
+          pos.c = 2*mid_h - box_padding_lr - 2;
           break;
       }
       
-      draw(sh, pos, style, draw_box_outline, draw_box_bkg, box_padding_lr, box_padding_ud, box_outline_style, outline_type);
+      draw(sh, pos, style, draw_box_outline, draw_box_bkg, box_padding_ud, box_padding_lr, box_outline_style, outline_type);
     }
   };
   
