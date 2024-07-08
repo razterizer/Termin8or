@@ -20,8 +20,6 @@ namespace ui
     void init()
     {
       N = sb.size();
-      for (size_t l_idx = 0; l_idx < N; ++l_idx)
-        math::maximize(len_max, sb[l_idx].size());
     }
     
   public:
@@ -38,6 +36,9 @@ namespace ui
     
     void calc_pre_draw(str::Adjustment adjustment)
     {
+      len_max = 0;
+      for (size_t l_idx = 0; l_idx < N; ++l_idx)
+        math::maximize(len_max, sb[l_idx].size());
       for (size_t l_idx = 0; l_idx < N; ++l_idx)
         sb[l_idx] = str::adjust_str(sb[l_idx], adjustment, len_max);
     }
