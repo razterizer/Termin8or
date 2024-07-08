@@ -47,7 +47,7 @@ namespace ui
     void draw(SpriteHandler<NR, NC>& sh, const RC& pos, const styles::Style& style, bool draw_outline, bool draw_bkg, int box_padding = 0)
     {
       for (size_t l_idx = 0; l_idx < N; ++l_idx)
-        sh.write_buffer(sb[l_idx], pos.r, pos.c, style);
+        sh.write_buffer(sb[l_idx], pos.r + l_idx, pos.c, style);
     }
   };
   
