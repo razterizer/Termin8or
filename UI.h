@@ -13,7 +13,7 @@ namespace ui
 
   class TextBox
   {
-    StringBox sb;
+    str::StringBox sb;
     size_t N = 0;
     size_t len_max = 0;
     
@@ -21,7 +21,7 @@ namespace ui
     {
       N = sb.size();
       for (size_t l_idx = 0; l_idx < N; ++l_idx)
-        math::maximize(len_max, sb[l_idx]);
+        math::maximize(len_max, sb[l_idx].size());
     }
     
   public:
