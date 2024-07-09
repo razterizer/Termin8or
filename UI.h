@@ -114,9 +114,69 @@ namespace ui
     }
   };
   
-  class TextBoxDebug : TextBox
+  struct ParamBase
   {
+    std::string name;
   
+    ParamBase(const std::string& a_name) : name(a_name) {}
+    virtual ~ParamBase() = default;
+    virtual std::string str() const = 0;
+  };
+  
+  template<typename T>
+  struct RefParam : ParamBase
+  {
+    T* var = nullptr;
+    T step = static_cast<T>(0);
+    T min = static_cast<T>(0);
+    T max = static_cast<T>(0);
+    
+    RefParam(const std::string& a_name, T* a_var, T a_step, T a_min, T a_max)
+      : ParamBase(a_name)
+      , var(a_var)
+      , step(a_step)
+      , min(a_min)
+      , max(a_max)
+    {}
+    
+    virtual std::string str() const override
+    {
+      return name + ": " + (var == nullptr ? "null" : std::to_string(*var));
+    }
+  };
+  
+  class TextBoxDebug : public TextBox
+  {
+    std::vector<std::unique_ptr<ParamBase>> params;
+    
+  public:
+    TextBoxDebug() = default;
+    
+    template<typename T>
+    void add(const RefParam<T>& ref_param)
+    {
+      params.emplace_back(std::make_unique<RefParam<T>>(ref_param));
+      sb.text_lines.resize(params.size());
+      init();
+    }
+    
+    template<typename T>
+    void add(const std::string& name, T* var_ptr, T step = static_cast<T>(0), T min = static_cast<T>(0), T max = static_cast<T>(0))
+    {
+      params.emplace_back(std::make_unique<RefParam<T>>(name, var_ptr, step, min, max));
+      sb.text_lines.resize(params.size());
+      init();
+    }
+    
+    virtual void calc_pre_draw(str::Adjustment adjustment) override
+    {
+      for (size_t p_idx = 0; p_idx < N; ++p_idx)
+      {
+        sb[p_idx] = params[p_idx]->str();
+      }
+    
+      TextBox::calc_pre_draw(adjustment);
+    }
   };
 
 }
