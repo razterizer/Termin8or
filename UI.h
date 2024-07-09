@@ -8,6 +8,8 @@
 #pragma once
 #include <Core/StringBox.h>
 
+#define PARAM(var) #var, &var
+
 namespace ui
 {
 
