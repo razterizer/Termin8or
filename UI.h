@@ -56,7 +56,7 @@ namespace ui
       init();
     }
     
-    void calc_pre_draw(str::Adjustment adjustment)
+    virtual void calc_pre_draw(str::Adjustment adjustment)
     {
       len_max = 0;
       for (size_t l_idx = 0; l_idx < N; ++l_idx)
