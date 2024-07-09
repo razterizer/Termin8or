@@ -87,7 +87,7 @@ namespace ui
       switch (v_align)
       {
         case VerticalAlignment::TOP:
-          pos.r = 0;
+          pos.r = 2 + box_padding_ud;
           break;
         case VerticalAlignment::CENTER:
           pos.r = mid_v - box_padding_ud/2 - 1;
@@ -100,7 +100,7 @@ namespace ui
       switch (h_align)
       {
         case HorizontalAlignment::LEFT:
-          pos.c = 0;
+          pos.c = 2 + box_padding_lr;
           break;
         case HorizontalAlignment::CENTER:
           pos.c = mid_h - box_padding_lr/2 - 1;
