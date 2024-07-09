@@ -28,6 +28,11 @@ namespace ui
     
   public:
     TextBox() = default;
+    TextBox(size_t num_lines)
+      : sb(num_lines)
+    {
+      init();
+    }
     TextBox(const std::vector<std::string>& text_lines)
       : sb(text_lines)
     {
