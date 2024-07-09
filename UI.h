@@ -77,7 +77,7 @@ namespace ui
     }
     
     template<int NR, int NC>
-    void draw(SpriteHandler<NR, NC>& sh, VerticalAlignment v_align, HorizontalAlignment h_align, const styles::Style& style, bool draw_box_outline, bool draw_box_bkg, int box_padding_ud = 0, int box_padding_lr = 0, std::optional<styles::Style> box_outline_style = std::nullopt, drawing::OutlineType outline_type = drawing::OutlineType::Line)
+    void draw(SpriteHandler<NR, NC>& sh, VerticalAlignment v_align, HorizontalAlignment h_align, const styles::Style& style, bool draw_box_outline, bool draw_box_bkg, int box_padding_ud = 0, int box_padding_lr = 0, std::optional<styles::Style> box_outline_style = std::nullopt, drawing::OutlineType outline_type = drawing::OutlineType::Line, bool framed_mode = true)
     {
       RC pos { 0, 0 };
       
@@ -87,26 +87,26 @@ namespace ui
       switch (v_align)
       {
         case VerticalAlignment::TOP:
-          pos.r = 2 + box_padding_ud;
+          pos.r = 2 + box_padding_ud - !framed_mode;
           break;
         case VerticalAlignment::CENTER:
           pos.r = mid_v;
           break;
         case VerticalAlignment::BOTTOM:
-          pos.r = 2*mid_v - box_padding_ud - 2;
+          pos.r = 2*mid_v - box_padding_ud - 2 + !framed_mode;
           break;
       }
       
       switch (h_align)
       {
         case HorizontalAlignment::LEFT:
-          pos.c = 2 + box_padding_lr;
+          pos.c = 2 + box_padding_lr - !framed_mode;
           break;
         case HorizontalAlignment::CENTER:
           pos.c = mid_h;
           break;
         case HorizontalAlignment::RIGHT:
-          pos.c = 2*mid_h - box_padding_lr - 2;
+          pos.c = 2*mid_h - box_padding_lr - 2 + !framed_mode;
           break;
       }
       
