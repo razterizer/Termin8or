@@ -53,6 +53,11 @@ struct RC
     rc.c = math::clamp<int>(c, c_min, c_max);
     return rc;
   }
+  
+  std::string str() const
+  {
+    return "(" + std::to_string(r) + ", " + std::to_string(c) + ")";
+  }
 };
 
 static inline float distance(const RC& ptA, const RC& ptB)
