@@ -16,6 +16,7 @@ namespace ui
 
   class TextBox
   {
+  protected:
     str::StringBox sb;
     size_t N = 0;
     size_t len_max = 0;
