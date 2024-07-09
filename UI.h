@@ -90,7 +90,7 @@ namespace ui
           pos.r = 2 + box_padding_ud;
           break;
         case VerticalAlignment::CENTER:
-          pos.r = mid_v - box_padding_ud/2 - 1;
+          pos.r = mid_v;
           break;
         case VerticalAlignment::BOTTOM:
           pos.r = 2*mid_v - box_padding_ud - 2;
@@ -103,7 +103,7 @@ namespace ui
           pos.c = 2 + box_padding_lr;
           break;
         case HorizontalAlignment::CENTER:
-          pos.c = mid_h - box_padding_lr/2 - 1;
+          pos.c = mid_h;
           break;
         case HorizontalAlignment::RIGHT:
           pos.c = 2*mid_h - box_padding_lr - 2;
