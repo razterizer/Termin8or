@@ -410,4 +410,14 @@ namespace drawing
     }
   }
   
+  template<int NR, int NC>
+  void draw_box_texture_materials(SpriteHandler<NR, NC>& sh,
+                                  const ttl::Rectangle& bb,
+                                  const Texture& texture = {})
+  {
+    draw_box_texture_materials(sh,
+                               bb.r, bb.c, bb.r_len, bb.c_len,
+                               texture);
+  }
+  
 }
