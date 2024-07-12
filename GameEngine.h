@@ -161,6 +161,11 @@ protected:
   
   std::string get_exe_folder() const { return exe_path; }
   
+  void enable_quit_confirm_screen(bool enable)
+  {
+    m_params.enable_quit_confirm_screen = enable;
+  }
+  
   // Callbacks
   virtual void update() = 0;
   virtual void draw_title() = 0;
