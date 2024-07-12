@@ -145,7 +145,7 @@ namespace keyboard
     waitKeystroke();
   }
   
-  enum class SpecialKey { None, Left, Right, Down, Up, Enter };
+  enum class SpecialKey { None, Left, Right, Down, Up, Enter, Tab, Backspace };
   int arrow_key_ctr = 0;
   int key_ctr = 0;
   struct KeyPressData
@@ -222,6 +222,10 @@ namespace keyboard
         kpd.quit = true;
       else if (ch == 13)
         kpd.curr_special_key = SpecialKey::Enter;
+      else if (ch == 9)
+        kpd.curr_special_key = SpecialKey::Tab;
+      else if (ch == 8 || ch == 127) // 127 for backspace on MacOS.
+        kpd.curr_special_key = SpecialKey::Backspace;
       else if (ch == -1 || ch == 0)
       {
         kpd.arrow_key_buffer[arrow_key_ctr % 3] = SpecialKey::None;
