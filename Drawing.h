@@ -390,4 +390,24 @@ namespace drawing
                       light_field);
   }
   
+  // E.g.
+  // r = 5, c = 6, len_r = 10, len_c = 8,
+  // fill_texture.size.r = 9, fill_texture.size.c = 7,
+  // shadow_texture.size.r = 9, shadow_texture.size.c = 6.
+  template<int NR, int NC>
+  void draw_box_texture_materials(SpriteHandler<NR, NC>& sh,
+                                  int r, int c, int len_r, int len_c,
+                                  const Texture& texture = {})
+  {
+    for (int i = r + 1; i <= r + len_r - 1; ++i)
+    {
+      auto r0 = i - r;
+      for (int j = 1; j <= len_c - 1; ++j)
+      {
+        auto textel = texture(r0 - 1, j - 1);
+        sh.write_buffer(textel.mat_to_char_str(), i, j + c, textel.get_style());
+      }
+    }
+  }
+  
 }
