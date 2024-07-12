@@ -25,6 +25,16 @@ namespace drawing
     
     styles::Style get_style() const { return { fg_color, bg_color }; }
     std::string str() const { return std::string(1, ch); }
+    
+    // 0 to 15 is hexadecimal, then just continue down the alphabet.
+    std::string mat_to_char_str()
+    {
+      if (0 <= mat && mat <= 9)
+        return std::string(1, '0' + static_cast<char>(mat));
+      else if (10 <= mat)
+        return std::string(1, 'A' + static_cast<char>(mat) - 10);
+      return std::string(1, '0');
+    };
   };
   
   struct Texture
