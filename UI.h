@@ -58,6 +58,8 @@ namespace ui
       init();
     }
     
+    std::string& operator[](size_t r_idx) { return sb[r_idx]; }
+    
     virtual void calc_pre_draw(str::Adjustment adjustment)
     {
       len_max = 0;
