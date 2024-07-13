@@ -65,8 +65,10 @@ class GameEngine
   std::string exe_path; // Excludes the <program>.exe file.
   GameEngineParams m_params;
   
-  int delay = 50'000; // 100'000 (10 FPS) // 60'000 (16.67 FPS);
-  int fps = 12; // 5
+  // Simulation delay.
+  int sim_delay = 50'000; // 100'000 (10 FPS) // 60'000 (16.67 FPS);
+  // Real-time FPS.
+  int real_fps = 12; // 5
   
   YesNoButtons quit_confirm_button = YesNoButtons::No;
   
@@ -130,10 +132,10 @@ class GameEngine
   }
   
 protected:
-  float dt = static_cast<float>(delay) / 1e6f;
-  float time = 0.f;
-  double sim_time_s = 0.;
-  std::chrono::time_point<std::chrono::steady_clock> sim_start_time_s;
+  float sim_dt = static_cast<float>(sim_delay) / 1e6f;
+  float sim_time = 0.f;
+  double real_time_s = 0.;
+  std::chrono::time_point<std::chrono::steady_clock> real_start_time_s;
   OneShot time_inited;
   
   Text t;
@@ -147,18 +149,18 @@ protected:
   
   bool exit_requested = false;
   
-  void set_fps(float fps_val) { fps = fps_val; }
+  void set_real_fps(float fps_val) { real_fps = fps_val; }
   
   // Used for dynamics and stuff.
-  void set_delay_us(float delay_us)
+  void set_sim_delay_us(float delay_us)
   {
-    delay = delay_us;
-    dt = static_cast<float>(delay) / 1e6f;
+    sim_delay = delay_us;
+    sim_dt = static_cast<float>(sim_delay) / 1e6f;
   }
   
   int& ref_score() { return score; }
   
-  double get_sim_time_s() const { return sim_time_s; }
+  double get_real_time_s() const { return real_time_s; }
   
   std::string get_exe_folder() const { return exe_path; }
   
@@ -207,7 +209,7 @@ public:
     rnd::srand_time();
     
     if (time_inited.once())
-      sim_start_time_s = std::chrono::steady_clock::now();
+      real_start_time_s = std::chrono::steady_clock::now();
   }
   
   virtual void generate_data() = 0;
@@ -220,11 +222,11 @@ public:
     // RT-Loop
     clear_screen();
     auto update_func = std::bind(&GameEngine::engine_update, this);
-    Delay::update_loop(fps, update_func);
+    Delay::update_loop(real_fps, update_func);
   }
   
-  int get_fps() const { return fps; }
-  int get_delay_us() const { return delay; }
+  int get_real_fps() const { return real_fps; }
+  int get_sim_delay_us() const { return sim_delay; }
   
   void set_state_game_over() { show_game_over = true; }
   void set_state_you_won() { show_you_won = true; }
@@ -240,8 +242,8 @@ private:
     if (time_inited.was_triggered())
     {
       auto curr_time = std::chrono::steady_clock::now();
-      std::chrono::duration<double> elapsed_seconds = curr_time - sim_start_time_s;
-      sim_time_s = elapsed_seconds.count();
+      std::chrono::duration<double> elapsed_seconds = curr_time - real_start_time_s;
+      real_time_s = elapsed_seconds.count();
     }
   
     return_cursor();
@@ -412,7 +414,7 @@ private:
     
     anim_ctr++;
     
-    time += dt;
+    sim_time += sim_dt;
     
     return true;
   }
