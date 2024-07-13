@@ -135,6 +135,8 @@ protected:
   float sim_dt = static_cast<float>(sim_delay) / 1e6f;
   float sim_time = 0.f;
   double real_time_s = 0.;
+  double real_last_time_s = 0.;
+  double real_dt_s = 0.;
   std::chrono::time_point<std::chrono::steady_clock> real_start_time_s;
   OneShot time_inited;
   
@@ -161,6 +163,7 @@ protected:
   int& ref_score() { return score; }
   
   double get_real_time_s() const { return real_time_s; }
+  double get_real_dt_s() const { return real_dt_s; }
   
   std::string get_exe_folder() const { return exe_path; }
   
@@ -243,7 +246,9 @@ private:
     {
       auto curr_time = std::chrono::steady_clock::now();
       std::chrono::duration<double> elapsed_seconds = curr_time - real_start_time_s;
+      real_last_time_s = real_time_s;
       real_time_s = elapsed_seconds.count();
+      real_dt_s = real_time_s - real_last_time_s;
     }
   
     return_cursor();
