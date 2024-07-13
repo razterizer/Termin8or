@@ -316,7 +316,8 @@ namespace drawing
                          Direction shadow_type = Direction::None,
                          const Texture& fill_texture = {},
                          const Texture& shadow_texture = {},
-                         const bool_vector& light_field = {})
+                         const bool_vector& light_field = {},
+                         bool is_underground = false)
   {
     
     auto f_has_light = [&](int r0, int c0)
@@ -326,12 +327,6 @@ namespace drawing
       return static_cast<bool>(light_field[r0 * (len_c + 1) + c0]);
     };
     
-    auto f_shade_style = [&](const styles::Style& style, int r0, int c0)
-    {
-      return shade_style(style, f_has_light(r0, c0) ?
-                         color::ShadeType::Bright : color::ShadeType::Unchanged, true);
-    };
-    
     // Filling
     if (len_r >= 2)
     {
@@ -339,13 +334,17 @@ namespace drawing
       {
         if (shadow_type == Direction::NW || shadow_type == Direction::N || shadow_type == Direction::NE)
         {
-          auto textel = shadow_texture(0, i - 1);
-          sh.write_buffer(textel.str(), r + 1, i + c, f_shade_style(textel.get_style(), 1, i));
+          const auto nt = fill_texture(0, i - 1);
+          const auto st = shadow_texture(0, i - 1);
+          const auto& t = f_has_light(1, i) ? nt : st;
+          sh.write_buffer(t.str(), r + 1, i + c, t.get_style());
         }
         else if (shadow_type == Direction::SW || shadow_type == Direction::S || shadow_type == Direction::SE)
         {
-          auto textel = shadow_texture(len_r - 2, i - 1);
-          sh.write_buffer(textel.str(), r + len_r - 1, i + c, f_shade_style(textel.get_style(), len_r - 1, i));
+          const auto nt = fill_texture(len_r - 2, i - 1);
+          const auto st = shadow_texture(len_r - 2, i - 1);
+          const auto& t = f_has_light(len_r - 1, i) ? nt : st;
+          sh.write_buffer(t.str(), r + len_r - 1, i + c, t.get_style());
         }
       }
     }
@@ -358,19 +357,25 @@ namespace drawing
       auto r0 = i - r;
       if (has_west_shadow)
       {
-        auto textel = shadow_texture(r0 - 1, 0);
-        sh.write_buffer(textel.str(), i, c + 1, f_shade_style(textel.get_style(), r0, 1));
+        const auto nt = fill_texture(r0 - 1, 0);
+        const auto st = shadow_texture(r0 - 1, 0);
+        const auto& t = f_has_light(r0, 1) ? nt : st;
+        sh.write_buffer(t.str(), i, c + 1, t.get_style());
       }
       else if (has_east_shadow)
       {
-        auto textel = shadow_texture(r0 - 1, len_c - 2);
-        sh.write_buffer(textel.str(), i, c + len_c - 1, f_shade_style(textel.get_style(), r0, len_c - 1));
+        const auto nt = fill_texture(r0 - 1, len_c - 2);
+        const auto st = shadow_texture(r0 - 1, len_c - 2);
+        const auto& t = f_has_light(r0, len_c - 1) ? nt : st;
+        sh.write_buffer(t.str(), i, c + len_c - 1, t.get_style());
       }
       
       for (int j = 1; j <= len_c - 1; ++j)
       {
-        auto textel = fill_texture(r0 - 1, j - 1);
-        sh.write_buffer(textel.str(), i, j + c, f_shade_style(textel.get_style(), r0, j));
+        const auto nt = fill_texture(r0 - 1, j - 1);
+        const auto st = shadow_texture(r0 - 1, j - 1);
+        const auto& t = f_has_light(r0, j) ? nt : (is_underground ? st : nt);
+        sh.write_buffer(t.str(), i, j + c, t.get_style());
       }
     }
   }
@@ -381,13 +386,15 @@ namespace drawing
                          Direction shadow_type = Direction::None,
                          const Texture& fill_texture = {},
                          const Texture& shadow_texture = {},
-                         const bool_vector& light_field = {})
+                         const bool_vector& light_field = {},
+                         bool is_underground = false)
   {
     draw_box_textured(sh,
                       bb.r, bb.c, bb.r_len, bb.c_len,
                       shadow_type,
                       shadow_texture,
-                      light_field);
+                      light_field,
+                      is_underground);
   }
   
   // E.g.
