@@ -8,6 +8,7 @@
 #define NOMINMAX // Should fix the std::min()/max() and std::numeric_limits<T>::min()/max() compilation problems.
 #include <windows.h>
 #endif
+#include <ranges>
 
 // Game Over
 int game_over_timer = 10;
@@ -188,7 +189,7 @@ void draw_paused(SpriteHandler<NR, NC>& sh, int anim_ctr)
 enum class YesNoButtons { No = 0, Yes = 1 };
 template<int NR, int NC>
 void draw_confirm(SpriteHandler<NR, NC>& sh,
-                  const std::string& title,
+                  const std::vector<std::string>& titles,
                   YesNoButtons button,
                   const styles::Style& title_style,
                   const styles::ButtonStyle& button_style,
@@ -196,9 +197,13 @@ void draw_confirm(SpriteHandler<NR, NC>& sh,
 {
   const auto nr = static_cast<int>(NR);
   const auto nc = static_cast<int>(NC);
-  std::string msg = title;
-  auto msg_len = static_cast<int>(msg.length());
-  sh.write_buffer(msg, nr/2 - 2, (nc - msg_len)/2, title_style);
+  int title_row_offs = 2;
+  for (const auto& msg : titles | std::views::reverse)
+  {
+    auto msg_len = static_cast<int>(msg.length());
+    sh.write_buffer(msg, nr/2 - title_row_offs, (nc - msg_len)/2, title_style);
+    title_row_offs += 2;
+  }
   // "[Yes]      [No]"
   std::string yes = "[Yes]";
   std::string no = "[No]";
@@ -210,8 +215,8 @@ void draw_confirm(SpriteHandler<NR, NC>& sh,
     button_style.bg_color_selected : button_style.bg_color;
   sh.write_buffer(yes, nr/2 + 1, (nc - 6)/2 - yes_len, button_style.fg_color, bg_color_yes);
   sh.write_buffer(no, nr/2 + 1, (nc - 6)/2 + no_len, button_style.fg_color, bg_color_no);
-  msg = "Press arrow keys to select choice and then [Enter] key to confirm.";
-  msg_len = static_cast<int>(msg.length());
+  std::string msg = "Press arrow keys to select choice and then [Enter] key to confirm.";
+  auto msg_len = static_cast<int>(msg.length());
   sh.write_buffer(msg, nr/2 + 5, (nc - msg_len)/2, info_style);
 }
 

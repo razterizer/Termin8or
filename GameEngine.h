@@ -21,6 +21,7 @@ struct GameEngineParams
   bool enable_title_screen = true;
   bool enable_instructions_screen = true;
   bool enable_quit_confirm_screen = true;
+  bool quit_confirm_unsaved_changes = false;
   bool enable_hiscores = true;
   
   Color screen_bg_color_default = Color::Default;
@@ -264,7 +265,13 @@ private:
     else if (show_quit_confirm && !show_hiscores && !show_input_hiscore)
     {
       bg_color = m_params.screen_bg_color_quit_confirm.value_or(bg_color);
-      draw_confirm(sh, "Are you sure you want to quit?", quit_confirm_button,
+      
+      std::vector<std::string> titles;
+      if (m_params.quit_confirm_unsaved_changes)
+        titles.emplace_back("You have unsaved changes!");
+      titles.emplace_back("Are you sure you want to quit?");
+      
+      draw_confirm(sh, titles, quit_confirm_button,
                    m_params.quit_confirm_title_style,
                    m_params.quit_confirm_button_style,
                    m_params.quit_confirm_info_style);
