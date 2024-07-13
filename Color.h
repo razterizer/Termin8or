@@ -33,6 +33,97 @@ enum class Color
 
 namespace color
 {
+
+  Color string2color(const std::string& str)
+  {
+    if (str == "Transparent")
+      return Color::Transparent;
+    if (str == "Transparent2")
+      return Color::Transparent2;
+    if (str == "Default")
+      return Color::Default;
+    if (str == "Black")
+      return Color::Black;
+    if (str == "DarkRed")
+      return Color::DarkRed;
+    if (str == "DarkGreen")
+      return Color::DarkGreen;
+    if (str == "DarkYellow")
+      return Color::DarkYellow;
+    if (str == "DarkBlue")
+      return Color::DarkBlue;
+    if (str == "DarkMagenta")
+      return Color::DarkMagenta;
+    if (str == "DarkCyan")
+      return Color::DarkCyan;
+    if (str == "LightGray")
+      return Color::LightGray;
+    if (str == "DarkGray")
+      return Color::DarkGray;
+    if (str == "Red")
+      return Color::Red;
+    if (str == "Green")
+      return Color::Green;
+    if (str == "Yellow")
+      return Color::Yellow;
+    if (str == "Blue")
+      return Color::Blue;
+    if (str == "Magenta")
+      return Color::Magenta;
+    if (str == "Cyan")
+      return Color::Cyan;
+    if (str == "White")
+      return Color::White;
+      
+    return Color::Default;
+  }
+  
+  std::string color2string(Color color)
+  {
+    switch (color)
+    {
+      case Color::Transparent:
+        return "Transparent";
+      case Color::Transparent2:
+        return "Transparent2";
+      case Color::Default:
+        return "Default";
+      case Color::Black:
+        return "Black";
+      case Color::DarkRed:
+        return "DarkRed";
+      case Color::DarkGreen:
+        return "DarkGreen";
+      case Color::DarkYellow:
+        return "DarkYellow";
+      case Color::DarkBlue:
+        return "DarkBlue";
+      case Color::DarkMagenta:
+        return "DarkMagenta";
+      case Color::DarkCyan:
+        return "DarkCyan";
+      case Color::LightGray:
+        return "LightGray";
+      case Color::DarkGray:
+        return "DarkGray";
+      case Color::Red:
+        return "Red";
+      case Color::Green:
+        return "Green";
+      case Color::Yellow:
+        return "Yellow";
+      case Color::Blue:
+        return "Blue";
+      case Color::Magenta:
+        return "Magenta";
+      case Color::Cyan:
+        return "Cyan";
+      case Color::White:
+        return "White";
+      default:
+        return "";
+    }
+  }
   
   Color get_random_color(const std::vector<Color>& palette)
   {
