@@ -317,7 +317,8 @@ namespace drawing
                          const Texture& fill_texture = {},
                          const Texture& shadow_texture = {},
                          const bool_vector& light_field = {},
-                         bool is_underground = false)
+                         bool is_underground = false,
+                         const RC& tex_offset = { 0, 0 })
   {
     
     auto f_has_light = [&](int r0, int c0)
@@ -334,15 +335,17 @@ namespace drawing
       {
         if (shadow_type == Direction::NW || shadow_type == Direction::N || shadow_type == Direction::NE)
         {
-          const auto nt = fill_texture(0, i - 1);
-          const auto st = shadow_texture(0, i - 1);
+          const auto tex_pos = tex_offset + RC { 0, i - 1 };
+          const auto nt = fill_texture(tex_pos);
+          const auto st = shadow_texture(tex_pos);
           const auto& t = f_has_light(1, i) ? nt : st;
           sh.write_buffer(t.str(), r + 1, i + c, t.get_style());
         }
         else if (shadow_type == Direction::SW || shadow_type == Direction::S || shadow_type == Direction::SE)
         {
-          const auto nt = fill_texture(len_r - 2, i - 1);
-          const auto st = shadow_texture(len_r - 2, i - 1);
+          const auto tex_pos = tex_offset + RC { len_r - 2, i - 1 };
+          const auto nt = fill_texture(tex_pos);
+          const auto st = shadow_texture(tex_pos);
           const auto& t = f_has_light(len_r - 1, i) ? nt : st;
           sh.write_buffer(t.str(), r + len_r - 1, i + c, t.get_style());
         }
@@ -357,23 +360,26 @@ namespace drawing
       auto r0 = i - r;
       if (has_west_shadow)
       {
-        const auto nt = fill_texture(r0 - 1, 0);
-        const auto st = shadow_texture(r0 - 1, 0);
+        const auto tex_pos = tex_offset + RC { r0 - 1, 0 };
+        const auto nt = fill_texture(tex_pos);
+        const auto st = shadow_texture(tex_pos);
         const auto& t = f_has_light(r0, 1) ? nt : st;
         sh.write_buffer(t.str(), i, c + 1, t.get_style());
       }
       else if (has_east_shadow)
       {
-        const auto nt = fill_texture(r0 - 1, len_c - 2);
-        const auto st = shadow_texture(r0 - 1, len_c - 2);
+        const auto tex_pos = tex_offset + RC { r0 - 1, len_c - 2 };
+        const auto nt = fill_texture(tex_pos);
+        const auto st = shadow_texture(tex_pos);
         const auto& t = f_has_light(r0, len_c - 1) ? nt : st;
         sh.write_buffer(t.str(), i, c + len_c - 1, t.get_style());
       }
       
       for (int j = 1; j <= len_c - 1; ++j)
       {
-        const auto nt = fill_texture(r0 - 1, j - 1);
-        const auto st = shadow_texture(r0 - 1, j - 1);
+        const auto tex_pos = tex_offset + RC { r0 - 1, j - 1 };
+        const auto nt = fill_texture(tex_pos);
+        const auto st = shadow_texture(tex_pos);
         const auto& t = f_has_light(r0, j) ? nt : (is_underground ? st : nt);
         sh.write_buffer(t.str(), i, j + c, t.get_style());
       }
@@ -387,14 +393,16 @@ namespace drawing
                          const Texture& fill_texture = {},
                          const Texture& shadow_texture = {},
                          const bool_vector& light_field = {},
-                         bool is_underground = false)
+                         bool is_underground = false,
+                         const RC& tex_offset = { 0, 0 })
   {
     draw_box_textured(sh,
                       bb.r, bb.c, bb.r_len, bb.c_len,
                       shadow_type,
                       shadow_texture,
                       light_field,
-                      is_underground);
+                      is_underground,
+                      tex_offset);
   }
   
   // E.g.
