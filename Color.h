@@ -7,6 +7,7 @@
 
 #pragma once
 #include <Core/Rand.h>
+#include <string>
 
 enum class Color
 {
