@@ -390,6 +390,8 @@ namespace drawing
       
       return sub_texture;
     }
+    
+    bool empty() const { return size.r == 0 && size.c == 0; }
   };
 
 }
