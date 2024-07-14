@@ -35,6 +35,14 @@ namespace drawing
         return std::string(1, 'A' + static_cast<char>(mat) - 10);
       return std::string(1, '0');
     };
+    
+    bool operator==(const Textel& other) const
+    {
+      return this->ch == other.ch
+        && this->fg_color == other.fg_color
+        && this->bg_color == other.bg_color
+        && this->mat == other.mat;
+    }
   };
   
   struct Texture
