@@ -23,6 +23,7 @@ struct GameEngineParams
   bool enable_quit_confirm_screen = true;
   bool quit_confirm_unsaved_changes = false;
   bool enable_hiscores = true;
+  bool enable_pause = true;
   
   Color screen_bg_color_default = Color::Default;
   Color screen_bg_color_title = Color::Default;
@@ -260,7 +261,7 @@ private:
       math::toggle(show_quit_confirm);
       quit_confirm_button = YesNoButtons::No;
     }
-    else if (kpd.pause)
+    else if (m_params.enable_pause && kpd.pause)
       math::toggle(paused);
       
     if (!m_params.enable_quit_confirm_screen && kpd.quit)
