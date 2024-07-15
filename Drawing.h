@@ -90,7 +90,13 @@ namespace drawing
 {
 
   enum class OutlineType { Line, Masonry, Masonry2, Masonry3, Masonry4, Temple, Hash, NUM_ITEMS };
-  enum class Direction { None, S, SE, E, NE, N, NW, W, SW, NUM_ITEMS };
+  enum class SolarDirection
+  {
+    Nadir, Zenith,
+    N, NE, E, SE, S, SW, W, NW,
+    N_Low, NE_Low, E_Low, SE_Low, S_Low, SW_Low, W_Low, NW_Low,
+    NUM_ITEMS
+  };
   
   template<int NR, int NC>
   void draw_box_outline(SpriteHandler<NR, NC>& sh,
@@ -235,7 +241,7 @@ namespace drawing
                 int r, int c, int len_r, int len_c,
                 const styles::Style& fill_style = { Color::Default, Color::Transparent2 },
                 char fill_char = ' ',
-                Direction shadow_type = Direction::None,
+                SolarDirection shadow_type = SolarDirection::Zenith,
                 const styles::Style& shadow_style = { Color::Default, Color::Transparent2 },
                 char shadow_char = ' ',
                 const bool_vector& light_field = {})
@@ -263,15 +269,21 @@ namespace drawing
     {
       for (int i = 1; i <= len_c - 1; ++i)
       {
-        if (shadow_type == Direction::NW || shadow_type == Direction::N || shadow_type == Direction::NE)
+        if (shadow_type == SolarDirection::NW || shadow_type == SolarDirection::N || shadow_type == SolarDirection::NE)
           sh.write_buffer(str_shadow_ns, r + 1, i + c, f_shade_style(shadow_style, 1, i));
-        else if (shadow_type == Direction::SW || shadow_type == Direction::S || shadow_type == Direction::SE)
+        else if (shadow_type == SolarDirection::SW || shadow_type == SolarDirection::S || shadow_type == SolarDirection::SE)
           sh.write_buffer(str_shadow_ns, r + len_r - 1, i + c, f_shade_style(shadow_style, len_r - 1, i));
+        else if (shadow_type == SolarDirection::SW_Low || shadow_type == SolarDirection::S_Low || shadow_type == SolarDirection::SE_Low)
+          sh.write_buffer(str_shadow_ns, r + 1, i + c, f_shade_style(fill_style, 1, i));
+        else if (shadow_type == SolarDirection::NW_Low || shadow_type == SolarDirection::N_Low || shadow_type == SolarDirection::NE_Low)
+          sh.write_buffer(str_shadow_ns, r + len_r - 1, i + c, f_shade_style(fill_style, len_r - 1, i));
       }
     }
     
-    bool has_west_shadow = len_c >= 2 && (shadow_type == Direction::SW || shadow_type == Direction::W || shadow_type == Direction::NW);
-    bool has_east_shadow = len_c >= 2 && (shadow_type == Direction::SE || shadow_type == Direction::E || shadow_type == Direction::NE);
+    bool has_west_shadow = len_c >= 2 && (shadow_type == SolarDirection::SW || shadow_type == SolarDirection::W || shadow_type == SolarDirection::NW);
+    bool has_east_shadow = len_c >= 2 && (shadow_type == SolarDirection::SE || shadow_type == SolarDirection::E || shadow_type == SolarDirection::NE);
+    bool has_west_twilight = len_c >= 2 && (shadow_type == SolarDirection::SE_Low || shadow_type == SolarDirection::E_Low || shadow_type == SolarDirection::NE_Low);
+    bool has_east_twilight = len_c >= 2 && (shadow_type == SolarDirection::SW_Low || shadow_type == SolarDirection::W_Low || shadow_type == SolarDirection::NW_Low);
     
     for (int i = r + 1; i <= r + len_r - 1; ++i)
     {
@@ -280,9 +292,23 @@ namespace drawing
         sh.write_buffer(str_shadow_ew, i, c + 1, f_shade_style(shadow_style, r0, 1));
       else if (has_east_shadow)
         sh.write_buffer(str_shadow_ew, i, c + len_c - 1, f_shade_style(shadow_style, r0, len_c - 1));
+      else if (has_west_twilight)
+        sh.write_buffer(str_shadow_ew, i, c + 1, f_shade_style(fill_style, r0, 1));
+      else if (has_east_twilight)
+        sh.write_buffer(str_shadow_ew, i, c + len_c - 1, f_shade_style(fill_style, r0, len_c - 1));
       
+      bool night_or_twilight = shadow_type == SolarDirection::Nadir ||
+        shadow_type == SolarDirection::N_Low ||
+        shadow_type == SolarDirection::NE_Low ||
+        shadow_type == SolarDirection::E_Low ||
+        shadow_type == SolarDirection::SE_Low ||
+        shadow_type == SolarDirection::S_Low ||
+        shadow_type == SolarDirection::SW_Low ||
+        shadow_type == SolarDirection::W_Low ||
+        shadow_type == SolarDirection::NW_Low;
+      auto style = night_or_twilight ? shadow_style : fill_style;
       for (int j = 1; j <= len_c - 1; ++j)
-        sh.write_buffer(str_fill, i, j + c, f_shade_style(fill_style, r0, j));
+        sh.write_buffer(str_fill, i, j + c, f_shade_style(style, r0, j));
     }
   }
   
@@ -291,7 +317,7 @@ namespace drawing
                 const ttl::Rectangle& bb,
                 const styles::Style& fill_style = { Color::Default, Color::Transparent2 },
                 char fill_char = ' ',
-                Direction shadow_type = Direction::None,
+                SolarDirection shadow_type = SolarDirection::Zenith,
                 const styles::Style& shadow_style = { Color::Default, Color::Transparent2 },
                 char shadow_char = ' ',
                 const bool_vector& light_field = {})
@@ -313,7 +339,7 @@ namespace drawing
   template<int NR, int NC>
   void draw_box_textured(SpriteHandler<NR, NC>& sh,
                          int r, int c, int len_r, int len_c,
-                         Direction shadow_type = Direction::None,
+                         SolarDirection shadow_type = SolarDirection::Zenith,
                          const Texture& fill_texture = {},
                          const Texture& shadow_texture = {},
                          const bool_vector& light_field = {},
@@ -333,7 +359,7 @@ namespace drawing
     {
       for (int i = 1; i <= len_c - 1; ++i)
       {
-        if (shadow_type == Direction::NW || shadow_type == Direction::N || shadow_type == Direction::NE)
+        if (shadow_type == SolarDirection::NW || shadow_type == SolarDirection::N || shadow_type == SolarDirection::NE)
         {
           const auto tex_pos = tex_offset + RC { 0, i - 1 };
           const auto nt = fill_texture(tex_pos);
@@ -341,7 +367,7 @@ namespace drawing
           const auto& t = f_has_light(1, i) ? nt : st;
           sh.write_buffer(t.str(), r + 1, i + c, t.get_style());
         }
-        else if (shadow_type == Direction::SW || shadow_type == Direction::S || shadow_type == Direction::SE)
+        else if (shadow_type == SolarDirection::SW || shadow_type == SolarDirection::S || shadow_type == SolarDirection::SE)
         {
           const auto tex_pos = tex_offset + RC { len_r - 2, i - 1 };
           const auto nt = fill_texture(tex_pos);
@@ -349,11 +375,25 @@ namespace drawing
           const auto& t = f_has_light(len_r - 1, i) ? nt : st;
           sh.write_buffer(t.str(), r + len_r - 1, i + c, t.get_style());
         }
+        else if (shadow_type == SolarDirection::SW_Low || shadow_type == SolarDirection::S_Low || shadow_type == SolarDirection::SE_Low)
+        {
+          const auto tex_pos = tex_offset + RC { 0, i - 1 };
+          const auto nt = fill_texture(tex_pos);
+          sh.write_buffer(nt.str(), r + 1, i + c, nt.get_style());
+        }
+        else if (shadow_type == SolarDirection::NW_Low || shadow_type == SolarDirection::N_Low || shadow_type == SolarDirection::NE_Low)
+        {
+          const auto tex_pos = tex_offset + RC { len_r - 2, i - 1 };
+          const auto nt = fill_texture(tex_pos);
+          sh.write_buffer(nt.str(), r + len_r - 1, i + c, nt.get_style());
+        }
       }
     }
 
-    bool has_west_shadow = len_c >= 2 && (shadow_type == Direction::SW || shadow_type == Direction::W || shadow_type == Direction::NW);
-    bool has_east_shadow = len_c >= 2 && (shadow_type == Direction::SE || shadow_type == Direction::E || shadow_type == Direction::NE);
+    bool has_west_shadow = len_c >= 2 && (shadow_type == SolarDirection::SW || shadow_type == SolarDirection::W || shadow_type == SolarDirection::NW);
+    bool has_east_shadow = len_c >= 2 && (shadow_type == SolarDirection::SE || shadow_type == SolarDirection::E || shadow_type == SolarDirection::NE);
+    bool has_west_twilight = len_c >= 2 && (shadow_type == SolarDirection::SE_Low || shadow_type == SolarDirection::E_Low || shadow_type == SolarDirection::NE_Low);
+    bool has_east_twilight = len_c >= 2 && (shadow_type == SolarDirection::SW_Low || shadow_type == SolarDirection::W_Low || shadow_type == SolarDirection::NW_Low);
     
     for (int i = r + 1; i <= r + len_r - 1; ++i)
     {
@@ -374,13 +414,34 @@ namespace drawing
         const auto& t = f_has_light(r0, len_c - 1) ? nt : st;
         sh.write_buffer(t.str(), i, c + len_c - 1, t.get_style());
       }
+      else if (has_west_twilight)
+      {
+        const auto tex_pos = tex_offset + RC { r0 - 1, 0 };
+        const auto nt = fill_texture(tex_pos);
+        sh.write_buffer(nt.str(), i, c + 1, nt.get_style());
+      }
+      else if (has_east_twilight)
+      {
+        const auto tex_pos = tex_offset + RC { r0 - 1, len_c - 2 };
+        const auto nt = fill_texture(tex_pos);
+        sh.write_buffer(nt.str(), i, c + len_c - 1, nt.get_style());
+      }
       
+      bool night_or_twilight = shadow_type == SolarDirection::Nadir ||
+        shadow_type == SolarDirection::N_Low ||
+        shadow_type == SolarDirection::NE_Low ||
+        shadow_type == SolarDirection::E_Low ||
+        shadow_type == SolarDirection::SE_Low ||
+        shadow_type == SolarDirection::S_Low ||
+        shadow_type == SolarDirection::SW_Low ||
+        shadow_type == SolarDirection::W_Low ||
+        shadow_type == SolarDirection::NW_Low;
       for (int j = 1; j <= len_c - 1; ++j)
       {
         const auto tex_pos = tex_offset + RC { r0 - 1, j - 1 };
         const auto nt = fill_texture(tex_pos);
         const auto st = shadow_texture(tex_pos);
-        const auto& t = f_has_light(r0, j) ? nt : (is_underground ? st : nt);
+        const auto& t = f_has_light(r0, j) ? nt : ((is_underground || night_or_twilight) ? st : nt);
         sh.write_buffer(t.str(), i, j + c, t.get_style());
       }
     }
@@ -389,7 +450,7 @@ namespace drawing
   template<int NR, int NC>
   void draw_box_textured(SpriteHandler<NR, NC>& sh,
                          const ttl::Rectangle& bb,
-                         Direction shadow_type = Direction::None,
+                         SolarDirection shadow_type = SolarDirection::Zenith,
                          const Texture& fill_texture = {},
                          const Texture& shadow_texture = {},
                          const bool_vector& light_field = {},
