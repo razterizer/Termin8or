@@ -79,6 +79,9 @@ namespace ttl
       return pc;
     }
     
+    int r_mid() const { return r + r_len/2; }
+    int c_mid() const { return c + c_len/2; }
+    
     int top() const { return r; }
     int bottom() const { return r + r_len; }
     int left() const { return c; }
