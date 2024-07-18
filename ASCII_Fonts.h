@@ -309,7 +309,7 @@ namespace ASCII_Fonts
           }
           
           // Read data.
-          if (kerning && ssstd::sscanf(line.c_str(), "'%c' -> '%c' = %i", &kch0, &kch1, &kern) == 3)
+          if (kerning && std::sscanf(line.c_str(), "'%c' -> '%c' = %i", &kch0, &kch1, &kern) == 3)
             curr_font.kernings[{kch0, kch1}] = kern;
           else if (ordering && std::sscanf(line.c_str(), "'%c' -> '%c' = %i, %i", &och0, &och1, &opri0, &opri1) == 4)
             curr_font.orderings[{och0, och1}] = {opri0, opri1};
