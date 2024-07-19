@@ -71,6 +71,12 @@ class GameEngine
   // Real-time FPS.
   int real_fps = 12; // 5
   
+  float sim_dt_s = static_cast<float>(sim_delay) / 1e6f;
+  float sim_time_s = 0.f;
+  double real_time_s = 0.;
+  double real_last_time_s = 0.;
+  double real_dt_s = 0.;
+  
   YesNoButtons quit_confirm_button = YesNoButtons::No;
   
   std::vector<HiScoreItem> hiscore_list;
@@ -133,11 +139,6 @@ class GameEngine
   }
   
 protected:
-  float sim_dt = static_cast<float>(sim_delay) / 1e6f;
-  float sim_time = 0.f;
-  double real_time_s = 0.;
-  double real_last_time_s = 0.;
-  double real_dt_s = 0.;
   std::chrono::time_point<std::chrono::steady_clock> real_start_time_s;
   OneShot time_inited;
   
@@ -158,13 +159,16 @@ protected:
   void set_sim_delay_us(float delay_us)
   {
     sim_delay = delay_us;
-    sim_dt = static_cast<float>(sim_delay) / 1e6f;
+    sim_dt_s = static_cast<float>(sim_delay) / 1e6f;
   }
   
   int& ref_score() { return score; }
   
   double get_real_time_s() const { return real_time_s; }
   double get_real_dt_s() const { return real_dt_s; }
+  
+  float get_sim_time_s() const { return sim_time_s; }
+  float get_sim_dt_s() const { return sim_dt_s; }
   
   std::string get_exe_folder() const { return exe_path; }
   
@@ -420,7 +424,7 @@ private:
     
     anim_ctr++;
     
-    sim_time += sim_dt;
+    sim_time_s += sim_dt_s;
     
     return true;
   }
