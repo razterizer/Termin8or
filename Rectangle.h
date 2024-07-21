@@ -3,6 +3,8 @@
 
 namespace ttl
 {
+
+  enum class BBLocation { None, Inside, OutsideTop, OutsideTopLeft, OutsideLeft, OutsideBottomLeft, OutsideBottom, OutsideBottomRight, OutsideRight, OutsideTopRight };
   
   struct Rectangle
   {
@@ -64,6 +66,74 @@ namespace ttl
     bool is_on_border(const RC& pos) const
     {
       return is_on_border(pos.r, pos.c);
+    }
+    
+    BBLocation find_location(int rr, int cc) const
+    {
+      bool outside_top = rr < top();
+      bool outside_bottom = rr > bottom();
+      bool outside_left = cc < left();
+      bool outside_right = cc > right();
+      if (outside_top)
+      {
+        if (outside_left)
+          return BBLocation::OutsideTopLeft;
+        if (outside_right)
+          return BBLocation::OutsideTopRight;
+        return BBLocation::OutsideTop;
+      }
+      if (outside_bottom)
+      {
+        if (outside_left)
+          return BBLocation::OutsideBottomLeft;
+        if (outside_right)
+          return BBLocation::OutsideBottomRight;
+        return BBLocation::OutsideBottom;
+      }
+      if (outside_left)
+        return BBLocation::OutsideLeft;
+      if (outside_right)
+        return BBLocation::OutsideRight;
+      return BBLocation::Inside;
+    }
+    
+    BBLocation find_location(const RC& pos) const
+    {
+      return find_location(pos.r, pos.c);
+    }
+    
+    BBLocation find_location_offs(int rr, int cc, int top_offs, int bottom_offs, int left_offs, int right_offs) const
+    {
+      bool outside_top = rr < top() - top_offs;
+      bool outside_bottom = rr > bottom() + bottom_offs;
+      bool outside_left = cc < left() - left_offs;
+      bool outside_right = cc > right() + right_offs;
+      if (outside_top)
+      {
+        if (outside_left)
+          return BBLocation::OutsideTopLeft;
+        if (outside_right)
+          return BBLocation::OutsideTopRight;
+        return BBLocation::OutsideTop;
+      }
+      if (outside_bottom)
+      {
+        if (outside_left)
+          return BBLocation::OutsideBottomLeft;
+        if (outside_right)
+          return BBLocation::OutsideBottomRight;
+        return BBLocation::OutsideBottom;
+      }
+      if (outside_left)
+        return BBLocation::OutsideLeft;
+      if (outside_right)
+        return BBLocation::OutsideRight;
+      return BBLocation::Inside;
+    }
+    
+    BBLocation find_location_offs(const RC& pos, int top_offs, int bottom_offs, int left_offs, int right_offs) const
+    {
+      return find_location_offs(pos.r, pos.c, top_offs, bottom_offs, left_offs, right_offs);
     }
     
     bool is_empty() const
