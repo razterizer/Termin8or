@@ -22,6 +22,7 @@ namespace ui
     str::StringBox sb;
     size_t N = 0;
     size_t len_max = 0;
+    std::vector<styles::Style> line_styles;
     
     void init()
     {
@@ -35,10 +36,13 @@ namespace ui
     {
       init();
     }
-    TextBox(const std::vector<std::string>& text_lines)
+    TextBox(const std::vector<std::string>& text_lines, const std::vector<styles::Style>& styles = {})
       : sb(text_lines)
+      , line_styles(styles)
     {
       init();
+      if (text_lines.size() != line_styles.size())
+        line_styles.clear();
     }
     TextBox(const std::string& text)
       : sb(text)
@@ -46,15 +50,23 @@ namespace ui
       init();
     }
     
-    void set_text(const std::vector<std::string>& text_lines)
+    void set_text(const std::vector<std::string>& text_lines, const std::vector<styles::Style>& styles = {})
     {
       sb = str::StringBox { text_lines };
       init();
+      if (text_lines.size() != line_styles.size())
+        line_styles.clear();
     }
     
     void set_text(const std::string& text)
     {
       sb = str::StringBox { text };
+      init();
+    }
+    
+    void set_num_lines(size_t num_lines)
+    {
+      sb = str::StringBox(num_lines);
       init();
     }
     
@@ -73,7 +85,7 @@ namespace ui
     void draw(SpriteHandler<NR, NC>& sh, const RC& pos, const styles::Style& box_style, bool draw_box_outline, bool draw_box_bkg, int box_padding_ud = 0, int box_padding_lr = 0, std::optional<styles::Style> box_outline_style = std::nullopt, drawing::OutlineType outline_type = drawing::OutlineType::Line)
     {
       for (size_t l_idx = 0; l_idx < N; ++l_idx)
-        sh.write_buffer(sb[l_idx], pos.r + static_cast<int>(l_idx), pos.c, box_style);
+        sh.write_buffer(sb[l_idx], pos.r + static_cast<int>(l_idx), pos.c, line_styles.empty() ? box_style : line_styles[l_idx]);
       if (draw_box_outline)
         drawing::draw_box_outline(sh, pos.r - 1 - box_padding_ud, pos.c - 1 - box_padding_lr, static_cast<int>(N + 1 + 2*box_padding_ud), static_cast<int>(len_max + 1 + 2*box_padding_lr), outline_type, box_outline_style.value_or(box_style));
       if (draw_box_bkg)
