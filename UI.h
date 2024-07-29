@@ -53,6 +53,7 @@ namespace ui
     void set_text(const std::vector<std::string>& text_lines, const std::vector<styles::Style>& styles = {})
     {
       sb = str::StringBox { text_lines };
+      line_styles = styles;
       init();
       if (text_lines.size() != line_styles.size())
         line_styles.clear();
