@@ -14,6 +14,7 @@
 #include <unistd.h>
 #endif
 #include <iostream>
+#include <array>
 
 
 namespace keyboard
