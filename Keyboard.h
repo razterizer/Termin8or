@@ -2,8 +2,8 @@
 #include <Core/StringHelper.h>
 #ifdef _WIN32
 #define NOMINMAX // Should fix the std::min()/max() and std::numeric_limits<T>::min()/max() compilation problems.
-#include <conio.h>
 #include <windows.h>
+#include <conio.h>
 #else
 #include <termios.h>
 #endif
@@ -179,21 +179,6 @@ namespace keyboard
     KeyPressData kpd;
   
     char ch = readKeystroke();
-    kpd.curr_special_key = SpecialKey::None;
-#if _WIN32
-    key_ctr = 0;
-    switch (ch)
-    {
-      case 0x44: kpd.curr_special_key = SpecialKey::Left; break;
-      case 0x43: kpd.curr_special_key = SpecialKey::Right; break;
-      case 0x42: kpd.curr_special_key = SpecialKey::Down; break;
-      case 0x41: kpd.curr_special_key = SpecialKey::Up; break;
-      default: break;
-    }
-    kpd.arrow_key_buffer[arrow_key_ctr % 3] = kpd.curr_special_key;
-    arrow_key_ctr++;
-    if (kpd.curr_special_key != SpecialKey::None) {}
-#else
     if (key_ctr == 0 && ch == 0x1B)
       key_ctr++;
     else if (key_ctr == 1 && ch == 0x5B)
@@ -212,7 +197,6 @@ namespace keyboard
       kpd.arrow_key_buffer[arrow_key_ctr % 3] = kpd.curr_special_key;
       arrow_key_ctr++;
     }
-#endif
     else
     {
       kpd.curr_key = ch;
