@@ -350,9 +350,7 @@ private:
     { Color::Transparent2, RGBA { 0, 0, 0, 0 } },
   };
 
-  template<typename T, typename P>
-  T find_closest_val(P shading_value) const { return static_cast<T>(shading_value); }
-  template<> char find_closest_val(double shading_value) const
+  char find_closest_val(double shading_value) const
   {
     // Character set representing different shades
     const std::string shading_charset = "$#@&%*+=)(\\/\":^_-,. ";
@@ -360,7 +358,8 @@ private:
     auto index = static_cast<int>((1-t) * (shading_charset.size() - 1));
     return shading_charset[index];
   }
-  template<> Color find_closest_val(RGBA shading_value) const
+
+  Color find_closest_val(RGBA shading_value) const
   {
     // Character set representing different shades
     auto t = shading_value;
@@ -381,9 +380,7 @@ private:
     return Color::Transparent2;
   }
   
-  template<typename T, typename P>
-  P find_closest_shading_value(T v) const { return static_cast<P>(v); }
-  template<> double find_closest_shading_value(char c) const
+  double find_closest_shading_value(char c) const
   {
     switch (c)
     {
@@ -411,7 +408,8 @@ private:
       default: return 0.5;
     }
   }
-  template<> RGBA find_closest_shading_value(Color color) const
+
+  RGBA find_closest_shading_value(Color color) const
   {
     auto col_idx = static_cast<int>(color);
     if (math::in_range<int>(col_idx, static_cast<int>(Color::Black), static_cast<int>(Color::White), Range::Closed))
