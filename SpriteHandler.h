@@ -448,10 +448,10 @@ private:
     auto val_top_rgt = top_valid && rgt_valid ? buffer[top][right] : find_closest_val(zero_shading_value);
     auto val_btm_lft = btm_valid && lft_valid ? buffer[bottom][left] : find_closest_val(zero_shading_value);
     auto val_btm_rgt = btm_valid && rgt_valid ? buffer[bottom][right] : find_closest_val(zero_shading_value);
-    auto sh_top_lft = find_closest_shading_value<T, P>(val_top_lft);
-    auto sh_top_rgt = find_closest_shading_value<T, P>(val_top_rgt);
-    auto sh_btm_lft = find_closest_shading_value<T, P>(val_btm_lft);
-    auto sh_btm_rgt = find_closest_shading_value<T, P>(val_btm_rgt);
+    auto sh_top_lft = find_closest_shading_value(val_top_lft);
+    auto sh_top_rgt = find_closest_shading_value(val_top_rgt);
+    auto sh_btm_lft = find_closest_shading_value(val_btm_lft);
+    auto sh_btm_rgt = find_closest_shading_value(val_btm_rgt);
     shading_value =
     (top_weight * left_weight * sh_top_lft +
      top_weight * right_weight * sh_top_rgt +
