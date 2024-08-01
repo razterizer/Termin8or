@@ -144,10 +144,16 @@ namespace keyboard
     
     KeyPressData waitKey()
     {
-      KeyPressData key = std::nullopt;
-      while (!key.has_value())
-        key = readKey();
-      return key;
+      KeyPressData kpd = std::nullopt;
+      char char_key = 0;
+      SpecialKey special_key = SpecialKey::None;
+      do
+      {
+        kpd = readKey();
+        char_key = get_char_key(kpd);
+        special_key = get_special_key(kpd);
+      } while (char_key == 0 && special_key == SpecialKey::None);
+      return kpd;
     }
     
     void pressAnyKey(const std::string_view sv_msg = "Press any key to continue...")
