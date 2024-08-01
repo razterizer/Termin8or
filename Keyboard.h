@@ -1,6 +1,7 @@
 #pragma once
 #ifdef _WIN32
 #include <windows.h>
+#include <conio.h>
 #else
 #include <termios.h>
 #include <unistd.h>
@@ -11,6 +12,7 @@
 
 namespace keyboard
 {
+
   enum class SpecialKey
   {
     None,
@@ -74,36 +76,35 @@ namespace keyboard
     KeyPressData readKey()
     {
 #ifdef _WIN32
-      INPUT_RECORD irInBuf[1];
-      DWORD cNumRead;
-      
-      while (true)
+      if (_kbhit())
       {
-        ReadConsoleInput(hStdin, irInBuf, 1, &cNumRead);
-        
-        if (irInBuf[0].EventType == KEY_EVENT && irInBuf[0].Event.KeyEvent.bKeyDown)
+        int ch = _getch();
+        switch (ch)
         {
-          WORD virtualKeyCode = irInBuf[0].Event.KeyEvent.wVirtualKeyCode;
-          char ch = irInBuf[0].Event.KeyEvent.uChar.AsciiChar;
-          
-          if (virtualKeyCode == VK_LEFT) return SpecialKey::Left;
-          if (virtualKeyCode == VK_RIGHT) return SpecialKey::Right;
-          if (virtualKeyCode == VK_UP) return SpecialKey::Up;
-          if (virtualKeyCode == VK_DOWN) return SpecialKey::Down;
-          if (virtualKeyCode == VK_RETURN) return SpecialKey::Enter;
-          if (virtualKeyCode == VK_TAB) return SpecialKey::Tab;
-          if (virtualKeyCode == VK_BACK) return SpecialKey::Backspace;
-          
-          if (ch >= 32 && ch <= 126) // Printable ASCII characters
-            return ch;
-          
-          return SpecialKey::None;
+          case 224: // Special keys
+            ch = _getch();
+            switch (ch)
+            {
+              case 75: return SpecialKey::Left;
+              case 77: return SpecialKey::Right;
+              case 72: return SpecialKey::Up;
+              case 80: return SpecialKey::Down;
+            }
+            break;
+          case 13: return SpecialKey::Enter;
+          case 9: return SpecialKey::Tab;
+          case 8: return SpecialKey::Backspace;
+          default:
+            if (ch >= 32 && ch <= 126) // Printable ASCII characters
+              return static_cast<char>(ch);
+            return SpecialKey::None;
         }
       }
+      return std::nullopt;
 #else
       unsigned char c;
       if (read(STDIN_FILENO, &c, 1) == -1) return std::nullopt;
-      
+
       if (c == 27)
       { // Escape sequence
         if (read(STDIN_FILENO, &c, 1) == -1) return std::nullopt;
@@ -143,19 +144,10 @@ namespace keyboard
     
     KeyPressData waitKey()
     {
-#ifdef _WIN32
-      // This works better on Windows as the lin/mac code below
-      //  seems to sometimes cause Windows to refocus on another window after
-      //  a key has been pressed.
-      return static_cast<char>(_getch());
-#else
-      // #FIXME: Find a way on lin/mac that doesn't require raw-mode
-      //  (and thus readKeystroke()).
       KeyPressData key = std::nullopt;
       while (!key.has_value())
         key = readKey();
       return key;
-#endif
     }
     
     void pressAnyKey(const std::string_view sv_msg = "Press any key to continue...")
@@ -172,13 +164,13 @@ namespace keyboard
       if (!SetConsoleMode(hStdin, fdwSaveOldMode))
       {
         std::cerr << "Error in SetConsoleMode()!" << std::endl;
-        return;
+        exit(EXIT_FAILURE);
       }
 #else
       if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1)
       {
         std::cerr << "Error in tcsetattr()!" << std::endl;
-        return;
+        exit(EXIT_FAILURE);
       }
 #endif
     }
@@ -193,14 +185,14 @@ namespace keyboard
         std::cerr << "Error in GetStdHandle()!" << std::endl;
         exit(EXIT_FAILURE);
       }
-      
+
       // Save the current input mode.
       if (!GetConsoleMode(hStdin, &fdwSaveOldMode))
       {
         std::cerr << "Error in GetConsoleMode()!" << std::endl;
         exit(EXIT_FAILURE);
       }
-      
+
       // Modify the input mode to enable raw mode.
       DWORD fdwMode = fdwSaveOldMode;
       fdwMode &= ~(ENABLE_ECHO_INPUT | ENABLE_LINE_INPUT);
