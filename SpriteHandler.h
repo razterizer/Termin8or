@@ -439,18 +439,19 @@ private:
     //double den = 1;
     
     P shading_value = static_cast<P>(0);
+    const P zero_shading_value = shading_value;
     auto top_valid = 0 <= top && top < NR;
     auto btm_valid = 0 <= bottom && bottom < NR;
     auto lft_valid = 0 <= left && left < NC;
     auto rgt_valid = 0 <= right && right < NC;
-    auto val_top_lft = top_valid && lft_valid ? buffer[top][left] : find_closest_val<T, P>(0);
-    auto val_top_rgt = top_valid && rgt_valid ? buffer[top][right] : find_closest_val<T, P>(0);
-    auto val_btm_lft = btm_valid && lft_valid ? buffer[bottom][left] : find_closest_val<T, P>(0);
-    auto val_btm_rgt = btm_valid && rgt_valid ? buffer[bottom][right] : find_closest_val<T, P>(0);
-    auto sh_top_lft = find_closest_shading_value<T, P>(val_top_lft);
-    auto sh_top_rgt = find_closest_shading_value<T, P>(val_top_rgt);
-    auto sh_btm_lft = find_closest_shading_value<T, P>(val_btm_lft);
-    auto sh_btm_rgt = find_closest_shading_value<T, P>(val_btm_rgt);
+    auto val_top_lft = top_valid && lft_valid ? buffer[top][left] : find_closest_val(zero_shading_value);
+    auto val_top_rgt = top_valid && rgt_valid ? buffer[top][right] : find_closest_val(zero_shading_value);
+    auto val_btm_lft = btm_valid && lft_valid ? buffer[bottom][left] : find_closest_val(zero_shading_value);
+    auto val_btm_rgt = btm_valid && rgt_valid ? buffer[bottom][right] : find_closest_val(zero_shading_value);
+    auto sh_top_lft = find_closest_shading_value(val_top_lft);
+    auto sh_top_rgt = find_closest_shading_value(val_top_rgt);
+    auto sh_btm_lft = find_closest_shading_value(val_btm_lft);
+    auto sh_btm_rgt = find_closest_shading_value(val_btm_rgt);
     shading_value =
     (top_weight * left_weight * sh_top_lft +
      top_weight * right_weight * sh_top_rgt +
@@ -459,7 +460,7 @@ private:
     
     shading_value = clamp(shading_value);
     
-    T value = find_closest_val<T, P>(shading_value);
+    T value = find_closest_val(shading_value);
     
     return value;
   }
