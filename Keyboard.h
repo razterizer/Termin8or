@@ -147,7 +147,7 @@ namespace keyboard
       // This works better on Windows as the lin/mac code below
       //  seems to sometimes cause Windows to refocus on another window after
       //  a key has been pressed.
-      return _getch();
+      return static_cast<char>(_getch());
 #else
       // #FIXME: Find a way on lin/mac that doesn't require raw-mode
       //  (and thus readKeystroke()).
