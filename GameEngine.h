@@ -150,6 +150,7 @@ protected:
   int anim_ctr = 0;
   
   keyboard::KeyPressData kpd;
+  std::unique_ptr<keyboard::StreamKeyboard> keyboard;
   
   bool exit_requested = false;
   
@@ -208,7 +209,7 @@ public:
     if (exit_requested)
       return;
     
-    keyboard::enableRawMode();
+    keyboard = std::make_unique<keyboard::StreamKeyboard>();
     
     clear_screen(); return_cursor();
     
@@ -259,16 +260,21 @@ private:
     return_cursor();
     sh.clear();
     
-    kpd = keyboard::register_keypresses();
-    if (kpd.quit)
+    kpd = keyboard->readKey();
+    auto key = keyboard::get_char_key(kpd);
+    auto lo_key = str::to_lower(key);
+    auto quit = lo_key == 'q';
+    auto pause = lo_key == 'p';
+    
+    if (quit)
     {
       math::toggle(show_quit_confirm);
       quit_confirm_button = YesNoButtons::No;
     }
-    else if (m_params.enable_pause && kpd.pause)
+    else if (m_params.enable_pause && pause)
       math::toggle(paused);
       
-    if (!m_params.enable_quit_confirm_screen && kpd.quit)
+    if (!m_params.enable_quit_confirm_screen && quit)
     {
       restore_cursor();
       on_quit();
@@ -283,16 +289,18 @@ private:
         titles.emplace_back("You have unsaved changes!");
       titles.emplace_back("Are you sure you want to quit?");
       
+      auto special_key = keyboard::get_special_key(kpd);
+      
       draw_confirm(sh, titles, quit_confirm_button,
                    m_params.quit_confirm_title_style,
                    m_params.quit_confirm_button_style,
                    m_params.quit_confirm_info_style);
-      if (kpd.curr_special_key == keyboard::SpecialKey::Left)
+      if (special_key == keyboard::SpecialKey::Left)
         quit_confirm_button = YesNoButtons::Yes;
-      else if (kpd.curr_special_key == keyboard::SpecialKey::Right)
+      else if (special_key == keyboard::SpecialKey::Right)
         quit_confirm_button = YesNoButtons::No;
       
-      if (kpd.curr_special_key == keyboard::SpecialKey::Enter)
+      if (special_key == keyboard::SpecialKey::Enter)
       {
         if (quit_confirm_button == YesNoButtons::Yes)
         {
@@ -311,7 +319,7 @@ private:
       {
         bg_color = m_params.screen_bg_color_title;
         draw_title();
-        if (kpd.curr_key == ' ')
+        if (key == ' ')
         {
           on_exit_title();
           show_title = false;
@@ -322,7 +330,7 @@ private:
       {
         bg_color = m_params.screen_bg_color_instructions;
         draw_instructions();
-        if (kpd.curr_key == ' ')
+        if (key == ' ')
         {
           on_exit_instructions();
           show_instructions = false;
@@ -341,7 +349,7 @@ private:
         
         update();
           
-        if (m_params.enable_hiscores && kpd.curr_key == ' ')
+        if (m_params.enable_hiscores && key == ' ')
         {
           on_exit_game_over();
           show_game_over = false;
@@ -364,7 +372,7 @@ private:
         
         update();
         
-        if (m_params.enable_hiscores && kpd.curr_key == ' ')
+        if (m_params.enable_hiscores && key == ' ')
         {
           on_exit_you_won();
           show_you_won = false;
@@ -399,7 +407,7 @@ private:
                       m_params.hiscores_name_style,
                       m_params.hiscores_info_style);
         
-        if (kpd.curr_key == ' ' || kpd.quit)
+        if (key == ' ' || quit)
         {
           restore_cursor();
           on_quit();

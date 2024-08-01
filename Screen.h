@@ -254,10 +254,13 @@ bool draw_input_hiscore(SpriteHandler<NR, NC>& sh,
   
   sh.write_buffer(msg, r, c_base, title_style);
   
-  if (str::is_letter(kpd.curr_key) || kpd.curr_key == ' ')
+  auto key = keyboard::get_char_key(kpd);
+  auto special_key = keyboard::get_special_key(kpd);
+  
+  if (str::is_letter(key) || key == ' ')
   {
     if (hsi.name.length() >= caret_idx + 1)
-      hsi.name[caret_idx] = str::to_upper(kpd.curr_key);
+      hsi.name[caret_idx] = str::to_upper(key);
   }
   
   auto bg_color_caret = (anim_ctr/2) % 2 == 0 ? prompt_style.bg_color_cursor : prompt_style.bg_color;
@@ -272,20 +275,20 @@ bool draw_input_hiscore(SpriteHandler<NR, NC>& sh,
   msg_len = static_cast<int>(msg.length());
   sh.write_buffer(msg, nr/2 + 6, (nc - msg_len)/2, info_style);
   
-  if (kpd.curr_special_key == keyboard::SpecialKey::Left)
+  if (special_key == keyboard::SpecialKey::Left)
   {
     caret_idx--;
     if (caret_idx < 0)
       caret_idx = 0;
   }
-  else if (kpd.curr_special_key == keyboard::SpecialKey::Right)
+  else if (special_key == keyboard::SpecialKey::Right)
   {
     caret_idx++;
     if (caret_idx >= c_hiscore_name_max_len)
       caret_idx = c_hiscore_name_max_len - 1;
   }
   
-  return kpd.curr_special_key == keyboard::SpecialKey::Enter;
+  return special_key == keyboard::SpecialKey::Enter;
 }
 
 template<int NR, int NC>
