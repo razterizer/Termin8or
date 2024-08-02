@@ -9,6 +9,8 @@
 #include <optional>
 #include <variant>
 #include <iostream>
+#include <Core/Delay.h>
+
 
 namespace keyboard
 {
@@ -102,6 +104,9 @@ namespace keyboard
       }
       return std::nullopt;
 #else
+#ifndef __APPLE__
+      Delay::sleep(2000); // Seems to be needed on Ubuntu at least.
+#endif
       unsigned char c;
       if (read(STDIN_FILENO, &c, 1) == -1) return std::nullopt;
 
