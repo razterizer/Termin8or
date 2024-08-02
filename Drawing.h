@@ -98,6 +98,24 @@ namespace drawing
     NUM_ITEMS
   };
   
+  std::vector<RC> filled_circle_positions(const RC& center, float radius, float px_aspect)
+  {
+    std::vector<RC> positions;
+    int r_offs = math::roundI(radius/px_aspect);
+    int c_offs = math::roundI(radius);
+    auto radius_sq = math::sq(radius);
+    for (int r = -r_offs; r <= r_offs; ++r)
+    {
+      for (int c = -c_offs; c <= c_offs; ++c)
+      {
+        auto dist_sq = math::lenght_squared((center.r - r)/px_aspect, center.c - c);
+        if (dist_sq <= radius_sq)
+          positions.emplace_back(r, c);
+      }
+    }
+    return positions;
+  }
+  
   template<int NR, int NC>
   void draw_box_outline(SpriteHandler<NR, NC>& sh,
                         int r, int c, int len_r, int len_c,
