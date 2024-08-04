@@ -10,6 +10,7 @@
 #include "Color.h"
 #include "Styles.h"
 #include <Core/TextIO.h>
+#include <sstream>
 
 
 namespace drawing
