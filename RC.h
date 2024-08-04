@@ -1,5 +1,6 @@
 #pragma once
 #include <Core/Math.h>
+#include <string>
 
 struct RC
 {
