@@ -506,7 +506,7 @@ namespace drawing
     {
       for (int c = -c_offs; c <= c_offs; ++c)
       {
-        auto dist_sq = math::length_squared<float>(r/px_aspect, c);
+        auto dist_sq = math::length_squared<float>(r*px_aspect, c);
         if (dist_sq <= radius_sq)
           positions.emplace_back(center.r + r, center.c + c);
       }
