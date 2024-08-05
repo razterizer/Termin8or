@@ -31,6 +31,8 @@ namespace keyboard
   
   SpecialKey get_special_key(const KeyPressData& kpd)
   {
+    if (!kpd.has_value())
+      return SpecialKey::None;
     if (std::holds_alternative<SpecialKey>(*kpd))
       return std::get<SpecialKey>(*kpd);
     return SpecialKey::None;
@@ -38,6 +40,8 @@ namespace keyboard
   
   char get_char_key(const KeyPressData& kpd)
   {
+    if (!kpd.has_value())
+      return 0;
     if (std::holds_alternative<char>(*kpd))
       return std::get<char>(*kpd);
     return 0;
