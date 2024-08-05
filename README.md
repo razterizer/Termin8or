@@ -1,6 +1,6 @@
 # Termin8or
 
-This is a header-only curses-like lib.
+This is a cross-platform header-only curses-like lib.
 
 ## Header Files
 
