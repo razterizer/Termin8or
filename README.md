@@ -8,4 +8,5 @@ This is a header-only curses-like lib.
   * Larry3D.
   * SMSlant.
   * Avatar.
-* `Color.h` : Contains colour definitions for the 16 colors that Termin8or (and the terminal) supports. There are also two transparency colours / modes which allows you to overlay text using the same colours that are already present in a given location in the screen buffer (see `SpriteHandler.h`). 
+* `Color.h` : Contains colour definitions for the 16 colors that Termin8or (and the terminal) supports. There are also two transparency colours / modes which allows you to overlay text using the same colours that are already present in a given location in the screen buffer (see `SpriteHandler.h`).
+* `ColorGradient.h` : Allows you to access a vector of given colors using a normalized (0 to 1) t parameter. Useful for particle systems and things like that.
