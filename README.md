@@ -12,3 +12,4 @@ This is a cross-platform header-only curses-like lib.
 * `ColorGradient.h` : Allows you to access a vector of given colors using a normalized (0 to 1) t parameter. Useful for particle systems and things like that.
 * `Drawing.h` : Features some drawing functions such as `bresenham::plot_line()`, `drawing::draw_box()`, `drawing::draw_box_textured()`, `drawing::draw_box_outline()` and `drawing::filled_circle_positions()`.
 * `GameEngine.h` : A highly customizable buy easy to use game engine (or engine for any real-time terminal-based program).
+* `Keyboard.h` : A keyboard handling API that is easy to use. Use class `StreamKeyboard` to poll key presses.
