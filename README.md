@@ -13,3 +13,4 @@ This is a cross-platform header-only curses-like lib.
 * `Drawing.h` : Features some drawing functions such as `bresenham::plot_line()`, `drawing::draw_box()`, `drawing::draw_box_textured()`, `drawing::draw_box_outline()` and `drawing::filled_circle_positions()`.
 * `GameEngine.h` : A highly customizable buy easy to use game engine (or engine for any real-time terminal-based program).
 * `Keyboard.h` : A keyboard handling API that is easy to use. Use class `StreamKeyboard` to poll key presses.
+* `MessageHandler.h` : The `MessageHandler` class allows you to queue up messages of different severity levels and durations. Messages are displayed in a `ui::TextBox` in the middle of the screen.
