@@ -17,4 +17,5 @@ This is a cross-platform header-only curses-like lib.
 * `ParticleSystem.h` : This ASCII-style particle system allows you to make cool real-time VFX such as liquids and fire-smoke. See ([`SurgSim_Lite`](https://github.com/razterizer/SurgSim_Lite) and [`Pilot_Episode`](https://github.com/razterizer/Pilot_Episode) for examples).
 * `RC.h` : A struct representing the row and column position on the screen or in a texture or bounding box to mention a few.
 * `Rectangle.h` : A rectangle struct that can be used for bounding boxes etc.
-*
+* `Screen.h` : A collection of functions for rendering dialogs and such:
+  *
