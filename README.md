@@ -19,5 +19,6 @@ This is a cross-platform header-only curses-like lib.
 * `Rectangle.h` : A rectangle struct that can be used for bounding boxes etc.
 * `Screen.h` : A collection of functions for rendering dialogs and such:
   * Low-level functions: `clear_screen()`, `return_cursor()`, `restore_cursor()`, `gotorc()`.
-  * `draw_frame()` draws a simple frame around your frame buffer.
+  * `draw_frame()` : Draws a simple frame around your frame buffer.
+  * `draw_game_over()`, `draw_you_won()` : Draws wavy banners in the FIGlet font Grafitti. Used by `GameEngine` if those features are enabled.
   
