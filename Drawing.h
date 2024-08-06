@@ -514,4 +514,62 @@ namespace drawing
     return positions;
   }
   
+  std::vector<RC> filled_arc_positions(const RC& center, float radius, float angle_rad,
+                                       float dir_r, float dir_c, float px_aspect)
+  {
+    auto f_normalize_angle = [](float& ang)
+    {
+      while (ang < 0.f)
+        ang += math::c_2pi;
+      while (ang >= math::c_2pi)
+        ang -= math::c_2pi;
+    };
+    
+    std::vector<RC> positions;
+    int r_offs = math::roundI(radius/px_aspect);
+    int c_offs = math::roundI(radius);
+    auto radius_sq = math::sq(radius);
+    // Rotating dir vector CW and CCW using a rotation matrix.
+    auto a = angle_rad*0.5f;
+    auto Clo = std::cos(-a);
+    auto Slo = std::sin(-a);
+    auto Chi = std::cos(+a);
+    auto Shi = std::sin(+a);
+    math::normalize(dir_r, dir_c);
+    float dir_lo_r = (dir_r*Clo - dir_c*Slo);
+    float dir_lo_c = dir_r*Slo + dir_c*Clo;
+    float dir_hi_r = (dir_r*Chi - dir_c*Shi);
+    float dir_hi_c = dir_r*Shi + dir_c*Chi;
+    
+    auto lo_angle_rad = std::atan2(-dir_lo_r, dir_lo_c);
+    auto hi_angle_rad = std::atan2(-dir_hi_r, dir_hi_c);
+    f_normalize_angle(lo_angle_rad);
+    f_normalize_angle(hi_angle_rad);
+    if (lo_angle_rad > hi_angle_rad)
+      hi_angle_rad += math::c_2pi;
+    
+    for (int r = -r_offs; r <= r_offs; ++r)
+    {
+      for (int c = -c_offs; c <= c_offs; ++c)
+      {
+        auto dist_sq = math::length_squared<float>(r*px_aspect, c);
+        if (dist_sq <= radius_sq)
+        {
+          auto curr_dir_r = static_cast<float>(r);
+          auto curr_dir_c = static_cast<float>(c);
+          math::normalize(curr_dir_r, curr_dir_c);
+          auto curr_angle_rad = std::atan2(-curr_dir_r, curr_dir_c);
+          f_normalize_angle(curr_angle_rad);
+          // Make sure curr_angle_rad at least have a chance of being in the lo/hi angle range.
+          if (curr_angle_rad < lo_angle_rad)
+            curr_angle_rad += math::c_2pi;
+            
+          if (math::in_range<float>(curr_angle_rad, lo_angle_rad, hi_angle_rad, Range::Closed))
+            positions.emplace_back(center.r + r, center.c + c);
+        }
+      }
+    }
+    return positions;
+  }
+  
 }
