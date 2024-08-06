@@ -14,3 +14,11 @@ This is a cross-platform header-only curses-like lib.
 * `GameEngine.h` : A highly customizable buy easy to use game engine (or engine for any real-time terminal-based program).
 * `Keyboard.h` : A keyboard handling API that is easy to use. Use class `StreamKeyboard` to poll key presses.
 * `MessageHandler.h` : The `MessageHandler` class allows you to queue up messages of different severity levels and durations. Messages are displayed in a `ui::TextBox` in the middle of the screen.
+* `ParticleSystem.h` : This ASCII-style particle system allows you to make cool real-time VFX such as liquids and fire-smoke. See ([`SurgSim_Lite`](https://github.com/razterizer/SurgSim_Lite) and [`Pilot_Episode`](https://github.com/razterizer/Pilot_Episode) for examples).
+* `RC.h` : A struct representing the row and column position on the screen or in a texture or bounding box to mention a few.
+* `Rectangle.h` : A rectangle struct that can be used for bounding boxes etc.
+* `Screen.h` : A collection of functions for rendering dialogs and such:
+  * Low-level functions: `clear_screen()`, `return_cursor()`, `restore_cursor()`, `gotorc()`.
+  * `draw_frame()` : Draws a simple frame around your frame buffer.
+  * `draw_game_over()`, `draw_you_won()` : Draws wavy banners in the FIGlet font Grafitti. Used by `GameEngine` if those features are enabled.
+  
