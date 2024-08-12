@@ -154,6 +154,8 @@ protected:
   
   bool exit_requested = false;
   
+  unsigned int curr_rnd_seed = 0;
+  
   void set_real_fps(float fps_val) { real_fps = fps_val; }
   
   // Used for dynamics and stuff.
@@ -215,7 +217,7 @@ public:
     
     //nodelay(stdscr, TRUE);
     
-    rnd::srand_time();
+    curr_rnd_seed = rnd::srand_time();
     
     if (time_inited.once())
       real_start_time_s = std::chrono::steady_clock::now();
