@@ -65,6 +65,14 @@ namespace ui
       init();
     }
     
+    void set_text(const std::string& text, styles::Style style)
+    {
+      sb = str::StringBox { text };
+      line_styles.clear();
+      line_styles.emplace_back(style);
+      init();
+    }
+    
     void set_num_lines(size_t num_lines)
     {
       sb = str::StringBox(num_lines);
