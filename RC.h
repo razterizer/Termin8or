@@ -65,3 +65,8 @@ static inline float distance(const RC& ptA, const RC& ptB)
 {
   return math::distance<float>(ptA.r, ptA.c, ptB.r, ptB.c);
 }
+
+static inline float distance_squared(const RC& ptA, const RC& ptB)
+{
+  return math::distance_squared<float>(ptA.r, ptA.c, ptB.r, ptB.c);
+}
