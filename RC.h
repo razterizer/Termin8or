@@ -13,6 +13,16 @@ struct RC
   bool operator==(const RC& pt) const { return r == pt.r && c == pt.c; }
   bool operator!=(const RC& pt) const { return !(*this == pt); }
   
+  const RC& operator+() const
+  {
+    return *this;
+  }
+  
+  RC operator-() const
+  {
+    return { -r, -c };
+  }
+  
   RC operator+(const RC& pt) const
   {
     return { r + pt.r, c + pt.c };
