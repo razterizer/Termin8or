@@ -99,7 +99,7 @@ public:
   }
   
   template<int NR, int NC>
-  void update(SpriteHandler<NR, NC>& sh, float time, ui::VerticalAlignment v_align = ui::VerticalAlignment::CENTER, ui::HorizontalAlignment h_align = ui::HorizontalAlignment::CENTER, bool draw_box_outline = true, bool draw_box_bkg = true, int box_padding_ud = 0, int box_padding_lr = 1, drawing::OutlineType outline_type = drawing::OutlineType::Line)
+  void update(SpriteHandler<NR, NC>& sh, float time, ui::VerticalAlignment v_align = ui::VerticalAlignment::CENTER, ui::HorizontalAlignment h_align = ui::HorizontalAlignment::CENTER, bool draw_box_outline = true, bool draw_box_bkg = true, int box_padding_ud = 0, int box_padding_lr = 1, drawing::OutlineType outline_type = drawing::OutlineType::Line, bool framed_mode = true)
   {
     if (message_empty && has_messages())
     {
@@ -115,7 +115,7 @@ public:
       auto bg_color = get_bg_color();
       tb.set_text(curr_message);
       tb.calc_pre_draw(str::Adjustment::Center);
-      tb.draw(sh, v_align, h_align, { fg_color, bg_color }, draw_box_outline, draw_box_bkg, box_padding_ud, box_padding_lr, std::nullopt, outline_type);
+      tb.draw(sh, v_align, h_align, { fg_color, bg_color }, draw_box_outline, draw_box_bkg, box_padding_ud, box_padding_lr, std::nullopt, outline_type, framed_mode);
     }
     else
       message_empty = true;
