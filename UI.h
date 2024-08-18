@@ -38,6 +38,8 @@ namespace ui
     TextBoxDrawingArgs base;
     VerticalAlignment v_align = VerticalAlignment::CENTER;
     HorizontalAlignment h_align = HorizontalAlignment::CENTER;
+    int v_align_offs = 0;
+    int h_align_offs = 0;
     bool framed_mode = true;
   };
   
@@ -172,6 +174,9 @@ namespace ui
           pos.c = 2*mid_h - box_padding_lr - 2 + !args.framed_mode;
           break;
       }
+      
+      pos.r += args.v_align_offs;
+      pos.c += args.h_align_offs;
       
       TextBoxDrawingArgsPos pargs;
       pargs.pos = pos;
