@@ -20,6 +20,8 @@ struct MessageBoxDrawingArgs
   drawing::OutlineType outline_type = drawing::OutlineType::Line;
   ui::VerticalAlignment v_align = ui::VerticalAlignment::CENTER;
   ui::HorizontalAlignment h_align = ui::HorizontalAlignment::CENTER;
+  int v_align_offs = 0;
+  int h_align_offs = 0;
   bool framed_mode = true;
 };
 
@@ -130,6 +132,8 @@ public:
       ui::TextBoxDrawingArgsAlign aargs;
       aargs.v_align = args.v_align;
       aargs.h_align = args.h_align;
+      aargs.v_align_offs = args.v_align_offs;
+      aargs.h_align_offs = args.h_align_offs;
       aargs.base.box_style = { fg_color, bg_color };
       aargs.base.draw_box_outline = args.draw_box_outline;
       aargs.base.draw_box_bkg = args.draw_box_bkg;
