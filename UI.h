@@ -217,6 +217,20 @@ namespace ui
     }
   };
   
+  template<typename T>
+  class Param : public RefParam<T>
+  {
+    T instance;
+    
+  public:
+    Param(const std::string& a_name, T* a_var, T a_step, T a_min, T a_max)
+      : RefParam<T>(a_name, a_var, a_step, a_min, a_max)
+    {
+      instance = *a_var;
+      RefParam<T>::var = &instance;
+    }
+  };
+  
   class TextBoxDebug : public TextBox
   {
     std::vector<std::unique_ptr<ParamBase>> params;
