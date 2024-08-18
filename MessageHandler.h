@@ -11,6 +11,18 @@
 #include <execution>
 #include <queue>
 
+struct MessageBoxDrawingArgs
+{
+  bool draw_box_outline = true;
+  bool draw_box_bkg = true;
+  int box_padding_ud = 0;
+  int box_padding_lr = 1;
+  drawing::OutlineType outline_type = drawing::OutlineType::Line;
+  ui::VerticalAlignment v_align = ui::VerticalAlignment::CENTER;
+  ui::HorizontalAlignment h_align = ui::HorizontalAlignment::CENTER;
+  bool framed_mode = true;
+};
+
 class MessageHandler
 {
 public:
@@ -99,7 +111,7 @@ public:
   }
   
   template<int NR, int NC>
-  void update(SpriteHandler<NR, NC>& sh, float time, ui::VerticalAlignment v_align = ui::VerticalAlignment::CENTER, ui::HorizontalAlignment h_align = ui::HorizontalAlignment::CENTER, bool draw_box_outline = true, bool draw_box_bkg = true, int box_padding_ud = 0, int box_padding_lr = 1, drawing::OutlineType outline_type = drawing::OutlineType::Line, bool framed_mode = true)
+  void update(SpriteHandler<NR, NC>& sh, float time, const MessageBoxDrawingArgs& args = {})
   {
     if (message_empty && has_messages())
     {
@@ -115,7 +127,18 @@ public:
       auto bg_color = get_bg_color();
       tb.set_text(curr_message);
       tb.calc_pre_draw(str::Adjustment::Center);
-      tb.draw(sh, v_align, h_align, { fg_color, bg_color }, draw_box_outline, draw_box_bkg, box_padding_ud, box_padding_lr, std::nullopt, outline_type, framed_mode);
+      ui::TextBoxDrawingArgsAlign aargs;
+      aargs.v_align = args.v_align;
+      aargs.h_align = args.h_align;
+      aargs.base.box_style = { fg_color, bg_color };
+      aargs.base.draw_box_outline = args.draw_box_outline;
+      aargs.base.draw_box_bkg = args.draw_box_bkg;
+      aargs.base.box_padding_ud = args.box_padding_ud;
+      aargs.base.box_padding_lr = args.box_padding_lr;
+      aargs.base.box_outline_style = std::nullopt;
+      aargs.base.outline_type = args.outline_type;
+      aargs.framed_mode = args.framed_mode;
+      tb.draw(sh, aargs);
     }
     else
       message_empty = true;

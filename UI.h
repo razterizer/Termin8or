@@ -15,6 +15,33 @@ namespace ui
 
   enum class VerticalAlignment { TOP, CENTER, BOTTOM };
   enum class HorizontalAlignment { LEFT, CENTER, RIGHT };
+  
+  struct TextBoxDrawingArgs
+  {
+    styles::Style box_style;
+    bool draw_box_outline = true;
+    bool draw_box_bkg = true;
+    int box_padding_ud = 0;
+    int box_padding_lr = 0;
+    std::optional<styles::Style> box_outline_style = std::nullopt;
+    drawing::OutlineType outline_type = drawing::OutlineType::Line;
+  };
+  
+  struct TextBoxDrawingArgsPos
+  {
+    TextBoxDrawingArgs base;
+    RC pos;
+  };
+  
+  struct TextBoxDrawingArgsAlign
+  {
+    TextBoxDrawingArgs base;
+    VerticalAlignment v_align = VerticalAlignment::CENTER;
+    HorizontalAlignment h_align = HorizontalAlignment::CENTER;
+    bool framed_mode = true;
+  };
+  
+  // ////
 
   class TextBox
   {
@@ -91,8 +118,16 @@ namespace ui
     }
     
     template<int NR, int NC>
-    void draw(SpriteHandler<NR, NC>& sh, const RC& pos, const styles::Style& box_style, bool draw_box_outline, bool draw_box_bkg, int box_padding_ud = 0, int box_padding_lr = 0, std::optional<styles::Style> box_outline_style = std::nullopt, drawing::OutlineType outline_type = drawing::OutlineType::Line)
+    void draw(SpriteHandler<NR, NC>& sh, const TextBoxDrawingArgsPos& args)
     {
+      auto pos = args.pos;
+      const styles::Style& box_style = args.base.box_style;
+      bool draw_box_outline = args.base.draw_box_outline;
+      bool draw_box_bkg = args.base.draw_box_bkg;
+      int box_padding_ud = args.base.box_padding_ud;
+      int box_padding_lr = args.base.box_padding_lr;
+      std::optional<styles::Style> box_outline_style = args.base.box_outline_style;
+      drawing::OutlineType outline_type = args.base.outline_type;
       for (size_t l_idx = 0; l_idx < N; ++l_idx)
         sh.write_buffer(sb[l_idx], pos.r + static_cast<int>(l_idx), pos.c, line_styles.empty() ? box_style : line_styles[l_idx]);
       if (draw_box_outline)
@@ -102,40 +137,47 @@ namespace ui
     }
     
     template<int NR, int NC>
-    void draw(SpriteHandler<NR, NC>& sh, VerticalAlignment v_align, HorizontalAlignment h_align, const styles::Style& style, bool draw_box_outline, bool draw_box_bkg, int box_padding_ud = 0, int box_padding_lr = 0, std::optional<styles::Style> box_outline_style = std::nullopt, drawing::OutlineType outline_type = drawing::OutlineType::Line, bool framed_mode = true)
+    void draw(SpriteHandler<NR, NC>& sh, const TextBoxDrawingArgsAlign& args)
     {
+      int box_padding_ud = args.base.box_padding_ud;
+      int box_padding_lr = args.base.box_padding_lr;
+    
       RC pos { 0, 0 };
       
       auto mid_v = std::round((NR - N)*0.5f) - ((NR - N)%2 == 1)*0.5f;
       auto mid_h = std::round((NC - len_max)*0.5f) - ((NC - len_max)%2 == 1)*0.5f;
       
-      switch (v_align)
+      switch (args.v_align)
       {
         case VerticalAlignment::TOP:
-          pos.r = 2 + box_padding_ud - !framed_mode;
+          pos.r = 2 + box_padding_ud - !args.framed_mode;
           break;
         case VerticalAlignment::CENTER:
           pos.r = mid_v;
           break;
         case VerticalAlignment::BOTTOM:
-          pos.r = 2*mid_v - box_padding_ud - 2 + !framed_mode;
+          pos.r = 2*mid_v - box_padding_ud - 2 + !args.framed_mode;
           break;
       }
       
-      switch (h_align)
+      switch (args.h_align)
       {
         case HorizontalAlignment::LEFT:
-          pos.c = 2 + box_padding_lr - !framed_mode;
+          pos.c = 2 + box_padding_lr - !args.framed_mode;
           break;
         case HorizontalAlignment::CENTER:
           pos.c = mid_h;
           break;
         case HorizontalAlignment::RIGHT:
-          pos.c = 2*mid_h - box_padding_lr - 2 + !framed_mode;
+          pos.c = 2*mid_h - box_padding_lr - 2 + !args.framed_mode;
           break;
       }
       
-      draw(sh, pos, style, draw_box_outline, draw_box_bkg, box_padding_ud, box_padding_lr, box_outline_style, outline_type);
+      TextBoxDrawingArgsPos pargs;
+      pargs.pos = pos;
+      pargs.base = args.base;
+      
+      draw(sh, pargs);
     }
   };
   
