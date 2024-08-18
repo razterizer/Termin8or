@@ -254,6 +254,35 @@ namespace ui
       init();
     }
     
+    // Usage: tbd->ref_tmp(PARAM(var)) = var;
+    template<typename T>
+    T& ref_tmp(const std::string& name, T* var_ptr)
+    {
+      auto it = stlutils::find_if(params, [&name](auto& p) { return p->name == name; });
+      if (it == params.end())
+      {
+        auto& ref = params.emplace_back(std::make_unique<Param<T>>(name, var_ptr, static_cast<T>(0), static_cast<T>(*var_ptr), static_cast<T>(*var_ptr)));
+        sb.text_lines.resize(params.size());
+        init();
+        auto* tmp_param = dynamic_cast<Param<T>*>(ref.get());
+        return *tmp_param->var;
+      }
+      auto* tmp_param = dynamic_cast<Param<T>*>(it->get());
+      return *tmp_param->var;
+    }
+    
+    bool remove(const std::string& name)
+    {
+      return stlutils::erase_if(params, [&name](auto& p) { return p->name == name; });
+    }
+    
+    void clear()
+    {
+      params.clear();
+      sb.text_lines.clear();
+      init();
+    }
+    
     virtual void calc_pre_draw(str::Adjustment adjustment) override
     {
       for (size_t p_idx = 0; p_idx < N; ++p_idx)
