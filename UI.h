@@ -79,6 +79,11 @@ namespace ui
       init();
     }
     
+    bool empty() const noexcept
+    {
+      return sb.empty();
+    }
+    
     void set_text(const std::vector<std::string>& text_lines, const std::vector<styles::Style>& styles = {})
     {
       sb = str::StringBox { text_lines };
