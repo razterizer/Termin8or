@@ -8,79 +8,86 @@
 namespace bresenham
 {
   template<int NR, int NC>
-  void plot_line_low(SpriteHandler<NR, NC>& sh, float x0, float y0, float x1, float y1,
+  void plot_line_low(SpriteHandler<NR, NC>& sh, float r0, float c0, float r1, float c1,
                      const std::string& str, Color fg_color, Color bg_color)
   {
-    auto dx = x1 - x0;
-    auto dy = y1 - y0;
-    auto yi = 1.f;
-    if (dy < 0.f)
+    auto dr = r1 - r0;
+    auto dc = c1 - c0;
+    auto ri = 1.f;
+    if (dr < 0.f)
     {
-      yi = -1.f;
-      dy = -dy;
+      ri = -1.f;
+      dr = -dr;
     }
-    auto D = 2*dy - dx;
-    auto y = y0;
+    auto D = 2*dr - dc;
+    auto r = r0;
     
-    for (auto x : math::linspace(x0, 1.f, x1))
+    for (auto c : math::linspace(c0, 1.f, c1))
     {
-      sh.write_buffer(str, y, x, fg_color, bg_color);
+      sh.write_buffer(str, r, c, fg_color, bg_color);
       if (D > 0)
       {
-        y += yi;
-        D += 2*(dy - dx);
+        r += ri;
+        D += 2*(dr - dc);
       }
       else
-        D += 2*dy;
+        D += 2*dr;
     }
   }
 
   template<int NR, int NC>
-  void plot_line_high(SpriteHandler<NR, NC>& sh, float x0, float y0, float x1, float y1,
+  void plot_line_high(SpriteHandler<NR, NC>& sh, float r0, float c0, float r1, float c1,
                       const std::string& str, Color fg_color, Color bg_color)
   {
-    auto dx = x1 - x0;
-    auto dy = y1 - y0;
-    auto xi = 1.f;
-    if (dx < 0.f)
+    auto dr = r1 - r0;
+    auto dc = c1 - c0;
+    auto ci = 1.f;
+    if (dc < 0.f)
     {
-      xi = -1.f;
-      dx = -dx;
+      ci = -1.f;
+      dc = -dc;
     }
-    auto D = 2*dx - dy;
-    auto x = x0;
+    auto D = 2*dc - dr;
+    auto c = c0;
     
-    for (auto y : math::linspace(y0, 1.f, y1))
+    for (auto r : math::linspace(r0, 1.f, r1))
     {
-      sh.write_buffer(str, y, x, fg_color, bg_color);
+      sh.write_buffer(str, r, c, fg_color, bg_color);
       if (D > 0)
       {
-        x += xi;
-        D += 2*(dx - dy);
+        c += ci;
+        D += 2*(dc - dr);
       }
       else
-        D += 2*dx;
+        D += 2*dc;
     }
   }
 
   template<int NR, int NC>
-  void plot_line(SpriteHandler<NR, NC>& sh, float x0, float y0, float x1, float y1,
+  void plot_line(SpriteHandler<NR, NC>& sh, float r0, float c0, float r1, float c1,
                  const std::string& str, Color fg_color, Color bg_color)
   {
-    if (std::abs(y1 - y0) < std::abs(x1 - x0))
+    if (std::abs(r1 - r0) < std::abs(c1 - c0))
     {
-      if (x0 > x1)
-        plot_line_low(sh, x1, y1, x0, y0, str, fg_color, bg_color);
+      if (c0 > c1)
+        plot_line_low(sh, r1, c1, r0, c0, str, fg_color, bg_color);
       else
-        plot_line_low(sh, x0, y0, x1, y1, str, fg_color, bg_color);
+        plot_line_low(sh, r0, c0, r1, c1, str, fg_color, bg_color);
     }
     else
     {
-      if (y0 > y1)
-        plot_line_high(sh, x1, y1, x0, y0, str, fg_color, bg_color);
+      if (r0 > r1)
+        plot_line_high(sh, r1, c1, r0, c0, str, fg_color, bg_color);
       else
-        plot_line_high(sh, x0, y0, x1, y1, str, fg_color, bg_color);
+        plot_line_high(sh, r0, c0, r1, c1, str, fg_color, bg_color);
     }
+  }
+  
+  template<int NR, int NC>
+  void plot_line(SpriteHandler<NR, NC>& sh, const RC& p0, const RC& p1,
+                 const std::string& str, Color fg_color, Color bg_color)
+  {
+    plot_line(sh, p0.r, p0.c, p1.r, p1.c, str, fg_color, bg_color);
   }
 }
 
