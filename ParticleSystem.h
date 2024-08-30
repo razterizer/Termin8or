@@ -12,30 +12,30 @@ struct Particle
   RC start_pos;
   float time_stamp = 0.f;
   float life_time = 2.f;
-  float vel_x = 0.f;
-  float vel_y = 0.f;
-  float pos_x = 0.f;
-  float pos_y = 0.f;
+  float vel_r = 0.f;
+  float vel_c = 0.f;
+  float pos_r = 0.f;
+  float pos_c = 0.f;
   float g = -30.f;
   bool dead = false;
   
-  void init(float time, const RC& pos0, float vx, float vy, float gravity_acc, float spread, float life_t)
+  void init(float time, const RC& pos0, float vr, float vc, float gravity_acc, float spread, float life_t)
   {
     time_stamp = time;
     start_pos = pos0;
-    vel_x = vx + spread * (rnd::rand() - 0.5f);
-    vel_y = vy + spread * (rnd::rand() - 0.5f);
+    vel_r = vr + spread * (rnd::rand() - 0.5f);
+    vel_c = vc + spread * (rnd::rand() - 0.5f);
     g = gravity_acc;
-    pos_x = static_cast<float>(pos0.c);
-    pos_y = static_cast<float>(pos0.r);
+    pos_r = static_cast<float>(pos0.r);
+    pos_c = static_cast<float>(pos0.c);
     life_time = life_t;
   }
   
   void update(float dt)
   {
-    pos_x += vel_x * dt;
-    pos_y += vel_y * dt / pix_ar;
-    pos_y += g * dt; // y is pointing down. Same direction as r.
+    pos_c += vel_c * dt;
+    pos_r += vel_r * dt / pix_ar;
+    pos_r += g * dt; // r is pointing down.
   }
   
   bool alive(float time) const
@@ -47,7 +47,7 @@ struct Particle
   void draw(SpriteHandler<NR, NC>& sh, const std::string& str, Color fg_color, Color bg_color, float time) const
   {
     if (alive(time))
-      sh.write_buffer(str, std::round(pos_y), std::round(pos_x), fg_color, bg_color);
+      sh.write_buffer(str, std::round(pos_r), std::round(pos_c), fg_color, bg_color);
   }
 };
 
@@ -57,7 +57,7 @@ struct ParticleHandler
     : particle_stream(N_particles), num_particles(N_particles), num_particles_active(N_particles) {}
   
   void update(const RC& start_pos, bool trigger,
-              float vel_x, float vel_y, float g,
+              float vel_r, float vel_c, float g,
               float spread, float life_time, int particle_cluster_size,
               float dt, float time)
   {
@@ -69,7 +69,7 @@ struct ParticleHandler
       else if (trigger)
       {
         if (!particle.dead)
-          particle.init(time, start_pos, vel_x, vel_y, g, spread, life_time);
+          particle.init(time, start_pos, vel_r, vel_c, g, spread, life_time);
         if (particle_cluster_idx++ >= particle_cluster_size)
           trigger = false;
       }
