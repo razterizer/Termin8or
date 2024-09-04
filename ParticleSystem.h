@@ -51,6 +51,13 @@ struct Particle
   }
 };
 
+struct ParticleGradient
+{
+  Gradient<Color> fg_color_gradient;
+  Gradient<Color> bg_color_gradient;
+  Gradient<std::string> string_gradient;
+};
+
 struct ParticleHandler
 {
   ParticleHandler(size_t N_particles)
@@ -113,6 +120,23 @@ struct ParticleHandler
         const Gradient<Color>& fg_color = col_fg_bg.first;
         const Gradient<Color>& bg_color = col_fg_bg.second;
         particle.draw(sh, str[str_idx], fg_color(t), bg_color(t), time);
+      }
+  }
+  
+  template<int NR, int NC>
+  void draw(SpriteHandler<NR, NC>& sh,
+    const std::vector<std::pair<float, ParticleGradient>>& gradients,
+    float time) const
+  {
+    for (const auto& particle : particle_stream)
+      if (!particle.dead && particle.alive(time))
+      {
+        auto t = (time - particle.time_stamp)/particle.life_time;
+        const auto& grads = rnd::rand_select(gradients);
+        const Gradient<Color>& fg_grad = grads.fg_color_gradient;
+        const Gradient<Color>& bg_grad = grads.bg_color_gradient;
+        const Gradient<std::string>& str_grad = grads.string_gradient;
+        particle.draw(sh, str_grad(t), fg_grad(t), bg_grad(t), time);
       }
   }
   
