@@ -1,7 +1,7 @@
 #pragma once
 #include "Screen.h"
 #include "RC.h"
-#include "ColorGradient.h"
+#include "Gradient.h"
 #include <Core/Rand.h>
 #include <Core/Math.h>
 
@@ -86,7 +86,7 @@ struct ParticleHandler
   
   template<int NR, int NC>
   void draw(SpriteHandler<NR, NC>& sh, const std::vector<std::string>& str,
-    const ColorGradient& fg_color, const ColorGradient& bg_color, float time) const
+    const Gradient<Color>& fg_color, const Gradient<Color>& bg_color, float time) const
   {
     for (const auto& particle : particle_stream)
       if (!particle.dead && particle.alive(time))
@@ -100,7 +100,7 @@ struct ParticleHandler
   
   template<int NR, int NC>
   void draw(SpriteHandler<NR, NC>& sh, const std::vector<std::string>& str,
-    const std::vector<std::pair<float, std::pair<ColorGradient, ColorGradient>>>& color_fg_bg_vec,
+    const std::vector<std::pair<float, std::pair<Gradient<Color>, Gradient<Color>>>>& color_fg_bg_vec,
     float time) const
   {
     for (const auto& particle : particle_stream)
@@ -110,8 +110,8 @@ struct ParticleHandler
         int str_idx = static_cast<int>(std::round(t*str.size())) - 1;
         str_idx = math::clamp(str_idx, 0, static_cast<int>(str.size()) - 1);
         const auto& col_fg_bg = rnd::rand_select(color_fg_bg_vec);
-        const ColorGradient& fg_color = col_fg_bg.first;
-        const ColorGradient& bg_color = col_fg_bg.second;
+        const Gradient<Color>& fg_color = col_fg_bg.first;
+        const Gradient<Color>& bg_color = col_fg_bg.second;
         particle.draw(sh, str[str_idx], fg_color(t), bg_color(t), time);
       }
   }
