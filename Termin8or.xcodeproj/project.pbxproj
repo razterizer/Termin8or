@@ -12,6 +12,7 @@
 
 /* Begin PBXFileReference section */
 		07043C6F2B05240D00834CED /* ASCII_Fonts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ASCII_Fonts.h; sourceTree = "<group>"; };
+		0709B9B22C8631E100A43834 /* Gradient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Gradient.h; sourceTree = "<group>"; };
 		070BE6892B406FB2009D9BFB /* GameEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameEngine.h; sourceTree = "<group>"; };
 		070BE6902B4472F3009D9BFB /* font_data_larry3d.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = font_data_larry3d.txt; sourceTree = "<group>"; };
 		070BE6912B447309009D9BFB /* font_data_smslant.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = font_data_smslant.txt; sourceTree = "<group>"; };
@@ -22,7 +23,6 @@
 		071CC3D829046819007B4B98 /* Rectangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rectangle.h; sourceTree = "<group>"; };
 		071CC3D92904839C007B4B98 /* RC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RC.h; sourceTree = "<group>"; };
 		071CC3DA2904851A007B4B98 /* Pixel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Pixel.h; sourceTree = "<group>"; };
-		071CC3DC290485B0007B4B98 /* ColorGradient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColorGradient.h; sourceTree = "<group>"; };
 		071CC3DD290485FD007B4B98 /* LineData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LineData.h; sourceTree = "<group>"; };
 		071CC3DF29048851007B4B98 /* Keyboard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Keyboard.h; sourceTree = "<group>"; };
 		071CC3E329048C85007B4B98 /* Drawing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Drawing.h; sourceTree = "<group>"; };
@@ -71,7 +71,7 @@
 				071CC3E329048C85007B4B98 /* Drawing.h */,
 				071CC3D2290465E5007B4B98 /* Text.h */,
 				07C2A7832C24910300869A56 /* Color.h */,
-				071CC3DC290485B0007B4B98 /* ColorGradient.h */,
+				0709B9B22C8631E100A43834 /* Gradient.h */,
 				071CC3DD290485FD007B4B98 /* LineData.h */,
 				071CC3DF29048851007B4B98 /* Keyboard.h */,
 				07A763102B555BE100705D31 /* ParticleSystem.h */,
