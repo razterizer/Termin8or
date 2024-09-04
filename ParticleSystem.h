@@ -51,7 +51,7 @@ struct Particle
   }
 };
 
-struct ParticleGradient
+struct ParticleGradientGroup
 {
   Gradient<Color> fg_color_gradient;
   Gradient<Color> bg_color_gradient;
@@ -125,14 +125,14 @@ struct ParticleHandler
   
   template<int NR, int NC>
   void draw(SpriteHandler<NR, NC>& sh,
-    const std::vector<std::pair<float, ParticleGradient>>& gradients,
+    const std::vector<std::pair<float, ParticleGradientGroup>>& gradient_groups,
     float time) const
   {
     for (const auto& particle : particle_stream)
       if (!particle.dead && particle.alive(time))
       {
         auto t = (time - particle.time_stamp)/particle.life_time;
-        const auto& grads = rnd::rand_select(gradients);
+        const auto& grads = rnd::rand_select(gradient_groups);
         const Gradient<Color>& fg_grad = grads.fg_color_gradient;
         const Gradient<Color>& bg_grad = grads.bg_color_gradient;
         const Gradient<std::string>& str_grad = grads.string_gradient;
