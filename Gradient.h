@@ -10,6 +10,13 @@
 #include <assert.h>
 
 
+// Param values define the centers of the ranges for the values.
+//      t0            t1           t2     t3       : param at center of value range.
+//  0    :             :            :      :    1
+//  |---------|------------------|-----|--------|
+//  |<------->|<---------------->|<--->|<------>|
+//      v0             v1           v2      v3     : value ranges.
+
 template<typename T>
 struct Gradient
 {
