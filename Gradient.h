@@ -16,6 +16,9 @@
 //  |---------|------------------|-----|--------|
 //  |<------->|<---------------->|<--->|<------>|
 //      v0             v1           v2      v3     : value ranges.
+//
+// For equidistant params: t = (1/N:1/N:1)-1/(2*N)
+//   where N is the number of gradient nodes.
 
 template<typename T>
 struct Gradient
