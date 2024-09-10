@@ -30,6 +30,16 @@ struct Gradient
   Gradient(const std::vector<std::pair<float, T>>& a_gradient, T def = T{})
     : gradient(a_gradient), default_value(def)
   {}
+  Gradient(const std::vector<T>& uniform_gradient, T def = T{})
+  {
+    auto dt = 1.f / uniform_gradient.size();
+    auto t = dt - dt/2;
+    for (const auto& obj : uniform_gradient)
+    {
+      gradient.emplace_back(t, obj);
+      t += dt;
+    }
+  }
   
   T operator() (float t) const
   {
