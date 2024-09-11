@@ -1,5 +1,7 @@
 # Termin8or
 
+![GitHub License](https://img.shields.io/github/license/razterizer/Termin8or?color=blue)
+
 This is a cross-platform header-only curses-like lib.
 
 ## Header Files
