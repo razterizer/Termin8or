@@ -4,6 +4,10 @@
 
 This is a cross-platform header-only curses-like lib.
 
+## Showcases
+
+![image](https://github.com/razterizer/Pilot_Episode/assets/32767250/abd78df7-7314-43a2-8ef6-0270dc979575)
+
 ## Header Files
 
 * `ASCII_Fonts.h` : API for rendering text using FIGlet fonts and allows you to style your text with different colors. Supported FIGlet fonts are:
