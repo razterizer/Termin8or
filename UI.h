@@ -138,9 +138,9 @@ namespace ui
       for (size_t l_idx = 0; l_idx < N; ++l_idx)
         sh.write_buffer(sb[l_idx], pos.r + static_cast<int>(l_idx), pos.c, line_styles.empty() ? box_style : line_styles[l_idx]);
       if (draw_box_outline)
-        drawing::draw_box_outline(sh, pos.r - 1 - box_padding_ud, pos.c - 1 - box_padding_lr, static_cast<int>(N + 1 + 2*box_padding_ud), static_cast<int>(len_max + 1 + 2*box_padding_lr), outline_type, box_outline_style.value_or(box_style));
+        drawing::draw_box_outline(sh, pos.r - 1 - box_padding_ud, pos.c - 1 - box_padding_lr, static_cast<int>(N + 2 + 2*box_padding_ud), static_cast<int>(len_max + 2 + 2*box_padding_lr), outline_type, box_outline_style.value_or(box_style));
       if (draw_box_bkg)
-        drawing::draw_box(sh, pos.r - 1 - box_padding_ud, pos.c - 1 - box_padding_lr, static_cast<int>(N + 1 + 2*box_padding_ud), static_cast<int>(len_max + 1 + 2*box_padding_lr), box_style);
+        drawing::draw_box(sh, pos.r - 1 - box_padding_ud, pos.c - 1 - box_padding_lr, static_cast<int>(N + 2 + 2*box_padding_ud), static_cast<int>(len_max + 2 + 2*box_padding_lr), box_style);
     }
     
     template<int NR, int NC>

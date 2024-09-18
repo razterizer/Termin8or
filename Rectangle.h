@@ -20,7 +20,7 @@ namespace ttl
   
     bool is_inside(int rr, int cc) const
     {
-      return r <= rr && rr <= r + r_len && c <= cc && cc <= c + c_len;
+      return r <= rr && rr < r + r_len && c <= cc && cc < c + c_len;
     }
     
     bool is_inside(const RC& pos) const
@@ -30,7 +30,7 @@ namespace ttl
     
     bool is_inside_offs(int rr, int cc, int offs) const
     {
-      return r - offs <= rr && rr <= r + r_len + offs && c - offs <= cc && cc <= c + c_len + offs;
+      return r - offs <= rr && rr < r + r_len + offs && c - offs <= cc && cc < c + c_len + offs;
     }
     
     bool is_inside_offs(const RC& pos, int offs) const
@@ -40,7 +40,7 @@ namespace ttl
     
     bool is_inside_offs(int rr, int cc, int r_offs, int c_offs) const
     {
-      return r - r_offs <= rr && rr <= r + r_len + r_offs && c - c_offs <= cc && cc <= c + c_len + c_offs;
+      return r - r_offs <= rr && rr < r + r_len + r_offs && c - c_offs <= cc && cc < c + c_len + c_offs;
     }
     
     bool is_inside_offs(const RC& pos, int r_offs, int c_offs) const
@@ -50,7 +50,7 @@ namespace ttl
     
     bool is_inside_offs(int rr, int cc, int top_offs, int bottom_offs, int left_offs, int right_offs) const
     {
-      return r - top_offs <= rr && rr <= r + r_len + bottom_offs && c - left_offs <= cc && cc <= c + c_len + right_offs;
+      return r - top_offs <= rr && rr < r + r_len + bottom_offs && c - left_offs <= cc && cc < c + c_len + right_offs;
     }
     
     bool is_inside_offs(const RC& pos, int top_offs, int bottom_offs, int left_offs, int right_offs) const
@@ -60,7 +60,7 @@ namespace ttl
     
     bool is_on_border(int rr, int cc) const
     {
-      return r == rr || rr == r + r_len || c == cc || cc == c + c_len;
+      return r == rr || rr == r + r_len - 1 || c == cc || cc == c + c_len - 1;
     }
     
     bool is_on_border(const RC& pos) const
@@ -153,9 +153,9 @@ namespace ttl
     int c_mid() const { return c + c_len/2; }
     
     int top() const { return r; }
-    int bottom() const { return r + r_len; }
+    int bottom() const { return r + r_len - 1; }
     int left() const { return c; }
-    int right() const { return c + c_len; }
+    int right() const { return c + c_len - 1; }
     
     RC pos() const { return { r, c }; }
     RC size() const { return { r_len, c_len }; }
