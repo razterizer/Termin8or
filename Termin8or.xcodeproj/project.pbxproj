@@ -39,6 +39,7 @@
 		07FDE97E2CA0C0F700116BA7 /* Rectangle_tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rectangle_tests.h; sourceTree = "<group>"; };
 		07FDE97F2CA0C4E100116BA7 /* build_unit_tests.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_unit_tests.sh; sourceTree = "<group>"; };
 		07FDE9802CA0C4E100116BA7 /* unit_tests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = unit_tests.cpp; sourceTree = "<group>"; };
+		07FDE9822CA0C75C00116BA7 /* build-ubuntu.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; name = "build-ubuntu.yml"; path = ".github/workflows/build-ubuntu.yml"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +69,7 @@
 			children = (
 				0739D9BF2BA2229100964E96 /* LICENSE */,
 				0760B6F02B9CEABC0032CACD /* README.md */,
+				07FDE9812CA0C72000116BA7 /* workflows */,
 				070BE6892B406FB2009D9BFB /* GameEngine.h */,
 				07043C6F2B05240D00834CED /* ASCII_Fonts.h */,
 				070BE68F2B445908009D9BFB /* fonts */,
@@ -108,6 +110,14 @@
 				07FDE97E2CA0C0F700116BA7 /* Rectangle_tests.h */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		07FDE9812CA0C72000116BA7 /* workflows */ = {
+			isa = PBXGroup;
+			children = (
+				07FDE9822CA0C75C00116BA7 /* build-ubuntu.yml */,
+			);
+			name = workflows;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
