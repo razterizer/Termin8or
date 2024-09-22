@@ -10,7 +10,7 @@
 #include <iostream>
 #include <cassert>
 
-namespace datetime
+namespace ttl
 {
 
   void unit_tests()
