@@ -3,7 +3,7 @@
 
 additional_flags="-I../.."
 
-../build.sh unit_tests "$1" "${additional_flags[@]}"
+../../Core/build.sh unit_tests "$1" "${additional_flags[@]}"
 
 # Capture the exit code of Core/build.sh
 exit_code=$?
