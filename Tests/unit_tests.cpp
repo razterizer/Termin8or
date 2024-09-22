@@ -1,8 +1,8 @@
 //
 //  unit_tests.cpp
-//  Core
+//  Termin8or
 //
-//  Created by Rasmus Anthin on 2024-09-21.
+//  Created by Rasmus Anthin on 2024-09-22.
 //
 
 #include "Rectangle_tests.h"
