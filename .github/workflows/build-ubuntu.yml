@@ -1,0 +1,65 @@
+name: build check ubuntu
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-unit-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Change to the correct directory and build
+      - name: Build
+        run: |
+          cd Tests
+          ./build_unit_tests.sh
+        continue-on-error: false # Ensure errors are not bypassed
+
+      # Step 3: Upload the built unit test binaries as artifacts
+      - name: Upload unit test binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: unit-test-artifacts
+          path: Tests/bin
+
+  run-unit-tests:
+    needs: build-unit-tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+    
+      - name: List files
+        run: |
+          pwd
+          ls
+        
+      # Step 2: Create the bin folder if it doesn't exist
+      - name: Create bin folder
+        run: mkdir -p Tests/bin
+
+      # Step 3: Download the artifacts from the previous job
+      - name: Download unit test binaries
+        uses: actions/download-artifact@v3
+        with:
+          name: unit-test-artifacts
+          path: Tests/bin
+
+      # Step 4: Run the unit tests
+      - name: Run unit tests
+        run: |
+          cd Tests
+          chmod ugo+x bin/unit_tests
+          ./bin/unit_tests
+        continue-on-error: false # Ensure errors are not bypassed
