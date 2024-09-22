@@ -11,6 +11,23 @@ xcuserdata/
 xcshareddata/
 xcdebugger/
 
+# Ignore bin-folders
+bin/
+bin_linux/
+bin_windows/
+
+# Ignore breakpoints list
+*.xcbkptlist
+
 ### Visual Studio ###
 
 .vs/
+
+x64/
+x86/
+
+*.vcxproj.user
+
+### External Tools ###
+
+.aider*
