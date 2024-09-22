@@ -2,6 +2,8 @@
 
 ![GitHub License](https://img.shields.io/github/license/razterizer/Termin8or?color=blue)
 
+[![build check ubuntu](https://github.com/razterizer/Termin8or/actions/workflows/build-ubuntu.yml/badge.svg)](https://github.com/razterizer/Termin8or/actions/workflows/build-ubuntu.yml)
+
 This is a cross-platform header-only curses-like lib.
 
 ## Showcases
