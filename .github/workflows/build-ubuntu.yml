@@ -16,15 +16,21 @@ jobs:
       # Step 1: Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
+      
+      # Step 2: Move to the parent directory and fetch dependencies
+      - name: Fetch dependencies
+        run: |
+          cd ..
+          git clone https://github.com/razterizer/Core.git
 
-      # Step 2: Change to the correct directory and build
+      # Step 3: Change to the correct directory and build
       - name: Build
         run: |
           cd Tests
           ./build_unit_tests.sh
         continue-on-error: false # Ensure errors are not bypassed
 
-      # Step 3: Upload the built unit test binaries as artifacts
+      # Step 4: Upload the built unit test binaries as artifacts
       - name: Upload unit test binaries
         uses: actions/upload-artifact@v3
         with:
