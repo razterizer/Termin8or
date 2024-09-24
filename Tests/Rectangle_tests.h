@@ -72,6 +72,62 @@ namespace ttl
       assert(rec.is_inside_offs(pt2, +2));
       assert(rec.is_inside_offs(pt3, +2));
       assert(rec.is_inside_offs(pt4, +2));
+      
+      assert(rec.is_inside_offs(pt0, +1, +2));
+      assert(!rec.is_inside_offs(pt1, +1, +2));
+      assert(rec.is_inside_offs(pt2, +1, +2));
+      assert(rec.is_inside_offs(pt3, +1, +2));
+      assert(rec.is_inside_offs(pt4, +1, +2));
+      
+      assert(rec.is_inside_offs(pt0, +1, +2, 0, +1));
+      assert(!rec.is_inside_offs(pt0, +1, +2, +1, 0));
+      assert(!rec.is_inside_offs(pt0, +2, 0, 0, +1));
+      assert(rec.is_inside_offs(pt0, 0, +1, +1, +1));
+      assert(!rec.is_inside_offs(pt0, 0, +1, -1, +1));
+      assert(!rec.is_inside_offs(pt0, -1, +1, -1, +1));
+      assert(!rec.is_inside_offs(pt0, +1, -1, +1, -1));
+      assert(rec.is_inside_offs(pt0, +1, +1, +1, +1));
+      assert(rec.is_inside_offs(pt0, +2, +2, +2, +2));
+      
+      assert(rec.is_inside_offs(pt1, +1, +2, 0, +1));
+      assert(!rec.is_inside_offs(pt1, +1, +2, +1, 0));
+      assert(!rec.is_inside_offs(pt1, +2, 0, 0, +1));
+      assert(!rec.is_inside_offs(pt1, 0, +1, +1, +1));
+      assert(!rec.is_inside_offs(pt1, 0, +1, -1, +1));
+      assert(!rec.is_inside_offs(pt1, -1, +1, -1, +1));
+      assert(!rec.is_inside_offs(pt1, +1, -1, +1, -1));
+      assert(!rec.is_inside_offs(pt1, +1, +1, +1, +1));
+      assert(rec.is_inside_offs(pt1, +2, +2, +2, +2));
+      
+      assert(!rec.is_inside_offs(pt2, +1, +2, 0, +1));
+      assert(!rec.is_inside_offs(pt2, +1, +2, +1, 0));
+      assert(!rec.is_inside_offs(pt2, +2, 0, 0, +1));
+      assert(!rec.is_inside_offs(pt2, 0, +1, +1, +1));
+      assert(!rec.is_inside_offs(pt2, 0, +1, -1, +1));
+      assert(!rec.is_inside_offs(pt2, -1, +1, -1, +1));
+      assert(!rec.is_inside_offs(pt2, +1, -1, +1, -1));
+      assert(!rec.is_inside_offs(pt2, +1, +1, +1, +1));
+      assert(rec.is_inside_offs(pt2, +2, +2, +2, +2));
+      
+      assert(rec.is_inside_offs(pt3, +1, +2, 0, +1));
+      assert(!rec.is_inside_offs(pt3, +1, +2, +1, 0));
+      assert(rec.is_inside_offs(pt3, +2, 0, 0, +1));
+      assert(!rec.is_inside_offs(pt3, 0, +1, +1, +1));
+      assert(!rec.is_inside_offs(pt3, 0, +1, -1, +1));
+      assert(!rec.is_inside_offs(pt3, -1, +1, -1, +1));
+      assert(!rec.is_inside_offs(pt3, +1, -1, +1, -1));
+      assert(rec.is_inside_offs(pt3, +1, +1, +1, +1));
+      assert(rec.is_inside_offs(pt3, +2, +2, +2, +2));
+      
+      assert(!rec.is_inside_offs(pt4, +1, +2, 0, +1));
+      assert(rec.is_inside_offs(pt4, +1, +2, +1, 0));
+      assert(!rec.is_inside_offs(pt4, +2, 0, 0, +1));
+      assert(rec.is_inside_offs(pt4, 0, +1, +1, +1));
+      assert(!rec.is_inside_offs(pt4, 0, +1, -1, +1));
+      assert(!rec.is_inside_offs(pt4, -1, +1, -1, +1));
+      assert(!rec.is_inside_offs(pt4, +1, -1, +1, -1));
+      assert(rec.is_inside_offs(pt4, +1, +1, +1, +1));
+      assert(rec.is_inside_offs(pt4, +2, +2, +2, +2));
     }
   }
   
