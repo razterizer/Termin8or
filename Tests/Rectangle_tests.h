@@ -128,6 +128,50 @@ namespace ttl
       assert(!rec.is_inside_offs(pt4, +1, -1, +1, -1));
       assert(rec.is_inside_offs(pt4, +1, +1, +1, +1));
       assert(rec.is_inside_offs(pt4, +2, +2, +2, +2));
+      
+      assert(!rec.is_on_border(pt0));
+      assert(!rec.is_on_border(pt1));
+      assert(!rec.is_on_border(pt2));
+      assert(!rec.is_on_border(pt3));
+      assert(!rec.is_on_border(pt4));
+      
+      assert(rec.find_location(pt0) == BBLocation::None);
+      assert(rec.find_location(pt1) == BBLocation::None);
+      assert(rec.find_location(pt2) == BBLocation::None);
+      assert(rec.find_location(pt3) == BBLocation::None);
+      assert(rec.find_location(pt4) == BBLocation::None);
+      
+      assert(rec.find_location_offs(pt0, 0, +1, 0, +1) == BBLocation::Inside);
+      assert(rec.find_location_offs(pt0, -1, +1, 0, +1) == BBLocation::None);
+      assert(rec.find_location_offs(pt1, 0, +1, 0, +1) == BBLocation::OutsideBottom);
+      assert(rec.find_location_offs(pt1, 0, +2, 0, +1) == BBLocation::Inside);
+      assert(rec.find_location_offs(pt2, 0, +1, 0, +1) == BBLocation::OutsideRight);
+      assert(rec.find_location_offs(pt2, 0, +1, 0, +2) == BBLocation::Inside);
+      assert(rec.find_location_offs(pt3, 0, +1, 0, +1) == BBLocation::OutsideTop);
+      assert(rec.find_location_offs(pt3, +1, 0, 0, +1) == BBLocation::Inside);
+      assert(rec.find_location_offs(pt4, 0, +1, 0, +1) == BBLocation::OutsideLeft);
+      assert(rec.find_location_offs(pt4, 0, +1, +1, +1) == BBLocation::Inside);
+      
+      assert(rec.is_empty());
+      assert(!rec.is_inverted());
+      assert(rec.is_collapsed());
+      assert(!rec.is_valid());
+      
+      assert(rec.center() == RC(0, 0));
+      assert(rec.r_mid() == 0);
+      assert(rec.c_mid() == 0);
+      assert(rec.top() == 0);
+      assert(rec.bottom() == -1);
+      assert(rec.left() == 0);
+      assert(rec.right() == -1);
+      assert(rec.pos() == RC(0, 0));
+      assert(rec.size() == RC(0, 0));
+      
+      auto rec_tmp = rec;
+      rec_tmp.set_pos({ 2, -1 });
+      rec_tmp.set_size({ 4, 4 });
+      assert(rec_tmp.pos() == RC(2, -1));
+      assert(rec_tmp.size() == RC(4, 4));
     }
   }
   
