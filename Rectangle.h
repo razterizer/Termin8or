@@ -108,6 +108,10 @@ namespace ttl
     
     BBLocation find_location_offs(int rr, int cc, int top_offs, int bottom_offs, int left_offs, int right_offs) const
     {
+      if (rr - top_offs >= rr + r_len + bottom_offs)
+        return BBLocation::None;
+      if (cc - left_offs >= cc + c_len + right_offs)
+        return BBLocation::None;
       bool outside_top = rr < top() - top_offs;
       bool outside_bottom = rr > bottom() + bottom_offs;
       bool outside_left = cc < left() - left_offs;
