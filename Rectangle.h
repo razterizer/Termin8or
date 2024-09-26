@@ -145,6 +145,21 @@ namespace ttl
       return r_len == 0 && c_len == 0;
     }
     
+    bool is_inverted() const
+    {
+      return r_len < 0 || c_len < 0;
+    }
+    
+    bool is_collapsed() const
+    {
+      return r_len == 0 || c_len == 0;
+    }
+    
+    bool is_valid() const
+    {
+      return r_len > 0 && c_len > 0;
+    }
+    
     RC center() const
     {
       RC pc;
