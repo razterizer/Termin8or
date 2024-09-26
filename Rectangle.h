@@ -60,6 +60,8 @@ namespace ttl
     
     bool is_on_border(int rr, int cc) const
     {
+      if (!is_valid())
+        return false;
       return r == rr || rr == r + r_len - 1 || c == cc || cc == c + c_len - 1;
     }
     
