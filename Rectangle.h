@@ -72,6 +72,8 @@ namespace ttl
     
     BBLocation find_location(int rr, int cc) const
     {
+      if (!is_valid())
+        return BBLocation::None;
       bool outside_top = rr < top();
       bool outside_bottom = rr > bottom();
       bool outside_left = cc < left();
