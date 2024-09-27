@@ -61,6 +61,34 @@ void restore_cursor()
 #endif
 }
 
+void hide_cursor()
+{
+#ifdef _WIN32
+  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+  CONSOLE_CURSOR_INFO cursorInfo;
+  
+  GetConsoleCursorInfo(hConsole, &cursorInfo);
+  cursorInfo.bVisible = FALSE; // Hide the cursor
+  SetConsoleCursorInfo(hConsole, &cursorInfo);
+#else
+  std::cout << "\x1B[?25l";
+#endif
+}
+
+void show_cursor()
+{
+#ifdef _WIN32
+  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+  CONSOLE_CURSOR_INFO cursorInfo;
+  
+  GetConsoleCursorInfo(hConsole, &cursorInfo);
+  cursorInfo.bVisible = TRUE; // Show the cursor
+  SetConsoleCursorInfo(hConsole, &cursorInfo);
+#else
+  std::cout << "\x1B[?25h";
+#endif
+}
+
 void gotorc(int r, int c)
 {
 #ifdef _WIN32
