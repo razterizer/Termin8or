@@ -247,6 +247,13 @@ public:
   void request_exit() { exit_requested = true; }
   
 private:
+  void pre_quit()
+  {
+    restore_cursor();
+    show_cursor();
+    on_quit();
+  }
+
   bool engine_update()
   {
     if (exit_requested)
@@ -280,9 +287,7 @@ private:
       
     if (!m_params.enable_quit_confirm_screen && quit)
     {
-      restore_cursor();
-      show_cursor();
-      on_quit();
+      pre_quit();
       return false;
     }
     else if (show_quit_confirm && !show_hiscores && !show_input_hiscore)
@@ -309,9 +314,7 @@ private:
       {
         if (quit_confirm_button == YesNoButtons::Yes)
         {
-          restore_cursor();
-          show_cursor();
-          on_quit();
+          pre_quit();
           return false;
         }
         else
@@ -415,9 +418,7 @@ private:
         
         if (key == ' ' || quit)
         {
-          restore_cursor();
-          show_cursor();
-          on_quit();
+          pre_quit();
           return false;
         }
       }
