@@ -213,7 +213,9 @@ public:
     
     keyboard = std::make_unique<keyboard::StreamKeyboard>();
     
-    clear_screen(); return_cursor();
+    clear_screen();
+    return_cursor();
+    hide_cursor();
     
     //nodelay(stdscr, TRUE);
     
@@ -279,6 +281,7 @@ private:
     if (!m_params.enable_quit_confirm_screen && quit)
     {
       restore_cursor();
+      show_cursor();
       on_quit();
       return false;
     }
@@ -307,6 +310,7 @@ private:
         if (quit_confirm_button == YesNoButtons::Yes)
         {
           restore_cursor();
+          show_cursor();
           on_quit();
           return false;
         }
@@ -412,6 +416,7 @@ private:
         if (key == ' ' || quit)
         {
           restore_cursor();
+          show_cursor();
           on_quit();
           return false;
         }
