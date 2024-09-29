@@ -4,6 +4,13 @@
 
 [![build and test ubuntu](https://github.com/razterizer/Termin8or/actions/workflows/build-and-test-ubuntu.yml/badge.svg)](https://github.com/razterizer/Termin8or/actions/workflows/build-and-test-ubuntu.yml)
 
+![Top Languages](https://img.shields.io/github/languages/top/razterizer/Termin8or)
+![Goto](https://img.shields.io/github/search/razterizer/Termin8or/goto)
+![Commit Activity](https://img.shields.io/github/commit-activity/t/razterizer/Termin8or)
+![Last Commit](https://img.shields.io/github/last-commit/razterizer/Termin8or?color=blue)
+![Contributors](https://img.shields.io/github/contributors/razterizer/Termin8or?color=blue)
+<!-- ![Languages](https://img.shields.io/github/languages/count/razterizer/Termin8or) -->
+
 This is a cross-platform header-only curses-like lib.
 
 ## Showcases
