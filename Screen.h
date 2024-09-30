@@ -287,7 +287,7 @@ bool draw_input_hiscore(SpriteHandler<NR, NC>& sh,
   
   if (str::is_letter(key) || key == ' ')
   {
-    if (hsi.name.length() >= caret_idx + 1)
+    if (static_cast<int>(hsi.name.length()) >= caret_idx + 1)
       hsi.name[caret_idx] = str::to_upper(key);
   }
   
