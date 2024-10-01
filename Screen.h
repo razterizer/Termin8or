@@ -134,10 +134,10 @@ void draw_frame(SpriteHandler<NR, NC>& sh, Color fg_color)
 template<int NR, int NC>
 void draw_game_over(SpriteHandler<NR, NC>& sh)
 {
-  auto wave_func = [](float c, int i)
+  auto wave_func = [](int c, int i)
   {
     float x = static_cast<float>(i)/12.f;
-    auto x1 = c + wave_a*std::sin(wave_f*math::c_2pi*(x + wave_x0));
+    auto x1 = static_cast<float>(c) + wave_a*std::sin(wave_f*math::c_2pi*(x + wave_x0));
 
     return std::round(x1);
   };
