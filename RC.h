@@ -73,10 +73,16 @@ struct RC
 
 static inline float distance(const RC& ptA, const RC& ptB)
 {
-  return math::distance<float>(ptA.r, ptA.c, ptB.r, ptB.c);
+  return math::distance<float>(static_cast<float>(ptA.r),
+                               static_cast<float>(ptA.c),
+                               static_cast<float>(ptB.r)
+                               static_cast<float>(ptB.c));
 }
 
 static inline float distance_squared(const RC& ptA, const RC& ptB)
 {
-  return math::distance_squared<float>(ptA.r, ptA.c, ptB.r, ptB.c);
+  return math::distance_squared<float>(static_cast<float>(ptA.r),
+                                       static_cast<float>(ptA.c),
+                                       static_cast<float>(ptB.r),
+                                       static_cast<float>(ptB.c));
 }
