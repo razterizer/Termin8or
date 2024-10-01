@@ -139,7 +139,7 @@ void draw_game_over(SpriteHandler<NR, NC>& sh)
     float x = static_cast<float>(i)/12.f;
     auto x1 = static_cast<float>(c) + wave_a*std::sin(wave_f*math::c_2pi*(x + wave_x0));
 
-    return std::round(x1);
+    return math::roundI(x1);
   };
 
   int c = 18;
