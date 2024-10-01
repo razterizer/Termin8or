@@ -69,7 +69,7 @@ class GameEngine
   // Simulation delay.
   int sim_delay = 50'000; // 100'000 (10 FPS) // 60'000 (16.67 FPS);
   // Real-time FPS.
-  int real_fps = 12; // 5
+  float real_fps = 12.f; // 5
   
   float sim_dt_s = static_cast<float>(sim_delay) / 1e6f;
   float sim_time_s = 0.f;
@@ -238,7 +238,7 @@ public:
     Delay::update_loop(real_fps, update_func);
   }
   
-  int get_real_fps() const { return real_fps; }
+  float get_real_fps() const { return real_fps; }
   int get_sim_delay_us() const { return sim_delay; }
   
   void set_state_game_over() { show_game_over = true; }
