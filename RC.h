@@ -75,7 +75,7 @@ static inline float distance(const RC& ptA, const RC& ptB)
 {
   return math::distance<float>(static_cast<float>(ptA.r),
                                static_cast<float>(ptA.c),
-                               static_cast<float>(ptB.r)
+                               static_cast<float>(ptB.r),
                                static_cast<float>(ptB.c));
 }
 
