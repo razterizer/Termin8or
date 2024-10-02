@@ -136,7 +136,7 @@ void draw_game_over(SpriteHandler<NR, NC>& sh)
 {
   auto wave_func = [](int c, int i)
   {
-    float x = static_cast<float>(i)/12.f;
+    auto x = static_cast<float>(i)/12.f;
     auto x1 = static_cast<float>(c) + wave_a*std::sin(wave_f*math::c_2pi*(x + wave_x0));
 
     return math::roundI(x1);
@@ -176,10 +176,10 @@ void draw_you_won(SpriteHandler<NR, NC>& sh)
 
   auto wave_func = [](int c, int i)
   {
-    float x = static_cast<float>(i)/12.f;
+    auto x = static_cast<float>(i)/12.f;
     auto x1 = static_cast<int>(c) + wave_a*std::sin(wave_f*math::c_2pi*(x + wave_x0));
 
-    return std::round(x1);
+    return math::roundI(x1);
   };
 
   int c = 15;
