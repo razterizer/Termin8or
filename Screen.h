@@ -174,10 +174,10 @@ void draw_you_won(SpriteHandler<NR, NC>& sh)
   wave_a = 1.f;//5.f;
   wave_step = 0.07f; //0.1f;
 
-  auto wave_func = [](float c, int i)
+  auto wave_func = [](int c, int i)
   {
     float x = static_cast<float>(i)/12.f;
-    auto x1 = c + wave_a*std::sin(wave_f*math::c_2pi*(x + wave_x0));
+    auto x1 = static_cast<int>(c) + wave_a*std::sin(wave_f*math::c_2pi*(x + wave_x0));
 
     return std::round(x1);
   };
