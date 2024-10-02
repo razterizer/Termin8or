@@ -505,7 +505,7 @@ namespace drawing
     {
       for (int c = -c_offs; c <= c_offs; ++c)
       {
-        auto dist_sq = math::length_squared<float>(r*px_aspect, c);
+        auto dist_sq = math::length_squared(r*px_aspect, static_cast<float>(c));
         if (dist_sq <= radius_sq)
           positions.emplace_back(center.r + r, center.c + c);
       }
@@ -551,7 +551,7 @@ namespace drawing
     {
       for (int c = -c_offs; c <= c_offs; ++c)
       {
-        auto dist_sq = math::length_squared<float>(r*px_aspect, c);
+        auto dist_sq = math::length_squared(r*px_aspect, static_cast<float>(c));
         if (dist_sq <= radius_sq)
         {
           auto curr_dir_r = static_cast<float>(r);
