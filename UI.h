@@ -151,8 +151,8 @@ namespace ui
     
       RC pos { 0, 0 };
       
-      auto mid_v = std::round((NR - N)*0.5f) - ((NR - N)%2 == 1)*0.5f;
-      auto mid_h = std::round((NC - len_max)*0.5f) - ((NC - len_max)%2 == 1)*0.5f;
+      auto mid_v = static_cast<int>(std::round((NR - N)*0.5f) - ((NR - N)%2 == 1)*0.5f);
+      auto mid_h = static_cast<int>(std::round((NC - len_max)*0.5f) - ((NC - len_max)%2 == 1)*0.5f);
       
       switch (args.v_align)
       {
