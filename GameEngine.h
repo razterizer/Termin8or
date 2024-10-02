@@ -161,7 +161,7 @@ protected:
   // Used for dynamics and stuff.
   void set_sim_delay_us(float delay_us)
   {
-    sim_delay = delay_us;
+    sim_delay = math::roundI(delay_us);
     sim_dt_s = static_cast<float>(sim_delay) / 1e6f;
   }
   
