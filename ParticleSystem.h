@@ -47,7 +47,7 @@ struct Particle
   void draw(SpriteHandler<NR, NC>& sh, const std::string& str, Color fg_color, Color bg_color, float time) const
   {
     if (alive(time))
-      sh.write_buffer(str, std::round(pos_r), std::round(pos_c), fg_color, bg_color);
+      sh.write_buffer(str, math::roundI(pos_r), math::roundI(pos_c), fg_color, bg_color);
   }
 };
 
