@@ -87,7 +87,12 @@ namespace bresenham
   void plot_line(SpriteHandler<NR, NC>& sh, const RC& p0, const RC& p1,
                  const std::string& str, Color fg_color, Color bg_color)
   {
-    plot_line(sh, p0.r, p0.c, p1.r, p1.c, str, fg_color, bg_color);
+    plot_line(sh, 
+      static_cast<float>(p0.r), 
+      static_cast<float>(p0.c), 
+      static_cast<float>(p1.r), 
+      static_cast<float>(p1.c), 
+      str, fg_color, bg_color);
   }
 }
 
