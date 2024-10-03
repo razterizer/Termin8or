@@ -24,7 +24,7 @@ namespace bresenham
     
     for (auto c : math::linspace(c0, 1.f, c1))
     {
-      sh.write_buffer(str, static_cast<int>(r), static_cast<int>(c), fg_color, bg_color);
+      sh.write_buffer(str, math::roundI(r), math::roundI(c), fg_color, bg_color);
       if (D > 0)
       {
         r += ri;
@@ -52,7 +52,7 @@ namespace bresenham
     
     for (auto r : math::linspace(r0, 1.f, r1))
     {
-      sh.write_buffer(str, static_cast<int>(r), static_cast<int>(c), fg_color, bg_color);
+      sh.write_buffer(str, math::roundI(r), math::roundI(c), fg_color, bg_color);
       if (D > 0)
       {
         c += ci;
