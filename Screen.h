@@ -137,7 +137,7 @@ std::pair<int, int> get_terminal_window_size()
 
 void resize_terminal_window(int nr, int nc)
 {
-  std::cout << "\033[8;" << nr + 1 << ";" << nc << "t"; // Resize terminal.
+  std::cout << "\033[8;" << nr << ";" << nc << "t"; // Resize terminal.
 }
 
 template<int NR, int NC>
