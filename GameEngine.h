@@ -24,6 +24,7 @@ struct GameEngineParams
   bool quit_confirm_unsaved_changes = false;
   bool enable_hiscores = true;
   bool enable_pause = true;
+  bool enable_terminal_window_resize = true; // If true it will resize the terminal window if too small for the game screen.
   
   Color screen_bg_color_default = Color::Default;
   Color screen_bg_color_title = Color::Default;
@@ -222,11 +223,14 @@ public:
     hide_cursor();
     
     std::tie(term_win_rows, term_win_cols) = get_terminal_window_size();
-    int new_rows = term_win_rows;
-    int new_cols = term_win_cols;
-    math::maximize(new_rows, NR + 1);
-    math::maximize(new_cols, NC);
-    resize_terminal_window(new_rows, new_cols);
+    if (m_params.enable_terminal_window_resize)
+    {
+      int new_rows = term_win_rows;
+      int new_cols = term_win_cols;
+      math::maximize(new_rows, NR + 1);
+      math::maximize(new_cols, NC);
+      resize_terminal_window(new_rows, new_cols);
+    }
     
     //nodelay(stdscr, TRUE);
     
@@ -262,8 +266,9 @@ private:
   {
     restore_cursor();
     show_cursor();
-    if (term_win_rows > 0 && term_win_cols > 0)
-      resize_terminal_window(term_win_rows, term_win_cols);
+    if (m_params.enable_terminal_window_resize)
+      if (term_win_rows > 0 && term_win_cols > 0)
+        resize_terminal_window(term_win_rows, term_win_cols);
     on_quit();
   }
 
