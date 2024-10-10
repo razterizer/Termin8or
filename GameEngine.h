@@ -84,6 +84,10 @@ class GameEngine
   HiScoreItem curr_score_item;
   int hiscore_caret_idx = 0;
   
+  int term_win_rows = 0;
+  int term_win_cols = 0;
+  
+  
   bool handle_hiscores(const HiScoreItem& curr_hsi)
   {
     const int c_max_num_hiscores = 20;
@@ -217,6 +221,13 @@ public:
     return_cursor();
     hide_cursor();
     
+    std::tie(term_win_rows, term_win_cols) = get_terminal_window_size();
+    int new_rows = term_win_rows;
+    int new_cols = term_win_cols;
+    math::maximize(new_rows, NR + 1);
+    math::maximize(new_cols, NC);
+    resize_terminal_window(new_rows, new_cols);
+    
     //nodelay(stdscr, TRUE);
     
     curr_rnd_seed = rnd::srand_time();
@@ -251,6 +262,8 @@ private:
   {
     restore_cursor();
     show_cursor();
+    if (term_win_rows > 0 && term_win_cols > 0)
+      resize_terminal_window(term_win_rows, term_win_cols);
     on_quit();
   }
 

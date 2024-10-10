@@ -7,8 +7,12 @@
 #ifdef _WIN32
 #define NOMINMAX // Should fix the std::min()/max() and std::numeric_limits<T>::min()/max() compilation problems.
 #include <windows.h>
+#else
+#include <sys/ioctl.h>
+#include <unistd.h>
 #endif
 #include <ranges>
+
 
 // Game Over
 int game_over_timer = 10;
@@ -101,6 +105,39 @@ void gotorc(int r, int c)
 #else
   printf("%c[%d;%df", 0x1B, r, c);
 #endif
+}
+
+std::pair<int, int> get_terminal_window_size()
+{
+  int rows = 0;
+  int cols = 0;
+#ifdef _WIN32
+    // Windows-specific code
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
+        cols = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+        rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+    } else {
+        // If we fail to get the size
+        rows = cols = -1;
+    }
+#else
+    // POSIX (Linux/macOS) specific code
+    struct winsize size;
+    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) == 0) {
+        rows = size.ws_row;
+        cols = size.ws_col;
+    } else {
+        // If we fail to get the size
+        rows = cols = -1;
+    }
+#endif
+  return { rows, cols };
+}
+
+void resize_terminal_window(int nr, int nc)
+{
+  std::cout << "\033[8;" << nr + 1 << ";" << nc << "t"; // Resize terminal.
 }
 
 template<int NR, int NC>
