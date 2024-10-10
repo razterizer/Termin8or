@@ -222,9 +222,9 @@ public:
     return_cursor();
     hide_cursor();
     
-    std::tie(term_win_rows, term_win_cols) = get_terminal_window_size();
     if (m_params.enable_terminal_window_resize)
     {
+      std::tie(term_win_rows, term_win_cols) = get_terminal_window_size();
       int new_rows = term_win_rows;
       int new_cols = term_win_cols;
       math::maximize(new_rows, NR + 1);
