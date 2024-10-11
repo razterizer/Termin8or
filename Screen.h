@@ -112,25 +112,25 @@ std::pair<int, int> get_terminal_window_size()
   int rows = 0;
   int cols = 0;
 #ifdef _WIN32
-    // Windows-specific code
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
-        cols = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-        rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-    } else {
-        // If we fail to get the size
-        rows = cols = -1;
-    }
+  // Windows-specific code.
+  CONSOLE_SCREEN_BUFFER_INFO csbi;
+  if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
+  {
+    cols = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+  }
+  else
+    rows = cols = -1; // If we fail to get the size.
 #else
-    // POSIX (Linux/macOS) specific code
-    struct winsize size;
-    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) == 0) {
-        rows = size.ws_row;
-        cols = size.ws_col;
-    } else {
-        // If we fail to get the size
-        rows = cols = -1;
-    }
+  // POSIX (Linux/macOS) specific code.
+  struct winsize size;
+  if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) == 0)
+  {
+    rows = size.ws_row;
+    cols = size.ws_col;
+  }
+  else
+    rows = cols = -1; // If we fail to get the size.
 #endif
   return { rows, cols };
 }
