@@ -137,7 +137,49 @@ std::pair<int, int> get_terminal_window_size()
 
 void resize_terminal_window(int nr, int nc)
 {
-  std::cout << "\033[8;" << nr << ";" << nc << "t"; // Resize terminal.
+#ifdef _WIN32
+  // Windows-specific code to resize the console window.
+  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+  if (hConsole == INVALID_HANDLE_VALUE)
+  {
+    std::cerr << "Error: Unable to get console handle." << std::endl;
+    return;
+  }
+
+  // Get current console buffer and window size.
+  CONSOLE_SCREEN_BUFFER_INFO csbi;
+  if (!GetConsoleScreenBufferInfo(hConsole, &csbi))
+  {
+    std::cerr << "Error: Unable to get console screen buffer info." << std::endl;
+    return;
+  }
+
+  // Adjust window size to prevent shrinking the buffer before the window.
+  SMALL_RECT windowSize = { 0, 0, static_cast<SHORT>(nc - 1), static_cast<SHORT>(nr - 1) };
+
+  // If new size is larger than buffer, set buffer size first.
+  COORD bufferSize = {
+    static_cast<SHORT>(std::max(static_cast<SHORT>(nc), csbi.dwSize.X)),
+    static_cast<SHORT>(std::max(static_cast<SHORT>(nr), csbi.dwSize.Y)) };
+  
+  if (!SetConsoleScreenBufferSize(hConsole, bufferSize))
+  {
+    std::cerr << "Error: Unable to set console screen buffer size." << std::endl;
+    return;
+  }
+
+  // Now set the window size.
+  if (!SetConsoleWindowInfo(hConsole, TRUE, &windowSize))
+  {
+    std::cerr << "Error: Unable to resize console window." << std::endl;
+    return;
+  }
+
+  system("cls"); // Clear the console screen (Windows specific).
+#else
+  // POSIX (Linux/macOS) code to resize terminal.
+  std::cout << "\033[8;" << nr << ";" << nc << "t"; // Resize terminal with ANSI escape sequence.
+#endif
 }
 
 template<int NR, int NC>
