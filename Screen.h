@@ -196,7 +196,7 @@ void save_terminal_colors()
   CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
   if (GetConsoleScreenBufferInfo(hConsole, &consoleInfo))
   {
-    savedAttributres = consoleInfo.wAttributes;
+    savedAttributes = consoleInfo.wAttributes;
     int bkg_color = static_cast<int>(savedAttributes & 0xF0);
     bkg_color = bkg_color >> 4;
     orig_bkg_color = color::get_color_win(bkg_color);
