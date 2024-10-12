@@ -13,6 +13,11 @@
 #endif
 #include <ranges>
 
+#ifdef _WIN32
+static WORD savedAttributes;
+#endif
+Color orig_bkg_color = Color::Black;
+
 
 // Game Over
 int game_over_timer = 10;
@@ -180,6 +185,37 @@ void resize_terminal_window(int nr, int nc)
   // POSIX (Linux/macOS) code to resize terminal.
   std::cout << "\033[8;" << nr << ";" << nc << "t"; // Resize terminal with ANSI escape sequence.
 #endif
+}
+
+// Function to save current console fg and bg colors.
+void save_terminal_colors()
+{
+#if _WIN32
+  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+  
+  CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+  if (GetConsoleScreenBufferInfo(hConsole, &consoleInfo))
+  {
+    savedAttributres = consoleInfo.wAttributes;
+    int bkg_color = static_cast<int>(savedAttributes & 0xF0);
+    bkg_color = bkg_color >> 4;
+    orig_bkg_color = color::get_color_win(bkg_color);
+  }
+  else
+    std::cerr << "Error: Unable to get console screen buffer info." << std::endl;
+#endif
+}
+
+// Function to restore the saved console colors.
+Color restore_terminal_colors()
+{
+#if _WIN32
+  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+  
+  if (!SetConsoleTextAttribute(hConsole, savedAttributes))
+    std::cerr << "Error: Unable to restore console text attributes." << std::endl;
+#endif
+  return orig_bkg_color;
 }
 
 template<int NR, int NC>

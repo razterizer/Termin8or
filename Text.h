@@ -74,55 +74,16 @@ public:
     return fg + bg;
   }
   
-  int get_color_value_win(Color color) const
-  {
-    switch (color)
-    {
-      case Color::DarkRed:
-        return 4;
-      case Color::DarkGreen:
-        return 2;
-      case Color::DarkYellow:
-        return 6;
-      case Color::DarkBlue:
-        return 1;
-      case Color::DarkMagenta:
-        return 5;
-      case Color::DarkCyan:
-        return 3;
-      case Color::LightGray:
-        return 7;
-      case Color::DarkGray:
-        return 8;
-      case Color::Red:
-        return 12;
-      case Color::Green:
-        return 10;
-      case Color::Yellow:
-        return 14;
-      case Color::Blue:
-        return 9;
-      case Color::Magenta:
-        return 13;
-      case Color::Cyan:
-        return 11;
-      case Color::White:
-        return 15;
-      case Color::Black:
-      default:
-        return 0;
-    }
-  }
   
   void set_color_win(Color text_color, Color bg_color = Color::Default) const
   {
 #ifdef _WIN32
-    int foreground = get_color_value_win(text_color);
+    int foreground = color::get_color_value_win(text_color);
     if (foreground == -1)
-      foreground = get_color_value_win(Color::White);
-    int background = 16 * get_color_value_win(bg_color);
+      foreground = color::get_color_value_win(Color::White);
+    int background = 16 * color::get_color_value_win(bg_color);
     if (background == -1)
-      background = 16 * get_color_value_win(Color::Black);
+      background = 16 * color::get_color_value_win(Color::Black);
 
     int color = static_cast<int>(foreground) + static_cast<int>(background);
     

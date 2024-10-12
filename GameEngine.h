@@ -88,7 +88,6 @@ class GameEngine
   int term_win_rows = 0;
   int term_win_cols = 0;
   
-  
   bool handle_hiscores(const HiScoreItem& curr_hsi)
   {
     const int c_max_num_hiscores = 20;
@@ -218,6 +217,7 @@ public:
     
     keyboard = std::make_unique<keyboard::StreamKeyboard>();
     
+    save_terminal_colors();
     clear_screen();
     return_cursor();
     hide_cursor();
@@ -264,6 +264,9 @@ public:
 private:
   void pre_quit()
   {
+    sh.clear();
+    Color orig_bkg_color = restore_terminal_colors();
+    sh.print_screen_buffer(t, orig_bkg_color);
     restore_cursor();
     show_cursor();
     if (m_params.enable_terminal_window_resize)

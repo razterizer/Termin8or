@@ -191,5 +191,86 @@ namespace color
     }
     return Color::Default;
   }
+  
+  int get_color_value_win(Color color)
+  {
+    switch (color)
+    {
+      case Color::DarkRed:
+        return 4;
+      case Color::DarkGreen:
+        return 2;
+      case Color::DarkYellow:
+        return 6;
+      case Color::DarkBlue:
+        return 1;
+      case Color::DarkMagenta:
+        return 5;
+      case Color::DarkCyan:
+        return 3;
+      case Color::LightGray:
+        return 7;
+      case Color::DarkGray:
+        return 8;
+      case Color::Red:
+        return 12;
+      case Color::Green:
+        return 10;
+      case Color::Yellow:
+        return 14;
+      case Color::Blue:
+        return 9;
+      case Color::Magenta:
+        return 13;
+      case Color::Cyan:
+        return 11;
+      case Color::White:
+        return 15;
+      case Color::Black:
+      default:
+        return 0;
+    }
+  }
+  
+  Color get_color_win(int color_val)
+  {
+    switch (color_val)
+    {
+      case 0:
+        return Color::Black;
+      case 1:
+        return Color::DarkBlue;
+      case 2:
+        return Color::DarkGreen;
+      case 3:
+        return Color::DarkCyan;
+      case 4:
+        return Color::DarkRed;
+      case 5:
+        return Color::DarkMagenta;
+      case 6:
+        return Color::DarkYellow;
+      case 7:
+        return Color::LightGray;
+      case 8:
+        return Color::DarkGray;
+      case 9:
+        return Color::Blue;
+      case 10:
+        return Color::Green;
+      case 11:
+        return Color::Cyan;
+      case 12:
+        return Color::Red;
+      case 13:
+        return Color::Magenta;
+      case 14:
+        return Color::Yellow;
+      case 15:
+        return Color::White;
+      default:
+        return Color::Default;
+    }
+  }
 
 }
