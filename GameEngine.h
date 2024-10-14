@@ -264,11 +264,13 @@ public:
 private:
   void pre_quit()
   {
-    auto orig_colors = restore_terminal_colors();
+    auto orig_colors [[maybe_unused]] = restore_terminal_colors();
+#ifndef __APPLE__
     sh.clear();
     sh.replace_fg_color(orig_colors.fg_color);
     sh.replace_bg_color(orig_colors.bg_color);
     sh.print_screen_buffer(t, orig_colors.bg_color);
+#endif
     restore_cursor();
     show_cursor();
     if (m_params.enable_terminal_window_resize)
