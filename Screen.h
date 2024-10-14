@@ -34,6 +34,7 @@ const float pix_ar2 = 1.5f;
 const float pix_ar2_sq = pix_ar2*pix_ar;
 
 
+// Clear screen and send cursor to home position.
 void clear_screen()
 {
 #ifdef _WIN32
@@ -51,6 +52,7 @@ void clear_screen()
 #endif
 }
 
+// Send cursor to home position.
 void return_cursor()
 {
 #ifdef _WIN32
@@ -63,6 +65,7 @@ void return_cursor()
 #endif
 }
 
+// Clear screen and send cursor to home position.
 void restore_cursor()
 {
 #ifndef _WIN32
