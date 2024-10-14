@@ -200,25 +200,6 @@ void save_terminal_colors()
   if (GetConsoleScreenBufferInfo(hConsole, &consoleInfo))
   {
     savedAttributes = consoleInfo.wAttributes;
-    int bkg_color = static_cast<int>(savedAttributes & 0xF0);
-    bkg_color = bkg_color >> 4;
-    orig_bkg_color = color::get_color_win(bkg_color);
-  }
-  else
-    std::cerr << "Error: Unable to get console screen buffer info." << std::endl;
-#endif
-}
-
-// Function to save current console fg and bg colors.
-void save_terminal_colors()
-{
-#if _WIN32
-  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-  
-  CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
-  if (GetConsoleScreenBufferInfo(hConsole, &consoleInfo))
-  {
-    savedAttributes = consoleInfo.wAttributes;
     int bg_color = static_cast<int>(savedAttributes & 0xF0) >> 4;
     orig_style.bg_color = color::get_color_win(bg_color);
 
