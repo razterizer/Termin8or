@@ -8,7 +8,7 @@
 namespace bresenham
 {
   template<int NR, int NC>
-  void plot_line_low(SpriteHandler<NR, NC>& sh, float r0, float c0, float r1, float c1,
+  void plot_line_low(ScreenHandler<NR, NC>& sh, float r0, float c0, float r1, float c1,
                      const std::string& str, Color fg_color, Color bg_color)
   {
     auto dr = r1 - r0;
@@ -36,7 +36,7 @@ namespace bresenham
   }
 
   template<int NR, int NC>
-  void plot_line_high(SpriteHandler<NR, NC>& sh, float r0, float c0, float r1, float c1,
+  void plot_line_high(ScreenHandler<NR, NC>& sh, float r0, float c0, float r1, float c1,
                       const std::string& str, Color fg_color, Color bg_color)
   {
     auto dr = r1 - r0;
@@ -64,7 +64,7 @@ namespace bresenham
   }
 
   template<int NR, int NC>
-  void plot_line(SpriteHandler<NR, NC>& sh, float r0, float c0, float r1, float c1,
+  void plot_line(ScreenHandler<NR, NC>& sh, float r0, float c0, float r1, float c1,
                  const std::string& str, Color fg_color, Color bg_color)
   {
     if (std::abs(r1 - r0) < std::abs(c1 - c0))
@@ -84,7 +84,7 @@ namespace bresenham
   }
   
   template<int NR, int NC>
-  void plot_line(SpriteHandler<NR, NC>& sh, const RC& p0, const RC& p1,
+  void plot_line(ScreenHandler<NR, NC>& sh, const RC& p0, const RC& p1,
                  const std::string& str, Color fg_color, Color bg_color)
   {
     plot_line(sh, 
@@ -111,7 +111,7 @@ namespace drawing
   };
   
   template<int NR, int NC>
-  void draw_box_outline(SpriteHandler<NR, NC>& sh,
+  void draw_box_outline(ScreenHandler<NR, NC>& sh,
                         int r, int c, int len_r, int len_c,
                         OutlineType outline_type,
                         const styles::Style& outline_style = { Color::Default, Color::Transparent2 },
@@ -231,7 +231,7 @@ namespace drawing
   }
   
   template<int NR, int NC>
-  void draw_box_outline(SpriteHandler<NR, NC>& sh,
+  void draw_box_outline(ScreenHandler<NR, NC>& sh,
                         const ttl::Rectangle& bb,
                         OutlineType outline_type,
                         const styles::Style& outline_style = { Color::Default, Color::Transparent2 },
@@ -241,7 +241,7 @@ namespace drawing
   }
   
   template<int NR, int NC>
-  void draw_box(SpriteHandler<NR, NC>& sh,
+  void draw_box(ScreenHandler<NR, NC>& sh,
                 int r, int c, int len_r, int len_c,
                 const styles::Style& fill_style = { Color::Default, Color::Transparent2 },
                 char fill_char = ' ',
@@ -317,7 +317,7 @@ namespace drawing
   }
   
   template<int NR, int NC>
-  void draw_box(SpriteHandler<NR, NC>& sh,
+  void draw_box(ScreenHandler<NR, NC>& sh,
                 const ttl::Rectangle& bb,
                 const styles::Style& fill_style = { Color::Default, Color::Transparent2 },
                 char fill_char = ' ',
@@ -341,7 +341,7 @@ namespace drawing
   // fill_texture.size.r = 9, fill_texture.size.c = 7,
   // shadow_texture.size.r = 9, shadow_texture.size.c = 6.
   template<int NR, int NC>
-  void draw_box_textured(SpriteHandler<NR, NC>& sh,
+  void draw_box_textured(ScreenHandler<NR, NC>& sh,
                          int r, int c, int len_r, int len_c,
                          SolarDirection shadow_type = SolarDirection::Zenith,
                          const Texture& fill_texture = {},
@@ -452,7 +452,7 @@ namespace drawing
   }
   
   template<int NR, int NC>
-  void draw_box_textured(SpriteHandler<NR, NC>& sh,
+  void draw_box_textured(ScreenHandler<NR, NC>& sh,
                          const ttl::Rectangle& bb,
                          SolarDirection shadow_type = SolarDirection::Zenith,
                          const Texture& fill_texture = {},
@@ -475,7 +475,7 @@ namespace drawing
   // fill_texture.size.r = 9, fill_texture.size.c = 7,
   // shadow_texture.size.r = 9, shadow_texture.size.c = 6.
   template<int NR, int NC>
-  void draw_box_texture_materials(SpriteHandler<NR, NC>& sh,
+  void draw_box_texture_materials(ScreenHandler<NR, NC>& sh,
                                   int r, int c, int len_r, int len_c,
                                   const Texture& texture = {})
   {
@@ -491,7 +491,7 @@ namespace drawing
   }
   
   template<int NR, int NC>
-  void draw_box_texture_materials(SpriteHandler<NR, NC>& sh,
+  void draw_box_texture_materials(ScreenHandler<NR, NC>& sh,
                                   const ttl::Rectangle& bb,
                                   const Texture& texture = {})
   {

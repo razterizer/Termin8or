@@ -125,7 +125,7 @@ namespace ui
     }
     
     template<int NR, int NC>
-    void draw(SpriteHandler<NR, NC>& sh, const TextBoxDrawingArgsPos& args)
+    void draw(ScreenHandler<NR, NC>& sh, const TextBoxDrawingArgsPos& args)
     {
       auto pos = args.pos;
       const styles::Style& box_style = args.base.box_style;
@@ -144,7 +144,7 @@ namespace ui
     }
     
     template<int NR, int NC>
-    void draw(SpriteHandler<NR, NC>& sh, const TextBoxDrawingArgsAlign& args)
+    void draw(ScreenHandler<NR, NC>& sh, const TextBoxDrawingArgsAlign& args)
     {
       int box_padding_ud = args.base.box_padding_ud;
       int box_padding_lr = args.base.box_padding_lr;

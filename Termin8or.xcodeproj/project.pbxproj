@@ -19,7 +19,7 @@
 		071CC3CA290465B3007B4B98 /* libTermin8or.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libTermin8or.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		071CC3D2290465E5007B4B98 /* Text.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Text.h; sourceTree = "<group>"; };
 		071CC3D5290466FE007B4B98 /* ScreenUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenUtils.h; sourceTree = "<group>"; };
-		071CC3D72904679E007B4B98 /* SpriteHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpriteHandler.h; sourceTree = "<group>"; };
+		071CC3D72904679E007B4B98 /* ScreenHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenHandler.h; sourceTree = "<group>"; };
 		071CC3D829046819007B4B98 /* Rectangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rectangle.h; sourceTree = "<group>"; };
 		071CC3D92904839C007B4B98 /* RC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RC.h; sourceTree = "<group>"; };
 		071CC3DA2904851A007B4B98 /* Pixel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Pixel.h; sourceTree = "<group>"; };
@@ -82,7 +82,7 @@
 				07A763102B555BE100705D31 /* ParticleSystem.h */,
 				071CC3D5290466FE007B4B98 /* ScreenUtils.h */,
 				071CC3D829046819007B4B98 /* Rectangle.h */,
-				071CC3D72904679E007B4B98 /* SpriteHandler.h */,
+				071CC3D72904679E007B4B98 /* ScreenHandler.h */,
 				071CC3DA2904851A007B4B98 /* Pixel.h */,
 				071CC3D92904839C007B4B98 /* RC.h */,
 				07E6EAA92C1241DC007BBC6B /* Styles.h */,

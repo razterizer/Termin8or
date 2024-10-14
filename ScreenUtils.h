@@ -1,5 +1,5 @@
 #pragma once
-#include "SpriteHandler.h"
+#include "ScreenHandler.h"
 #include "Keyboard.h"
 #include "Styles.h"
 #include <Core/TextIO.h>
@@ -224,7 +224,7 @@ styles::Style restore_terminal_colors()
 }
 
 template<int NR, int NC>
-void draw_frame(SpriteHandler<NR, NC>& sh, Color fg_color)
+void draw_frame(ScreenHandler<NR, NC>& sh, Color fg_color)
 {
   const int nc_inset = sh.num_cols_inset();
   const int nr_inset = sh.num_rows_inset();
@@ -252,7 +252,7 @@ void draw_frame(SpriteHandler<NR, NC>& sh, Color fg_color)
 // # \_______  /\___/   /_______  / |____|_  /   #
 // #         \/                 \/         \/    #
 template<int NR, int NC>
-void draw_game_over(SpriteHandler<NR, NC>& sh)
+void draw_game_over(ScreenHandler<NR, NC>& sh)
 {
   auto wave_func = [](int c, int i)
   {
@@ -288,7 +288,7 @@ void draw_game_over(SpriteHandler<NR, NC>& sh)
 // #  / ______|\____/|____/    \__/\  / \____/|___|  /_ #
 // #  \/                            \/             \/\/ #
 template<int NR, int NC>
-void draw_you_won(SpriteHandler<NR, NC>& sh)
+void draw_you_won(ScreenHandler<NR, NC>& sh)
 {
   wave_f = 1.5f;//0.4f;
   wave_a = 1.f;//5.f;
@@ -316,7 +316,7 @@ void draw_you_won(SpriteHandler<NR, NC>& sh)
 }
 
 template<int NR, int NC>
-void draw_paused(SpriteHandler<NR, NC>& sh, int anim_ctr)
+void draw_paused(ScreenHandler<NR, NC>& sh, int anim_ctr)
 {
   int anim = anim_ctr % 10;
   std::string msg;
@@ -336,7 +336,7 @@ void draw_paused(SpriteHandler<NR, NC>& sh, int anim_ctr)
 
 enum class YesNoButtons { No = 0, Yes = 1 };
 template<int NR, int NC>
-void draw_confirm(SpriteHandler<NR, NC>& sh,
+void draw_confirm(ScreenHandler<NR, NC>& sh,
                   const std::vector<std::string>& titles,
                   YesNoButtons button,
                   const styles::Style& title_style,
@@ -385,7 +385,7 @@ struct HiScoreItem
 };
 
 template<int NR, int NC>
-bool draw_input_hiscore(SpriteHandler<NR, NC>& sh,
+bool draw_input_hiscore(ScreenHandler<NR, NC>& sh,
                         const keyboard::KeyPressData& kpd,
                         HiScoreItem& hsi, int& caret_idx, int anim_ctr,
                         const styles::Style& title_style,
@@ -440,7 +440,7 @@ bool draw_input_hiscore(SpriteHandler<NR, NC>& sh,
 }
 
 template<int NR, int NC>
-void draw_hiscores(SpriteHandler<NR, NC>& sh, const std::vector<HiScoreItem>& hiscore_list,
+void draw_hiscores(ScreenHandler<NR, NC>& sh, const std::vector<HiScoreItem>& hiscore_list,
                    const styles::Style& title_style,
                    const styles::HiliteFGStyle& nr_style,
                    const styles::HiliteFGStyle& score_style,

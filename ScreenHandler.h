@@ -37,7 +37,7 @@ RGBA clamp(const RGBA& t) { return RGBA { math::clamp(t.r, 0., 1.), math::clamp(
 // //////////////////////////////////////////////////
 
 template<int NR = 30, int NC = 80>
-class SpriteHandler
+class ScreenHandler
 {
   // Draw from top to bottom.
   std::array<std::array<char, NC>, NR> screen_buffer;
@@ -342,7 +342,7 @@ public:
   }
   
   template<int NRo, int NCo>
-  inline void resample_to(SpriteHandler<NRo, NCo>& sh_scaled)
+  inline void resample_to(ScreenHandler<NRo, NCo>& sh_scaled)
   {
     auto new_screen_buffer = resample_data<char, double, NRo, NCo>(screen_buffer, 0);
     auto new_fg_color_buffer = resample_data<Color, RGBA, NRo, NCo>(fg_color_buffer, 0);

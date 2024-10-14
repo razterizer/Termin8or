@@ -113,7 +113,7 @@ public:
   }
   
   template<int NR, int NC>
-  void update(SpriteHandler<NR, NC>& sh, float time, const MessageBoxDrawingArgs& args = {})
+  void update(ScreenHandler<NR, NC>& sh, float time, const MessageBoxDrawingArgs& args = {})
   {
     if (message_empty && has_messages())
     {

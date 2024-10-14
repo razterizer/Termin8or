@@ -6,7 +6,7 @@
 //
 
 #pragma once
-#include "SpriteHandler.h"
+#include "ScreenHandler.h"
 #include "Styles.h"
 
 #include <iostream>
@@ -368,7 +368,7 @@ namespace ASCII_Fonts
   // (r, c) : top left corner of text.
   // returns the relative start column (top left corner) for the next character.
   template<int NR, int NC>
-  int draw_char(SpriteHandler<NR, NC>& sh, const FontData& curr_font, const ColorScheme& colors,
+  int draw_char(ScreenHandler<NR, NC>& sh, const FontData& curr_font, const ColorScheme& colors,
                 char ch_prev, char ch_curr, char ch_next,
                 int ch_curr_order,
                 int r, int c,
@@ -469,7 +469,7 @@ namespace ASCII_Fonts
 
   // (r, c) : top left corner of text.
   template<int NR, int NC>
-  void draw_text(SpriteHandler<NR, NC>& sh, const FontDataColl& font_data, const ColorScheme& colors,
+  void draw_text(ScreenHandler<NR, NC>& sh, const FontDataColl& font_data, const ColorScheme& colors,
                  const std::string& text,
                  int r, int c, Font font, const std::vector<int>& custom_kerning = {})
   {

@@ -147,7 +147,7 @@ protected:
   OneShot time_inited;
   
   Text t;
-  SpriteHandler<NR, NC> sh;
+  ScreenHandler<NR, NC> sh;
   
   Color bg_color = Color::Default;
   

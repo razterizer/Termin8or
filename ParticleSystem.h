@@ -44,7 +44,7 @@ struct Particle
   }
   
   template<int NR, int NC>
-  void draw(SpriteHandler<NR, NC>& sh, const std::string& str, Color fg_color, Color bg_color, float time) const
+  void draw(ScreenHandler<NR, NC>& sh, const std::string& str, Color fg_color, Color bg_color, float time) const
   {
     if (alive(time))
       sh.write_buffer(str, math::roundI(pos_r), math::roundI(pos_c), fg_color, bg_color);
@@ -84,7 +84,7 @@ struct ParticleHandler
   }
   
   template<int NR, int NC>
-  void draw(SpriteHandler<NR, NC>& sh, const std::string& str, Color fg_color, Color bg_color, float time) const
+  void draw(ScreenHandler<NR, NC>& sh, const std::string& str, Color fg_color, Color bg_color, float time) const
   {
     for (const auto& particle : particle_stream)
       if (!particle.dead)
@@ -92,7 +92,7 @@ struct ParticleHandler
   }
   
   template<int NR, int NC>
-  void draw(SpriteHandler<NR, NC>& sh, const std::vector<std::string>& str,
+  void draw(ScreenHandler<NR, NC>& sh, const std::vector<std::string>& str,
     const Gradient<Color>& fg_color, const Gradient<Color>& bg_color, float time) const
   {
     for (const auto& particle : particle_stream)
@@ -106,7 +106,7 @@ struct ParticleHandler
   }
   
   template<int NR, int NC>
-  void draw(SpriteHandler<NR, NC>& sh, const std::vector<std::string>& str,
+  void draw(ScreenHandler<NR, NC>& sh, const std::vector<std::string>& str,
     const std::vector<std::pair<float, std::pair<Gradient<Color>, Gradient<Color>>>>& color_fg_bg_vec,
     float time) const
   {
@@ -124,7 +124,7 @@ struct ParticleHandler
   }
   
   template<int NR, int NC>
-  void draw(SpriteHandler<NR, NC>& sh,
+  void draw(ScreenHandler<NR, NC>& sh,
     const std::vector<std::pair<float, ParticleGradientGroup>>& gradient_groups,
     float time) const
   {
