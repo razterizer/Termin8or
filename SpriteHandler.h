@@ -232,6 +232,17 @@ public:
       }
     }
   }
+
+  void replace_bg_color(Color to_bg_color)
+  {
+    for (int r = 0; r < NR; ++r)
+    {
+      for (int c = 0; c < NC; ++c)
+      {
+        bg_color_buffer[r][c] = to_bg_color;
+      }
+    }
+  }
   
   void replace_fg_color(Color to_fg_color, ttl::Rectangle box)
   {
@@ -243,6 +254,17 @@ public:
         {
           fg_color_buffer[r][c] = to_fg_color;
         }
+      }
+    }
+  }
+
+  void replace_fg_color(Color to_fg_color)
+  {
+    for (int r = 0; r < NR; ++r)
+    {
+      for (int c = 0; c < NC; ++c)
+      {
+        fg_color_buffer[r][c] = to_fg_color;
       }
     }
   }
