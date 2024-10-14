@@ -7,7 +7,7 @@
 
 #pragma once
 #include "Keyboard.h"
-#include "Screen.h"
+#include "ScreenUtils.h"
 #include <Core/Delay.h>
 #include <Core/Rand.h>
 #include <Core/Math.h>
