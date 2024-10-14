@@ -16,7 +16,7 @@
 #ifdef _WIN32
 static WORD savedAttributes;
 #endif
-Color orig_bkg_color = Color::Black;
+styles::Style orig_style = { Color::White, Color::Black };
 
 
 // Game Over
@@ -206,8 +206,29 @@ void save_terminal_colors()
 #endif
 }
 
+// Function to save current console fg and bg colors.
+void save_terminal_colors()
+{
+#if _WIN32
+  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+  
+  CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+  if (GetConsoleScreenBufferInfo(hConsole, &consoleInfo))
+  {
+    savedAttributes = consoleInfo.wAttributes;
+    int bg_color = static_cast<int>(savedAttributes & 0xF0) >> 4;
+    orig_style.bg_color = color::get_color_win(bg_color);
+
+    int fg_color = static_cast<int>(savedAttributes & 0x0F);
+    orig_style.fg_color = color::get_color_win(fg_color);
+  }
+  else
+    std::cerr << "Error: Unable to get console screen buffer info." << std::endl;
+#endif
+}
+
 // Function to restore the saved console colors.
-Color restore_terminal_colors()
+styles::Style restore_terminal_colors()
 {
 #if _WIN32
   HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -215,21 +236,7 @@ Color restore_terminal_colors()
   if (!SetConsoleTextAttribute(hConsole, savedAttributes))
     std::cerr << "Error: Unable to restore console text attributes." << std::endl;
 #endif
-  return orig_bkg_color;
-}
-
-template<int NR, int NC>
-void draw_frame(SpriteHandler<NR, NC>& sh, Color fg_color)
-{
-  const int nc_inset = sh.num_cols_inset();
-  const int nr_inset = sh.num_rows_inset();
-  sh.write_buffer("+" + str::rep_char('-', nc_inset) + "+", 0, 0, fg_color);
-  for (int r = 1; r <= nr_inset; ++r)
-  {
-    sh.write_buffer("|", r, 0, fg_color);
-    sh.write_buffer("|", r, nc_inset+1, fg_color);
-  }
-  sh.write_buffer("+" + str::rep_char('-', nc_inset) + "+", nr_inset+1, 0, fg_color);
+  return orig_style;
 }
 
 // http://www.network-science.de/ascii/

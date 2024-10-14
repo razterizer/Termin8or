@@ -264,9 +264,11 @@ public:
 private:
   void pre_quit()
   {
+    auto orig_colors = restore_terminal_colors();
     sh.clear();
-    Color orig_bkg_color = restore_terminal_colors();
-    sh.print_screen_buffer(t, orig_bkg_color);
+    sh.replace_fg_color(orig_colors.fg_color);
+    sh.replace_bg_color(orig_colors.bg_color);
+    sh.print_screen_buffer(t, orig_colors.bg_color);
     restore_cursor();
     show_cursor();
     if (m_params.enable_terminal_window_resize)
