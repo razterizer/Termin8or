@@ -223,6 +223,20 @@ styles::Style restore_terminal_colors()
   return orig_style;
 }
 
+template<int NR, int NC>
+void draw_frame(SpriteHandler<NR, NC>& sh, Color fg_color)
+{
+  const int nc_inset = sh.num_cols_inset();
+  const int nr_inset = sh.num_rows_inset();
+  sh.write_buffer("+" + str::rep_char('-', nc_inset) + "+", 0, 0, fg_color);
+  for (int r = 1; r <= nr_inset; ++r)
+  {
+    sh.write_buffer("|", r, 0, fg_color);
+    sh.write_buffer("|", r, nc_inset+1, fg_color);
+  }
+  sh.write_buffer("+" + str::rep_char('-', nc_inset) + "+", nr_inset+1, 0, fg_color);
+}
+
 // http://www.network-science.de/ascii/
 // http://patorjk.com/software/taag/#p=display&f=Graffiti&t=Game%20Over Graffiti
 // #   ________    _____      _____  ___________ #
