@@ -401,6 +401,16 @@ namespace drawing
     }
     
     bool empty() const { return size.r == 0 && size.c == 0; }
+    
+    void clear()
+    {
+      size = { -1, -1 };
+      area = 0;
+      characters.clear();
+      fg_colors.clear();
+      bg_colors.clear();
+      materials.clear();
+    }
   };
 
 }
