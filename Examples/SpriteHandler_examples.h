@@ -5,14 +5,15 @@
 //  Created by Rasmus Anthin on 2024-10-16.
 //
 
-#ifndef SpriteHandler_tests_h
-#define SpriteHandler_tests_h
+#pragma once
+#include "../SpriteHandler.h"
+#include "../ScreenUtils.h"
 
 
 namespace sprite_handler
 {
 
-  void unit_tests()
+  void example1()
   {
     ScreenHandler<20, 40> sh;
     Text tt;
