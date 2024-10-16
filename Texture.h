@@ -9,6 +9,7 @@
 #include "RC.h"
 #include "Color.h"
 #include "Styles.h"
+#include "Rectangle.h"
 #include <Core/TextIO.h>
 #include <sstream>
 
