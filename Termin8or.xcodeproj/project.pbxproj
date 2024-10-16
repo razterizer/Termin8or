@@ -35,6 +35,9 @@
 		07C2A7832C24910300869A56 /* Color.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Color.h; sourceTree = "<group>"; };
 		07C2A78A2C2B214300869A56 /* Texture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Texture.h; sourceTree = "<group>"; };
 		07D007BE2CBD387200CCB5E7 /* SpriteHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpriteHandler.h; sourceTree = "<group>"; };
+		07D007BF2CBF39BD00CCB5E7 /* SpriteHandler_examples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpriteHandler_examples.h; sourceTree = "<group>"; };
+		07D007C12CBF3AD100CCB5E7 /* examples.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = examples.cpp; sourceTree = "<group>"; };
+		07D007C32CBF3B4000CCB5E7 /* build_examples.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_examples.sh; sourceTree = "<group>"; };
 		07E6EAA72C0F7502007BBC6B /* font_data_avatar.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = font_data_avatar.txt; sourceTree = "<group>"; };
 		07E6EAA92C1241DC007BBC6B /* Styles.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Styles.h; sourceTree = "<group>"; };
 		07FDE97E2CA0C0F700116BA7 /* Rectangle_tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rectangle_tests.h; sourceTree = "<group>"; };
@@ -91,6 +94,7 @@
 				07C2A78A2C2B214300869A56 /* Texture.h */,
 				075C651A2C3BFFF500B15451 /* UI.h */,
 				07C2A7822C2239BB00869A56 /* MessageHandler.h */,
+				07D007C02CBF3A4800CCB5E7 /* Examples */,
 				07FDE97C2CA0B77A00116BA7 /* Tests */,
 				071CC3CB290465B3007B4B98 /* Products */,
 			);
@@ -102,6 +106,16 @@
 				071CC3CA290465B3007B4B98 /* libTermin8or.dylib */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		07D007C02CBF3A4800CCB5E7 /* Examples */ = {
+			isa = PBXGroup;
+			children = (
+				07D007C32CBF3B4000CCB5E7 /* build_examples.sh */,
+				07D007BF2CBF39BD00CCB5E7 /* SpriteHandler_examples.h */,
+				07D007C12CBF3AD100CCB5E7 /* examples.cpp */,
+			);
+			path = Examples;
 			sourceTree = "<group>";
 		};
 		07FDE97C2CA0B77A00116BA7 /* Tests */ = {
