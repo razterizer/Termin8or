@@ -62,6 +62,29 @@ public:
     set_sprite_data(texture.characters, ch...);
   }
   
+  // Set sprite characters from a string for each row
+  template<typename... Strings>
+  void set_sprite_chars_from_strings(int anim_frame, Strings... rows)
+  {
+    auto& texture = stlutils::at_growing(texture_frames, anim_frame);
+    
+    std::array<std::string, sizeof...(rows)> row_array = { rows... };
+    
+    // Check that the number of rows matches the texture's height
+    if (row_array.size() != texture.size.r)
+      throw std::invalid_argument("Number of strings must match the number of rows.");
+    
+    for (const auto& row : row_array)
+      if (row.size() != texture.size.c)
+        throw std::invalid_argument("Each string must have exactly NC characters.");
+    
+    // Unpack strings into the characters vector
+    int idx = 0;
+    for (const auto& row : row_array)
+      for (char ch : row)
+        texture.characters[idx++] = ch;
+  }
+  
   // Set sprite foreground colors
   template<typename... Colors>
   void set_sprite_fg_colors(int anim_frame, Colors... fg_color)
