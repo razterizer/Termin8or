@@ -54,6 +54,8 @@ public:
     texture.materials.resize(area);
   }
   
+  // #FIXME: Perhaps move these varyadic functions to Texture for more versatility.
+  
   // Set sprite characters
   template<typename... Chars>
   void set_sprite_chars(int anim_frame, Chars... ch)
