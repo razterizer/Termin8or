@@ -22,7 +22,7 @@ class Sprite
     const size_t sprite_size = area;
     if (sizeof...(args) != sprite_size)
       throw std::invalid_argument("Number of arguments must match sprite size.");
-    target = {args...}; // Unpack and assign to the target vector
+    target = {static_cast<T>(args)...}; // Unpack and assign to the target vector
   }
 
 public:
