@@ -231,9 +231,8 @@ namespace sprite_handler
     //                        LET's GO !                        //
     // ///////////////////////////////////////////////////////////
     
-    clear_screen();
-    return_cursor();
-    hide_cursor();
+    
+    begin_screen();
     
     float dt = 0.01f;
     for (int i = -3; i < sh.num_rows(); ++i)
@@ -264,6 +263,8 @@ namespace sprite_handler
         Delay::sleep(0'200'000);
       }
     }
+    
+    end_screen();
   }
 
 }
