@@ -18,8 +18,12 @@ namespace sprite_handler
     ScreenHandler<20, 40> sh;
     Text tt;
     SpriteHandler sprh;
+    keyboard::KeyPressData kpd;
+    auto keyboard = std::make_unique<keyboard::StreamKeyboard>();
     
     rnd::srand_time();
+    
+    // //////////////////////////////
     
     auto* sprite0 = sprh.create_sprite("spaceship");
     sprite0->layer_id = 4;
@@ -261,9 +265,16 @@ namespace sprite_handler
         sprh.draw(sh, anim_frame);
         sh.print_screen_buffer(tt, Color::Black);
         Delay::sleep(0'200'000);
+        
+        kpd = keyboard->readKey();
+        auto key = keyboard::get_char_key(kpd);
+        auto lo_key = str::to_lower(key);
+        if (lo_key == 'q')
+          goto quit;
       }
     }
     
+quit:
     end_screen();
   }
 
