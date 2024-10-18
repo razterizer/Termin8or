@@ -217,10 +217,7 @@ public:
     
     keyboard = std::make_unique<keyboard::StreamKeyboard>();
     
-    save_terminal_colors();
-    clear_screen();
-    return_cursor();
-    hide_cursor();
+    begin_screen();
     
     if (m_params.enable_terminal_window_resize)
     {
@@ -264,15 +261,7 @@ public:
 private:
   void pre_quit()
   {
-    auto orig_colors [[maybe_unused]] = restore_terminal_colors();
-#ifndef __APPLE__
-    sh.clear();
-    sh.replace_fg_color(orig_colors.fg_color);
-    sh.replace_bg_color(orig_colors.bg_color);
-    sh.print_screen_buffer(t, orig_colors.bg_color);
-#endif
-    restore_cursor();
-    show_cursor();
+    end_screen();
     if (m_params.enable_terminal_window_resize)
       if (term_win_rows > 0 && term_win_cols > 0)
         resize_terminal_window(term_win_rows, term_win_cols);

@@ -223,6 +223,27 @@ styles::Style restore_terminal_colors()
   return orig_style;
 }
 
+void begin_screen()
+{
+  save_terminal_colors();
+  clear_screen();
+  return_cursor();
+  hide_cursor();
+}
+
+void end_screen()
+{
+  auto orig_colors [[maybe_unused]] = restore_terminal_colors();
+#ifndef __APPLE__
+  sh.clear();
+  sh.replace_fg_color(orig_colors.fg_color);
+  sh.replace_bg_color(orig_colors.bg_color);
+  sh.print_screen_buffer(t, orig_colors.bg_color);
+#endif
+  restore_cursor();
+  show_cursor();
+}
+
 template<int NR, int NC>
 void draw_frame(ScreenHandler<NR, NC>& sh, Color fg_color)
 {
