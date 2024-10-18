@@ -37,7 +37,7 @@ namespace sprite_handler
     );
     sprite0->set_sprite_fg_colors(0,
       0, 0, 16, 0, 0,
-      0, 13, 16, 13, 0,
+      0, 16, 16, 13, 0,
       11, 15, 15, 15, 11,
       0, 12, 14, 12, 0
     );
@@ -56,7 +56,7 @@ namespace sprite_handler
     );
     sprite0->set_sprite_fg_colors(1,
       0, 0, 16, 0, 0,
-      0, 13, 16, 13, 0,
+      0, 16, 16, 13, 0,
       11, 15, 15, 15, 11,
       0, 12, 12, 12, 0
     );
@@ -75,7 +75,7 @@ namespace sprite_handler
     );
     sprite0->set_sprite_fg_colors(2,
       0, 0, 16, 0, 0,
-      0, 13, 16, 13, 0,
+      0, 16, 16, 13, 0,
       11, 15, 15, 15, 11,
       0, 12, 16, 12, 0
     );
