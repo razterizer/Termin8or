@@ -8,4 +8,5 @@ if %errorlevel% neq 0 (
     echo Build failed with error code %errorlevel%.
     exit /b %errorlevel%
 )
+
 echo Build succeeded.
