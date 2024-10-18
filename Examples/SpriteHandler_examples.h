@@ -33,44 +33,63 @@ namespace sprite_handler
       "  _  ",
       " /#\\ ",
       "[---]",
-      " {#} "
+      "  #  "
     );
     sprite0->set_sprite_fg_colors(0,
       0, 0, 16, 0, 0,
-      0, 10, 14, 10, 0,
+      0, 13, 16, 13, 0,
       11, 15, 15, 15, 11,
       0, 12, 14, 12, 0
     );
     sprite0->set_sprite_bg_colors(0,
       -2, -2, -2, -2, -2,
-      -2, -2, 14, -2, -2,
+      -2, -2, 13, -2, -2,
       -2, 7, 7, 7, -2,
       -2, -2, 14, -2, -2
     );
     sprite0->init_frame(1);
-    sprite0->set_sprite_chars(1,
-      ' ', ' ', '_', ' ', ' ',
-      ' ', '/', '#', '\\', ' ',
-      '[', '-', '-', '-', ']',
-      ' ', '{', '#', '}', ' '
+    sprite0->set_sprite_chars_from_strings(1,
+      "  _  ",
+      " /#\\ ",
+      "[---]",
+      "  #  "
     );
     sprite0->set_sprite_fg_colors(1,
-      Color::Default, Color::Default, Color::White, Color::Default, Color::Default,
-      Color::Default, Color::Red, Color::Magenta, Color::Red, Color::Default,
-      Color::Green, Color::Cyan, Color::Cyan, Color::Cyan, Color::Green,
-      Color::Default, Color::Yellow, Color::Yellow, Color::Yellow, Color::Default
+      0, 0, 16, 0, 0,
+      0, 13, 16, 13, 0,
+      11, 15, 15, 15, 11,
+      0, 12, 12, 12, 0
     );
     sprite0->set_sprite_bg_colors(1,
-      Color::Transparent2, Color::Transparent2, Color::Transparent2, Color::Transparent2, Color::Transparent2,
-      Color::Transparent2, Color::Transparent2, Color::DarkMagenta, Color::Transparent2, Color::Transparent2,
-      Color::Transparent2, Color::DarkCyan, Color::DarkCyan, Color::DarkCyan, Color::Transparent2,
-      Color::Transparent2, Color::Transparent2, Color::DarkYellow, Color::Transparent2, Color::Transparent2
+      -2, -2, -2, -2, -2,
+      -2, -2, 13, -2, -2,
+      -2, 7, 7, 7, -2,
+      -2, -2, 4, -2, -2
+    );
+    sprite0->init_frame(2);
+    sprite0->set_sprite_chars_from_strings(2,
+      "  _  ",
+      " /#\\ ",
+      "[---]",
+      "  ^  "
+    );
+    sprite0->set_sprite_fg_colors(2,
+      0, 0, 16, 0, 0,
+      0, 13, 16, 13, 0,
+      11, 15, 15, 15, 11,
+      0, 12, 16, 12, 0
+    );
+    sprite0->set_sprite_bg_colors(2,
+      -2, -2, -2, -2, -2,
+      -2, -2, 13, -2, -2,
+      -2, 7, 7, 7, -2,
+      -2, -2, -2, -2, -2
     );
     sprite0->func_frame_to_texture = [](int anim_frame)
     {
       auto anim = anim_frame % 14;
       if (anim < 8)
-        return 0;
+        return 2;
       return anim % 2;
     };
     
