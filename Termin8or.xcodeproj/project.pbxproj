@@ -39,6 +39,7 @@
 		07D007C12CBF3AD100CCB5E7 /* examples.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = examples.cpp; sourceTree = "<group>"; };
 		07D007C32CBF3B4000CCB5E7 /* build_examples.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_examples.sh; sourceTree = "<group>"; };
 		07D007C42CC2B8A300CCB5E7 /* build_examples.bat */ = {isa = PBXFileReference; lastKnownFileType = text; path = build_examples.bat; sourceTree = "<group>"; };
+		07D007C52CC3B96600CCB5E7 /* background.tex */ = {isa = PBXFileReference; lastKnownFileType = text; path = background.tex; sourceTree = "<group>"; };
 		07E6EAA72C0F7502007BBC6B /* font_data_avatar.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = font_data_avatar.txt; sourceTree = "<group>"; };
 		07E6EAA92C1241DC007BBC6B /* Styles.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Styles.h; sourceTree = "<group>"; };
 		07FDE97E2CA0C0F700116BA7 /* Rectangle_tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rectangle_tests.h; sourceTree = "<group>"; };
@@ -112,6 +113,7 @@
 		07D007C02CBF3A4800CCB5E7 /* Examples */ = {
 			isa = PBXGroup;
 			children = (
+				07D007C52CC3B96600CCB5E7 /* background.tex */,
 				07D007C42CC2B8A300CCB5E7 /* build_examples.bat */,
 				07D007C32CBF3B4000CCB5E7 /* build_examples.sh */,
 				07D007BF2CBF39BD00CCB5E7 /* SpriteHandler_examples.h */,
