@@ -191,7 +191,7 @@ namespace sprite_handler
     // ///////////////////////////////////////////////////////////
     
     
-    begin_screen();
+    begin_screen(sh, tt);
     
     float dt = 0.01f;
     for (int i = -3; i < sh.num_rows(); ++i)

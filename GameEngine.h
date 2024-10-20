@@ -261,7 +261,7 @@ public:
 private:
   void pre_quit()
   {
-    end_screen();
+    end_screen(sh, t);
     if (m_params.enable_terminal_window_resize)
       if (term_win_rows > 0 && term_win_cols > 0)
         resize_terminal_window(term_win_rows, term_win_cols);

@@ -1,6 +1,7 @@
 # Termin8or
 
 ![GitHub License](https://img.shields.io/github/license/razterizer/Termin8or?color=blue)
+![Static Badge](https://img.shields.io/badge/linkage-header_only-yellow)
 
 [![build and test ubuntu](https://github.com/razterizer/Termin8or/actions/workflows/build-and-test-ubuntu.yml/badge.svg)](https://github.com/razterizer/Termin8or/actions/workflows/build-and-test-ubuntu.yml)
 
@@ -13,6 +14,11 @@
 <!-- ![Languages](https://img.shields.io/github/languages/count/razterizer/Termin8or) -->
 
 This is a cross-platform header-only curses-like lib.
+
+Supported platforms (including but not limited to) are:
+* Linux.
+* MacOS.
+* Windows.
 
 ## Showcases
 
