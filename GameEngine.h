@@ -217,7 +217,7 @@ public:
     
     keyboard = std::make_unique<keyboard::StreamKeyboard>();
     
-    begin_screen(sh);
+    begin_screen(sh, t);
     
     if (m_params.enable_terminal_window_resize)
     {
