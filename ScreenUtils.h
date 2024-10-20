@@ -231,7 +231,8 @@ void begin_screen()
   hide_cursor();
 }
 
-void end_screen()
+template<int NR, int NC>
+void end_screen(ScreenHandler<NR, NC>& sh)
 {
   auto orig_colors [[maybe_unused]] = restore_terminal_colors();
 #ifndef __APPLE__
