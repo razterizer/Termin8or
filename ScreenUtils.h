@@ -232,7 +232,7 @@ void begin_screen()
 }
 
 template<int NR, int NC>
-void end_screen(ScreenHandler<NR, NC>& sh)
+void end_screen(ScreenHandler<NR, NC>& sh, Text& t)
 {
   auto orig_colors [[maybe_unused]] = restore_terminal_colors();
 #ifndef __APPLE__
