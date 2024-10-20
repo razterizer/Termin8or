@@ -116,7 +116,11 @@ public:
         fetch_frame(anim_frame);
         texture_frames[anim_frame] = std::make_unique<drawing::Texture>(*texture_from);
       }
+      else
+        std::cout << "ERROR in clone_frame() : anim_frame must be larger than or equal to the number of texture frames!" << std::endl;
     }
+    else
+      std::cout << "ERROR in clone_frame() : from_anim_frame cannot be larger than or equal to the number of texture frames!" << std::endl;
   }
   
   // #FIXME: Perhaps move these varyadic functions to Texture for more versatility.
