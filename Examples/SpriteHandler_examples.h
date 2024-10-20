@@ -28,7 +28,7 @@ namespace sprite_handler
     auto* sprite0 = sprh.create_sprite("spaceship");
     sprite0->layer_id = 4;
     sprite0->init(4, 5);
-    sprite0->init_frame(0);
+    sprite0->create_frame(0);
     sprite0->set_sprite_chars_from_strings(0,
       "  _  ",
       " /#\\ ",
@@ -47,7 +47,7 @@ namespace sprite_handler
       1, 7, 7, 7, 1,
       -2, -2, 14, -2, -2
     );
-    sprite0->init_frame(1);
+    sprite0->create_frame(1);
     sprite0->set_sprite_chars_from_strings(1,
       "  _  ",
       " /#\\ ",
@@ -66,7 +66,7 @@ namespace sprite_handler
       1, 7, 7, 7, 1,
       -2, -2, 4, -2, -2
     );
-    sprite0->init_frame(2);
+    sprite0->create_frame(2);
     sprite0->set_sprite_chars_from_strings(2,
       "  _  ",
       " /#\\ ",
@@ -98,7 +98,7 @@ namespace sprite_handler
     auto* sprite1 = sprh.create_sprite("alien");
     sprite1->layer_id = 5;
     sprite1->init(2, 3);
-    sprite1->init_frame(0);
+    sprite1->create_frame(0);
     sprite1->set_sprite_chars(0,
       ' ', '^', ' ',
       '%', 'U', '%'
@@ -111,7 +111,7 @@ namespace sprite_handler
       Color::Transparent2, Color::Transparent2, Color::Transparent2,
       Color::Transparent2, Color::DarkYellow, Color::Transparent2
     );
-    sprite1->init_frame(1);
+    sprite1->create_frame(1);
     sprite1->set_sprite_chars(1,
       ' ', '^', ' ',
       '#', 'U', '#'
@@ -142,7 +142,7 @@ namespace sprite_handler
       sprite2->pos.c = rnd::rand_int(0, sh.num_cols()-1);
       sprite2->layer_id = rnd::rand_select<int>({ 1, 3 });
       sprite2->init(1, 1);
-      sprite2->init_frame(0);
+      sprite2->create_frame(0);
       sprite2->set_sprite_chars(0, '@');
       sprite2->set_sprite_fg_colors(0, Color::DarkGray);
       sprite2->set_sprite_bg_colors(0, Color::Transparent2);
@@ -162,12 +162,12 @@ namespace sprite_handler
       sprite3->pos.c = rnd::rand_int(0, sh.num_cols()-1);
       sprite3->layer_id = 0;
       sprite3->init(1, 1);
-      sprite3->init_frame(0);
+      sprite3->create_frame(0);
       char star_ch = rnd::rand_select<char>({ '.', '+' });
       sprite3->set_sprite_chars(0, star_ch);
       sprite3->set_sprite_fg_colors(0, rnd::rand_select<Color>({ Color::White, Color::White, Color::White, Color::White, Color::White, Color::Yellow, Color::Yellow, Color::Yellow, Color::Red, Color::Blue, Color::Blue, Color::Blue }));
       sprite3->set_sprite_bg_colors(0, Color::Transparent2);
-      sprite3->init_frame(1);
+      sprite3->create_frame(1);
       sprite3->set_sprite_chars(1, star_ch);
       sprite3->set_sprite_fg_colors(1, Color::Black);
       sprite3->set_sprite_bg_colors(1, Color::Transparent2);
@@ -175,23 +175,25 @@ namespace sprite_handler
       int twinkle_offs = rnd::rand_int(0, max_twinkle);
       sprite3->func_frame_to_texture = [twinkle_offs](int anim_frame)
       {
-        return 1 - (anim_frame + twinkle_offs) % max_twinkle;
+        if ((anim_frame + twinkle_offs) % max_twinkle == 0)
+          return 1;
+        return 0;
       };
     }
     
     auto* sprite4 = sprh.create_sprite("background");
     sprite4->layer_id = 2;
     sprite4->init(sh.num_rows(), sh.num_cols());
-    sprite4->init_frame(0);
-    // sprite4->texture_frames[0].save("background.tex");
-    sprite4->texture_frames[0].load("background.tex");
+    sprite4->create_frame(0);
+    // sprite4->save_frame(0, "background.tex");
+    sprite4->load_frame(0, "background.tex");
     
     // ///////////////////////////////////////////////////////////
     //                        LET's GO !                        //
     // ///////////////////////////////////////////////////////////
     
     
-    begin_screen(sh, tt);
+    begin_screen();
     
     float dt = 0.01f;
     for (int i = -3; i < sh.num_rows(); ++i)
@@ -230,7 +232,7 @@ namespace sprite_handler
     }
     
 quit:
-    end_screen();
+    end_screen(sh, tt);
   }
 
 }
