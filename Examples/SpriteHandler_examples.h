@@ -47,44 +47,15 @@ namespace sprite_handler
       1, 7, 7, 7, 1,
       -2, -2, 14, -2, -2
     );
-    sprite0->create_frame(1);
-    sprite0->set_sprite_chars_from_strings(1,
-      "  _  ",
-      " /#\\ ",
-      "[---]",
-      "  #  "
-    );
-    sprite0->set_sprite_fg_colors(1,
-      0, 0, 16, 0, 0,
-      0, 16, 16, 13, 0,
-      11, 15, 15, 15, 11,
-      0, 12, 12, 12, 0
-    );
-    sprite0->set_sprite_bg_colors(1,
-      -2, -2, -2, -2, -2,
-      -2, -2, 13, -2, -2,
-      1, 7, 7, 7, 1,
-      -2, -2, 4, -2, -2
-    );
-    sprite0->create_frame(2);
-    sprite0->set_sprite_chars_from_strings(2,
-      "  _  ",
-      " /#\\ ",
-      "[---]",
-      "  ^  "
-    );
-    sprite0->set_sprite_fg_colors(2,
-      0, 0, 16, 0, 0,
-      0, 16, 16, 13, 0,
-      11, 15, 15, 15, 11,
-      0, 12, 16, 12, 0
-    );
-    sprite0->set_sprite_bg_colors(2,
-      -2, -2, -2, -2, -2,
-      -2, -2, 13, -2, -2,
-      1, 7, 7, 7, 1,
-      -2, -2, -2, -2, -2
-    );
+    ttl::Rectangle bb0 { 3, 2, 1, 1 };
+    sprite0->clone_frame(1, 0);
+    sprite0->set_sprite_chars(1, bb0, '#');
+    sprite0->set_sprite_fg_colors(1, bb0, Color::Yellow);
+    sprite0->set_sprite_bg_colors(1, bb0, Color::DarkYellow);
+    sprite0->clone_frame(2, 0);
+    sprite0->set_sprite_chars(2, bb0, '^');
+    sprite0->set_sprite_fg_colors(2, bb0, Color::White);
+    sprite0->set_sprite_bg_colors(2, bb0, Color::Transparent2);
     sprite0->func_frame_to_texture = [](int anim_frame)
     {
       auto anim = anim_frame % 14;
@@ -111,19 +82,12 @@ namespace sprite_handler
       Color::Transparent2, Color::Transparent2, Color::Transparent2,
       Color::Transparent2, Color::DarkYellow, Color::Transparent2
     );
-    sprite1->create_frame(1);
-    sprite1->set_sprite_chars(1,
-      ' ', '^', ' ',
-      '#', 'U', '#'
-    );
-    sprite1->set_sprite_fg_colors(1,
-      Color::Default, Color::Green, Color::Default,
-      Color::DarkYellow, Color::DarkYellow, Color::DarkYellow
-    );
-    sprite1->set_sprite_bg_colors(1,
-      Color::Transparent2, Color::Transparent2, Color::Transparent2,
-      Color::Transparent2, Color::DarkYellow, Color::Transparent2
-    );
+    ttl::Rectangle bbL { 1, 0, 1, 1 }, bbR { 1, 2, 1, 1 };
+    sprite1->clone_frame(1, 0);
+    sprite1->set_sprite_chars(1, bbL, '#');
+    sprite1->set_sprite_chars(1, bbR, '#');
+    sprite1->set_sprite_fg_colors(1, bbL, Color::DarkYellow);
+    sprite1->set_sprite_fg_colors(1, bbR, Color::DarkYellow);
     sprite1->func_frame_to_texture = [](int anim_frame)
     {
       auto anim = anim_frame % 40;
