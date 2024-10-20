@@ -73,6 +73,14 @@ namespace drawing
       , bg_colors(area, Color::Transparent2)
       , materials(area, 0)
     {}
+    Texture(const Texture& other)
+      : size(other.size)
+      , area(other.area)
+      , characters(other.characters)
+      , fg_colors(other.fg_colors)
+      , bg_colors(other.bg_colors)
+      , materials(other.materials)
+    {}
     
     void init_materials(int mat)
     {
