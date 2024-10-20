@@ -19,10 +19,36 @@ class Sprite
   template<typename T, typename... Args>
   void set_sprite_data(std::vector<T>& target, Args... args)
   {
-    const size_t sprite_size = area;
-    if (sizeof...(args) != sprite_size)
+    if (sizeof...(args) != static_cast<size_t>(area))
       throw std::invalid_argument("Number of arguments must match sprite size.");
     target = {static_cast<T>(args)...}; // Unpack and assign to the target vector
+  }
+  
+  template<typename T, typename... Args>
+  void set_sprite_data(std::vector<T>& target, const ttl::Rectangle& bb, Args... args)
+  {
+    int nr = std::min(bb.r_len, size.r);
+    int nc = std::min(bb.c_len, size.c);
+    if (sizeof...(args) != static_cast<size_t>(nr * nc))
+      throw std::invalid_argument("Number of arguments must match sprite size and or bounding box size.");
+    std::vector<T> source = {static_cast<T>(args)...}; // Unpack and assign to the target vector
+
+    for (int i = 0; i < nr; ++i)
+    {
+        for (int j = 0; j < nc; ++j)
+        {
+            // Map bounding box (i, j) to the target sprite data
+            int trg_row = bb.r + i;
+            int trg_col = bb.c + j;
+
+            // Calculate linear index into the target vector and src_data
+            int trg_index = trg_row * size.c + trg_col;
+            int src_index = i * nc + j;
+
+            // Assign data to the target vector
+            target[trg_index] = source[src_index];
+        }
+    }
   }
   
   RC size { 0, 0 };
@@ -103,6 +129,13 @@ public:
     set_sprite_data(texture->characters, ch...);
   }
   
+  template<typename... Chars>
+  void set_sprite_chars(int anim_frame, const ttl::Rectangle& bb, Chars... ch)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    set_sprite_data(texture->characters, bb, ch...);
+  }
+  
   // Set sprite characters from a string for each row
   template<typename... Strings>
   void set_sprite_chars_from_strings(int anim_frame, Strings... rows)
@@ -134,6 +167,14 @@ public:
     set_sprite_data(texture->fg_colors, fg_color...);
   }
   
+  // Set sprite foreground colors
+  template<typename... Colors>
+  void set_sprite_fg_colors(int anim_frame, const ttl::Rectangle& bb, Colors... fg_color)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    set_sprite_data(texture->fg_colors, bb, fg_color...);
+  }
+  
   // Set sprite background colors
   template<typename... Colors>
   void set_sprite_bg_colors(int anim_frame, Colors... bg_color)
@@ -142,12 +183,28 @@ public:
     set_sprite_data(texture->bg_colors, bg_color...);
   }
   
+  // Set sprite background colors
+  template<typename... Colors>
+  void set_sprite_bg_colors(int anim_frame, const ttl::Rectangle& bb, Colors... bg_color)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    set_sprite_data(texture->bg_colors, bb, bg_color...);
+  }
+  
   // Set sprite materials
   template<typename... Materials>
   void set_sprite_materials(int anim_frame, Materials... mat)
   {
     auto* texture = fetch_frame(anim_frame);
     set_sprite_data(texture->materials, mat...);
+  }
+  
+  // Set sprite materials
+  template<typename... Materials>
+  void set_sprite_materials(int anim_frame, const ttl::Rectangle& bb, Materials... mat)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    set_sprite_data(texture->materials, bb, mat...);
   }
   
   std::function<int(int)> func_frame_to_texture = [](int anim_frame) -> int { return 0; };
