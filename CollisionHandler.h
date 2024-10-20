@@ -5,8 +5,11 @@
 //  Created by Rasmus Anthin on 2024-10-21.
 //
 
-#ifndef CollisionHandler_h
-#define CollisionHandler_h
+#pragma once
+
+class CollisionHandler
+{
 
 
-#endif /* CollisionHandler_h */
+
+};
