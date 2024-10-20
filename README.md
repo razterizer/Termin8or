@@ -15,6 +15,11 @@
 
 This is a cross-platform header-only curses-like lib.
 
+Supported platforms (including but not limited to) are:
+* Linux.
+* MacOS.
+* Windows.
+
 ## Showcases
 
 ![image](https://github.com/razterizer/Pilot_Episode/assets/32767250/9b596d5c-e128-4dba-8fb5-02e9b3d8f412)
