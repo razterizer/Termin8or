@@ -79,6 +79,20 @@ public:
     texture->save(file_path);
   }
   
+  void clone_frame(int anim_frame, int from_anim_frame)
+  {
+    const auto N = static_cast<int>(texture_frames.size());
+    if (from_anim_frame < N)
+    {
+      if (anim_frame >= N)
+      {
+        auto* texture_from = fetch_frame(from_anim_frame);
+        fetch_frame(anim_frame);
+        texture_frames[anim_frame] = std::make_unique<drawing::Texture>(*texture_from);
+      }
+    }
+  }
+  
   // #FIXME: Perhaps move these varyadic functions to Texture for more versatility.
   
   // Set sprite characters
