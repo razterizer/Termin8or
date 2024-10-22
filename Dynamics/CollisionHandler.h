@@ -6,7 +6,7 @@
 //
 
 #pragma once
-#include "Rectangle.h"
+#include "../Rectangle.h"
 
 
 struct RigidBody
