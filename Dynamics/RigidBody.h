@@ -17,7 +17,7 @@ namespace dynamics
   {
     float r = 0.f;
     float c = 0.f;
-  }
+  };
   
   struct RigidBody
   {
