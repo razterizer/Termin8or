@@ -15,6 +15,32 @@
 
 class Sprite
 {
+protected:
+  RC size { 0, 0 };
+  int area = 0;
+  std::string name;
+  
+public:
+  RC pos { 0, 0 };
+  
+  int layer_id = 0; // 0 is the bottom layer.
+  bool enabled = true;
+  
+  std::function<int(int)> func_frame_to_texture = [](int anim_frame) -> int { return 0; };
+  
+  virtual ~Sprite() = default;
+  Sprite(const std::string& a_name) : name(a_name) {}
+  
+  // Initialize the sprite's dimensions (NR and NC)
+  void init(int NR, int NC)
+  {
+    size = { NR, NC };
+    area = NR * NC;
+  }
+};
+
+class BitmapSprite : public Sprite
+{
   // Helper function for setting any vector data
   template<typename T, typename... Args>
   void set_sprite_data(std::vector<T>& target, Args... args)
@@ -50,11 +76,8 @@ class Sprite
         }
     }
   }
-  
-  RC size { 0, 0 };
-  int area = 0;
+
   std::vector<std::unique_ptr<drawing::Texture>> texture_frames;
-  std::string name;
   
   drawing::Texture* fetch_frame(int anim_frame)
   {
@@ -64,19 +87,7 @@ class Sprite
   }
 
 public:
-  RC pos { 0, 0 };
-  
-  int layer_id = 0; // 0 is the bottom layer.
-  bool enabled = true;
-  
-  Sprite(const std::string& a_name) : name(a_name) {}
-  
-  // Initialize the sprite's dimensions (NR and NC)
-  void init(int NR, int NC)
-  {
-    size = { NR, NC };
-    area = NR * NC;
-  }
+  BitmapSprite(const std::string& a_name) : Sprite(a_name) {}
   
   void create_frame(int anim_frame)
   {
@@ -211,8 +222,6 @@ public:
     set_sprite_data(texture->materials, bb, mat...);
   }
   
-  std::function<int(int)> func_frame_to_texture = [](int anim_frame) -> int { return 0; };
-  
   const drawing::Texture& get_curr_frame_texture(int anim_frame)
   {
     int tex_id = func_frame_to_texture(anim_frame);
@@ -232,11 +241,11 @@ public:
   SpriteHandler() = default;
   ~SpriteHandler() = default;
   
-  Sprite* create_sprite(const std::string& sprite_name)
+  BitmapSprite* create_bitmap_sprite(const std::string& sprite_name)
   {
-    m_sprites[sprite_name] = std::make_unique<Sprite>(sprite_name);
+    m_sprites[sprite_name] = std::make_unique<BitmapSprite>(sprite_name);
     // We simply assume that it was successfully created.
-    return m_sprites[sprite_name].get();
+    return static_cast<BitmapSprite*>(m_sprites[sprite_name].get());
   }
   
   Sprite* fetch_sprite(const std::string& sprite_name)
@@ -262,13 +271,16 @@ public:
         const auto& sprite = sprite_pair.second;
         if (sprite->enabled && sprite->layer_id == layer_id)
         {
-          auto& texture = sprite->get_curr_frame_texture(anim_frame);
-          
-          drawing::draw_box_textured(sh,
-                          sprite->pos.r - 1, sprite->pos.c - 1,
-                          texture.size.r + 2, texture.size.c + 2,
-                          drawing::SolarDirection::Zenith,
-                          texture);
+          if (auto* bitmap_sprite = dynamic_cast<BitmapSprite*>(sprite.get()); bitmap_sprite != nullptr)
+          {
+            auto& texture = bitmap_sprite->get_curr_frame_texture(anim_frame);
+            
+            drawing::draw_box_textured(sh,
+                                       bitmap_sprite->pos.r - 1, bitmap_sprite->pos.c - 1,
+                                       texture.size.r + 2, texture.size.c + 2,
+                                       drawing::SolarDirection::Zenith,
+                                       texture);
+          }
         }
       }
     }

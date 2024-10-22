@@ -25,7 +25,7 @@ namespace sprite_handler
     
     // //////////////////////////////
     
-    auto* sprite0 = sprh.create_sprite("spaceship");
+    auto* sprite0 = sprh.create_bitmap_sprite("spaceship");
     sprite0->layer_id = 4;
     sprite0->init(4, 5);
     sprite0->create_frame(0);
@@ -66,7 +66,7 @@ namespace sprite_handler
     
     // ///////////////////////////////////////////////////////////
     
-    auto* sprite1 = sprh.create_sprite("alien");
+    auto* sprite1 = sprh.create_bitmap_sprite("alien");
     sprite1->layer_id = 5;
     sprite1->init(2, 3);
     sprite1->create_frame(0);
@@ -101,7 +101,7 @@ namespace sprite_handler
     std::array<std::tuple<Sprite*, float, float>, 16> asteroids;
     for (int a_idx = 0; a_idx < asteroids.size(); ++a_idx)
     {
-      auto* sprite2 = sprh.create_sprite("asteroid" + std::to_string(a_idx));
+      auto* sprite2 = sprh.create_bitmap_sprite("asteroid" + std::to_string(a_idx));
       sprite2->pos.r = rnd::rand_int(0, sh.num_rows()-1);
       sprite2->pos.c = rnd::rand_int(0, sh.num_cols()-1);
       sprite2->layer_id = rnd::rand_select<int>({ 1, 3 });
@@ -121,7 +121,7 @@ namespace sprite_handler
     
     for (int s_idx = 0; s_idx < 20; ++s_idx)
     {
-      auto* sprite3 = sprh.create_sprite("star" + std::to_string(s_idx));
+      auto* sprite3 = sprh.create_bitmap_sprite("star" + std::to_string(s_idx));
       sprite3->pos.r = rnd::rand_int(0, sh.num_rows()-1);
       sprite3->pos.c = rnd::rand_int(0, sh.num_cols()-1);
       sprite3->layer_id = 0;
@@ -145,7 +145,7 @@ namespace sprite_handler
       };
     }
     
-    auto* sprite4 = sprh.create_sprite("background");
+    auto* sprite4 = sprh.create_bitmap_sprite("background");
     sprite4->layer_id = 2;
     sprite4->init(sh.num_rows(), sh.num_cols());
     sprite4->create_frame(0);
