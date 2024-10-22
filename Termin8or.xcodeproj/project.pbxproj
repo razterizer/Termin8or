@@ -91,7 +91,7 @@
 				071CC3D829046819007B4B98 /* Rectangle.h */,
 				071CC3D72904679E007B4B98 /* ScreenHandler.h */,
 				07D007BE2CBD387200CCB5E7 /* SpriteHandler.h */,
-				07D007C62CC5B9BB00CCB5E7 /* CollisionHandler.h */,
+				07D007C72CC82CFD00CCB5E7 /* Dynamics */,
 				071CC3DA2904851A007B4B98 /* Pixel.h */,
 				071CC3D92904839C007B4B98 /* RC.h */,
 				07E6EAA92C1241DC007BBC6B /* Styles.h */,
@@ -122,6 +122,14 @@
 				07D007C12CBF3AD100CCB5E7 /* examples.cpp */,
 			);
 			path = Examples;
+			sourceTree = "<group>";
+		};
+		07D007C72CC82CFD00CCB5E7 /* Dynamics */ = {
+			isa = PBXGroup;
+			children = (
+				07D007C62CC5B9BB00CCB5E7 /* CollisionHandler.h */,
+			);
+			path = Dynamics;
 			sourceTree = "<group>";
 		};
 		07FDE97C2CA0B77A00116BA7 /* Tests */ = {
