@@ -5,8 +5,25 @@
 //  Created by Rasmus Anthin on 2024-10-22.
 //
 
-#ifndef RigidBody_h
-#define RigidBody_h
+#pragma once
+#include "../Rectangle.h"
+#include "../RC.h"
 
 
-#endif /* RigidBody_h */
+namespace dynamics
+{
+
+  struct Vec2
+  {
+    float r = 0.f;
+    float c = 0.f;
+  }
+  
+  struct RigidBody
+  {
+    ttl::Rectangle aabb;
+    Vec2 curr_pos;
+  };
+  
+  
+}
