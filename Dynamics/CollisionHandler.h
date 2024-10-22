@@ -7,6 +7,8 @@
 
 #pragma once
 #include "../Rectangle.h"
+#include "RigidBody.h"
+
 
 namespace dynamics
 {
