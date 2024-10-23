@@ -229,13 +229,26 @@ public:
       throw std::invalid_argument("ERROR: Incorrect frame id: " + std::to_string(frame_id) + " for sprite \"" + name + "\"! Sprite only has " + std::to_string(texture_frames.size()) + " frames.");
     return *texture_frames[frame_id];
   }
+  
+  template<int NR, int NC>
+  void draw(ScreenHandler<NR, NC>& sh, int sim_frame)
+  {
+    auto& texture = get_curr_frame_texture(sim_frame);
+    
+    drawing::draw_box_textured(sh,
+                               pos.r - 1, pos.c - 1,
+                               texture.size.r + 2, texture.size.c + 2,
+                               drawing::SolarDirection::Zenith,
+                               texture);
+    
+  }
 };
 
 class VectorSprite : public Sprite
 {
   struct LineSeg
   {
-    std::array<RC, 2> line_seg;
+    std::array<RC, 2> pos;
     char ch = 0;
     styles::Style style;
     int mat = 0;
@@ -243,7 +256,7 @@ class VectorSprite : public Sprite
   
   struct VectorFrame
   {
-    std::vector<LineSeg> m_line_segments;
+    std::vector<LineSeg> line_segments;
   };
   
   std::vector<std::unique_ptr<VectorFrame>> vector_frames;
@@ -257,6 +270,19 @@ public:
     if (frame_id >= vector_frames.size())
       throw std::invalid_argument("ERROR: Incorrect frame id: " + std::to_string(frame_id) + " for sprite \"" + name + "\"! Sprite only has " + std::to_string(vector_frames.size()) + " frames.");
     return *vector_frames[frame_id];
+  }
+  
+  template<int NR, int NC>
+  void draw(ScreenHandler<NR, NC>& sh, int sim_frame)
+  {
+    auto& vector_frame = get_curr_frame_vector(sim_frame);
+    
+    for (const auto& line_seg : vector_frame.line_segments)
+    {
+      const auto& p0 = line_seg.pos[0];
+      const auto& p1 = line_seg.pos[1];
+      bresenham::plot_line(sh, p0, p1, std::string(1, line_seg.ch), line_seg.style.fg_color, line_seg.style.bg_color);
+    }
   }
 };
 
@@ -286,7 +312,7 @@ public:
   }
   
   template<int NR, int NC>
-  void draw(ScreenHandler<NR, NC>& sh, int anim_frame) const
+  void draw(ScreenHandler<NR, NC>& sh, int sim_frame) const
   {
     int max_layer_id = 0;
     for (const auto& sprite_pair : m_sprites)
@@ -301,15 +327,9 @@ public:
         if (sprite->enabled && sprite->layer_id == layer_id)
         {
           if (auto* bitmap_sprite = dynamic_cast<BitmapSprite*>(sprite.get()); bitmap_sprite != nullptr)
-          {
-            auto& texture = bitmap_sprite->get_curr_frame_texture(anim_frame);
-            
-            drawing::draw_box_textured(sh,
-                                       bitmap_sprite->pos.r - 1, bitmap_sprite->pos.c - 1,
-                                       texture.size.r + 2, texture.size.c + 2,
-                                       drawing::SolarDirection::Zenith,
-                                       texture);
-          }
+            bitmap_sprite->draw(sh, sim_frame);
+          else if (auto* vector_sprite = dynamic_cast<VectorSprite*>(sprite.get()); vector_sprite != nullptr)
+            vector_sprite->draw(sh, sim_frame);
         }
       }
     }
