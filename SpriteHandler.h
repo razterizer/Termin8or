@@ -231,6 +231,27 @@ public:
   }
 };
 
+class VectorSprite : public Sprite
+{
+  struct LineSeg
+  {
+    std::array<RC, 2> line_seg;
+    char ch = 0;
+    styles::Style style;
+    int mat = 0;
+  };
+  
+  struct Frame
+  {
+    std::vector<LineSeg> m_line_segments;
+  };
+  
+  std::vector<Frame> vector_frames;
+  
+public:
+  VectorSprite(const std::string& a_name) : Sprite(a_name) {}
+};
+
 // /////////////////////////////////////
 
 class SpriteHandler
