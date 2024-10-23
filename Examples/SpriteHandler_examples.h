@@ -56,9 +56,9 @@ namespace sprite_handler
     sprite0->set_sprite_chars(2, bb0, '^');
     sprite0->set_sprite_fg_colors(2, bb0, Color::White);
     sprite0->set_sprite_bg_colors(2, bb0, Color::Transparent2);
-    sprite0->func_frame_to_texture = [](int anim_frame)
+    sprite0->func_calc_anim_frame = [](int sim_frame)
     {
-      auto anim = anim_frame % 14;
+      auto anim = sim_frame % 14;
       if (anim < 8)
         return 2;
       return anim % 2;
@@ -88,9 +88,9 @@ namespace sprite_handler
     sprite1->set_sprite_chars(1, bbR, '#');
     sprite1->set_sprite_fg_colors(1, bbL, Color::DarkYellow);
     sprite1->set_sprite_fg_colors(1, bbR, Color::DarkYellow);
-    sprite1->func_frame_to_texture = [](int anim_frame)
+    sprite1->func_calc_anim_frame = [](int sim_frame)
     {
-      auto anim = anim_frame % 40;
+      auto anim = sim_frame % 40;
       if (anim < 34)
         return 0;
       return anim % 2;
@@ -137,9 +137,9 @@ namespace sprite_handler
       sprite3->set_sprite_bg_colors(1, Color::Transparent2);
       const int max_twinkle = 100;
       int twinkle_offs = rnd::rand_int(0, max_twinkle);
-      sprite3->func_frame_to_texture = [twinkle_offs](int anim_frame)
+      sprite3->func_calc_anim_frame = [twinkle_offs](int sim_frame)
       {
-        if ((anim_frame + twinkle_offs) % max_twinkle == 0)
+        if ((sim_frame + twinkle_offs) % max_twinkle == 0)
           return 1;
         return 0;
       };

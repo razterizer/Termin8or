@@ -26,7 +26,7 @@ public:
   int layer_id = 0; // 0 is the bottom layer.
   bool enabled = true;
   
-  std::function<int(int)> func_frame_to_texture = [](int anim_frame) -> int { return 0; };
+  std::function<int(int)> func_calc_anim_frame = [](int sim_frame) -> int { return 0; };
   
   virtual ~Sprite() = default;
   Sprite(const std::string& a_name) : name(a_name) {}
@@ -222,12 +222,12 @@ public:
     set_sprite_data(texture->materials, bb, mat...);
   }
   
-  const drawing::Texture& get_curr_frame_texture(int anim_frame)
+  const drawing::Texture& get_curr_frame_texture(int sim_frame)
   {
-    int tex_id = func_frame_to_texture(anim_frame);
-    if (tex_id >= texture_frames.size())
-      throw std::invalid_argument("ERROR: Incorrect frame id: " + std::to_string(tex_id) + " for sprite \"" + name + "\"! Sprite only has " + std::to_string(texture_frames.size()) + " frames.");
-    return *texture_frames[tex_id];
+    int frame_id = func_calc_anim_frame(sim_frame);
+    if (frame_id >= texture_frames.size())
+      throw std::invalid_argument("ERROR: Incorrect frame id: " + std::to_string(frame_id) + " for sprite \"" + name + "\"! Sprite only has " + std::to_string(texture_frames.size()) + " frames.");
+    return *texture_frames[frame_id];
   }
 };
 
@@ -241,15 +241,23 @@ class VectorSprite : public Sprite
     int mat = 0;
   };
   
-  struct Frame
+  struct VectorFrame
   {
     std::vector<LineSeg> m_line_segments;
   };
   
-  std::vector<Frame> vector_frames;
+  std::vector<std::unique_ptr<VectorFrame>> vector_frames;
   
 public:
   VectorSprite(const std::string& a_name) : Sprite(a_name) {}
+  
+  const VectorFrame& get_curr_frame_vector(int sim_frame)
+  {
+    int frame_id = func_calc_anim_frame(sim_frame);
+    if (frame_id >= vector_frames.size())
+      throw std::invalid_argument("ERROR: Incorrect frame id: " + std::to_string(frame_id) + " for sprite \"" + name + "\"! Sprite only has " + std::to_string(vector_frames.size()) + " frames.");
+    return *vector_frames[frame_id];
+  }
 };
 
 // /////////////////////////////////////
