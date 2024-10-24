@@ -43,14 +43,16 @@ namespace dynamics
     {
       sprite = s;
       curr_pos = s->pos;
-      aabb.r = s->pos.r;
-      aabb.c = s->pos.c;
+      aabb = s->calc_curr_AABB(0);
     }
     
-    void update()
+    void update(int sim_frame)
     {
       if (sprite != nullptr)
+      {
         sprite->pos = { math::roundI(curr_pos.r), math::roundI(curr_pos.c) };
+        aabb = s->calc_curr_AABB(sim_frame);
+      }
     }
   };
   
