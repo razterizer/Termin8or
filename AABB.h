@@ -15,6 +15,8 @@ class AABB
   T rmax = math::get_min<T>();
   T cmin = math::get_max<T>();
   T cmax = math::get_max<T>();
+  
+  constexpr T offs() const { return static_cast<T>(std::is_integral<T>() ? 1 : 0); }
 
 public:
   AABB() = default;
@@ -23,16 +25,16 @@ public:
   {
     rmin = r;
     cmin = c;
-    rmax = r + r_len - 1;
-    cmax = c + c_len - 1;
+    rmax = r + r_len - offs();
+    cmax = c + c_len - offs();
   }
   
   AABB(const ttl::Rectangle& rectangle)
   {
     rmin = static_cast<T>(rectangle.r);
     cmin = static_cast<T>(rectangle.c);
-    rmax = rmin + static_cast<T>(rectangle.r_len - 1);
-    cmax = cmin + static_cast<T>(rectangle.c_len - 1);
+    rmax = rmin + static_cast<T>(rectangle.r_len - offs());
+    cmax = cmin + static_cast<T>(rectangle.c_len - offs());
   }
   
   AABB(const AABB& aabb)
@@ -97,7 +99,7 @@ public:
     return
     {
       static_cast<int>(rmin), static_cast<int>(cmin),
-      static_cast<int>(rmax - rmin + 1), static_cast<int>(cmax - cmin + 1)
+      static_cast<int>(rmax - rmin + offs()), static_cast<int>(cmax - cmin + offs())
     };
   }
   
@@ -108,8 +110,8 @@ public:
     {
       static_cast<Ret>(math::roundI(static_cast<float>(rmin))),
       static_cast<Ret>(math::roundI(static_cast<float>(cmin))),
-      static_cast<Ret>(math::roundI(static_cast<float>(rmax - rmin + 1))),
-      static_cast<Ret>(math::roundI(static_cast<float>(cmax - cmin + 1))),
+      static_cast<Ret>(math::roundI(static_cast<float>(rmax - rmin + offs()))),
+      static_cast<Ret>(math::roundI(static_cast<float>(cmax - cmin + offs()))),
     };
     return aabb;
   }
