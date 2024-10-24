@@ -329,7 +329,7 @@ public:
     
     for (const auto& line_seg : vector_frame.line_segments)
     {
-      auto& [p0, p1] = calc_seg_world_pos(line_seg);
+      auto [p0, p1] = calc_seg_world_pos(line_seg);
       bresenham::plot_line(sh, p0, p1, std::string(1, line_seg.ch), line_seg.style.fg_color, line_seg.style.bg_color);
     }
   }
