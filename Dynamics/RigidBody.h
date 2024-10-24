@@ -51,7 +51,7 @@ namespace dynamics
       if (sprite != nullptr)
       {
         sprite->pos = { math::roundI(curr_pos.r), math::roundI(curr_pos.c) };
-        aabb = s->calc_curr_AABB(sim_frame);
+        aabb = sprite->calc_curr_AABB(sim_frame);
       }
     }
   };
