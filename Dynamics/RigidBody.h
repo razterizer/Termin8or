@@ -34,7 +34,7 @@ namespace dynamics
   
   struct RigidBody
   {
-    ttl::Rectangle aabb;
+    AABB<float> aabb;
     Vec2 curr_pos;
     
     Sprite* sprite = nullptr; // Position to be controlled by this rigid body object.
@@ -43,7 +43,7 @@ namespace dynamics
     {
       sprite = s;
       curr_pos = s->pos;
-      aabb = s->calc_curr_AABB(0);
+      aabb = s->calc_curr_AABB(0).convert<float>();
     }
     
     void update(int sim_frame)
@@ -51,7 +51,7 @@ namespace dynamics
       if (sprite != nullptr)
       {
         sprite->pos = { math::roundI(curr_pos.r), math::roundI(curr_pos.c) };
-        aabb = sprite->calc_curr_AABB(sim_frame);
+        aabb = sprite->calc_curr_AABB(sim_frame).convert<float>();
       }
     }
   };
