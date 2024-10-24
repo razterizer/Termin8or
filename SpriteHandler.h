@@ -16,8 +16,6 @@
 class Sprite
 {
 protected:
-  RC size { 0, 0 };
-  int area = 0;
   std::string name;
   
 public:
@@ -30,13 +28,6 @@ public:
   
   virtual ~Sprite() = default;
   Sprite(const std::string& a_name) : name(a_name) {}
-  
-  // Initialize the sprite's dimensions (NR and NC)
-  void init(int NR, int NC)
-  {
-    size = { NR, NC };
-    area = NR * NC;
-  }
 };
 
 class BitmapSprite : public Sprite
@@ -77,6 +68,8 @@ class BitmapSprite : public Sprite
     }
   }
 
+  RC size { 0, 0 };
+  int area = 0;
   std::vector<std::unique_ptr<drawing::Texture>> texture_frames;
   
   drawing::Texture* fetch_frame(int anim_frame)
@@ -88,6 +81,13 @@ class BitmapSprite : public Sprite
 
 public:
   BitmapSprite(const std::string& a_name) : Sprite(a_name) {}
+  
+  // Initialize the sprite's dimensions (NR and NC)
+  void init(int NR, int NC)
+  {
+    size = { NR, NC };
+    area = NR * NC;
+  }
   
   void create_frame(int anim_frame)
   {
