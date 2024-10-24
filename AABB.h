@@ -14,7 +14,7 @@ class AABB
   T rmin = math::get_max<T>();
   T rmax = math::get_min<T>();
   T cmin = math::get_max<T>();
-  T cmax = math::get_max<T>();
+  T cmax = math::get_min<T>();
   
   constexpr T offs() const { return static_cast<T>(std::is_integral<T>() ? 1 : 0); }
 
