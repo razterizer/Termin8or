@@ -28,6 +28,8 @@ public:
   
   virtual ~Sprite() = default;
   Sprite(const std::string& a_name) : name(a_name) {}
+  
+  virtual ttl::Rectangle calc_curr_AABB(int /*sim_frame*/) = 0;
 };
 
 class BitmapSprite : public Sprite
@@ -242,6 +244,11 @@ public:
                                texture);
     
   }
+  
+  virtual ttl::Rectangle calc_curr_AABB(int /*sim_frame*/) override
+  {
+    return { pos.r, pos.c, size.r, size.c };
+  }
 };
 
 class VectorSprite : public Sprite
@@ -268,6 +275,24 @@ class VectorSprite : public Sprite
     while (vector_frames.size() <= anim_frame)
       vector_frames.emplace_back(std::make_unique<VectorFrame>());
     return vector_frames[anim_frame].get();
+  }
+  
+  std::pair<RC, RC> calc_seg_world_pos(const LineSeg& line_seg) const
+  {
+    const auto aspect_ratio = 1.5f;
+    auto rr0 = static_cast<float>(line_seg.pos[0].r);
+    auto cc0 = static_cast<float>(line_seg.pos[0].c);
+    auto rr1 = static_cast<float>(line_seg.pos[1].r);
+    auto cc1 = static_cast<float>(line_seg.pos[1].c);
+    float C = std::cos(rot_rad);
+    float S = std::sin(rot_rad);
+    auto r0 = pos.r + math::roundI(C*rr0 - S*cc0);
+    auto c0 = pos.c + math::roundI((S*rr0 + C*cc0)*aspect_ratio);
+    auto r1 = pos.r + math::roundI(C*rr1 - S*cc1);
+    auto c1 = pos.c + math::roundI((S*rr1 + C*cc1)*aspect_ratio);
+    RC p0 { r0, c0 };
+    RC p1 { r1, c1 };
+    return { p0, p1 };
   }
   
 public:
@@ -304,21 +329,33 @@ public:
     
     for (const auto& line_seg : vector_frame.line_segments)
     {
-      const auto aspect_ratio = 1.5f;
-      auto rr0 = static_cast<float>(line_seg.pos[0].r);
-      auto cc0 = static_cast<float>(line_seg.pos[0].c);
-      auto rr1 = static_cast<float>(line_seg.pos[1].r);
-      auto cc1 = static_cast<float>(line_seg.pos[1].c);
-      float C = std::cos(rot_rad);
-      float S = std::sin(rot_rad);
-      auto r0 = pos.r + math::roundI(C*rr0 - S*cc0);
-      auto c0 = pos.c + math::roundI((S*rr0 + C*cc0)*aspect_ratio);
-      auto r1 = pos.r + math::roundI(C*rr1 - S*cc1);
-      auto c1 = pos.c + math::roundI((S*rr1 + C*cc1)*aspect_ratio);
-      RC p0 { r0, c0 };
-      RC p1 { r1, c1 };
+      auto& [p0, p1] = calc_seg_world_pos(line_seg);
       bresenham::plot_line(sh, p0, p1, std::string(1, line_seg.ch), line_seg.style.fg_color, line_seg.style.bg_color);
     }
+  }
+  
+  virtual ttl::Rectangle calc_curr_AABB(int sim_frame) override
+  {
+    auto& vector_frame = get_curr_frame(sim_frame);
+  
+    auto rmin = math::get_max<int>();
+    auto rmax = math::get_min<int>();
+    auto cmin = math::get_max<int>();
+    auto cmax = math::get_max<int>();
+    for (const auto& line_seg : vector_frame.line_segments)
+    {
+      auto p0 = line_seg.pos[0];
+      auto p1 = line_seg.pos[1];
+      math::minimize(rmin, p0.r);
+      math::minimize(rmin, p1.r);
+      math::maximize(rmax, p0.r);
+      math::maximize(rmax, p1.r);
+      math::minimize(cmin, p0.c);
+      math::minimize(cmin, p1.c);
+      math::maximize(cmax, p0.c);
+      math::maximize(cmax, p1.c);
+    }
+    return { rmin, cmin, rmax - rmin, cmax - cmin };
   }
 };
 
