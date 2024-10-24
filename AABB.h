@@ -54,7 +54,7 @@ public:
     rmin = math::get_max<T>();
     rmax = math::get_min<T>();
     cmin = math::get_max<T>();
-    cmax = math::get_max<T>();
+    cmax = math::get_min<T>();
   }
   
   bool empty() const
