@@ -13,6 +13,7 @@ int main(int argc, char** argv)
 {
   std::cout << "### SpriteHandler Examples ###" << std::endl;
   sprite_handler::example1();
+  sprite_handler::example2();
   
   return 0;
 }

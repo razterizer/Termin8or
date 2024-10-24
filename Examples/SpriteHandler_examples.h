@@ -197,5 +197,56 @@ namespace sprite_handler
 quit:
     end_screen(sh);
   }
+  
+  void example2()
+  {
+    ScreenHandler<20, 40> sh;
+    dynamics::CollisionHandler ch;
+    SpriteHandler sprh;
+    keyboard::KeyPressData kpd;
+    auto keyboard = std::make_unique<keyboard::StreamKeyboard>();
+    
+    rnd::srand_time();
+    
+    // //////////////////////////////
+    
+    auto* sprite0 = sprh.create_vector_sprite("spaceship");
+    sprite0->layer_id = 1;
+    sprite0->pos = { sh.num_rows()/2, sh.num_cols()/2 };
+    sprite0->add_line_segment(0, { 2, 2 }, { -2, 0 }, 'o', { Color::Yellow, Color::Transparent2 });
+    sprite0->add_line_segment(0, { -2, 0 }, { 2, -2 }, 'o', { Color::Yellow, Color::Transparent2 });
+    sprite0->add_line_segment(0, { 2, -2 }, { 2, 2 }, 'o', { Color::Yellow, Color::Transparent2 });
+    sprite0->func_calc_anim_frame = [](int sim_frame)
+    {
+      return 0;
+      //auto anim = sim_frame % 14;
+      //if (anim < 8)
+      //  return 2;
+      //return anim % 2;
+    };
+    
+    // ///////////////////////////////////////////////////////////
+    //                        LET's GO !                        //
+    // ///////////////////////////////////////////////////////////
+    
+    
+    begin_screen();
+    
+    int anim_frame = 0;
+    return_cursor();
+    sh.clear();
+    sprh.draw(sh, anim_frame);
+    sh.print_screen_buffer(Color::Black);
+    Delay::sleep(0'200'000);
+    
+    kpd = keyboard->readKey();
+    auto key = keyboard::get_char_key(kpd);
+    auto lo_key = str::to_lower(key);
+    if (lo_key == 'q')
+      goto quit;
+    
+quit:
+    end_screen(sh);
+  }
 
 }
