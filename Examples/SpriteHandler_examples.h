@@ -233,17 +233,25 @@ quit:
     begin_screen();
     
     int anim_frame = 0;
-    return_cursor();
-    sh.clear();
-    sprh.draw(sh, anim_frame);
-    sh.print_screen_buffer(Color::Black);
-    Delay::sleep(0'200'000);
+    for (int i = 0; i < 100; ++i)
+    {
+      float t = i / 99.f;
+      float ang = t*360.f;
+      
+      sprite0->set_rotation(ang);
     
-    kpd = keyboard->readKey();
-    auto key = keyboard::get_char_key(kpd);
-    auto lo_key = str::to_lower(key);
-    if (lo_key == 'q')
-      goto quit;
+      return_cursor();
+      sh.clear();
+      sprh.draw(sh, anim_frame);
+      sh.print_screen_buffer(Color::Black);
+      Delay::sleep(0'20'000);
+      
+      kpd = keyboard->readKey();
+      auto key = keyboard::get_char_key(kpd);
+      auto lo_key = str::to_lower(key);
+      if (lo_key == 'q')
+        goto quit;
+    }
     
 quit:
     end_screen(sh);
