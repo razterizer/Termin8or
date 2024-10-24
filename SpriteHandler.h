@@ -10,6 +10,7 @@
 #include "ScreenHandler.h"
 #include "Drawing.h"
 #include "AABB.h"
+#include "Vec2.h"
 #include <map>
 #include <memory>
 
@@ -30,7 +31,9 @@ public:
   virtual ~Sprite() = default;
   Sprite(const std::string& a_name) : name(a_name) {}
   
-  virtual AABB<int> calc_curr_AABB(int /*sim_frame*/) = 0;
+  virtual AABB<int> calc_curr_AABB(int /*sim_frame*/) const = 0;
+  
+  virtual RC calc_centroid(int /*sim_frame*/) const = 0;
 };
 
 class BitmapSprite : public Sprite
@@ -225,7 +228,7 @@ public:
     set_sprite_data(texture->materials, bb, mat...);
   }
   
-  const drawing::Texture& get_curr_frame(int sim_frame)
+  const drawing::Texture& get_curr_frame(int sim_frame) const
   {
     int frame_id = func_calc_anim_frame(sim_frame);
     if (frame_id >= texture_frames.size())
@@ -246,9 +249,14 @@ public:
     
   }
   
-  virtual AABB<int> calc_curr_AABB(int /*sim_frame*/) override
+  virtual AABB<int> calc_curr_AABB(int /*sim_frame*/) const override
   {
     return { pos.r, pos.c, size.r, size.c };
+  }
+  
+  virtual RC calc_centroid(int /*sim_frame*/) const override
+  {
+    return { pos.r + size.r / 2, pos.c + size.c / 2 };
   }
 };
 
@@ -278,7 +286,7 @@ class VectorSprite : public Sprite
     return vector_frames[anim_frame].get();
   }
   
-  std::pair<RC, RC> calc_seg_world_pos(const LineSeg& line_seg) const
+  std::pair<Vec2, Vec2> calc_seg_world_pos_flt(const LineSeg& line_seg) const
   {
     const auto aspect_ratio = 1.5f;
     auto rr0 = static_cast<float>(line_seg.pos[0].r);
@@ -287,13 +295,19 @@ class VectorSprite : public Sprite
     auto cc1 = static_cast<float>(line_seg.pos[1].c);
     float C = std::cos(rot_rad);
     float S = std::sin(rot_rad);
-    auto r0 = pos.r + math::roundI(C*rr0 - S*cc0);
-    auto c0 = pos.c + math::roundI((S*rr0 + C*cc0)*aspect_ratio);
-    auto r1 = pos.r + math::roundI(C*rr1 - S*cc1);
-    auto c1 = pos.c + math::roundI((S*rr1 + C*cc1)*aspect_ratio);
-    RC p0 { r0, c0 };
-    RC p1 { r1, c1 };
+    auto r0 = pos.r + (C*rr0 - S*cc0);
+    auto c0 = pos.c + (S*rr0 + C*cc0)*aspect_ratio;
+    auto r1 = pos.r + (C*rr1 - S*cc1);
+    auto c1 = pos.c + (S*rr1 + C*cc1)*aspect_ratio;
+    Vec2 p0 { r0, c0 };
+    Vec2 p1 { r1, c1 };
     return { p0, p1 };
+  }
+  
+  std::pair<RC, RC> calc_seg_world_pos(const LineSeg& line_seg) const
+  {
+    auto [v0, v1] = calc_seg_world_pos_flt(line_seg);
+    return { v0, v1 };
   }
   
 public:
@@ -310,7 +324,7 @@ public:
     line_seg.mat = mat;
   }
   
-  const VectorFrame& get_curr_frame(int sim_frame)
+  const VectorFrame& get_curr_frame(int sim_frame) const
   {
     int frame_id = func_calc_anim_frame(sim_frame);
     if (frame_id >= vector_frames.size())
@@ -335,7 +349,7 @@ public:
     }
   }
   
-  virtual AABB<int> calc_curr_AABB(int sim_frame) override
+  virtual AABB<int> calc_curr_AABB(int sim_frame) const override
   {
     auto& vector_frame = get_curr_frame(sim_frame);
 
@@ -347,6 +361,23 @@ public:
       aabb.add_point(p1);
     }
     return aabb;
+  }
+  
+  virtual RC calc_centroid(int sim_frame) const override
+  {
+    auto& vector_frame = get_curr_frame(sim_frame);
+  
+    Vec2 centroid;
+    int ctr = 0;
+    for (const auto& line_seg : vector_frame.line_segments)
+    {
+      auto [p0, p1] = calc_seg_world_pos_flt(line_seg);
+      centroid += p0;
+      centroid += p1;
+      ctr += 2;
+    }
+    centroid /= static_cast<float>(ctr);
+    return centroid;
   }
 };
 
@@ -421,12 +452,14 @@ public:
         const auto& sprite = sprite_pair.second;
         if (sprite->enabled && sprite->layer_id == layer_id)
         {
-          AABB<int> aabb;
-          if (auto* bitmap_sprite = dynamic_cast<BitmapSprite*>(sprite.get()); bitmap_sprite != nullptr)
-            aabb = bitmap_sprite->calc_curr_AABB(sim_frame);
-          else if (auto* vector_sprite = dynamic_cast<VectorSprite*>(sprite.get()); vector_sprite != nullptr)
-            aabb = vector_sprite->calc_curr_AABB(sim_frame);
-            
+          auto pos = sprite->pos;
+          sh.write_buffer("O", pos.r, pos.c, Color::DarkGray);
+          
+          auto centroid = sprite->calc_centroid(sim_frame);
+          sh.write_buffer("x", centroid.r, centroid.c, Color::DarkYellow);
+          
+          auto aabb = sprite->calc_curr_AABB(sim_frame);
+
           auto rec = aabb.to_rectangle();
           drawing::draw_box_outline(sh, rec, drawing::OutlineType::Line, { Color::LightGray, Color::Transparent2 });
         }
