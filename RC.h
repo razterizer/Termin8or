@@ -51,6 +51,12 @@ struct RC
   {
     return { r / v, c / v };
   }
+  RC& operator/=(int v)
+  {
+    this->r /= v;
+    this->c /= v;
+    return *this;
+  }
   
   RC abs() const
   {
