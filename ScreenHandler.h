@@ -39,6 +39,8 @@ RGBA clamp(const RGBA& t) { return RGBA { math::clamp(t.r, 0., 1.), math::clamp(
 template<int NR = 30, int NC = 80>
 class ScreenHandler
 {
+  std::unique_ptr<Text> m_text;
+
   // Draw from top to bottom.
   std::array<std::array<char, NC>, NR> screen_buffer;
   std::array<std::array<Color, NC>, NR> fg_color_buffer;
@@ -75,6 +77,10 @@ class ScreenHandler
   std::vector<OrderedText> ordered_texts;
 
 public:
+  ScreenHandler()
+    : m_text(std::make_unique<Text>())
+  {}
+
   void clear()
   {
     for (auto& row : screen_buffer)
@@ -269,7 +275,7 @@ public:
     }
   }
 
-  void print_screen_buffer(Text& t, Color bg_color) const
+  void print_screen_buffer(Color bg_color) const
   {
     std::vector<std::tuple<char, Color, Color>> colored_str;
     colored_str.resize(NR*(NC + 1));
@@ -285,7 +291,7 @@ public:
       }
       colored_str[i++] = { '\n', Color::Default, Color::Default };
     }
-    t.print_complex(colored_str);
+    m_text->print_complex(colored_str);
   }
 
   void print_screen_buffer_chars() const

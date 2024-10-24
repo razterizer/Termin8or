@@ -16,7 +16,6 @@ namespace sprite_handler
   void example1()
   {
     ScreenHandler<20, 40> sh;
-    Text tt;
     SpriteHandler sprh;
     keyboard::KeyPressData kpd;
     auto keyboard = std::make_unique<keyboard::StreamKeyboard>();
@@ -184,7 +183,7 @@ namespace sprite_handler
         return_cursor();
         sh.clear();
         sprh.draw(sh, anim_frame);
-        sh.print_screen_buffer(tt, Color::Black);
+        sh.print_screen_buffer(Color::Black);
         Delay::sleep(0'200'000);
         
         kpd = keyboard->readKey();
@@ -196,7 +195,7 @@ namespace sprite_handler
     }
     
 quit:
-    end_screen(sh, tt);
+    end_screen(sh);
   }
 
 }

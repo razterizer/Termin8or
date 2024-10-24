@@ -232,14 +232,14 @@ void begin_screen()
 }
 
 template<int NR, int NC>
-void end_screen(ScreenHandler<NR, NC>& sh, Text& t)
+void end_screen(ScreenHandler<NR, NC>& sh)
 {
   auto orig_colors [[maybe_unused]] = restore_terminal_colors();
 #ifndef __APPLE__
   sh.clear();
   sh.replace_fg_color(orig_colors.fg_color);
   sh.replace_bg_color(orig_colors.bg_color);
-  sh.print_screen_buffer(t, orig_colors.bg_color);
+  sh.print_screen_buffer(orig_colors.bg_color);
 #endif
   restore_cursor();
   show_cursor();

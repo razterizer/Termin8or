@@ -146,7 +146,6 @@ protected:
   std::chrono::time_point<std::chrono::steady_clock> real_start_time_s;
   OneShot time_inited;
   
-  Text t;
   ScreenHandler<NR, NC> sh;
   
   Color bg_color = Color::Default;
@@ -261,7 +260,7 @@ public:
 private:
   void pre_quit()
   {
-    end_screen(sh, t);
+    end_screen(sh);
     if (m_params.enable_terminal_window_resize)
       if (term_win_rows > 0 && term_win_cols > 0)
         resize_terminal_window(term_win_rows, term_win_cols);
@@ -445,7 +444,7 @@ private:
         update();
     }
       
-    sh.print_screen_buffer(t, bg_color);
+    sh.print_screen_buffer(bg_color);
     //sh.print_screen_buffer_chars();
     //sh.print_screen_buffer_fg_colors();
     //sh.print_screen_buffer_bg_colors();
