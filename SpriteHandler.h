@@ -261,8 +261,26 @@ class VectorSprite : public Sprite
   
   std::vector<std::unique_ptr<VectorFrame>> vector_frames;
   
+  VectorFrame* fetch_frame(int anim_frame)
+  {
+    while (vector_frames.size() <= anim_frame)
+      vector_frames.emplace_back(std::make_unique<VectorFrame>());
+    return vector_frames[anim_frame].get();
+  }
+  
 public:
   VectorSprite(const std::string& a_name) : Sprite(a_name) {}
+  
+  void add_line_segment(int anim_frame, const RC& p0, const RC& p1, char ch, const styles::Style& style, int mat = 0)
+  {
+    auto* vector_frame = fetch_frame(anim_frame);
+    auto& line_seg = vector_frame->line_segments.emplace_back();
+    line_seg.pos[0] = p0;
+    line_seg.pos[1] = p1;
+    line_seg.ch = ch;
+    line_seg.style = style;
+    line_seg.mat = mat;
+  }
   
   const VectorFrame& get_curr_frame_vector(int sim_frame)
   {
