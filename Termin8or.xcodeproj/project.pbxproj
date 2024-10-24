@@ -16,6 +16,7 @@
 		070BE6892B406FB2009D9BFB /* GameEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameEngine.h; sourceTree = "<group>"; };
 		070BE6902B4472F3009D9BFB /* font_data_larry3d.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = font_data_larry3d.txt; sourceTree = "<group>"; };
 		070BE6912B447309009D9BFB /* font_data_smslant.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = font_data_smslant.txt; sourceTree = "<group>"; };
+		070C60C82CCAA36B00BC7F51 /* AABB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AABB.h; sourceTree = "<group>"; };
 		071CC3CA290465B3007B4B98 /* libTermin8or.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libTermin8or.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		071CC3D2290465E5007B4B98 /* Text.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Text.h; sourceTree = "<group>"; };
 		071CC3D5290466FE007B4B98 /* ScreenUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenUtils.h; sourceTree = "<group>"; };
@@ -90,6 +91,7 @@
 				07A763102B555BE100705D31 /* ParticleSystem.h */,
 				071CC3D5290466FE007B4B98 /* ScreenUtils.h */,
 				071CC3D829046819007B4B98 /* Rectangle.h */,
+				070C60C82CCAA36B00BC7F51 /* AABB.h */,
 				071CC3D72904679E007B4B98 /* ScreenHandler.h */,
 				07D007BE2CBD387200CCB5E7 /* SpriteHandler.h */,
 				07D007C72CC82CFD00CCB5E7 /* Dynamics */,
