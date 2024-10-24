@@ -9,6 +9,7 @@
 #include "Texture.h"
 #include "ScreenHandler.h"
 #include "Drawing.h"
+#include "AABB.h"
 #include <map>
 #include <memory>
 
@@ -29,7 +30,7 @@ public:
   virtual ~Sprite() = default;
   Sprite(const std::string& a_name) : name(a_name) {}
   
-  virtual ttl::Rectangle calc_curr_AABB(int /*sim_frame*/) = 0;
+  virtual AABB<int> calc_curr_AABB(int /*sim_frame*/) = 0;
 };
 
 class BitmapSprite : public Sprite
@@ -245,7 +246,7 @@ public:
     
   }
   
-  virtual ttl::Rectangle calc_curr_AABB(int /*sim_frame*/) override
+  virtual AABB<int> calc_curr_AABB(int /*sim_frame*/) override
   {
     return { pos.r, pos.c, size.r, size.c };
   }
@@ -334,27 +335,18 @@ public:
     }
   }
   
-  virtual ttl::Rectangle calc_curr_AABB(int sim_frame) override
+  virtual AABB<int> calc_curr_AABB(int sim_frame) override
   {
     auto& vector_frame = get_curr_frame(sim_frame);
-  
-    auto rmin = math::get_max<int>();
-    auto rmax = math::get_min<int>();
-    auto cmin = math::get_max<int>();
-    auto cmax = math::get_max<int>();
+
+    AABB<int> aabb;
     for (const auto& line_seg : vector_frame.line_segments)
     {
       auto [p0, p1] = calc_seg_world_pos(line_seg);
-      math::minimize(rmin, p0.r);
-      math::minimize(rmin, p1.r);
-      math::maximize(rmax, p0.r);
-      math::maximize(rmax, p1.r);
-      math::minimize(cmin, p0.c);
-      math::minimize(cmin, p1.c);
-      math::maximize(cmax, p0.c);
-      math::maximize(cmax, p1.c);
+      aabb.add_point(p0);
+      aabb.add_point(p1);
     }
-    return { rmin, cmin, rmax - rmin, cmax - cmin };
+    return aabb;
   }
 };
 
