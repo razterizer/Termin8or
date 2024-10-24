@@ -183,6 +183,7 @@ namespace sprite_handler
         return_cursor();
         sh.clear();
         sprh.draw(sh, anim_frame);
+        //sprh.draw_dbg(sh, anim_frame); // Uncomment to draw AABB.
         sh.print_screen_buffer(Color::Black);
         Delay::sleep(0'200'000);
         
@@ -242,6 +243,7 @@ quit:
       return_cursor();
       sh.clear();
       sprh.draw(sh, anim_frame);
+      //sprh.draw_dbg(sh, anim_frame); // Uncomment to draw AABB.
       sh.print_screen_buffer(Color::Black);
       Delay::sleep(0'20'000);
       
