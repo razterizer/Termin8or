@@ -18,6 +18,18 @@ namespace dynamics
   {
     float r = 0.f;
     float c = 0.f;
+    
+    Vec2(const Vec2& v)
+    {
+      r = v.r;
+      c = v.c;
+    }
+    
+    Vec2(const RC& p)
+    {
+      r = static_cast<float>(p.r);
+      c = static_cast<float>(p.c);
+    }
   };
   
   struct RigidBody
@@ -26,6 +38,14 @@ namespace dynamics
     Vec2 curr_pos;
     
     Sprite* sprite = nullptr; // Position to be controlled by this rigid body object.
+    
+    void init_from_sprite(Sprite* s)
+    {
+      sprite = s;
+      curr_pos = s->pos;
+      aabb.r = s->pos.r;
+      aabb.c = s->pos.c;
+    }
     
     void update()
     {
