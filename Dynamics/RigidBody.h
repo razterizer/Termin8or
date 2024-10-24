@@ -30,6 +30,8 @@ namespace dynamics
       r = static_cast<float>(p.r);
       c = static_cast<float>(p.c);
     }
+    
+    operator RC() { return { math::roundI(r), math::roundI(c) }; }
   };
   
   struct RigidBody
@@ -50,7 +52,7 @@ namespace dynamics
     {
       if (sprite != nullptr)
       {
-        sprite->pos = { math::roundI(curr_pos.r), math::roundI(curr_pos.c) };
+        sprite->pos = curr_pos;
         aabb = sprite->calc_curr_AABB(sim_frame).convert<float>();
       }
     }
