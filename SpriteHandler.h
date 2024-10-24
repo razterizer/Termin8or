@@ -321,6 +321,13 @@ public:
     return static_cast<BitmapSprite*>(m_sprites[sprite_name].get());
   }
   
+  VectorSprite* create_vector_sprite(const std::string& sprite_name)
+  {
+    m_sprites[sprite_name] = std::make_unique<VectorSprite>(sprite_name);
+    // We simply assume that it was successfully created.
+    return static_cast<VectorSprite*>(m_sprites[sprite_name].get());
+  }
+  
   Sprite* fetch_sprite(const std::string& sprite_name)
   {
     auto it = m_sprites.find(sprite_name);
