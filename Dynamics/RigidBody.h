@@ -8,6 +8,7 @@
 #pragma once
 #include "../Rectangle.h"
 #include "../RC.h"
+#include "../SpriteHandler.h"
 
 
 namespace dynamics
@@ -23,6 +24,14 @@ namespace dynamics
   {
     ttl::Rectangle aabb;
     Vec2 curr_pos;
+    
+    Sprite* sprite = nullptr; // Position to be controlled by this rigid body object.
+    
+    void update()
+    {
+      if (sprite != nullptr)
+        sprite->pos = { math::roundI(curr_pos.r), math::roundI(curr_pos.c) };
+    }
   };
   
   
