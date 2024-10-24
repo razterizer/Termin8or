@@ -344,8 +344,7 @@ public:
     auto cmax = math::get_max<int>();
     for (const auto& line_seg : vector_frame.line_segments)
     {
-      auto p0 = line_seg.pos[0];
-      auto p1 = line_seg.pos[1];
+      auto [p0, p1] = calc_seg_world_pos(line_seg);
       math::minimize(rmin, p0.r);
       math::minimize(rmin, p1.r);
       math::maximize(rmax, p0.r);
