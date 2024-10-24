@@ -405,4 +405,32 @@ public:
       }
     }
   }
+  
+  template<int NR, int NC>
+  void draw_dbg(ScreenHandler<NR, NC>& sh, int sim_frame) const
+  {
+    int max_layer_id = 0;
+    for (const auto& sprite_pair : m_sprites)
+      if (sprite_pair.second->enabled)
+        math::maximize(max_layer_id, sprite_pair.second->layer_id);
+      
+    for (int layer_id = max_layer_id; layer_id >= 0; --layer_id)
+    {
+      for (const auto& sprite_pair : m_sprites)
+      {
+        const auto& sprite = sprite_pair.second;
+        if (sprite->enabled && sprite->layer_id == layer_id)
+        {
+          AABB<int> aabb;
+          if (auto* bitmap_sprite = dynamic_cast<BitmapSprite*>(sprite.get()); bitmap_sprite != nullptr)
+            aabb = bitmap_sprite->calc_curr_AABB(sim_frame);
+          else if (auto* vector_sprite = dynamic_cast<VectorSprite*>(sprite.get()); vector_sprite != nullptr)
+            aabb = vector_sprite->calc_curr_AABB(sim_frame);
+            
+          auto rec = aabb.to_rectangle();
+          drawing::draw_box_outline(sh, rec, drawing::OutlineType::Line, { Color::LightGray, Color::Transparent2 });
+        }
+      }
+    }
+  }
 };
