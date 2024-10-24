@@ -297,8 +297,13 @@ public:
     
     for (const auto& line_seg : vector_frame.line_segments)
     {
-      const auto& p0 = pos + line_seg.pos[0];
-      const auto& p1 = pos + line_seg.pos[1];
+      const auto aspect_ratio = 1.5f;
+      auto r0 = pos.r + math::roundI(static_cast<float>(line_seg.pos[0].r));
+      auto c0 = pos.c + math::roundI(static_cast<float>(line_seg.pos[0].c)*aspect_ratio);
+      auto r1 = pos.r + math::roundI(static_cast<float>(line_seg.pos[1].r));
+      auto c1 = pos.c + math::roundI(static_cast<float>(line_seg.pos[1].c)*aspect_ratio);
+      RC p0 { r0, c0 };
+      RC p1 { r1, c1 };
       bresenham::plot_line(sh, p0, p1, std::string(1, line_seg.ch), line_seg.style.fg_color, line_seg.style.bg_color);
     }
   }
