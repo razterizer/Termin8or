@@ -201,7 +201,6 @@ quit:
   void example2()
   {
     ScreenHandler<20, 40> sh;
-    dynamics::CollisionHandler ch;
     SpriteHandler sprh;
     keyboard::KeyPressData kpd;
     auto keyboard = std::make_unique<keyboard::StreamKeyboard>();
