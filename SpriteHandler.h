@@ -297,8 +297,8 @@ public:
     
     for (const auto& line_seg : vector_frame.line_segments)
     {
-      const auto& p0 = line_seg.pos[0];
-      const auto& p1 = line_seg.pos[1];
+      const auto& p0 = pos + line_seg.pos[0];
+      const auto& p1 = pos + line_seg.pos[1];
       bresenham::plot_line(sh, p0, p1, std::string(1, line_seg.ch), line_seg.style.fg_color, line_seg.style.bg_color);
     }
   }
