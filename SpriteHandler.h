@@ -222,7 +222,7 @@ public:
     set_sprite_data(texture->materials, bb, mat...);
   }
   
-  const drawing::Texture& get_curr_frame_texture(int sim_frame)
+  const drawing::Texture& get_curr_frame(int sim_frame)
   {
     int frame_id = func_calc_anim_frame(sim_frame);
     if (frame_id >= texture_frames.size())
@@ -233,7 +233,7 @@ public:
   template<int NR, int NC>
   void draw(ScreenHandler<NR, NC>& sh, int sim_frame)
   {
-    auto& texture = get_curr_frame_texture(sim_frame);
+    auto& texture = get_curr_frame(sim_frame);
     
     drawing::draw_box_textured(sh,
                                pos.r - 1, pos.c - 1,
@@ -282,7 +282,7 @@ public:
     line_seg.mat = mat;
   }
   
-  const VectorFrame& get_curr_frame_vector(int sim_frame)
+  const VectorFrame& get_curr_frame(int sim_frame)
   {
     int frame_id = func_calc_anim_frame(sim_frame);
     if (frame_id >= vector_frames.size())
@@ -293,7 +293,7 @@ public:
   template<int NR, int NC>
   void draw(ScreenHandler<NR, NC>& sh, int sim_frame)
   {
-    auto& vector_frame = get_curr_frame_vector(sim_frame);
+    auto& vector_frame = get_curr_frame(sim_frame);
     
     for (const auto& line_seg : vector_frame.line_segments)
     {
