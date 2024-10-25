@@ -8,7 +8,11 @@
 #pragma once
 #include "../SpriteHandler.h"
 #include "../ScreenUtils.h"
+#include "../Dynamics/CollisionHandler.h"
+#include "../Dynamics/DynamicsSystem.h"
 
+//#define USE_DYNAMICS_SYSTEM
+//#define DBG_DRAW_SPRITES
 
 namespace sprite_handler
 {
@@ -19,6 +23,9 @@ namespace sprite_handler
     SpriteHandler sprh;
     keyboard::KeyPressData kpd;
     auto keyboard = std::make_unique<keyboard::StreamKeyboard>();
+    
+    dynamics::DynamicsSystem dyn_sys;
+    dynamics::CollisionHandler coll_handler;
     
     rnd::srand_time();
     
@@ -62,6 +69,9 @@ namespace sprite_handler
         return 2;
       return anim % 2;
     };
+    
+    sprite0->pos = { 17, 8 };
+    dyn_sys.add_rigid_body(sprite0, { -15.f, 2.5f }, { 6.f, 0.f });
     
     // ///////////////////////////////////////////////////////////
     
@@ -154,8 +164,7 @@ namespace sprite_handler
     // ///////////////////////////////////////////////////////////
     //                        LET's GO !                        //
     // ///////////////////////////////////////////////////////////
-    
-    
+        
     begin_screen();
     
     float dt = 0.01f;
@@ -163,8 +172,10 @@ namespace sprite_handler
     {
       for (int j = -5; j < sh.num_cols(); ++j)
       {
+#ifndef USE_DYNAMICS_SYSTEM
         sprite0->pos.r = i;
         sprite0->pos.c = i%2==0 ? j : 35-j;
+#endif
         
         int anim_frame = (i + 3)*44 + (j + 5);
         auto t = static_cast<float>(anim_frame)/(23.f*45.f);
@@ -180,17 +191,22 @@ namespace sprite_handler
           ast_sprite->pos.r = math::roundI(r_pos);
         }
         
+#ifdef USE_DYNAMICS_SYSTEM
+        dyn_sys.update(0.02f, anim_frame);
+#endif
         return_cursor();
         sh.clear();
         sprh.draw(sh, anim_frame);
-        //sprh.draw_dbg(sh, anim_frame); // Uncomment to draw AABB.
+#ifdef DBG_DRAW_SPRITES
+        sprh.draw_dbg(sh, anim_frame); // Uncomment to draw AABB.
+#endif
         sh.print_screen_buffer(Color::Black);
         Delay::sleep(0'200'000);
         
         kpd = keyboard->readKey();
         auto key = keyboard::get_char_key(kpd);
         auto lo_key = str::to_lower(key);
-        if (lo_key == 'q')
+        if (lo_key == 'q' || sprite0->pos.r > sh.num_rows())
           goto quit;
       }
     }
@@ -243,7 +259,9 @@ quit:
       return_cursor();
       sh.clear();
       sprh.draw(sh, anim_frame);
-      //sprh.draw_dbg(sh, anim_frame); // Uncomment to draw AABB.
+#ifdef DBG_DRAW_SPRITES
+      sprh.draw_dbg(sh, anim_frame); // Uncomment to draw AABB.
+#endif
       sh.print_screen_buffer(Color::Black);
       Delay::sleep(0'20'000);
       
