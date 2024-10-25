@@ -16,24 +16,29 @@ namespace dynamics
   
   struct RigidBody
   {
-    AABB<float> aabb;
-    Vec2 curr_pos;
+    AABB<float> curr_aabb;
+    Vec2 orig_pos;
+    Vec2 curr_centroid;
+    Vec2 centroid_to_orig_pos;
     
     Sprite* sprite = nullptr; // Position to be controlled by this rigid body object.
     
     void init_from_sprite(Sprite* s)
     {
       sprite = s;
-      curr_pos = s->pos;
-      aabb = s->calc_curr_AABB(0).convert<float>();
+      orig_pos = s->pos;
+      curr_aabb = s->calc_curr_AABB(0).convert<float>();
+      curr_centroid = s->calc_centroid(0);
+      centroid_to_orig_pos = orig_pos - curr_centroid;
     }
     
     void update(int sim_frame)
     {
       if (sprite != nullptr)
       {
-        sprite->pos = curr_pos.to_RC_round();
-        aabb = sprite->calc_curr_AABB(sim_frame).convert<float>();
+        //sprite->pos = curr_pos.to_RC_round();
+        sprite->pos = (curr_centroid + centroid_to_orig_pos).to_RC_round();
+        curr_aabb = sprite->calc_curr_AABB(sim_frame).convert<float>();
       }
     }
   };
