@@ -18,6 +18,7 @@
 		070BE6912B447309009D9BFB /* font_data_smslant.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = font_data_smslant.txt; sourceTree = "<group>"; };
 		070C60C82CCAA36B00BC7F51 /* AABB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AABB.h; sourceTree = "<group>"; };
 		070C60C92CCB097400BC7F51 /* Vec2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Vec2.h; sourceTree = "<group>"; };
+		070C60CA2CCC11A800BC7F51 /* DynamicsSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DynamicsSystem.h; sourceTree = "<group>"; };
 		071CC3CA290465B3007B4B98 /* libTermin8or.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libTermin8or.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		071CC3D2290465E5007B4B98 /* Text.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Text.h; sourceTree = "<group>"; };
 		071CC3D5290466FE007B4B98 /* ScreenUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenUtils.h; sourceTree = "<group>"; };
@@ -134,6 +135,7 @@
 			children = (
 				07D007C62CC5B9BB00CCB5E7 /* CollisionHandler.h */,
 				07D007C82CC82E0B00CCB5E7 /* RigidBody.h */,
+				070C60CA2CCC11A800BC7F51 /* DynamicsSystem.h */,
 			);
 			path = Dynamics;
 			sourceTree = "<group>";
