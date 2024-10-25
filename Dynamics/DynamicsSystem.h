@@ -21,16 +21,16 @@ namespace dynamics
   
   public:
   
-    RigidBody* add_rigid_body(Sprite* sprite)
+    RigidBody* add_rigid_body(Sprite* sprite, const Vec2& vel = {}, const Vec2& acc = {})
     {
-      auto& rb = m_rigid_bodies.emplace_back(std::make_unique<RigidBody>());
-      rb->init_from_sprite(sprite);
+      auto& rb = m_rigid_bodies.emplace_back(std::make_unique<RigidBody>(sprite, vel, acc));
       return rb.get();
     }
     
-    void update()
+    void update(float dt, int sim_frame)
     {
-      
+      for (auto& rb : m_rigid_bodies)
+        rb->update(dt, sim_frame);
     }
   };
 
