@@ -33,7 +33,9 @@ struct Vec2
     c = static_cast<float>(p.c);
   }
   
-  operator RC() { return { math::roundI(r), math::roundI(c) }; }
+  RC to_RC_round() const { return { math::roundI(r), math::roundI(c) }; }
+  
+  RC to_RC_floor() const { return { static_cast<int>(r), static_cast<int>(c) }; }
   
   const Vec2& operator+() const
   {

@@ -33,7 +33,7 @@ public:
   
   virtual AABB<int> calc_curr_AABB(int /*sim_frame*/) const = 0;
   
-  virtual RC calc_centroid(int /*sim_frame*/) const = 0;
+  virtual Vec2 calc_centroid(int /*sim_frame*/) const = 0;
 };
 
 class BitmapSprite : public Sprite
@@ -254,9 +254,9 @@ public:
     return { pos.r, pos.c, size.r, size.c };
   }
   
-  virtual RC calc_centroid(int /*sim_frame*/) const override
+  virtual Vec2 calc_centroid(int /*sim_frame*/) const override
   {
-    return { pos.r + size.r / 2, pos.c + size.c / 2 };
+    return { static_cast<float>(pos.r) + size.r * 0.5f, static_cast<float>(pos.c) + size.c * 0.5f };
   }
 };
 
@@ -304,10 +304,10 @@ class VectorSprite : public Sprite
     return { p0, p1 };
   }
   
-  std::pair<RC, RC> calc_seg_world_pos(const LineSeg& line_seg) const
+  std::pair<RC, RC> calc_seg_world_pos_round(const LineSeg& line_seg) const
   {
     auto [v0, v1] = calc_seg_world_pos_flt(line_seg);
-    return { v0, v1 };
+    return { v0.to_RC_round(), v1.to_RC_round() };
   }
   
 public:
@@ -344,7 +344,7 @@ public:
     
     for (const auto& line_seg : vector_frame.line_segments)
     {
-      auto [p0, p1] = calc_seg_world_pos(line_seg);
+      auto [p0, p1] = calc_seg_world_pos_round(line_seg);
       bresenham::plot_line(sh, p0, p1, std::string(1, line_seg.ch), line_seg.style.fg_color, line_seg.style.bg_color);
     }
   }
@@ -356,14 +356,14 @@ public:
     AABB<int> aabb;
     for (const auto& line_seg : vector_frame.line_segments)
     {
-      auto [p0, p1] = calc_seg_world_pos(line_seg);
+      auto [p0, p1] = calc_seg_world_pos_round(line_seg);
       aabb.add_point(p0);
       aabb.add_point(p1);
     }
     return aabb;
   }
   
-  virtual RC calc_centroid(int sim_frame) const override
+  virtual Vec2 calc_centroid(int sim_frame) const override
   {
     auto& vector_frame = get_curr_frame(sim_frame);
   
@@ -455,7 +455,7 @@ public:
           auto pos = sprite->pos;
           sh.write_buffer("O", pos.r, pos.c, Color::DarkGray);
           
-          auto centroid = sprite->calc_centroid(sim_frame);
+          auto centroid = sprite->calc_centroid(sim_frame).to_RC_floor();
           sh.write_buffer("x", centroid.r, centroid.c, Color::DarkYellow);
           
           auto aabb = sprite->calc_curr_AABB(sim_frame);

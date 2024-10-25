@@ -32,7 +32,7 @@ namespace dynamics
     {
       if (sprite != nullptr)
       {
-        sprite->pos = curr_pos;
+        sprite->pos = curr_pos.to_RC_round();
         aabb = sprite->calc_curr_AABB(sim_frame).convert<float>();
       }
     }
