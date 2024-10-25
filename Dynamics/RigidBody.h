@@ -28,7 +28,7 @@ namespace dynamics
       sprite = s;
       orig_pos = s->pos;
       curr_aabb = s->calc_curr_AABB(0).convert<float>();
-      curr_centroid = s->calc_centroid(0);
+      curr_centroid = s->calc_curr_centroid(0);
       centroid_to_orig_pos = orig_pos - curr_centroid;
     }
     

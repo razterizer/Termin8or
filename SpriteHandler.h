@@ -33,7 +33,7 @@ public:
   
   virtual AABB<int> calc_curr_AABB(int /*sim_frame*/) const = 0;
   
-  virtual Vec2 calc_centroid(int /*sim_frame*/) const = 0;
+  virtual Vec2 calc_curr_centroid(int /*sim_frame*/) const = 0;
 };
 
 class BitmapSprite : public Sprite
@@ -254,7 +254,7 @@ public:
     return { pos.r, pos.c, size.r, size.c };
   }
   
-  virtual Vec2 calc_centroid(int /*sim_frame*/) const override
+  virtual Vec2 calc_curr_centroid(int /*sim_frame*/) const override
   {
     return { static_cast<float>(pos.r) + size.r * 0.5f, static_cast<float>(pos.c) + size.c * 0.5f };
   }
@@ -363,7 +363,7 @@ public:
     return aabb;
   }
   
-  virtual Vec2 calc_centroid(int sim_frame) const override
+  virtual Vec2 calc_curr_centroid(int sim_frame) const override
   {
     auto& vector_frame = get_curr_frame(sim_frame);
   
@@ -455,7 +455,7 @@ public:
           auto pos = sprite->pos;
           sh.write_buffer("O", pos.r, pos.c, Color::DarkGray);
           
-          auto centroid = sprite->calc_centroid(sim_frame).to_RC_floor();
+          auto centroid = sprite->calc_curr_centroid(sim_frame).to_RC_floor();
           sh.write_buffer("x", centroid.r, centroid.c, Color::DarkYellow);
           
           auto aabb = sprite->calc_curr_AABB(sim_frame);
