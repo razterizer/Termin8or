@@ -8,6 +8,7 @@
 #pragma once
 #include "../Rectangle.h"
 #include "RigidBody.h"
+#include "DynamicsSystem.h"
 
 
 namespace dynamics
@@ -32,7 +33,7 @@ namespace dynamics
     }
     
     void rebuild_AABB_bvh(int NR, int NC,
-                          const std::vector<std::unique_ptr<RigidBody>>& rigid_bodies)
+                          const DynamicsSystem* dyn_sys)
     {
       m_aabb_bvh->children.clear();
       m_aabb_bvh->aabb = { 0.f, 0.f, static_cast<float>(NR), static_cast<float>(NC) };
