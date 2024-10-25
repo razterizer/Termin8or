@@ -5,8 +5,16 @@
 //  Created by Rasmus Anthin on 2024-10-25.
 //
 
-#ifndef DynamicsSystem_h
-#define DynamicsSystem_h
+#pragma once
 
 
-#endif /* DynamicsSystem_h */
+namespace dynamics
+{
+
+  class DynamicsSystem
+  {
+  
+  
+  };
+
+}
