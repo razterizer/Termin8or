@@ -9,6 +9,8 @@
 #include <Core/Math.h>
 #include <array>
 #include <map>
+#include <memory>
+
 
 struct OrderedText
 {
