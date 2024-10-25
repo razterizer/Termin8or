@@ -29,6 +29,16 @@ Supported platforms (including but not limited to) are:
 <img width="568" alt="image" src="https://github.com/user-attachments/assets/c3075838-7f15-4679-862e-ce47780c9b39">
 <img width="568" alt="image" src="https://github.com/user-attachments/assets/bfb04801-8969-418f-b5bd-0c24d37eb0b3">
 
+## Sprite System
+
+### Bitmap Sprites
+
+![ubuntu_elli1an7bg_360](https://github.com/user-attachments/assets/19d3a6d6-b6f1-46a6-a80f-bcc15e202404)
+
+### Vector Sprites
+![ubuntu_vhurwusqie_360](https://github.com/user-attachments/assets/35a03da6-d37d-479c-b84e-10891ac50825)
+
+---
 ## Header Files
 
 * `ASCII_Fonts.h` : API for rendering text using FIGlet fonts and allows you to style your text with different colors. Supported FIGlet fonts are:
