@@ -133,9 +133,9 @@
 		07D007C72CC82CFD00CCB5E7 /* Dynamics */ = {
 			isa = PBXGroup;
 			children = (
-				07D007C62CC5B9BB00CCB5E7 /* CollisionHandler.h */,
 				07D007C82CC82E0B00CCB5E7 /* RigidBody.h */,
 				070C60CA2CCC11A800BC7F51 /* DynamicsSystem.h */,
+				07D007C62CC5B9BB00CCB5E7 /* CollisionHandler.h */,
 			);
 			path = Dynamics;
 			sourceTree = "<group>";
