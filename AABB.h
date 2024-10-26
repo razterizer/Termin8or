@@ -7,6 +7,7 @@
 
 #pragma once
 #include "Rectangle.h"
+#include "Vec2.h"
 
 template<typename T>
 class AABB
@@ -49,6 +50,10 @@ public:
   
   std::pair<T, T> p1() const { return { rmax, cmax }; }
   
+  T height() const { return rmax - rmin + offs(); }
+  
+  T width() const { return cmax - cmin + offs(); }
+  
   void set_empty()
   {
     rmin = math::get_max<T>();
@@ -75,13 +80,33 @@ public:
     add_point(static_cast<T>(pt.r), static_cast<T>(pt.c));
   }
   
-  bool is_inside(T r, T c) const
+  void add_point(const Vec2& pt)
+  {
+    static_assert(std::is_floating_point<T>(), "ERROR in add_point_round() : Can only be used when T = float.");
+    add_point(static_cast<T>(pt.r), static_cast<T>(pt.c));
+  }
+  
+  // Only rounds if T = int.
+  void add_point_round(const Vec2& pt)
+  {
+    static_assert(std::is_integral<T>(), "ERROR in add_point_round() : Can only be used when T = int.");
+    add_point(math::roundI(pt.r), math::roundI(pt.c));
+  }
+  
+  // Only does floor if T = int.
+  void add_point_floor(const Vec2& pt)
+  {
+    static_assert(std::is_integral<T>(), "ERROR in add_point_floor() : Can only be used when T = int.");
+    add_point(static_cast<T>(pt.r), static_cast<T>(pt.c));
+  }
+  
+  bool contains(T r, T c) const
   {
     return math::in_range(r, rmin, rmax, Range::Closed)
       && math::in_range(c, cmin, cmax, Range::Closed);
   }
   
-  bool is_inside(const RC& pt) const
+  bool contains(const RC& pt) const
   {
     return is_inside(static_cast<T>(pt.r), static_cast<T>(pt.c));
   }
