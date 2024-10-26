@@ -49,6 +49,10 @@ namespace dynamics
         curr_aabb = sprite->calc_curr_AABB(sim_frame).convert<float>();
       }
     }
+    
+    Vec2 get_curr_centroid() const { return curr_centroid; }
+    
+    AABB<float> get_curr_AABB() const { return curr_aabb; }
   };
   
   
