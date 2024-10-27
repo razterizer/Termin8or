@@ -264,7 +264,7 @@ class VectorSprite : public Sprite
 {
   struct LineSeg
   {
-    std::array<RC, 2> pos;
+    std::array<Vec2, 2> pos;
     char ch = 0;
     styles::Style style;
     int mat = 0;
@@ -289,10 +289,10 @@ class VectorSprite : public Sprite
   std::pair<Vec2, Vec2> calc_seg_world_pos_flt(const LineSeg& line_seg) const
   {
     const auto aspect_ratio = 1.5f;
-    auto rr0 = static_cast<float>(line_seg.pos[0].r);
-    auto cc0 = static_cast<float>(line_seg.pos[0].c);
-    auto rr1 = static_cast<float>(line_seg.pos[1].r);
-    auto cc1 = static_cast<float>(line_seg.pos[1].c);
+    auto rr0 = line_seg.pos[0].r;
+    auto cc0 = line_seg.pos[0].c;
+    auto rr1 = line_seg.pos[1].r;
+    auto cc1 = line_seg.pos[1].c;
     float C = std::cos(rot_rad);
     float S = std::sin(rot_rad);
     auto r0 = pos.r + (C*rr0 - S*cc0);
@@ -313,7 +313,7 @@ class VectorSprite : public Sprite
 public:
   VectorSprite(const std::string& a_name) : Sprite(a_name) {}
   
-  void add_line_segment(int anim_frame, const RC& p0, const RC& p1, char ch, const styles::Style& style, int mat = 0)
+  void add_line_segment(int anim_frame, const Vec2& p0, const Vec2& p1, char ch, const styles::Style& style, int mat = 0)
   {
     auto* vector_frame = fetch_frame(anim_frame);
     auto& line_seg = vector_frame->line_segments.emplace_back();
