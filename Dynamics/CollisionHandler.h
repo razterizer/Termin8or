@@ -51,36 +51,21 @@ namespace dynamics
       });
       
       // Divide into two subsets
-      std::vector<RigidBody*> left_bodies(rigid_bodies.begin(), it_mid);
-      std::vector<RigidBody*> right_bodies(it_mid, rigid_bodies.end());
+      std::vector<RigidBody*> lower_rigid_bodies(rigid_bodies.begin(), it_mid);
+      std::vector<RigidBody*> upper_rigid_bodies(it_mid, rigid_bodies.end());
       
-      // Define child AABBs for split axis
-      if (split_axis == 0) // Horizontal split
-      {
-        float mid_r = (*it_mid)->get_curr_centroid().r;
-        AABB<float> left_aabb = { aabb.p0().first, aabb.p0().second, mid_r, aabb.width() };
-        AABB<float> right_aabb = { mid_r, aabb.p0().second, aabb.p1().first, aabb.width() };
-        
-        // Create left and right children and build recursively
-        auto& ch0 = children.emplace_back(std::make_unique<BVH_Node>());
-        ch0->build(left_aabb, left_bodies, lvl + 1);
-        
-        auto& ch1 = children.emplace_back(std::make_unique<BVH_Node>());
-        ch1->build(right_aabb, right_bodies, lvl + 1);
-      }
-      else // Vertical split
-      {
-        float mid_c = (*it_mid)->get_curr_centroid().c;
-        AABB<float> left_aabb = { aabb.p0().first, aabb.p0().second, aabb.height(), mid_c };
-        AABB<float> right_aabb = { aabb.p0().first, mid_c, aabb.height(), aabb.p1().second };
-        
-        // Create left and right children and build recursively
-        auto& ch0 = children.emplace_back(std::make_unique<BVH_Node>());
-        ch0->build(left_aabb, left_bodies, lvl + 1);
-        
-        auto& ch1 = children.emplace_back(std::make_unique<BVH_Node>());
-        ch1->build(right_aabb, right_bodies, lvl + 1);
-      }
+      AABB<float> ch0_aabb;
+      for (const auto* rb : lower_rigid_bodies)
+        ch0_aabb.grow(rb->get_curr_AABB());
+      AABB<float> ch1_aabb;
+      for (const auto* rb : upper_rigid_bodies)
+        ch1_aabb.grow(rb->get_curr_AABB());
+      
+      auto& ch0 = children.emplace_back(std::make_unique<BVH_Node>());
+      ch0->build(ch0_aabb, lower_rigid_bodies, lvl + 1);
+      
+      auto& ch1 = children.emplace_back(std::make_unique<BVH_Node>());
+      ch1->build(ch1_aabb, upper_rigid_bodies, lvl + 1);
     }
     
     template<int NR, int NC>
