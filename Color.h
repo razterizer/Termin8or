@@ -272,5 +272,21 @@ namespace color
         return Color::Default;
     }
   }
+  
+  std::vector<Color> colors_hue_light_dark
+  {
+    Color::Red,
+    Color::Yellow,
+    Color::Green,
+    Color::Cyan,
+    Color::Blue,
+    Color::Magenta,
+    Color::DarkRed,
+    Color::DarkYellow,
+    Color::DarkGreen,
+    Color::DarkCyan,
+    Color::DarkBlue,
+    Color::DarkMagenta,
+  };
 
 }
