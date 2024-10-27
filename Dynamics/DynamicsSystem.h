@@ -29,7 +29,8 @@ namespace dynamics
     
     const std::vector<RigidBody*> get_rigid_bodies_raw() const
     {
-      std::vector<RigidBody*> rigid_bodies_raw(m_rigid_bodies.size());
+      std::vector<RigidBody*> rigid_bodies_raw;
+      rigid_bodies_raw.reserve(m_rigid_bodies.size());
       for (const auto& rb : m_rigid_bodies)
         rigid_bodies_raw.emplace_back(rb.get());
       return rigid_bodies_raw;
