@@ -100,6 +100,24 @@ public:
     add_point(static_cast<T>(pt.r), static_cast<T>(pt.c));
   }
   
+  const AABB& set_union(const AABB& aabb) const
+  {
+    AABB ret;
+    math::minimize(ret.rmin, aabb.rmin);
+    math::maximize(ret.rmax, aabb.rmax);
+    math::minimize(ret.cmin, aabb.cmin);
+    math::maximize(ret.cmax, aabb.cmax);
+    return ret;
+  }
+  
+  void grow(const AABB& aabb)
+  {
+    math::minimize(rmin, aabb.rmin);
+    math::maximize(rmax, aabb.rmax);
+    math::minimize(cmin, aabb.cmin);
+    math::maximize(cmax, aabb.cmax);
+  }
+  
   bool contains(T r, T c) const
   {
     return math::in_range(r, rmin, rmax, Range::Closed)
