@@ -19,11 +19,15 @@ namespace dynamics
     AABB<float> aabb;
     RigidBody* rigid_body = nullptr;
     std::vector<std::unique_ptr<BVH_Node>> children;
+    int level = 0;
     
     // Recursive build function
-    void build(const AABB<float>& aabb_parent, std::vector<RigidBody*> rigid_bodies)
+    void build(const AABB<float>& aabb_parent, std::vector<RigidBody*> rigid_bodies, int lvl)
     {
       aabb = aabb_parent;
+      level = lvl;
+      
+      std::cout << "level = " << level << std::endl;
       
       // Base case: If there's only one body, this node becomes a leaf node
       if (rigid_bodies.size() <= 1)
@@ -61,10 +65,10 @@ namespace dynamics
         
         // Create left and right children and build recursively
         auto& ch0 = children.emplace_back(std::make_unique<BVH_Node>());
-        ch0->build(left_aabb, left_bodies);
+        ch0->build(left_aabb, left_bodies, lvl + 1);
         
         auto& ch1 = children.emplace_back(std::make_unique<BVH_Node>());
-        ch1->build(right_aabb, right_bodies);
+        ch1->build(right_aabb, right_bodies, lvl + 1);
       }
       else // Vertical split
       {
@@ -74,11 +78,21 @@ namespace dynamics
         
         // Create left and right children and build recursively
         auto& ch0 = children.emplace_back(std::make_unique<BVH_Node>());
-        ch0->build(left_aabb, left_bodies);
+        ch0->build(left_aabb, left_bodies, lvl + 1);
         
         auto& ch1 = children.emplace_back(std::make_unique<BVH_Node>());
-        ch1->build(right_aabb, right_bodies);
+        ch1->build(right_aabb, right_bodies, lvl + 1);
       }
+    }
+    
+    template<int NR, int NC>
+    void draw(ScreenHandler<NR, NC>& sh) const
+    {
+      auto rec = aabb.to_rectangle();
+      auto color = color::colors_hue_light_dark[static_cast<size_t>(level) % color::colors_hue_light_dark.size()];
+      drawing::draw_box_outline(sh, rec, drawing::OutlineType::Line, { color, Color::Transparent2 });
+      for (const auto& ch : children)
+        ch->draw(sh);
     }
   };
   
@@ -92,7 +106,7 @@ namespace dynamics
       m_aabb_bvh = std::make_unique<BVH_Node>();
     }
     
-    void rebuild_AABB_bvh(int NR, int NC,
+    void rebuild_AABB_BVH(int NR, int NC,
                           const DynamicsSystem* dyn_sys)
     {
       m_aabb_bvh->children.clear();
@@ -100,7 +114,13 @@ namespace dynamics
       auto NCf = static_cast<float>(NC);
       AABB<float> aabb { 0.f, 0.f, NRf, NCf };
       auto rigid_bodies = dyn_sys->get_rigid_bodies_raw();
-      m_aabb_bvh->build(aabb, rigid_bodies);
+      m_aabb_bvh->build(aabb, rigid_bodies, 0);
+    }
+    
+    template<int NR, int NC>
+    void draw_AABB_BVH(ScreenHandler<NR, NC>& sh) const
+    {
+      m_aabb_bvh->draw(sh);
     }
     
     void update_detection()
