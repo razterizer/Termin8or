@@ -81,4 +81,9 @@ struct Vec2
     this->c /= v;
     return *this;
   }
+  
+  std::string str() const
+  {
+    return "(" + std::to_string(r) + ", " + std::to_string(c) + ")";
+  }
 };
