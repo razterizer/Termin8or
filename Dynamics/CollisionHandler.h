@@ -26,9 +26,7 @@ namespace dynamics
     {
       aabb = aabb_parent;
       level = lvl;
-      
-      std::cout << "level = " << level << std::endl;
-      
+            
       // Base case: If there's only one body, this node becomes a leaf node
       if (rigid_bodies.size() <= 1)
       {
