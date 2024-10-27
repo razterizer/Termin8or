@@ -23,6 +23,7 @@ namespace dynamics
     Vec2 curr_centroid;
     Vec2 curr_vel;
     Vec2 curr_acc;
+    float mass = 0.f;
     
     Sprite* sprite = nullptr; // Position to be controlled by this rigid body object.
     
