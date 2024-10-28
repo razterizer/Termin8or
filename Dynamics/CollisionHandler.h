@@ -20,12 +20,14 @@ namespace dynamics
     RigidBody* rigid_body = nullptr;
     std::vector<std::unique_ptr<BVH_Node>> children;
     int level = 0;
+    int order = -1;
     
     // Recursive build function
-    void build(const AABB<float>& aabb_parent, std::vector<RigidBody*> rigid_bodies, int lvl)
+    void build(const AABB<float>& aabb_parent, std::vector<RigidBody*> rigid_bodies, int lvl, int ord = -1)
     {
       aabb = aabb_parent;
       level = lvl;
+      order = ord;
             
       // Base case: If there's only one body, this node becomes a leaf node
       if (rigid_bodies.size() <= 1)
@@ -51,29 +53,53 @@ namespace dynamics
       });
       
       // Divide into two subsets
-      std::vector<RigidBody*> lower_rigid_bodies(rigid_bodies.begin(), it_mid);
-      std::vector<RigidBody*> upper_rigid_bodies(it_mid, rigid_bodies.end());
+      std::vector<RigidBody*> first_rigid_bodies(rigid_bodies.begin(), it_mid);
+      std::vector<RigidBody*> last_rigid_bodies(it_mid, rigid_bodies.end());
+      auto rb_first_mid_aabb = (*(it_mid-1))->get_curr_AABB();
+      auto rb_last_mid_aabb = (*it_mid)->get_curr_AABB();
       
-      AABB<float> ch0_aabb;
-      for (const auto* rb : lower_rigid_bodies)
-        ch0_aabb.grow(rb->get_curr_AABB());
-      AABB<float> ch1_aabb;
-      for (const auto* rb : upper_rigid_bodies)
-        ch1_aabb.grow(rb->get_curr_AABB());
-      
-      auto& ch0 = children.emplace_back(std::make_unique<BVH_Node>());
-      ch0->build(ch0_aabb, lower_rigid_bodies, lvl + 1);
-      
-      auto& ch1 = children.emplace_back(std::make_unique<BVH_Node>());
-      ch1->build(ch1_aabb, upper_rigid_bodies, lvl + 1);
+      // Define child AABBs for split axis
+      if (split_axis == 0) // Horizontal split
+      {
+        AABB<float> first_aabb =
+          { aabb.r_min(), aabb.c_min(), rb_first_mid_aabb.r_max() - aabb.r_min(), aabb.width() };
+        AABB<float> last_aabb =
+          { rb_last_mid_aabb.r_min(), aabb.c_min(), aabb.r_max() - rb_last_mid_aabb.r_min(), aabb.width() };
+        
+        // Create left and right children and build recursively
+        auto& ch0 = children.emplace_back(std::make_unique<BVH_Node>());
+        ch0->build(first_aabb, first_rigid_bodies, lvl + 1, 0);
+        
+        auto& ch1 = children.emplace_back(std::make_unique<BVH_Node>());
+        ch1->build(last_aabb, last_rigid_bodies, lvl + 1, 1);
+      }
+      else // Vertical split
+      {
+        AABB<float> first_aabb =
+          { aabb.r_min(), aabb.c_min(), aabb.height(), rb_first_mid_aabb.c_max() - aabb.c_min() };
+        AABB<float> last_aabb =
+          { aabb.r_min(), rb_last_mid_aabb.c_min(), aabb.height(), aabb.c_max() - rb_last_mid_aabb.c_min() };
+        
+        // Create left and right children and build recursively
+        auto& ch0 = children.emplace_back(std::make_unique<BVH_Node>());
+        ch0->build(first_aabb, first_rigid_bodies, lvl + 1, 0);
+        
+        auto& ch1 = children.emplace_back(std::make_unique<BVH_Node>());
+        ch1->build(last_aabb, last_rigid_bodies, lvl + 1, 1);
+      }
     }
     
     template<int NR, int NC>
-    void draw(ScreenHandler<NR, NC>& sh) const
+    void draw(ScreenHandler<NR, NC>& sh, int start_level = -1) const
     {
-      auto rec = aabb.to_rectangle();
-      auto color = color::colors_hue_light_dark[static_cast<size_t>(level) % color::colors_hue_light_dark.size()];
-      drawing::draw_box_outline(sh, rec, drawing::OutlineType::Line, { color, Color::Transparent2 });
+      if (level >= start_level)
+      {
+        auto rec = aabb.to_rectangle();
+        auto color = color::colors_hue_light[static_cast<size_t>(level) % color::colors_hue_light.size()];
+        if (order == 1)
+          color = color::shade_color(color, color::ShadeType::Dark);
+        drawing::draw_box_outline(sh, rec, drawing::OutlineType::Line, { color, Color::Transparent2 });
+      }
       for (const auto& ch : children)
         ch->draw(sh);
     }
@@ -101,9 +127,9 @@ namespace dynamics
     }
     
     template<int NR, int NC>
-    void draw_AABB_BVH(ScreenHandler<NR, NC>& sh) const
+    void draw_AABB_BVH(ScreenHandler<NR, NC>& sh, int start_level = -1) const
     {
-      m_aabb_bvh->draw(sh);
+      m_aabb_bvh->draw(sh, start_level);
     }
     
     void update_detection()
