@@ -50,6 +50,11 @@ public:
   
   std::pair<T, T> p1() const { return { rmax, cmax }; }
   
+  T r_min() const { return rmin; }
+  T r_max() const { return rmax; }
+  T c_min() const { return cmin; }
+  T c_max() const { return cmax; }
+  
   T height() const { return rmax - rmin + offs(); }
   
   T width() const { return cmax - cmin + offs(); }
