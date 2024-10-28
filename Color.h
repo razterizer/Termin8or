@@ -273,6 +273,15 @@ namespace color
     }
   }
   
+  std::vector<Color> colors_hue_light
+  {
+    Color::Red,
+    Color::Yellow,
+    Color::Green,
+    Color::Cyan,
+    Color::Blue,
+  };
+  
   std::vector<Color> colors_hue_light_dark
   {
     Color::Red,
