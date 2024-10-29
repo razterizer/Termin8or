@@ -118,6 +118,8 @@ namespace dynamics
     }
   };
   
+  // ///////////////////////////////////////////
+  
   class CollisionHandler
   {
     std::unique_ptr<BVH_Node> m_aabb_bvh;
@@ -153,6 +155,7 @@ namespace dynamics
     void update_detection()
     {
       refit_BVH();
+      
       
     }
     
