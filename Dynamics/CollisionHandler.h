@@ -128,7 +128,7 @@ namespace dynamics
       m_aabb_bvh = std::make_unique<BVH_Node>();
     }
     
-    void rebuild_AABB_BVH(int NR, int NC,
+    void rebuild_BVH(int NR, int NC,
                           const DynamicsSystem* dyn_sys)
     {
       m_aabb_bvh->children.clear();
@@ -139,13 +139,13 @@ namespace dynamics
       m_aabb_bvh->build(aabb, rigid_bodies, 0);
     }
     
-    void refit_AABB_BVH()
+    void refit_BVH()
     {
       m_aabb_bvh->refit();
     }
     
     template<int NR, int NC>
-    void draw_AABB_BVH(ScreenHandler<NR, NC>& sh, int start_level = -1) const
+    void draw_BVH(ScreenHandler<NR, NC>& sh, int start_level = -1) const
     {
       m_aabb_bvh->draw(sh, start_level);
     }

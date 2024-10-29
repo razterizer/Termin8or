@@ -245,7 +245,7 @@ quit:
     sprite1->add_line_segment(0, { 0, 0, }, { 0, 0 }, 'O', { Color::Cyan, Color::Transparent2 });
     dyn_sys.add_rigid_body(sprite1, { -8.f, 2.5f }, { 6.f, 0.f });
     
-    coll_handler.rebuild_AABB_BVH(sh.num_rows(), sh.num_cols(), &dyn_sys);
+    coll_handler.rebuild_BVH(sh.num_rows(), sh.num_cols(), &dyn_sys);
     
     // ///////////////////////////////////////////////////////////
     //                        LET's GO !                        //
@@ -265,7 +265,7 @@ quit:
     
 #ifdef USE_DYNAMICS_SYSTEM
       dyn_sys.update(0.02f, anim_frame);
-      coll_handler.refit_AABB_BVH();
+      coll_handler.refit_BVH();
 #endif
       return_cursor();
       sh.clear();
@@ -274,7 +274,7 @@ quit:
       sprh.draw_dbg(sh, anim_frame); // Uncomment to draw AABB.
 #endif
 #ifdef DBG_DRAW_BVH
-      coll_handler.draw_AABB_BVH(sh, 0);
+      coll_handler.draw_BVH(sh, 0);
 #endif
       sh.print_screen_buffer(Color::Black);
       Delay::sleep(0'20'000);
