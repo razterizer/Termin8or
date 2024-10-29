@@ -36,6 +36,8 @@ public:
   virtual Vec2 calc_curr_centroid(int /*sim_frame*/) const = 0;
 };
 
+// /////////////////////////////////////////////////
+
 class BitmapSprite : public Sprite
 {
   // Helper function for setting any vector data
@@ -93,6 +95,11 @@ public:
   {
     size = { NR, NC };
     area = NR * NC;
+  }
+  
+  RC get_size() const
+  {
+    return size;
   }
   
   void create_frame(int anim_frame)
@@ -260,6 +267,8 @@ public:
   }
 };
 
+// /////////////////////////////////////////////////
+
 class VectorSprite : public Sprite
 {
   struct LineSeg
@@ -381,7 +390,8 @@ public:
   }
 };
 
-// /////////////////////////////////////
+// /////////////////////////////////////////////////
+// /////////////////////////////////////////////////
 
 class SpriteHandler
 {
