@@ -82,7 +82,7 @@ class BitmapSprite : public Sprite
   
   drawing::Texture* fetch_frame(int anim_frame)
   {
-    while (texture_frames.size() <= anim_frame)
+    while (stlutils::sizeI(texture_frames) <= anim_frame)
       texture_frames.emplace_back(std::make_unique<drawing::Texture>());
     return texture_frames[anim_frame].get();
   }
@@ -173,11 +173,11 @@ public:
     std::array<std::string, sizeof...(rows)> row_array = { rows... };
     
     // Check that the number of rows matches the texture's height
-    if (row_array.size() != texture->size.r)
+    if (stlutils::sizeI(row_array) != texture->size.r)
       throw std::invalid_argument("Number of strings must match the number of rows.");
     
     for (const auto& row : row_array)
-      if (row.size() != texture->size.c)
+      if (stlutils::sizeI(row) != texture->size.c)
         throw std::invalid_argument("Each string must have exactly NC characters.");
     
     // Unpack strings into the characters vector
@@ -238,7 +238,7 @@ public:
   const drawing::Texture& get_curr_frame(int sim_frame) const
   {
     int frame_id = func_calc_anim_frame(sim_frame);
-    if (frame_id >= texture_frames.size())
+    if (frame_id >= stlutils::sizeI(texture_frames))
       throw std::invalid_argument("ERROR: Incorrect frame id: " + std::to_string(frame_id) + " for sprite \"" + name + "\"! Sprite only has " + std::to_string(texture_frames.size()) + " frames.");
     return *texture_frames[frame_id];
   }
@@ -290,7 +290,7 @@ class VectorSprite : public Sprite
   
   VectorFrame* fetch_frame(int anim_frame)
   {
-    while (vector_frames.size() <= anim_frame)
+    while (stlutils::sizeI(vector_frames) <= anim_frame)
       vector_frames.emplace_back(std::make_unique<VectorFrame>());
     return vector_frames[anim_frame].get();
   }
@@ -336,7 +336,7 @@ public:
   const VectorFrame& get_curr_frame(int sim_frame) const
   {
     int frame_id = func_calc_anim_frame(sim_frame);
-    if (frame_id >= vector_frames.size())
+    if (frame_id >= stlutils::sizeI(vector_frames))
       throw std::invalid_argument("ERROR: Incorrect frame id: " + std::to_string(frame_id) + " for sprite \"" + name + "\"! Sprite only has " + std::to_string(vector_frames.size()) + " frames.");
     return *vector_frames[frame_id];
   }
