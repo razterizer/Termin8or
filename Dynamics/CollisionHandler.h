@@ -89,6 +89,19 @@ namespace dynamics
       }
     }
     
+    AABB<float> refit()
+    {
+      aabb.set_empty();
+      
+      if (rigid_body != nullptr)
+        aabb = rigid_body->get_curr_AABB();
+      else
+        for (auto& ch : children)
+          aabb.grow(ch->refit());
+        
+      return aabb;
+    }
+    
     template<int NR, int NC>
     void draw(ScreenHandler<NR, NC>& sh, int start_level = -1) const
     {
@@ -124,6 +137,11 @@ namespace dynamics
       AABB<float> aabb { 0.f, 0.f, NRf, NCf };
       auto rigid_bodies = dyn_sys->get_rigid_bodies_raw();
       m_aabb_bvh->build(aabb, rigid_bodies, 0);
+    }
+    
+    void refit_AABB_BVH()
+    {
+      m_aabb_bvh->refit();
     }
     
     template<int NR, int NC>
