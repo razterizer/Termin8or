@@ -265,7 +265,7 @@ quit:
     
 #ifdef USE_DYNAMICS_SYSTEM
       dyn_sys.update(0.02f, anim_frame);
-      coll_handler.refit_BVH();
+      coll_handler.update_detection();
 #endif
       return_cursor();
       sh.clear();
