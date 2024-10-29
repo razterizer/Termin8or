@@ -152,6 +152,7 @@ namespace dynamics
     
     void update_detection()
     {
+      refit_BVH();
       
     }
     
