@@ -176,7 +176,7 @@ namespace dynamics
       m_aabb_bvh->refit();
     }
     
-    void detect_broad_phase(std::unordered_set<std::pair<BVH_Node*, BVH_Node*>, BVHNodePairHash>& coll_pairs)
+    void detect_broad_phase(std::unordered_set<std::pair<BVH_Node*, BVH_Node*>, BVHNodePairHash>& proximity_pairs)
     {
       for (auto* leaf : m_aabb_bvh_leaves)
       {
@@ -189,7 +189,7 @@ namespace dynamics
           BVH_Node* first = order ? leaf : coll_leaf;
           BVH_Node* second = order ? coll_leaf : leaf;
           
-          coll_pairs.insert({first, second});
+          proximity_pairs.insert({first, second});
         }
       }
     }
@@ -204,9 +204,9 @@ namespace dynamics
     {
       refit_BVH();
       
-      std::unordered_set<std::pair<BVH_Node*, BVH_Node*>, BVHNodePairHash> coll_pairs;
-      detect_broad_phase(coll_pairs);
-      std::cout << "# coll proximities = " << coll_pairs.size() << std::endl;
+      std::unordered_set<std::pair<BVH_Node*, BVH_Node*>, BVHNodePairHash> proximity_pairs;
+      detect_broad_phase(proximity_pairs);
+      std::cout << "# coll proximities = " << proximity_pairs.size() << std::endl;
     }
     
     
