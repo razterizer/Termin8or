@@ -23,7 +23,9 @@ namespace dynamics
     int order = -1;
     
     // Recursive build function
-    void build(const AABB<float>& aabb_parent, std::vector<RigidBody*> rigid_bodies, int lvl, int ord = -1)
+    void build(const AABB<float>& aabb_parent, std::vector<RigidBody*> rigid_bodies,
+               std::vector<BVH_Node*>& leaves,
+               int lvl, int ord = -1)
     {
       aabb = aabb_parent;
       level = lvl;
@@ -33,6 +35,7 @@ namespace dynamics
       if (rigid_bodies.size() <= 1)
       {
         rigid_body = rigid_bodies.empty() ? nullptr : rigid_bodies[0];
+        leaves.emplace_back(this);
         return;
       }
       
@@ -68,10 +71,10 @@ namespace dynamics
         
         // Create left and right children and build recursively
         auto& ch0 = children.emplace_back(std::make_unique<BVH_Node>());
-        ch0->build(first_aabb, first_rigid_bodies, lvl + 1, 0);
+        ch0->build(first_aabb, first_rigid_bodies, leaves, lvl + 1, 0);
         
         auto& ch1 = children.emplace_back(std::make_unique<BVH_Node>());
-        ch1->build(last_aabb, last_rigid_bodies, lvl + 1, 1);
+        ch1->build(last_aabb, last_rigid_bodies, leaves, lvl + 1, 1);
       }
       else // Vertical split
       {
@@ -82,10 +85,10 @@ namespace dynamics
         
         // Create left and right children and build recursively
         auto& ch0 = children.emplace_back(std::make_unique<BVH_Node>());
-        ch0->build(first_aabb, first_rigid_bodies, lvl + 1, 0);
+        ch0->build(first_aabb, first_rigid_bodies, leaves, lvl + 1, 0);
         
         auto& ch1 = children.emplace_back(std::make_unique<BVH_Node>());
-        ch1->build(last_aabb, last_rigid_bodies, lvl + 1, 1);
+        ch1->build(last_aabb, last_rigid_bodies, leaves, lvl + 1, 1);
       }
     }
     
@@ -123,6 +126,7 @@ namespace dynamics
   class CollisionHandler
   {
     std::unique_ptr<BVH_Node> m_aabb_bvh;
+    std::vector<BVH_Node*> m_aabb_bvh_leaves;
         
   public:
     CollisionHandler()
@@ -131,14 +135,15 @@ namespace dynamics
     }
     
     void rebuild_BVH(int NR, int NC,
-                          const DynamicsSystem* dyn_sys)
+                     const DynamicsSystem* dyn_sys)
     {
       m_aabb_bvh->children.clear();
       auto NRf = static_cast<float>(NR);
       auto NCf = static_cast<float>(NC);
       AABB<float> aabb { 0.f, 0.f, NRf, NCf };
       auto rigid_bodies = dyn_sys->get_rigid_bodies_raw();
-      m_aabb_bvh->build(aabb, rigid_bodies, 0);
+      m_aabb_bvh_leaves.clear();
+      m_aabb_bvh->build(aabb, rigid_bodies, m_aabb_bvh_leaves, 0);
     }
     
     void refit_BVH()
