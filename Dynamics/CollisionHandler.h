@@ -9,6 +9,7 @@
 #include "../Rectangle.h"
 #include "RigidBody.h"
 #include "DynamicsSystem.h"
+#include <unordered_set>
 
 
 namespace dynamics
@@ -136,6 +137,15 @@ namespace dynamics
     }
   };
   
+  struct BVHNodePairHash
+  {
+    std::size_t operator()(const std::pair<BVH_Node*, BVH_Node*>& p) const noexcept
+    {
+      // Combine the hashes of the two pointers
+      return std::hash<BVH_Node*>{}(p.first) ^ (std::hash<BVH_Node*>{}(p.second) << 1);
+    }
+  };
+  
   // ///////////////////////////////////////////
   
   class CollisionHandler
@@ -166,7 +176,7 @@ namespace dynamics
       m_aabb_bvh->refit();
     }
     
-    void detect_broad_phase(std::vector<std::pair<BVH_Node*, BVH_Node*>>& coll_pairs)
+    void detect_broad_phase(std::unordered_set<std::pair<BVH_Node*, BVH_Node*>, BVHNodePairHash>& coll_pairs)
     {
       for (auto* leaf : m_aabb_bvh_leaves)
       {
@@ -174,7 +184,13 @@ namespace dynamics
         m_aabb_bvh->find_overlapping_leaves(leaf, overlapping_leaves);
         
         for (auto* coll_leaf : overlapping_leaves)
-          coll_pairs.emplace_back(leaf, coll_leaf);
+        {
+          bool order = leaf < coll_leaf;
+          BVH_Node* first = order ? leaf : coll_leaf;
+          BVH_Node* second = order ? coll_leaf : leaf;
+          
+          coll_pairs.insert({first, second});
+        }
       }
     }
     
@@ -188,9 +204,9 @@ namespace dynamics
     {
       refit_BVH();
       
-      std::vector<std::pair<BVH_Node*, BVH_Node*>> coll_pairs;
+      std::unordered_set<std::pair<BVH_Node*, BVH_Node*>, BVHNodePairHash> coll_pairs;
       detect_broad_phase(coll_pairs);
-      //std::cout << "# coll proximities = " << coll_pairs.size() << std::endl;
+      std::cout << "# coll proximities = " << coll_pairs.size() << std::endl;
     }
     
     
