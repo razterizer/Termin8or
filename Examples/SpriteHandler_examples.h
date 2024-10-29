@@ -255,7 +255,7 @@ quit:
     begin_screen();
     
     int anim_frame = 0;
-    for (int i = 0; i < 100; ++i)
+    for (int i = 0; i < 150; ++i)
     {
       float t = i / 99.f;
       float ang = t*360.f;
