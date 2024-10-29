@@ -11,8 +11,9 @@
 #include "../Dynamics/CollisionHandler.h"
 #include "../Dynamics/DynamicsSystem.h"
 
-//#define USE_DYNAMICS_SYSTEM
+#define USE_DYNAMICS_SYSTEM
 //#define DBG_DRAW_SPRITES
+#define DBG_DRAW_BVH
 
 namespace sprite_handler
 {
@@ -222,6 +223,9 @@ quit:
     keyboard::KeyPressData kpd;
     auto keyboard = std::make_unique<keyboard::StreamKeyboard>();
     
+    dynamics::DynamicsSystem dyn_sys;
+    dynamics::CollisionHandler coll_handler;
+    
     rnd::srand_time();
     
     // //////////////////////////////
@@ -232,14 +236,16 @@ quit:
     sprite0->add_line_segment(0, { 2, 2 }, { -2, 0 }, 'o', { Color::Yellow, Color::Transparent2 });
     sprite0->add_line_segment(0, { -2, 0 }, { 2, -2 }, 'o', { Color::Yellow, Color::Transparent2 });
     sprite0->add_line_segment(0, { 2, -2 }, { 2, 2 }, 'o', { Color::Yellow, Color::Transparent2 });
-    sprite0->func_calc_anim_frame = [](int sim_frame)
-    {
-      return 0;
-      //auto anim = sim_frame % 14;
-      //if (anim < 8)
-      //  return 2;
-      //return anim % 2;
-    };
+    dyn_sys.add_rigid_body(sprite0, { 4.f, -2.5f }, { -5.f, 1.f });
+    
+    auto* sprite1 = sprh.create_vector_sprite("alien");
+    sprite1->layer_id = 2;
+    sprite1->pos = { math::roundI(sh.num_rows()*0.75f), math::roundI(sh.num_cols()*0.25f) };
+    sprite1->add_line_segment(0, { 1, -0.8f }, { 1, 0.8f }, '"', { Color::Green, Color::Transparent2 });
+    sprite1->add_line_segment(0, { 0, 0, }, { 0, 0 }, 'O', { Color::Cyan, Color::Transparent2 });
+    dyn_sys.add_rigid_body(sprite1, { -8.f, 2.5f }, { 6.f, 0.f });
+    
+    coll_handler.rebuild_AABB_BVH(sh.num_rows(), sh.num_cols(), &dyn_sys);
     
     // ///////////////////////////////////////////////////////////
     //                        LET's GO !                        //
@@ -255,12 +261,20 @@ quit:
       float ang = t*360.f;
       
       sprite0->set_rotation(ang);
+      sprite1->set_rotation(-ang*0.8f);
     
+#ifdef USE_DYNAMICS_SYSTEM
+      dyn_sys.update(0.02f, anim_frame);
+      coll_handler.refit_AABB_BVH();
+#endif
       return_cursor();
       sh.clear();
       sprh.draw(sh, anim_frame);
 #ifdef DBG_DRAW_SPRITES
       sprh.draw_dbg(sh, anim_frame); // Uncomment to draw AABB.
+#endif
+#ifdef DBG_DRAW_BVH
+      coll_handler.draw_AABB_BVH(sh, 0);
 #endif
       sh.print_screen_buffer(Color::Black);
       Delay::sleep(0'20'000);
