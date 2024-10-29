@@ -105,6 +105,21 @@ namespace dynamics
       return aabb;
     }
     
+    void find_overlapping_leaves(BVH_Node* leaf, std::vector<BVH_Node*>& overlapping_leaves)
+    {
+      if (!aabb.overlaps(leaf->aabb))
+        return;
+      
+      if (rigid_body != nullptr && rigid_body != leaf->rigid_body)
+        overlapping_leaves.emplace_back(this);
+      
+      // Recursively check children
+      for (auto& ch : children)
+        if (ch->aabb.overlaps(leaf->aabb))
+          ch->find_overlapping_leaves(leaf, overlapping_leaves);
+    }
+
+    
     template<int NR, int NC>
     void draw(ScreenHandler<NR, NC>& sh, int start_level = -1) const
     {
@@ -151,6 +166,18 @@ namespace dynamics
       m_aabb_bvh->refit();
     }
     
+    void detect_broad_phase(std::vector<std::pair<BVH_Node*, BVH_Node*>>& coll_pairs)
+    {
+      for (auto* leaf : m_aabb_bvh_leaves)
+      {
+        std::vector<BVH_Node*> overlapping_leaves;
+        m_aabb_bvh->find_overlapping_leaves(leaf, overlapping_leaves);
+        
+        for (auto* coll_leaf : overlapping_leaves)
+          coll_pairs.emplace_back(leaf, coll_leaf);
+      }
+    }
+    
     template<int NR, int NC>
     void draw_BVH(ScreenHandler<NR, NC>& sh, int start_level = -1) const
     {
@@ -161,7 +188,9 @@ namespace dynamics
     {
       refit_BVH();
       
-      
+      std::vector<std::pair<BVH_Node*, BVH_Node*>> coll_pairs;
+      detect_broad_phase(coll_pairs);
+      //std::cout << "# coll proximities = " << coll_pairs.size() << std::endl;
     }
     
     
