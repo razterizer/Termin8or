@@ -194,6 +194,15 @@ namespace dynamics
       }
     }
     
+    void detect_narrow_phase(const std::unordered_set<std::pair<BVH_Node*, BVH_Node*>, BVHNodePairHash>& proximity_pairs,
+                             std::vector<std::pair<BVH_Node*, BVH_Node*>>& coll_pairs)
+    {
+      //for (const auto& prox_pair : proximity_pairs)
+      //{
+        // #FIXME: Write narrow-phase detection code here.
+      //}
+    }
+    
     template<int NR, int NC>
     void draw_BVH(ScreenHandler<NR, NC>& sh, int start_level = -1) const
     {
@@ -206,7 +215,10 @@ namespace dynamics
       
       std::unordered_set<std::pair<BVH_Node*, BVH_Node*>, BVHNodePairHash> proximity_pairs;
       detect_broad_phase(proximity_pairs);
-      std::cout << "# coll proximities = " << proximity_pairs.size() << std::endl;
+      //std::cout << "# coll proximities = " << proximity_pairs.size() << std::endl;
+      
+      std::vector<std::pair<BVH_Node*, BVH_Node*>> collision_pairs;
+      detect_narrow_phase(proximity_pairs, collision_pairs);
     }
     
     
