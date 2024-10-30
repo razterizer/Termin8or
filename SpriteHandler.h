@@ -390,6 +390,11 @@ public:
     rot_rad = math::deg2rad(rot_deg);
   }
   
+  float get_rotation() const
+  {
+    return math::rad2deg(rot_rad);
+  }
+  
   template<int NR, int NC>
   void draw(ScreenHandler<NR, NC>& sh, int sim_frame)
   {
