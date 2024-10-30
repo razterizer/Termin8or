@@ -61,7 +61,6 @@ namespace dynamics
         }
       }
       curr_cm /= num_points;
-      std::cout << curr_cm.str() << std::endl;
       cm_to_orig_pos = orig_pos - curr_cm;
       curr_vel = vel;
       curr_acc = acc;
