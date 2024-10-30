@@ -479,6 +479,24 @@ public:
 class SpriteHandler
 {
   std::map<std::string, std::unique_ptr<Sprite>> m_sprites;
+  
+  void render(int sim_frame, std::function<void(Sprite*, int)> pred) const
+  {
+    int max_layer_id = 0;
+    for (const auto& sprite_pair : m_sprites)
+      if (sprite_pair.second->enabled)
+        math::maximize(max_layer_id, sprite_pair.second->layer_id);
+      
+    for (int layer_id = max_layer_id; layer_id >= 0; --layer_id)
+    {
+      for (const auto& sprite_pair : m_sprites)
+      {
+        const auto& sprite = sprite_pair.second;
+        if (sprite->enabled && sprite->layer_id == layer_id)
+          pred(sprite.get(), sim_frame);
+      }
+    }
+  }
 
 public:
   SpriteHandler() = default;
@@ -563,54 +581,37 @@ public:
   template<int NR, int NC>
   void draw(ScreenHandler<NR, NC>& sh, int sim_frame) const
   {
-    int max_layer_id = 0;
-    for (const auto& sprite_pair : m_sprites)
-      if (sprite_pair.second->enabled)
-        math::maximize(max_layer_id, sprite_pair.second->layer_id);
-      
-    for (int layer_id = max_layer_id; layer_id >= 0; --layer_id)
+    render(sim_frame, [&sh](Sprite* sprite, int sim_frame)
     {
-      for (const auto& sprite_pair : m_sprites)
-      {
-        const auto& sprite = sprite_pair.second;
-        if (sprite->enabled && sprite->layer_id == layer_id)
-        {
-          if (auto* bitmap_sprite = dynamic_cast<BitmapSprite*>(sprite.get()); bitmap_sprite != nullptr)
-            bitmap_sprite->draw(sh, sim_frame);
-          else if (auto* vector_sprite = dynamic_cast<VectorSprite*>(sprite.get()); vector_sprite != nullptr)
-            vector_sprite->draw(sh, sim_frame);
-        }
-      }
-    }
+      if (auto* bitmap_sprite = dynamic_cast<BitmapSprite*>(sprite); bitmap_sprite != nullptr)
+        bitmap_sprite->draw(sh, sim_frame);
+      else if (auto* vector_sprite = dynamic_cast<VectorSprite*>(sprite); vector_sprite != nullptr)
+        vector_sprite->draw(sh, sim_frame);
+    });
   }
   
   template<int NR, int NC>
-  void draw_dbg(ScreenHandler<NR, NC>& sh, int sim_frame) const
+  void draw_dbg_bb(ScreenHandler<NR, NC>& sh, int sim_frame) const
   {
-    int max_layer_id = 0;
-    for (const auto& sprite_pair : m_sprites)
-      if (sprite_pair.second->enabled)
-        math::maximize(max_layer_id, sprite_pair.second->layer_id);
-      
-    for (int layer_id = max_layer_id; layer_id >= 0; --layer_id)
+    render(sim_frame, [&sh](Sprite* sprite, int sim_frame)
     {
-      for (const auto& sprite_pair : m_sprites)
-      {
-        const auto& sprite = sprite_pair.second;
-        if (sprite->enabled && sprite->layer_id == layer_id)
-        {
-          auto pos = sprite->pos;
-          sh.write_buffer("O", pos.r, pos.c, Color::DarkGray);
-          
-          auto centroid = sprite->calc_curr_centroid(sim_frame).to_RC_floor();
-          sh.write_buffer("x", centroid.r, centroid.c, Color::DarkYellow);
-          
-          auto aabb = sprite->calc_curr_AABB(sim_frame);
+      auto aabb = sprite->calc_curr_AABB(sim_frame);
 
-          auto rec = aabb.to_rectangle();
-          drawing::draw_box_outline(sh, rec, drawing::OutlineType::Line, { Color::LightGray, Color::Transparent2 });
-        }
-      }
-    }
+      auto rec = aabb.to_rectangle();
+      drawing::draw_box_outline(sh, rec, drawing::OutlineType::Line, { Color::LightGray, Color::Transparent2 });
+    });
+  }
+  
+  template<int NR, int NC>
+  void draw_dbg_pts(ScreenHandler<NR, NC>& sh, int sim_frame) const
+  {
+    render(sim_frame, [&sh](Sprite* sprite, int sim_frame)
+    {
+      auto pos = sprite->pos;
+      sh.write_buffer("O", pos.r, pos.c, Color::DarkGray);
+      
+      auto centroid = sprite->calc_curr_centroid(sim_frame).to_RC_floor();
+      sh.write_buffer("x", centroid.r, centroid.c, Color::DarkYellow);
+    });
   }
 };

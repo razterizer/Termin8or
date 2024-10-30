@@ -210,9 +210,11 @@ namespace sprite_handler
         sh.clear();
         if (dbg_draw_rigid_bodies)
           dyn_sys.draw_dbg(sh);
+        if (dbg_draw_sprites)
+          sprh.draw_dbg_pts(sh, anim_frame);
         sprh.draw(sh, anim_frame);
         if (dbg_draw_sprites)
-          sprh.draw_dbg(sh, anim_frame);
+          sprh.draw_dbg_bb(sh, anim_frame);
         sh.print_screen_buffer(Color::Black);
         Delay::sleep(0'200'000);
         
@@ -285,9 +287,11 @@ quit:
       sh.clear();
       if (dbg_draw_rigid_bodies)
         dyn_sys.draw_dbg(sh);
+      if (dbg_draw_sprites)
+        sprh.draw_dbg_pts(sh, anim_frame);
       sprh.draw(sh, anim_frame);
       if (dbg_draw_sprites)
-        sprh.draw_dbg(sh, anim_frame);
+        sprh.draw_dbg_bb(sh, anim_frame);
       if (dbg_draw_bvh)
         coll_handler.draw_BVH(sh, 0);
       sh.print_screen_buffer(Color::Black);
