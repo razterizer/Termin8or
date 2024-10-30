@@ -70,8 +70,8 @@ namespace dynamics
       , curr_acc(acc)
       , collision_material(coll_mat)
     {
-      std::cout << "name: " << s->get_name() << std::endl;
-      std::cout << "pos: " << s->pos.str() << std::endl;
+      //std::cout << "name: " << s->get_name() << std::endl;
+      //std::cout << "pos: " << s->pos.str() << std::endl;
       orig_pos = curr_pos = to_Vec2(s->pos);
       calc_cm(0);
       orig_cm_local = curr_cm_local;
