@@ -13,6 +13,7 @@
 
 #define USE_DYNAMICS_SYSTEM
 //#define DBG_DRAW_SPRITES
+#define DBG_DRAW_RIGID_BODIES
 #define DBG_DRAW_BVH
 
 namespace sprite_handler
@@ -207,6 +208,9 @@ namespace sprite_handler
 #endif
         return_cursor();
         sh.clear();
+#ifdef DBG_DRAW_RIGID_BODIES
+        dyn_sys.draw_dbg(sh);
+#endif
         sprh.draw(sh, anim_frame);
 #ifdef DBG_DRAW_SPRITES
         sprh.draw_dbg(sh, anim_frame);
@@ -279,6 +283,9 @@ quit:
 #endif
       return_cursor();
       sh.clear();
+#ifdef DBG_DRAW_RIGID_BODIES
+      dyn_sys.draw_dbg(sh);
+#endif
       sprh.draw(sh, anim_frame);
 #ifdef DBG_DRAW_SPRITES
       sprh.draw_dbg(sh, anim_frame);
