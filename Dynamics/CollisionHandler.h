@@ -152,6 +152,14 @@ namespace dynamics
   {
     std::unique_ptr<BVH_Node> m_aabb_bvh;
     std::vector<BVH_Node*> m_aabb_bvh_leaves;
+    
+    struct NarrowPhaseCollData
+    {
+      BVH_Node* node_A = nullptr;
+      BVH_Node* node_B = nullptr;
+      std::vector<int> idx_A, idx_B;
+      std::vector<Vec2> local_pos_A, local_pos_B;
+    };
         
   public:
     CollisionHandler()
@@ -195,8 +203,9 @@ namespace dynamics
     }
     
     void detect_narrow_phase(const std::unordered_set<std::pair<BVH_Node*, BVH_Node*>, BVHNodePairHash>& proximity_pairs,
-                             std::vector<std::pair<BVH_Node*, BVH_Node*>>& coll_pairs)
+                             std::vector<NarrowPhaseCollData>& coll_data)
     {
+      coll_data.reserve(proximity_pairs.size());
       for (const auto& prox_pair : proximity_pairs)
       {
         auto coll_box = prox_pair.first->aabb.set_intersect(prox_pair.first->aabb);
@@ -212,6 +221,7 @@ namespace dynamics
         auto cmax = coll_box.c_max();
         const auto& coll_mask_A = prox_pair.first->rigid_body->get_curr_coll_mask();
         const auto& coll_mask_B = prox_pair.second->rigid_body->get_curr_coll_mask();
+        NarrowPhaseCollData cdata;
         for (int r = rmin; r <= rmax; ++r)
         {
           auto r_rel_A = r - rmin_A;
@@ -225,9 +235,14 @@ namespace dynamics
             if (coll_mask_A[idx_A] && coll_mask_B[idx_B])
             {
               //std::cout << "Collision!!!" << std::endl;
+              cdata.idx_A.emplace_back(idx_A);
+              cdata.idx_B.emplace_back(idx_B);
+              cdata.local_pos_A.emplace_back(r_rel_A, c_rel_A);
+              cdata.local_pos_B.emplace_back(r_rel_B, c_rel_B);
             }
           }
         }
+        coll_data.emplace_back(cdata);
       }
     }
     
@@ -245,8 +260,9 @@ namespace dynamics
       detect_broad_phase(proximity_pairs);
       //std::cout << "# coll proximities = " << proximity_pairs.size() << std::endl;
       
-      std::vector<std::pair<BVH_Node*, BVH_Node*>> collision_pairs;
-      detect_narrow_phase(proximity_pairs, collision_pairs);
+      std::vector<NarrowPhaseCollData> collision_data;
+      detect_narrow_phase(proximity_pairs, collision_data);
+      //std::cout << "# collisions = " << collision_data.size() << std::endl;
     }
     
     
