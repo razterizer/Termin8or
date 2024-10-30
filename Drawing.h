@@ -7,9 +7,7 @@
 // Bresenham Algorithm.
 namespace bresenham
 {
-  template<int NR, int NC>
-  void plot_line_low(ScreenHandler<NR, NC>& sh, float r0, float c0, float r1, float c1,
-                     const std::string& str, Color fg_color, Color bg_color)
+  void plot_line_low(float r0, float c0, float r1, float c1, std::vector<RC>& points)
   {
     auto dr = r1 - r0;
     auto dc = c1 - c0;
@@ -24,7 +22,7 @@ namespace bresenham
     
     for (auto c : math::linspace(c0, 1.f, c1))
     {
-      sh.write_buffer(str, math::roundI(r), math::roundI(c), fg_color, bg_color);
+      points.emplace_back(math::roundI(r), math::roundI(c));
       if (D > 0)
       {
         r += ri;
@@ -35,9 +33,7 @@ namespace bresenham
     }
   }
 
-  template<int NR, int NC>
-  void plot_line_high(ScreenHandler<NR, NC>& sh, float r0, float c0, float r1, float c1,
-                      const std::string& str, Color fg_color, Color bg_color)
+  void plot_line_high(float r0, float c0, float r1, float c1, std::vector<RC>& points)
   {
     auto dr = r1 - r0;
     auto dc = c1 - c0;
@@ -52,7 +48,7 @@ namespace bresenham
     
     for (auto r : math::linspace(r0, 1.f, r1))
     {
-      sh.write_buffer(str, math::roundI(r), math::roundI(c), fg_color, bg_color);
+      points.emplace_back(math::roundI(r), math::roundI(c));
       if (D > 0)
       {
         c += ci;
@@ -62,37 +58,53 @@ namespace bresenham
         D += 2*dc;
     }
   }
+  
+  void plot_line(float r0, float c0, float r1, float c1, std::vector<RC>& points)
+  {
+    if (std::abs(r1 - r0) < std::abs(c1 - c0))
+    {
+      if (c0 > c1)
+        plot_line_low(r1, c1, r0, c0, points);
+      else
+        plot_line_low(r0, c0, r1, c1, points);
+    }
+    else
+    {
+      if (r0 > r1)
+        plot_line_high(r1, c1, r0, c0, points);
+      else
+        plot_line_high(r0, c0, r1, c1, points);
+    }
+  }
+  
+  void plot_line(const RC& p0, const RC& p1, std::vector<RC>& points)
+  {
+    plot_line(
+      static_cast<float>(p0.r),
+      static_cast<float>(p0.c), 
+      static_cast<float>(p1.r), 
+      static_cast<float>(p1.c), 
+      points);
+  }
 
   template<int NR, int NC>
   void plot_line(ScreenHandler<NR, NC>& sh, float r0, float c0, float r1, float c1,
                  const std::string& str, Color fg_color, Color bg_color)
   {
-    if (std::abs(r1 - r0) < std::abs(c1 - c0))
-    {
-      if (c0 > c1)
-        plot_line_low(sh, r1, c1, r0, c0, str, fg_color, bg_color);
-      else
-        plot_line_low(sh, r0, c0, r1, c1, str, fg_color, bg_color);
-    }
-    else
-    {
-      if (r0 > r1)
-        plot_line_high(sh, r1, c1, r0, c0, str, fg_color, bg_color);
-      else
-        plot_line_high(sh, r0, c0, r1, c1, str, fg_color, bg_color);
-    }
+    std::vector<RC> points;
+    plot_line(r0, c0, r1, c1, points);
+    for (const auto& pt : points)
+      sh.write_buffer(str, pt.r, pt.c, fg_color, bg_color);
   }
   
   template<int NR, int NC>
   void plot_line(ScreenHandler<NR, NC>& sh, const RC& p0, const RC& p1,
                  const std::string& str, Color fg_color, Color bg_color)
   {
-    plot_line(sh, 
-      static_cast<float>(p0.r), 
-      static_cast<float>(p0.c), 
-      static_cast<float>(p1.r), 
-      static_cast<float>(p1.c), 
-      str, fg_color, bg_color);
+    std::vector<RC> points;
+    plot_line(p0, p1, points);
+    for (const auto& pt : points)
+      sh.write_buffer(str, pt.r, pt.c, fg_color, bg_color);
   }
 }
 
