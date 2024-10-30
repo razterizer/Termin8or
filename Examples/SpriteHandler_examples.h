@@ -184,7 +184,7 @@ namespace sprite_handler
     {
       for (int j = -5; j < sh.num_cols(); ++j)
       {
-        if (use_dynamics_system)
+        if (!use_dynamics_system)
         {
           sprite0->pos.r = i;
           sprite0->pos.c = i%2==0 ? j : 35-j;
