@@ -27,7 +27,6 @@ namespace dynamics
     Vec2 curr_cm_local; // local pos
     Vec2 curr_cm;
     
-    Vec2 curr_pos; // world location of sprite handle pos
     Vec2 curr_vel;
     Vec2 curr_acc;
     Mtx2 curr_I;
@@ -87,10 +86,10 @@ namespace dynamics
     {
       //std::cout << "name: " << s->get_name() << std::endl;
       //std::cout << "pos: " << s->pos.str() << std::endl;
-      orig_pos = curr_pos = to_Vec2(s->pos);
+      orig_pos = to_Vec2(s->pos);
       calc_cm_and_I(0);
       orig_cm_local = curr_cm_local;
-      curr_cm = curr_pos + curr_cm_local;
+      curr_cm = orig_pos + curr_cm_local;
       curr_aabb = curr_sprite_aabb.convert<float>();
       curr_centroid = s->calc_curr_centroid(0);
       cm_to_orig_pos = orig_pos - curr_cm;
@@ -103,7 +102,6 @@ namespace dynamics
         calc_cm_and_I(sim_frame);
         curr_aabb = curr_sprite_aabb.convert<float>();
         curr_vel += curr_acc * dt;
-        //curr_pos += curr_vel * dt;
         curr_cm += curr_vel * dt;
         curr_centroid += curr_vel * dt;
         // curr_cm + (orig_pos - orig_cm) + (orig_cm_local - curr_cm_local)
