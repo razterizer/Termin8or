@@ -352,7 +352,7 @@ class VectorSprite : public Sprite
   std::pair<RC, RC> calc_seg_world_pos_round(const LineSeg& line_seg) const
   {
     auto [v0, v1] = calc_seg_world_pos_flt(line_seg);
-    return { v0.to_RC_round(), v1.to_RC_round() };
+    return { to_RC_round(v0), to_RC_round(v0) };
   }
   
 public:
@@ -626,7 +626,7 @@ public:
       auto pos = sprite->pos;
       sh.write_buffer("O", pos.r, pos.c, Color::DarkGray);
       
-      auto centroid = sprite->calc_curr_centroid(sim_frame).to_RC_floor();
+      auto centroid = to_RC_floor(sprite->calc_curr_centroid(sim_frame));
       sh.write_buffer("x", centroid.r, centroid.c, Color::DarkYellow);
     });
   }

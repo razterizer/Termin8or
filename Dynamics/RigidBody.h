@@ -72,7 +72,7 @@ namespace dynamics
     {
       std::cout << "name: " << s->get_name() << std::endl;
       std::cout << "pos: " << s->pos.str() << std::endl;
-      orig_pos = curr_pos = s->pos;
+      orig_pos = curr_pos = to_Vec2(s->pos);
       calc_cm(0);
       orig_cm_local = curr_cm_local;
       curr_cm = curr_pos + curr_cm_local;
@@ -93,7 +93,7 @@ namespace dynamics
         curr_centroid += curr_vel * dt;
         // curr_cm + (orig_pos - orig_cm) + (orig_cm_local - curr_cm_local)
         auto sprite_pos = curr_cm + cm_to_orig_pos + (curr_cm_local - orig_cm_local);
-        sprite->pos = sprite_pos.to_RC_round();
+        sprite->pos = to_RC_round(sprite_pos);
       }
     }
     

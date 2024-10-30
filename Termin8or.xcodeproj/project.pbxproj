@@ -17,7 +17,6 @@
 		070BE6902B4472F3009D9BFB /* font_data_larry3d.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = font_data_larry3d.txt; sourceTree = "<group>"; };
 		070BE6912B447309009D9BFB /* font_data_smslant.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = font_data_smslant.txt; sourceTree = "<group>"; };
 		070C60C82CCAA36B00BC7F51 /* AABB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AABB.h; sourceTree = "<group>"; };
-		070C60C92CCB097400BC7F51 /* Vec2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Vec2.h; sourceTree = "<group>"; };
 		070C60CA2CCC11A800BC7F51 /* DynamicsSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DynamicsSystem.h; sourceTree = "<group>"; };
 		071CC3CA290465B3007B4B98 /* libTermin8or.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libTermin8or.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		071CC3D2290465E5007B4B98 /* Text.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Text.h; sourceTree = "<group>"; };
@@ -98,7 +97,6 @@
 				07D007BE2CBD387200CCB5E7 /* SpriteHandler.h */,
 				07D007C72CC82CFD00CCB5E7 /* Dynamics */,
 				071CC3DA2904851A007B4B98 /* Pixel.h */,
-				070C60C92CCB097400BC7F51 /* Vec2.h */,
 				071CC3D92904839C007B4B98 /* RC.h */,
 				07E6EAA92C1241DC007BBC6B /* Styles.h */,
 				07C2A78A2C2B214300869A56 /* Texture.h */,
