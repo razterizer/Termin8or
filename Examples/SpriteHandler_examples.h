@@ -79,7 +79,7 @@ namespace sprite_handler
     };
     
     sprite0->pos = { 17, 8 };
-    dyn_sys.add_rigid_body(sprite0, { -15.f, 2.5f }, { 6.f, 0.f });
+    dyn_sys.add_rigid_body(sprite0, 1.f, { -15.f, 2.5f }, { 6.f, 0.f });
     
     // ///////////////////////////////////////////////////////////
     
@@ -250,14 +250,14 @@ quit:
     sprite0->add_line_segment(0, { 2, 2 }, { -2, 0 }, 'o', { Color::Yellow, Color::Transparent2 }, 1);
     sprite0->add_line_segment(0, { -2, 0 }, { 2, -2 }, 'o', { Color::Yellow, Color::Transparent2 }, 1);
     sprite0->add_line_segment(0, { 2, -2 }, { 2, 2 }, 'o', { Color::Yellow, Color::Transparent2 }, 1);
-    dyn_sys.add_rigid_body(sprite0, { 4.f, -2.5f }, { -5.f, 1.f });
+    dyn_sys.add_rigid_body(sprite0, 1.f, { 4.f, -2.5f }, { -5.f, 1.f }, 2.f);
     
     auto* sprite1 = sprh.create_vector_sprite("alien");
     sprite1->layer_id = 2;
     sprite1->pos = { math::roundI(sh.num_rows()*0.75f), math::roundI(sh.num_cols()*0.25f) };
     sprite1->add_line_segment(0, { 1, -0.8f }, { 1, 0.8f }, '"', { Color::Green, Color::Transparent2 }, 1);
     sprite1->add_line_segment(0, { 0, 0, }, { 0, 0 }, 'O', { Color::Cyan, Color::Transparent2 }, 1);
-    dyn_sys.add_rigid_body(sprite1, { -8.f, 2.5f }, { 6.f, 0.f });
+    dyn_sys.add_rigid_body(sprite1, 1.f, { -8.f, 2.5f }, { 6.f, 0.f }, -1.f);
     
     coll_handler.rebuild_BVH(sh.num_rows(), sh.num_cols(), &dyn_sys);
     
@@ -271,16 +271,17 @@ quit:
     int anim_frame = 0;
     for (int i = 0; i < 150; ++i)
     {
-      float t = i / 99.f;
-      float ang = t*360.f;
-      
-      sprite0->set_rotation(ang);
-      sprite1->set_rotation(-ang*0.8f);
-    
       if (use_dynamics_system)
       {
         dyn_sys.update(0.02f, anim_frame);
         coll_handler.update();
+      }
+      else
+      {
+        float t = i / 99.f;
+        float ang = t*360.f;
+        sprite0->set_rotation(ang);
+        sprite1->set_rotation(-ang*0.8f);
       }
       
       return_cursor();

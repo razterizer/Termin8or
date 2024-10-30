@@ -10,7 +10,6 @@
 #include "../RC.h"
 #include "../SpriteHandler.h"
 #include <Core/bool_vector.h>
-#include <Core/Mtx2.h>
 
 
 namespace dynamics
@@ -26,11 +25,18 @@ namespace dynamics
     Vec2 orig_cm_local; // local pos
     Vec2 curr_cm_local; // local pos
     Vec2 curr_cm;
+    float curr_ang = 0.f;
+    
+    float mass = 0.f;
+    //Mtx2 curr_I;
+    float Iz = 0.f;
     
     Vec2 curr_vel;
     Vec2 curr_acc;
-    Mtx2 curr_I;
-    float mass = 0.f;
+    Vec2 curr_force;
+    float curr_ang_vel = 0.f;
+    float curr_ang_acc = 0.f;
+    float curr_torque = 0.f;
     
     AABB<int> curr_sprite_aabb;
     AABB<float> curr_aabb;
@@ -46,7 +52,7 @@ namespace dynamics
       int rmax = curr_sprite_aabb.r_max();
       int cmin = curr_sprite_aabb.c_min();
       int cmax = curr_sprite_aabb.c_max();
-      float Ixx = 0.f, Iyy = 0.f, Ixy = 0.f;
+      float Ixx = 0.f, Iyy = 0.f; // Ixy = 0.f;
       for (int r = rmin; r <= rmax; ++r)
       {
         auto r_loc = r - rmin;
@@ -60,7 +66,7 @@ namespace dynamics
             curr_cm_local += { static_cast<float>(r_loc), static_cast<float>(c_loc) };
             Ixx += math::sq<float>(r_loc);
             Iyy += math::sq<float>(c_loc);
-            Ixy += static_cast<float>(r_loc * c_loc);
+            //Ixy += static_cast<float>(r_loc * c_loc);
             num_points++;
           }
         }
@@ -71,17 +77,24 @@ namespace dynamics
       auto density = mass / num_points;
       Ixx *= density;
       Iyy *= density;
-      Ixy *= density;
-      curr_I.m00 = Ixx;
-      curr_I.m11 = Iyy;
-      curr_I.m10 = curr_I.m01 = -Ixy;
+      //Ixy *= density;
+      //curr_I.m00 = Ixx;
+      //curr_I.m11 = Iyy;
+      //curr_I.m10 = curr_I.m01 = -Ixy;
+      Iz = Ixx + Iyy;
     }
     
   public:
-    RigidBody(Sprite* s, const Vec2& vel = {}, const Vec2& acc = {}, int coll_mat = 1)
+    RigidBody(Sprite* s, float rb_mass = 0.f,
+      const Vec2& vel = {}, const Vec2& force = {},
+      float ang_vel = 0.f, float torque = 0.f,
+      int coll_mat = 1)
       : sprite(s)
+      , mass(rb_mass)
       , curr_vel(vel)
-      , curr_acc(acc)
+      , curr_force(force)
+      , curr_ang_vel(ang_vel)
+      , curr_torque(torque)
       , collision_material(coll_mat)
     {
       //std::cout << "name: " << s->get_name() << std::endl;
@@ -99,14 +112,20 @@ namespace dynamics
     {
       if (sprite != nullptr)
       {
-        calc_cm_and_I(sim_frame);
-        curr_aabb = curr_sprite_aabb.convert<float>();
+        curr_acc = curr_force / mass;
         curr_vel += curr_acc * dt;
         curr_cm += curr_vel * dt;
         curr_centroid += curr_vel * dt;
+        curr_ang_acc = curr_torque / Iz;
+        curr_ang_vel += curr_ang_acc * dt;
+        curr_ang += curr_ang_vel * dt;
         // curr_cm + (orig_pos - orig_cm) + (orig_cm_local - curr_cm_local)
         auto sprite_pos = curr_cm + cm_to_orig_pos + (curr_cm_local - orig_cm_local);
         sprite->pos = to_RC_round(sprite_pos);
+        if (auto* vector_sprite = dynamic_cast<VectorSprite*>(sprite); vector_sprite != nullptr)
+          vector_sprite->set_rotation(math::rad2deg(curr_ang));
+        calc_cm_and_I(sim_frame);
+        curr_aabb = curr_sprite_aabb.convert<float>();
       }
     }
     
