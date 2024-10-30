@@ -352,7 +352,7 @@ class VectorSprite : public Sprite
   std::pair<RC, RC> calc_seg_world_pos_round(const LineSeg& line_seg) const
   {
     auto [v0, v1] = calc_seg_world_pos_flt(line_seg);
-    return { to_RC_round(v0), to_RC_round(v0) };
+    return { to_RC_round(v0), to_RC_round(v1) };
   }
   
 public:
