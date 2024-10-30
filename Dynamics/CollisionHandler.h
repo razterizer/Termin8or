@@ -252,7 +252,7 @@ namespace dynamics
       m_aabb_bvh->draw(sh, start_level);
     }
     
-    void update_detection()
+    void update_detection(std::vector<NarrowPhaseCollData>& collision_data)
     {
       refit_BVH();
       
@@ -260,9 +260,20 @@ namespace dynamics
       detect_broad_phase(proximity_pairs);
       //std::cout << "# coll proximities = " << proximity_pairs.size() << std::endl;
       
-      std::vector<NarrowPhaseCollData> collision_data;
       detect_narrow_phase(proximity_pairs, collision_data);
       //std::cout << "# collisions = " << collision_data.size() << std::endl;
+    }
+    
+    void update_response(const std::vector<NarrowPhaseCollData>& collision_data)
+    {
+    }
+    
+    void update()
+    {
+      std::vector<NarrowPhaseCollData> collision_data;
+      update_detection(collision_data);
+      
+      update_response(collision_data);
     }
     
     
