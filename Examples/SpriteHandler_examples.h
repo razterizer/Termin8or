@@ -54,6 +54,12 @@ namespace sprite_handler
       1, 7, 7, 7, 1,
       -2, -2, 14, -2, -2
     );
+    sprite0->set_sprite_materials(0,
+      0, 0, 0, 0, 0,
+      0, 1, 1, 1, 0,
+      1, 1, 1, 1, 1,
+      0, 0, 0, 0, 0
+    );
     ttl::Rectangle bb0 { 3, 2, 1, 1 };
     sprite0->clone_frame(1, 0);
     sprite0->set_sprite_chars(1, bb0, '#');
