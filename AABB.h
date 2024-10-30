@@ -115,6 +115,16 @@ public:
     return ret;
   }
   
+  AABB set_intersect(const AABB& aabb) const
+  {
+    AABB ret = *this;
+    math::maximize(ret.rmin, aabb.rmin);
+    math::minimize(ret.rmax, aabb.rmax);
+    math::maximize(ret.cmin, aabb.cmin);
+    math::minimize(ret.cmax, aabb.cmax);
+    return ret;
+  }
+  
   void grow(const AABB& aabb)
   {
     math::minimize(rmin, aabb.rmin);
