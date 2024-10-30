@@ -10,6 +10,7 @@
 #include "../RC.h"
 #include "../SpriteHandler.h"
 #include <Core/bool_vector.h>
+#include <Core/Mtx2.h>
 
 
 namespace dynamics
@@ -29,14 +30,15 @@ namespace dynamics
     Vec2 curr_pos; // world location of sprite handle pos
     Vec2 curr_vel;
     Vec2 curr_acc;
-    //float mass = 0.f;
+    Mtx2 curr_I;
+    float mass = 0.f;
     
     AABB<int> curr_sprite_aabb;
     AABB<float> curr_aabb;
     bool_vector curr_coll_mask;
     int collision_material = 1;
     
-    void calc_cm(int sim_frame)
+    void calc_cm_and_I(int sim_frame)
     {
       curr_sprite_aabb = sprite->calc_curr_AABB(sim_frame);
       curr_coll_mask = sprite->calc_curr_coll_mask(sim_frame, collision_material);
@@ -45,6 +47,7 @@ namespace dynamics
       int rmax = curr_sprite_aabb.r_max();
       int cmin = curr_sprite_aabb.c_min();
       int cmax = curr_sprite_aabb.c_max();
+      float Ixx = 0.f, Iyy = 0.f, Ixy = 0.f;
       for (int r = rmin; r <= rmax; ++r)
       {
         auto r_loc = r - rmin;
@@ -54,13 +57,25 @@ namespace dynamics
           auto idx = r_loc * curr_sprite_aabb.width() + c_loc;
           if (curr_coll_mask[idx])
           {
+            // #FIXME: Need to use aspect_ratio factor.
             curr_cm_local += { static_cast<float>(r_loc), static_cast<float>(c_loc) };
+            Ixx += math::sq<float>(r_loc);
+            Iyy += math::sq<float>(c_loc);
+            Ixy += static_cast<float>(r_loc * c_loc);
             num_points++;
           }
         }
       }
       curr_cm_local /= num_points;
       curr_cm_local += sprite->get_pos_offs(sim_frame);
+      
+      auto density = mass / num_points;
+      Ixx *= density;
+      Iyy *= density;
+      Ixy *= density;
+      curr_I.m00 = Ixx;
+      curr_I.m11 = Iyy;
+      curr_I.m10 = curr_I.m01 = -Ixy;
     }
     
   public:
@@ -73,7 +88,7 @@ namespace dynamics
       //std::cout << "name: " << s->get_name() << std::endl;
       //std::cout << "pos: " << s->pos.str() << std::endl;
       orig_pos = curr_pos = to_Vec2(s->pos);
-      calc_cm(0);
+      calc_cm_and_I(0);
       orig_cm_local = curr_cm_local;
       curr_cm = curr_pos + curr_cm_local;
       curr_aabb = curr_sprite_aabb.convert<float>();
@@ -85,7 +100,7 @@ namespace dynamics
     {
       if (sprite != nullptr)
       {
-        calc_cm(sim_frame);
+        calc_cm_and_I(sim_frame);
         curr_aabb = curr_sprite_aabb.convert<float>();
         curr_vel += curr_acc * dt;
         //curr_pos += curr_vel * dt;
