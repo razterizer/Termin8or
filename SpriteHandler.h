@@ -31,6 +31,8 @@ public:
   virtual ~Sprite() = default;
   Sprite(const std::string& a_name) : name(a_name) {}
   
+  const std::string& get_name() const { return name; }
+  
   virtual void clone_frame(int anim_frame, int from_anim_frame) = 0;
   
   virtual AABB<int> calc_curr_AABB(int /*sim_frame*/) const = 0;
