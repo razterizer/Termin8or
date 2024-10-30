@@ -38,6 +38,8 @@ public:
   virtual Vec2 calc_curr_centroid(int /*sim_frame*/) const = 0;
   
   virtual int num_frames() const = 0;
+  
+  virtual bool_vector calc_curr_coll_mask(int sim_frame, int collision_material) = 0;
 };
 
 // /////////////////////////////////////////////////
@@ -280,6 +282,16 @@ public:
   {
     return { static_cast<float>(pos.r) + size.r * 0.5f, static_cast<float>(pos.c) + size.c * 0.5f };
   }
+  
+  virtual bool_vector calc_curr_coll_mask(int sim_frame, int collision_material) override
+  {
+    const auto& texture = get_curr_frame(sim_frame);
+    const auto num_mats = stlutils::sizeI(texture.materials);
+    bool_vector coll_mask(num_mats);
+    for (int mat_idx = 0; mat_idx < num_mats; ++mat_idx)
+      coll_mask[mat_idx] = (texture.materials[mat_idx] == collision_material);
+    return coll_mask;
+  }
 };
 
 // /////////////////////////////////////////////////
@@ -436,6 +448,26 @@ public:
     }
     centroid /= static_cast<float>(ctr);
     return centroid;
+  }
+  
+  virtual bool_vector calc_curr_coll_mask(int sim_frame, int collision_material) override
+  {
+    auto aabb = calc_curr_AABB(sim_frame);
+    const int num_points = aabb.width()*aabb.height();
+    bool_vector coll_mask(num_points);
+    std::vector<RC> points;
+    const auto& vector_frame = get_curr_frame(sim_frame);
+    for (const auto& line_seg : vector_frame.line_segments)
+    {
+      if (line_seg.mat != collision_material)
+        continue;
+      points.clear();
+      auto [p0, p1] = calc_seg_world_pos_round(line_seg);
+      bresenham::plot_line(p0, p1, points);
+      for (const auto& pt : points)
+        coll_mask[pt.r * aabb.width() + pt.c] = true;
+    }
+    return coll_mask;
   }
 };
 
