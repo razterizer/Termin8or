@@ -472,7 +472,7 @@ public:
     return nullptr;
   }
   
-  Sprite* clone(const std::string& sprite_name, const std::string& from_sprite_name)
+  Sprite* clone_sprite(const std::string& sprite_name, const std::string& from_sprite_name)
   {
     auto sprite_src = fetch_sprite(from_sprite_name);
     if (sprite_src == nullptr)
