@@ -209,7 +209,7 @@ namespace sprite_handler
         sh.clear();
         sprh.draw(sh, anim_frame);
 #ifdef DBG_DRAW_SPRITES
-        sprh.draw_dbg(sh, anim_frame); // Uncomment to draw AABB.
+        sprh.draw_dbg(sh, anim_frame);
 #endif
         sh.print_screen_buffer(Color::Black);
         Delay::sleep(0'200'000);
@@ -281,7 +281,7 @@ quit:
       sh.clear();
       sprh.draw(sh, anim_frame);
 #ifdef DBG_DRAW_SPRITES
-      sprh.draw_dbg(sh, anim_frame); // Uncomment to draw AABB.
+      sprh.draw_dbg(sh, anim_frame);
 #endif
 #ifdef DBG_DRAW_BVH
       coll_handler.draw_BVH(sh, 0);
