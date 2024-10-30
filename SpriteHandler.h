@@ -34,6 +34,8 @@ public:
   virtual AABB<int> calc_curr_AABB(int /*sim_frame*/) const = 0;
   
   virtual Vec2 calc_curr_centroid(int /*sim_frame*/) const = 0;
+  
+  virtual int num_frames() const = 0;
 };
 
 // /////////////////////////////////////////////////
@@ -243,6 +245,11 @@ public:
     return *texture_frames[frame_id];
   }
   
+  virtual int num_frames() const override
+  {
+    return stlutils::sizeI(texture_frames);
+  }
+  
   template<int NR, int NC>
   void draw(ScreenHandler<NR, NC>& sh, int sim_frame)
   {
@@ -339,6 +346,11 @@ public:
     if (frame_id >= stlutils::sizeI(vector_frames))
       throw std::invalid_argument("ERROR: Incorrect frame id: " + std::to_string(frame_id) + " for sprite \"" + name + "\"! Sprite only has " + std::to_string(vector_frames.size()) + " frames.");
     return *vector_frames[frame_id];
+  }
+  
+  virtual int num_frames() const override
+  {
+    return stlutils::sizeI(vector_frames);
   }
   
   void set_rotation(float rot_deg)
