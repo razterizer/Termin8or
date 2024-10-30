@@ -17,14 +17,16 @@ namespace dynamics
   
   class RigidBody
   {
+    AABB<int> curr_sprite_aabb;
     AABB<float> curr_aabb;
     bool_vector curr_coll_mask;
     int collision_material = 1;
     
     Vec2 orig_pos;
-    Vec2 centroid_to_orig_pos;
+    Vec2 cm_to_orig_pos;
     
     Vec2 curr_centroid;
+    Vec2 curr_cm;
     Vec2 curr_vel;
     Vec2 curr_acc;
     //float mass = 0.f;
@@ -37,9 +39,30 @@ namespace dynamics
     {
       sprite = s;
       orig_pos = s->pos;
-      curr_aabb = s->calc_curr_AABB(0).convert<float>();
+      curr_sprite_aabb = s->calc_curr_AABB(0);
+      curr_aabb = curr_sprite_aabb.convert<float>();
+      curr_coll_mask = sprite->calc_curr_coll_mask(0, collision_material);
       curr_centroid = s->calc_curr_centroid(0);
-      centroid_to_orig_pos = orig_pos - curr_centroid;
+      int num_points = 0;
+      int rmin = curr_sprite_aabb.r_min();
+      int rmax = curr_sprite_aabb.r_max();
+      int cmin = curr_sprite_aabb.c_min();
+      int cmax = curr_sprite_aabb.c_max();
+      for (int r = rmin; r <= rmax; ++r)
+      {
+        for (int c = cmin; c <= cmax; ++c)
+        {
+          int idx = (r - rmin) * curr_sprite_aabb.width() + (c - cmin);
+          if (curr_coll_mask[idx])
+          {
+            curr_cm += { static_cast<float>(r), static_cast<float>(c) };
+            num_points++;
+          }
+        }
+      }
+      curr_cm /= num_points;
+      std::cout << curr_cm.str() << std::endl;
+      cm_to_orig_pos = orig_pos - curr_cm;
       curr_vel = vel;
       curr_acc = acc;
     }
@@ -49,13 +72,16 @@ namespace dynamics
       if (sprite != nullptr)
       {
         curr_vel += curr_acc * dt;
+        curr_cm += curr_vel * dt;
         curr_centroid += curr_vel * dt;
-        //sprite->pos = curr_pos.to_RC_round();
-        sprite->pos = (curr_centroid + centroid_to_orig_pos).to_RC_round();
-        curr_aabb = sprite->calc_curr_AABB(sim_frame).convert<float>();
+        sprite->pos = (curr_cm + cm_to_orig_pos).to_RC_round();
+        curr_sprite_aabb = sprite->calc_curr_AABB(sim_frame);
+        curr_aabb = curr_sprite_aabb.convert<float>();
         curr_coll_mask = sprite->calc_curr_coll_mask(sim_frame, collision_material);
       }
     }
+    
+    Vec2 get_curr_cm() const { return curr_cm; }
     
     Vec2 get_curr_centroid() const { return curr_centroid; }
     
