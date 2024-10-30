@@ -224,7 +224,7 @@ namespace dynamics
             auto idx_B = r_rel_B * aabb_B.width() + c_rel_B;
             if (coll_mask_A[idx_A] && coll_mask_B[idx_B])
             {
-              // collision!!!
+              //std::cout << "Collision!!!" << std::endl;
             }
           }
         }
