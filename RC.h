@@ -1,6 +1,8 @@
 #pragma once
 #include <Core/Math.h>
+#include <Core/Vec2.h>
 #include <string>
+
 
 struct RC
 {
@@ -92,3 +94,15 @@ static inline float distance_squared(const RC& ptA, const RC& ptB)
                                        static_cast<float>(ptB.r),
                                        static_cast<float>(ptB.c));
 }
+
+Vec2 to_Vec2(const RC& p)
+{
+  Vec2 v;
+  v.r = static_cast<float>(p.r);
+  v.c = static_cast<float>(p.c);
+  return v;
+}
+
+RC to_RC_round(const Vec2& v) { return { math::roundI(v.r), math::roundI(v.c) }; }
+  
+RC to_RC_floor(const Vec2& v) { return { static_cast<int>(v.r), static_cast<int>(v.c) }; }
