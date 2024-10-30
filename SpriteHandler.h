@@ -472,6 +472,49 @@ public:
     return nullptr;
   }
   
+  Sprite* clone(const std::string& sprite_name, const std::string& from_sprite_name)
+  {
+    auto sprite_src = fetch_sprite(from_sprite_name);
+    if (sprite_src == nullptr)
+      return nullptr;
+      
+    auto f_copy_base = [](Sprite* dst, Sprite* src)
+    {
+      dst->pos = src->pos;
+      dst->layer_id = src->layer_id;
+      dst->enabled = src->enabled;
+      dst->func_calc_anim_frame = src->func_calc_anim_frame;
+    };
+    
+    if (auto* sprite_src_bitmap = dynamic_cast<BitmapSprite*>(sprite_src); sprite_src_bitmap != nullptr)
+    {
+      auto* sprite_dst_bitmap = create_bitmap_sprite(sprite_name);
+      f_copy_base(sprite_dst_bitmap, sprite_src);
+      auto size = sprite_src_bitmap->get_size();
+      sprite_dst_bitmap->init(size.r, size.c);
+      for (int frame_id = 0; frame_id < sprite_src_bitmap->num_frames(); ++frame_id)
+      {
+        auto& texture = sprite_src_bitmap->get_curr_frame(frame_id);
+        sprite_dst_bitmap->set_frame(frame_id, texture);
+      }
+      return sprite_dst_bitmap;
+    }
+    if (auto* sprite_src_vector = dynamic_cast<VectorSprite*>(sprite_src); sprite_src_vector != nullptr)
+    {
+      auto* sprite_dst_vector = create_vector_sprite(sprite_name);
+      f_copy_base(sprite_dst_vector, sprite_src);
+      sprite_dst_vector->set_rotation(sprite_src_vector->get_rotation());
+      for (int frame_id = 0; frame_id < sprite_src_vector->num_frames(); ++frame_id)
+      {
+        auto& frame = sprite_src_vector->get_curr_frame(frame_id);
+        sprite_dst_vector->set_frame(frame_id, frame);
+      }
+      return sprite_dst_vector;
+    }
+    
+    return nullptr;
+  }
+  
   template<int NR, int NC>
   void draw(ScreenHandler<NR, NC>& sh, int sim_frame) const
   {
