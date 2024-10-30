@@ -41,6 +41,16 @@ namespace dynamics
       for (auto& rb : m_rigid_bodies)
         rb->update(dt, sim_frame);
     }
+    
+    template<int NR, int NC>
+    void draw_dbg(ScreenHandler<NR, NC>& sh)
+    {
+      for (auto& rb : m_rigid_bodies)
+      {
+        const auto& cm = rb->get_curr_cm();
+        sh.write_buffer("+", math::roundI(cm.r), math::roundI(cm.c), Color::Cyan);
+      }
+    }
   };
 
 }
