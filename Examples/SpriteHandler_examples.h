@@ -11,10 +11,10 @@
 #include "../Dynamics/CollisionHandler.h"
 #include "../Dynamics/DynamicsSystem.h"
 
-#define USE_DYNAMICS_SYSTEM
-//#define DBG_DRAW_SPRITES
-#define DBG_DRAW_RIGID_BODIES
-#define DBG_DRAW_BVH
+bool use_dynamics_system = true;
+bool dbg_draw_sprites = false;
+bool dbg_draw_rigid_bodies = true;
+bool dbg_draw_bvh = true;
 
 namespace sprite_handler
 {
@@ -184,10 +184,11 @@ namespace sprite_handler
     {
       for (int j = -5; j < sh.num_cols(); ++j)
       {
-#ifndef USE_DYNAMICS_SYSTEM
-        sprite0->pos.r = i;
-        sprite0->pos.c = i%2==0 ? j : 35-j;
-#endif
+        if (use_dynamics_system)
+        {
+          sprite0->pos.r = i;
+          sprite0->pos.c = i%2==0 ? j : 35-j;
+        }
         
         int anim_frame = (i + 3)*44 + (j + 5);
         auto t = static_cast<float>(anim_frame)/(23.f*45.f);
@@ -203,18 +204,15 @@ namespace sprite_handler
           ast_sprite->pos.r = math::roundI(r_pos);
         }
         
-#ifdef USE_DYNAMICS_SYSTEM
-        dyn_sys.update(0.02f, anim_frame);
-#endif
+        if (use_dynamics_system)
+          dyn_sys.update(0.02f, anim_frame);
         return_cursor();
         sh.clear();
-#ifdef DBG_DRAW_RIGID_BODIES
-        dyn_sys.draw_dbg(sh);
-#endif
+        if (dbg_draw_rigid_bodies)
+          dyn_sys.draw_dbg(sh);
         sprh.draw(sh, anim_frame);
-#ifdef DBG_DRAW_SPRITES
-        sprh.draw_dbg(sh, anim_frame);
-#endif
+        if (dbg_draw_sprites)
+          sprh.draw_dbg(sh, anim_frame);
         sh.print_screen_buffer(Color::Black);
         Delay::sleep(0'200'000);
         
@@ -277,22 +275,21 @@ quit:
       sprite0->set_rotation(ang);
       sprite1->set_rotation(-ang*0.8f);
     
-#ifdef USE_DYNAMICS_SYSTEM
-      dyn_sys.update(0.02f, anim_frame);
-      coll_handler.update_detection();
-#endif
+      if (use_dynamics_system)
+      {
+        dyn_sys.update(0.02f, anim_frame);
+        coll_handler.update_detection();
+      }
+      
       return_cursor();
       sh.clear();
-#ifdef DBG_DRAW_RIGID_BODIES
-      dyn_sys.draw_dbg(sh);
-#endif
+      if (dbg_draw_rigid_bodies)
+        dyn_sys.draw_dbg(sh);
       sprh.draw(sh, anim_frame);
-#ifdef DBG_DRAW_SPRITES
-      sprh.draw_dbg(sh, anim_frame);
-#endif
-#ifdef DBG_DRAW_BVH
-      coll_handler.draw_BVH(sh, 0);
-#endif
+      if (dbg_draw_sprites)
+        sprh.draw_dbg(sh, anim_frame);
+      if (dbg_draw_bvh)
+        coll_handler.draw_BVH(sh, 0);
       sh.print_screen_buffer(Color::Black);
       Delay::sleep(0'20'000);
       
