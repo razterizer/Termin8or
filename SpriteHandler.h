@@ -42,6 +42,8 @@ public:
   virtual int num_frames() const = 0;
   
   virtual bool_vector calc_curr_coll_mask(int sim_frame, int collision_material) = 0;
+  
+  virtual Vec2 get_pos_offs(int sim_frame) const = 0;
 };
 
 // /////////////////////////////////////////////////
@@ -294,6 +296,11 @@ public:
       coll_mask[mat_idx] = (texture.materials[mat_idx] == collision_material);
     return coll_mask;
   }
+  
+  virtual Vec2 get_pos_offs(int /*sim_frame*/) const override
+  {
+    return {};
+  }
 };
 
 // /////////////////////////////////////////////////
@@ -472,6 +479,13 @@ public:
         coll_mask[(pt.r - rmin) * aabb.width() + (pt.c - cmin)] = true;
     }
     return coll_mask;
+  }
+  
+  virtual Vec2 get_pos_offs(int sim_frame) const override
+  {
+    auto aabb = calc_curr_AABB(sim_frame);
+    Vec2 p0 { static_cast<float>(aabb.r_min()), static_cast<float>(aabb.c_min()) };
+    return p0 - calc_curr_centroid(sim_frame);
   }
 };
 
