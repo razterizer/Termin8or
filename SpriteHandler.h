@@ -31,6 +31,8 @@ public:
   virtual ~Sprite() = default;
   Sprite(const std::string& a_name) : name(a_name) {}
   
+  virtual void clone_frame(int anim_frame, int from_anim_frame) = 0;
+  
   virtual AABB<int> calc_curr_AABB(int /*sim_frame*/) const = 0;
   
   virtual Vec2 calc_curr_centroid(int /*sim_frame*/) const = 0;
@@ -131,9 +133,9 @@ public:
     texture->save(file_path);
   }
   
-  void clone_frame(int anim_frame, int from_anim_frame)
+  virtual void clone_frame(int anim_frame, int from_anim_frame) override
   {
-    const auto N = static_cast<int>(texture_frames.size());
+    const auto N = stlutils::sizeI(texture_frames);
     if (from_anim_frame < N)
     {
       if (anim_frame >= N)
@@ -338,6 +340,24 @@ public:
     line_seg.ch = ch;
     line_seg.style = style;
     line_seg.mat = mat;
+  }
+  
+  virtual void clone_frame(int anim_frame, int from_anim_frame) override
+  {
+    const auto N = stlutils::sizeI(vector_frames);
+    if (from_anim_frame < N)
+    {
+      if (anim_frame >= N)
+      {
+        auto* frame_from = fetch_frame(from_anim_frame);
+        fetch_frame(anim_frame);
+        vector_frames[anim_frame] = std::make_unique<VectorFrame>(*frame_from);
+      }
+      else
+        std::cout << "ERROR in clone_frame() : anim_frame must be larger than or equal to the number of vector frames!" << std::endl;
+    }
+    else
+      std::cout << "ERROR in clone_frame() : from_anim_frame cannot be larger than or equal to the number of vector frames!" << std::endl;
   }
   
   const VectorFrame& get_curr_frame(int sim_frame) const
