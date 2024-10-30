@@ -105,9 +105,9 @@ public:
     add_point(static_cast<T>(pt.r), static_cast<T>(pt.c));
   }
   
-  const AABB& set_union(const AABB& aabb) const
+  AABB set_union(const AABB& aabb) const
   {
-    AABB ret;
+    AABB ret = *this;
     math::minimize(ret.rmin, aabb.rmin);
     math::maximize(ret.rmax, aabb.rmax);
     math::minimize(ret.cmin, aabb.cmin);
