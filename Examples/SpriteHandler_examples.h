@@ -98,6 +98,10 @@ namespace sprite_handler
       Color::Transparent2, Color::Transparent2, Color::Transparent2,
       Color::Transparent2, Color::DarkYellow, Color::Transparent2
     );
+    sprite1->set_sprite_materials(0,
+      0, 1, 0,
+      1, 1, 1
+    );
     ttl::Rectangle bbL { 1, 0, 1, 1 }, bbR { 1, 2, 1, 1 };
     sprite1->clone_frame(1, 0);
     sprite1->set_sprite_chars(1, bbL, '#');
