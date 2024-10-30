@@ -280,7 +280,7 @@ quit:
       if (use_dynamics_system)
       {
         dyn_sys.update(0.02f, anim_frame);
-        coll_handler.update_detection();
+        coll_handler.update();
       }
       
       return_cursor();
