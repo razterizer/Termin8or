@@ -453,6 +453,8 @@ public:
   virtual bool_vector calc_curr_coll_mask(int sim_frame, int collision_material) override
   {
     auto aabb = calc_curr_AABB(sim_frame);
+    auto rmin = aabb.r_min();
+    auto cmin = aabb.c_min();
     const int num_points = aabb.width()*aabb.height();
     bool_vector coll_mask(num_points);
     std::vector<RC> points;
@@ -465,7 +467,7 @@ public:
       auto [p0, p1] = calc_seg_world_pos_round(line_seg);
       bresenham::plot_line(p0, p1, points);
       for (const auto& pt : points)
-        coll_mask[pt.r * aabb.width() + pt.c] = true;
+        coll_mask[(pt.r - rmin) * aabb.width() + (pt.c - cmin)] = true;
     }
     return coll_mask;
   }
