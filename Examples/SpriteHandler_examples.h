@@ -87,7 +87,7 @@ namespace sprite_handler
     sprite1->init(2, 3);
     sprite1->create_frame(0);
     sprite1->set_sprite_chars(0,
-      ' ', '^', ' ',
+      ' ', 'Y', ' ',
       '%', 'U', '%'
     );
     sprite1->set_sprite_fg_colors(0,
