@@ -9,6 +9,7 @@
 #include "../Rectangle.h"
 #include "../RC.h"
 #include "../SpriteHandler.h"
+#include <Core/bool_vector.h>
 
 
 namespace dynamics
@@ -17,6 +18,9 @@ namespace dynamics
   class RigidBody
   {
     AABB<float> curr_aabb;
+    bool_vector curr_coll_mask;
+    int collision_material = 1;
+    
     Vec2 orig_pos;
     Vec2 centroid_to_orig_pos;
     
@@ -28,7 +32,8 @@ namespace dynamics
     Sprite* sprite = nullptr; // Position to be controlled by this rigid body object.
     
   public:
-    RigidBody(Sprite* s, const Vec2& vel = {}, const Vec2& acc = {})
+    RigidBody(Sprite* s, const Vec2& vel = {}, const Vec2& acc = {}, int coll_mat = 1)
+      : collision_material(coll_mat)
     {
       sprite = s;
       orig_pos = s->pos;
@@ -48,6 +53,7 @@ namespace dynamics
         //sprite->pos = curr_pos.to_RC_round();
         sprite->pos = (curr_centroid + centroid_to_orig_pos).to_RC_round();
         curr_aabb = sprite->calc_curr_AABB(sim_frame).convert<float>();
+        curr_coll_mask = sprite->calc_curr_coll_mask(sim_frame, collision_material);
       }
     }
     
