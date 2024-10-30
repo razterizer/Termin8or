@@ -10,7 +10,7 @@
 #include "ScreenHandler.h"
 #include "Drawing.h"
 #include "AABB.h"
-#include "Vec2.h"
+#include <Core/Vec2.h>
 #include <map>
 #include <memory>
 

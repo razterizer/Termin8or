@@ -7,7 +7,7 @@
 
 #pragma once
 #include "Rectangle.h"
-#include "Vec2.h"
+#include <Core/Vec2.h>
 
 template<typename T>
 class AABB
