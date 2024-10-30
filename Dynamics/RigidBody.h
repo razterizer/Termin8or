@@ -102,6 +102,8 @@ namespace dynamics
     Vec2 get_curr_centroid() const { return curr_centroid; }
     
     AABB<float> get_curr_AABB() const { return curr_aabb; }
+    
+    const bool_vector& get_curr_coll_mask() const { return curr_coll_mask; }
   };
   
   
