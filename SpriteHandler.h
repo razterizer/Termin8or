@@ -151,6 +151,12 @@ public:
       std::cout << "ERROR in clone_frame() : from_anim_frame cannot be larger than or equal to the number of texture frames!" << std::endl;
   }
   
+  void set_frame(int anim_frame, const drawing::Texture& texture)
+  {
+    auto* texture_dst = fetch_frame(anim_frame);
+    *texture_dst = texture;
+  }
+  
   // #FIXME: Perhaps move these varyadic functions to Texture for more versatility.
   
   // Set sprite characters
@@ -358,6 +364,12 @@ public:
     }
     else
       std::cout << "ERROR in clone_frame() : from_anim_frame cannot be larger than or equal to the number of vector frames!" << std::endl;
+  }
+  
+  void set_frame(int anim_frame, const VectorFrame& frame)
+  {
+    auto* frame_dst = fetch_frame(anim_frame);
+    *frame_dst = frame;
   }
   
   const VectorFrame& get_curr_frame(int sim_frame) const
