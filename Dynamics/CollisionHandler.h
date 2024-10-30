@@ -197,10 +197,38 @@ namespace dynamics
     void detect_narrow_phase(const std::unordered_set<std::pair<BVH_Node*, BVH_Node*>, BVHNodePairHash>& proximity_pairs,
                              std::vector<std::pair<BVH_Node*, BVH_Node*>>& coll_pairs)
     {
-      //for (const auto& prox_pair : proximity_pairs)
-      //{
-        // #FIXME: Write narrow-phase detection code here.
-      //}
+      for (const auto& prox_pair : proximity_pairs)
+      {
+        auto coll_box = prox_pair.first->aabb.set_intersect(prox_pair.first->aabb);
+        const auto& aabb_A = prox_pair.first->aabb;
+        const auto& aabb_B = prox_pair.second->aabb;
+        auto rmin_A = aabb_A.r_min();
+        auto cmin_A = aabb_A.c_min();
+        auto rmin_B = aabb_B.r_min();
+        auto cmin_B = aabb_B.c_min();
+        auto rmin = coll_box.r_min();
+        auto rmax = coll_box.r_max();
+        auto cmin = coll_box.c_min();
+        auto cmax = coll_box.c_max();
+        const auto& coll_mask_A = prox_pair.first->rigid_body->get_curr_coll_mask();
+        const auto& coll_mask_B = prox_pair.second->rigid_body->get_curr_coll_mask();
+        for (int r = rmin; r <= rmax; ++r)
+        {
+          auto r_rel_A = r - rmin_A;
+          auto r_rel_B = r - rmin_B;
+          for (int c = cmin; c <= cmax; ++c)
+          {
+            auto c_rel_A = c - cmin_A;
+            auto c_rel_B = c - cmin_B;
+            auto idx_A = r_rel_A * aabb_A.width() + c_rel_A;
+            auto idx_B = r_rel_B * aabb_B.width() + c_rel_B;
+            if (coll_mask_A[idx_A] && coll_mask_B[idx_B])
+            {
+              // collision!!!
+            }
+          }
+        }
+      }
     }
     
     template<int NR, int NC>
