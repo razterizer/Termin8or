@@ -37,10 +37,10 @@ namespace sprite_handler
     sprite0->init(4, 5);
     sprite0->create_frame(0);
     sprite0->set_sprite_chars_from_strings(0,
-      "  _  ",
-      " /#\\ ",
-      "[---]",
-      "  #  "
+      R"(  _  )",
+      R"( /#\ )",
+      R"([---])",
+      R"(  #  )"
     );
     sprite0->set_sprite_fg_colors(0,
       0, 0, 16, 0, 0,
