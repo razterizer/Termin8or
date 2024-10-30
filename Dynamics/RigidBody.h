@@ -17,32 +17,29 @@ namespace dynamics
   
   class RigidBody
   {
+    Sprite* sprite = nullptr; // Position to be controlled by this rigid body object.
+    
+    Vec2 orig_pos; // world location of sprite handle pos
+    Vec2 cm_to_orig_pos;
+    Vec2 curr_centroid; // world pos
+    Vec2 orig_cm_local; // local pos
+    Vec2 curr_cm_local; // local pos
+    Vec2 curr_cm;
+    
+    Vec2 curr_pos; // world location of sprite handle pos
+    Vec2 curr_vel;
+    Vec2 curr_acc;
+    //float mass = 0.f;
+    
     AABB<int> curr_sprite_aabb;
     AABB<float> curr_aabb;
     bool_vector curr_coll_mask;
     int collision_material = 1;
     
-    Vec2 orig_pos;
-    Vec2 cm_to_orig_pos;
-    
-    Vec2 curr_centroid;
-    Vec2 curr_cm;
-    Vec2 curr_vel;
-    Vec2 curr_acc;
-    //float mass = 0.f;
-    
-    Sprite* sprite = nullptr; // Position to be controlled by this rigid body object.
-    
-  public:
-    RigidBody(Sprite* s, const Vec2& vel = {}, const Vec2& acc = {}, int coll_mat = 1)
-      : collision_material(coll_mat)
+    void calc_cm(int sim_frame)
     {
-      sprite = s;
-      orig_pos = s->pos;
-      curr_sprite_aabb = s->calc_curr_AABB(0);
-      curr_aabb = curr_sprite_aabb.convert<float>();
-      curr_coll_mask = sprite->calc_curr_coll_mask(0, collision_material);
-      curr_centroid = s->calc_curr_centroid(0);
+      curr_sprite_aabb = sprite->calc_curr_AABB(sim_frame);
+      curr_coll_mask = sprite->calc_curr_coll_mask(sim_frame, collision_material);
       int num_points = 0;
       int rmin = curr_sprite_aabb.r_min();
       int rmax = curr_sprite_aabb.r_max();
@@ -50,33 +47,53 @@ namespace dynamics
       int cmax = curr_sprite_aabb.c_max();
       for (int r = rmin; r <= rmax; ++r)
       {
+        auto r_loc = r - rmin;
         for (int c = cmin; c <= cmax; ++c)
         {
-          int idx = (r - rmin) * curr_sprite_aabb.width() + (c - cmin);
+          auto c_loc = c - cmin;
+          auto idx = r_loc * curr_sprite_aabb.width() + c_loc;
           if (curr_coll_mask[idx])
           {
-            curr_cm += { static_cast<float>(r), static_cast<float>(c) };
+            curr_cm_local += { static_cast<float>(r_loc), static_cast<float>(c_loc) };
             num_points++;
           }
         }
       }
-      curr_cm /= num_points;
+      curr_cm_local /= num_points;
+      curr_cm_local += sprite->get_pos_offs(sim_frame);
+    }
+    
+  public:
+    RigidBody(Sprite* s, const Vec2& vel = {}, const Vec2& acc = {}, int coll_mat = 1)
+      : sprite(s)
+      , curr_vel(vel)
+      , curr_acc(acc)
+      , collision_material(coll_mat)
+    {
+      std::cout << "name: " << s->get_name() << std::endl;
+      std::cout << "pos: " << s->pos.str() << std::endl;
+      orig_pos = curr_pos = s->pos;
+      calc_cm(0);
+      orig_cm_local = curr_cm_local;
+      curr_cm = curr_pos + curr_cm_local;
+      curr_aabb = curr_sprite_aabb.convert<float>();
+      curr_centroid = s->calc_curr_centroid(0);
       cm_to_orig_pos = orig_pos - curr_cm;
-      curr_vel = vel;
-      curr_acc = acc;
     }
     
     void update(float dt, int sim_frame)
     {
       if (sprite != nullptr)
       {
+        calc_cm(sim_frame);
+        curr_aabb = curr_sprite_aabb.convert<float>();
         curr_vel += curr_acc * dt;
+        //curr_pos += curr_vel * dt;
         curr_cm += curr_vel * dt;
         curr_centroid += curr_vel * dt;
-        sprite->pos = (curr_cm + cm_to_orig_pos).to_RC_round();
-        curr_sprite_aabb = sprite->calc_curr_AABB(sim_frame);
-        curr_aabb = curr_sprite_aabb.convert<float>();
-        curr_coll_mask = sprite->calc_curr_coll_mask(sim_frame, collision_material);
+        // curr_cm + (orig_pos - orig_cm) + (orig_cm_local - curr_cm_local)
+        auto sprite_pos = curr_cm + cm_to_orig_pos + (curr_cm_local - orig_cm_local);
+        sprite->pos = sprite_pos.to_RC_round();
       }
     }
     
