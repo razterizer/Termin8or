@@ -515,6 +515,17 @@ public:
     return nullptr;
   }
   
+  template<int NS>
+  std::array<Sprite*, NS> clone_sprite_array(const std::string& sprite_base_name, const std::string& from_sprite_name)
+  {
+    std::array<Sprite*, NS> sprite_arr;
+    
+    for (int sprite_idx = 0; sprite_idx < NS; ++sprite_idx)
+      sprite_arr[sprite_idx] = clone_sprite(sprite_base_name + std::to_string(sprite_idx), from_sprite_name);
+    
+    return sprite_arr;
+  }
+  
   template<int NR, int NC>
   void draw(ScreenHandler<NR, NC>& sh, int sim_frame) const
   {
