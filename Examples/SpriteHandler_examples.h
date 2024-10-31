@@ -13,8 +13,8 @@
 
 bool use_dynamics_system = true;
 bool dbg_draw_sprites = false;
-bool dbg_draw_rigid_bodies = true;
-bool dbg_draw_bvh = true;
+bool dbg_draw_rigid_bodies = false;
+bool dbg_draw_bvh = false;
 
 namespace sprite_handler
 {
@@ -250,14 +250,14 @@ quit:
     sprite0->add_line_segment(0, { 2, 2 }, { -2, 0 }, 'o', { Color::Yellow, Color::Transparent2 }, 1);
     sprite0->add_line_segment(0, { -2, 0 }, { 2, -2 }, 'o', { Color::Yellow, Color::Transparent2 }, 1);
     sprite0->add_line_segment(0, { 2, -2 }, { 2, 2 }, 'o', { Color::Yellow, Color::Transparent2 }, 1);
-    dyn_sys.add_rigid_body(sprite0, 1.f, { 4.f, -2.5f }, { -5.f, 1.f }, 2.f);
+    dyn_sys.add_rigid_body(sprite0, 5.f, { 1.f, -3.f }, {}, 2.f);
     
     auto* sprite1 = sprh.create_vector_sprite("alien");
     sprite1->layer_id = 2;
     sprite1->pos = { math::roundI(sh.num_rows()*0.75f), math::roundI(sh.num_cols()*0.25f) };
     sprite1->add_line_segment(0, { 1, -0.8f }, { 1, 0.8f }, '"', { Color::Green, Color::Transparent2 }, 1);
     sprite1->add_line_segment(0, { 0, 0, }, { 0, 0 }, 'O', { Color::Cyan, Color::Transparent2 }, 1);
-    dyn_sys.add_rigid_body(sprite1, 1.f, { -8.f, 2.5f }, { 6.f, 0.f }, -1.f);
+    dyn_sys.add_rigid_body(sprite1, 1.f, { -6.f, 10.f }, {}, -1.f);
     
     coll_handler.rebuild_BVH(sh.num_rows(), sh.num_cols(), &dyn_sys);
     
@@ -296,7 +296,7 @@ quit:
       if (dbg_draw_bvh)
         coll_handler.draw_BVH(sh, 0);
       sh.print_screen_buffer(Color::Black);
-      Delay::sleep(0'20'000);
+      //Delay::sleep(0'20'000);
       
       kpd = keyboard->readKey();
       auto key = keyboard::get_char_key(kpd);
