@@ -235,6 +235,8 @@ namespace dynamics
             if (coll_mask_A[idx_A] && coll_mask_B[idx_B])
             {
               //std::cout << "Collision!!!" << std::endl;
+              cdata.node_A = prox_pair.first;
+              cdata.node_B = prox_pair.second;
               cdata.idx_A.emplace_back(idx_A);
               cdata.idx_B.emplace_back(idx_B);
               cdata.local_pos_A.emplace_back(r_rel_A, c_rel_A);
