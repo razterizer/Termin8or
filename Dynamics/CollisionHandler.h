@@ -268,6 +268,58 @@ namespace dynamics
     
     void update_response(const std::vector<NarrowPhaseCollData>& collision_data)
     {
+      for (const auto& cd : collision_data)
+      {
+        auto* node_A = cd.node_A;
+        auto* node_B = cd.node_B;
+        auto* rb_A = node_A->rigid_body;
+        auto* rb_B = node_B->rigid_body;
+        const auto& aabb_A = node_A->aabb;
+        const auto& aabb_B = node_B->aabb;
+        const auto& cm_A = rb_A->get_curr_cm();
+        const auto& cm_B = rb_B->get_curr_cm();
+        
+        // Average coefficient of restitution.
+        auto e = (rb_A->get_e() + rb_B->get_e()) * 0.5f;
+      
+        size_t num_pts = cd.local_pos_A.size();
+        for (size_t pt_idx = 0; pt_idx < num_pts; ++pt_idx)
+        {
+          auto contact_local_A = cd.local_pos_A[pt_idx];
+          auto contact_local_B = cd.local_pos_B[pt_idx];
+          
+          auto contact_world_A = Vec2 { aabb_A.r_min(), aabb_A.c_min() } + contact_local_A;
+          auto contact_world_B = Vec2 { aabb_B.r_min(), aabb_B.c_min() } + contact_local_B;
+          
+          // Calculate relative velocity at the contact point.
+          auto vel_A = rb_A->calc_velocity_at(contact_world_A);
+          auto vel_B = rb_B->calc_velocity_at(contact_world_B);
+          Vec2 relative_velocity = vel_B - vel_A;
+          
+          // Compute collision normal (assuming simple separation along the line between points).
+          auto collision_normal = math::normalize(cm_B - cm_A);
+          
+          // Calculate relative velocity in the direction of the normal.
+          auto velocity_along_normal = math::dot(relative_velocity, collision_normal);
+          
+          // Skip if objects are separating.
+          if (velocity_along_normal > 0.f) continue;
+          
+          // Compute impulse scalar
+          auto j_num = -(1.f + e) * velocity_along_normal;
+          auto j_den = rb_A->get_inv_mass() + rb_B->get_inv_mass() +
+          rb_A->get_inv_Iz() * math::sq(math::dot(contact_world_A - rb_A->get_curr_cm(), collision_normal)) +
+          rb_B->get_inv_Iz() * math::sq(math::dot(contact_world_B - rb_B->get_curr_cm(), collision_normal));
+          float j = j_num / j_den;
+          
+          // Calculate impulse vector.
+          auto impulse = collision_normal * j;
+          
+          // Apply impulse to both objects.
+          rb_A->apply_impulse(-impulse, contact_world_A);
+          rb_B->apply_impulse(impulse, contact_world_B);
+        }
+      }
     }
     
     void update()
