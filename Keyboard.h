@@ -28,6 +28,18 @@ namespace keyboard
     Backspace
   };
   
+  const std::vector<std::string> special_key_str
+  {
+    "None",
+    "Left",
+    "Right",
+    "Down",
+    "Up",
+    "Enter",
+    "Tab",
+    "Backspace"
+  };
+  
   using KeyPressData = std::optional<std::variant<SpecialKey, char>>;
   
   SpecialKey get_special_key(const KeyPressData& kpd)
@@ -46,6 +58,18 @@ namespace keyboard
     if (std::holds_alternative<char>(*kpd))
       return std::get<char>(*kpd);
     return 0;
+  }
+  
+  std::string get_key_description(const KeyPressData& kpd)
+  {
+    auto ch = get_char_key(kpd);
+    if (ch > 0)
+      return std::string(1, ch);
+    auto key = get_special_key(kpd);
+    auto idx = static_cast<int>(key);
+    if (idx == 0)
+      return "";
+    return special_key_str[idx];
   }
   
   std::string special_key_to_string(SpecialKey special_key)
