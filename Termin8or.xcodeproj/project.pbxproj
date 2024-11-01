@@ -32,6 +32,7 @@
 		0739D9C02BA2229100964E96 /* LICENSE_FIGlet */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE_FIGlet; sourceTree = "<group>"; };
 		075C651A2C3BFFF500B15451 /* UI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UI.h; sourceTree = "<group>"; };
 		0760B6F02B9CEABC0032CACD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		07685DAB2CD510E200472204 /* Keyboard_examples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Keyboard_examples.h; sourceTree = "<group>"; };
 		07A763102B555BE100705D31 /* ParticleSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
 		07C2A7822C2239BB00869A56 /* MessageHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessageHandler.h; sourceTree = "<group>"; };
 		07C2A7832C24910300869A56 /* Color.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Color.h; sourceTree = "<group>"; };
@@ -122,6 +123,7 @@
 				07D007C52CC3B96600CCB5E7 /* background.tex */,
 				07D007C42CC2B8A300CCB5E7 /* build_examples.bat */,
 				07D007C32CBF3B4000CCB5E7 /* build_examples.sh */,
+				07685DAB2CD510E200472204 /* Keyboard_examples.h */,
 				07D007BF2CBF39BD00CCB5E7 /* SpriteHandler_examples.h */,
 				07D007C12CBF3AD100CCB5E7 /* examples.cpp */,
 			);
