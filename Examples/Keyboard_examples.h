@@ -15,11 +15,10 @@ namespace keyboard
 
   void example1()
   {
-  
     KeyPressData kpd;
     auto keyboard = std::make_unique<StreamKeyboard>();
   
-    for (int i = 0; i < 1000; ++i)
+    for (int i = 0; i < 1000000; ++i)
     {
       benchmark::tic();
       
