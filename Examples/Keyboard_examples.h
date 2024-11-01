@@ -5,8 +5,34 @@
 //  Created by Rasmus Anthin on 2024-11-01.
 //
 
-#ifndef Keyboard_examples_h
-#define Keyboard_examples_h
+#pragma once
+#include "../Keyboard.h"
+#include <Core/Benchmark.h>
 
 
-#endif /* Keyboard_examples_h */
+namespace keyboard
+{
+
+  void example1()
+  {
+  
+    KeyPressData kpd;
+    auto keyboard = std::make_unique<StreamKeyboard>();
+  
+    for (int i = 0; i < 1000; ++i)
+    {
+      benchmark::tic();
+      
+      kpd = keyboard->readKey();
+      auto key = keyboard::get_char_key(kpd);
+      auto lo_key = str::to_lower(key);
+      if (lo_key == 'q')
+        break;
+        
+     auto time_ms = benchmark::toc();
+     
+     std::cout << get_key_description(kpd) << " : " << time_ms << " ms" << std::endl;
+    }
+  }
+
+}
