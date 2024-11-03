@@ -216,7 +216,7 @@ namespace sprite_handler
         if (dbg_draw_sprites)
           sprh.draw_dbg_bb(sh, anim_frame);
         sh.print_screen_buffer(Color::Black);
-        Delay::sleep(0'200'000);
+        Delay::sleep(0'400'000);
         
         kpdp = keyboard->readKey();
         auto key = keyboard::get_char_key(kpdp.transient);
@@ -265,21 +265,23 @@ quit:
     //                        LET's GO !                        //
     // ///////////////////////////////////////////////////////////
     
+    const int delay = 0'20'000;
+    const float dt = 1e-6f * delay;
     
     begin_screen();
     
     int anim_frame = 0;
-    for (int i = 0; i < 150; ++i)
+    for (int i = 0; i < 2000; ++i)
     {
       if (use_dynamics_system)
       {
-        dyn_sys.update(0.02f, anim_frame);
+        dyn_sys.update(dt, anim_frame);
         coll_handler.update();
       }
       else
       {
-        float t = i / 99.f;
-        float ang = t*360.f;
+        float t = i / 800.f;
+        float ang = t*360.f*2.f;
         sprite0->set_rotation(ang);
         sprite1->set_rotation(-ang*0.8f);
       }
@@ -296,7 +298,7 @@ quit:
       if (dbg_draw_bvh)
         coll_handler.draw_BVH(sh, 0);
       sh.print_screen_buffer(Color::Black);
-      //Delay::sleep(0'20'000);
+      Delay::sleep(delay);
       
       kpdp = keyboard->readKey();
       auto key = keyboard::get_char_key(kpdp.transient);
