@@ -26,7 +26,6 @@ int you_won_timer = 10;
 float wave_x0 = 0.f;
 float wave_f = 0.4f;
 float wave_a = 5.f;
-float wave_step = 0.1f;
 // Misc
 const float pix_ar = 1.9f;//1.5f; // height/width of "pixel".
 const float pix_ar_sq = pix_ar*pix_ar;
@@ -274,7 +273,7 @@ void draw_frame(ScreenHandler<NR, NC>& sh, Color fg_color)
 // # \_______  /\___/   /_______  / |____|_  /   #
 // #         \/                 \/         \/    #
 template<int NR, int NC>
-void draw_game_over(ScreenHandler<NR, NC>& sh)
+void draw_game_over(ScreenHandler<NR, NC>& sh, float wave_step = 0.1f)
 {
   auto wave_func = [](int c, int i)
   {
@@ -310,11 +309,10 @@ void draw_game_over(ScreenHandler<NR, NC>& sh)
 // #  / ______|\____/|____/    \__/\  / \____/|___|  /_ #
 // #  \/                            \/             \/\/ #
 template<int NR, int NC>
-void draw_you_won(ScreenHandler<NR, NC>& sh)
+void draw_you_won(ScreenHandler<NR, NC>& sh, float wave_step = 0.07f)
 {
   wave_f = 1.5f;//0.4f;
   wave_a = 1.f;//5.f;
-  wave_step = 0.07f; //0.1f;
 
   auto wave_func = [](int c, int i)
   {
