@@ -322,9 +322,9 @@ namespace keyboard
     DWORD fdwSaveOldMode { 0 };
 #else
     struct termios orig_termios;
+#endif
     std::vector<KeyPressData> key_press_buffer;
     int buffer_idx = 0;
-#endif
   };
   
 }
