@@ -23,7 +23,7 @@ namespace sprite_handler
   {
     ScreenHandler<20, 40> sh;
     SpriteHandler sprh;
-    keyboard::KeyPressData kpd;
+    keyboard::KeyPressDataPair kpdp;
     auto keyboard = std::make_unique<keyboard::StreamKeyboard>();
     
     dynamics::DynamicsSystem dyn_sys;
@@ -218,8 +218,8 @@ namespace sprite_handler
         sh.print_screen_buffer(Color::Black);
         Delay::sleep(0'200'000);
         
-        kpd = keyboard->readKey();
-        auto key = keyboard::get_char_key(kpd);
+        kpdp = keyboard->readKey();
+        auto key = keyboard::get_char_key(kpdp.transient);
         auto lo_key = str::to_lower(key);
         if (lo_key == 'q' || sprite0->pos.r > sh.num_rows())
           goto quit;
@@ -234,7 +234,7 @@ quit:
   {
     ScreenHandler<20, 40> sh;
     SpriteHandler sprh;
-    keyboard::KeyPressData kpd;
+    keyboard::KeyPressDataPair kpdp;
     auto keyboard = std::make_unique<keyboard::StreamKeyboard>();
     
     dynamics::DynamicsSystem dyn_sys;
@@ -298,8 +298,8 @@ quit:
       sh.print_screen_buffer(Color::Black);
       //Delay::sleep(0'20'000);
       
-      kpd = keyboard->readKey();
-      auto key = keyboard::get_char_key(kpd);
+      kpdp = keyboard->readKey();
+      auto key = keyboard::get_char_key(kpdp.transient);
       auto lo_key = str::to_lower(key);
       if (lo_key == 'q')
         goto quit;

@@ -8,6 +8,7 @@
 #pragma once
 #include "../Keyboard.h"
 #include <Core/Benchmark.h>
+#include <Core/Delay.h>
 
 
 namespace keyboard
@@ -15,22 +16,30 @@ namespace keyboard
 
   void example1()
   {
-    KeyPressData kpd;
-    auto keyboard = std::make_unique<StreamKeyboard>();
+    KeyPressDataPair kpdp;
+    //  D        FPS    I
+    //   1 ms => 1000 => 150
+    //  10 ms =>  100 => 20
+    //  50 ms =>   20 => 4
+    // 100 ms =>   10 => 3
+    // D = 1000 / FPS.
+    auto keyboard = std::make_unique<StreamKeyboard>(4);
   
-    for (int i = 0; i < 1000000; ++i)
+    for (int i = 0; i < 1500; ++i)
     {
       benchmark::tic();
       
-      kpd = keyboard->readKey();
-      auto key = keyboard::get_char_key(kpd);
+      Delay::sleep(0'50'000);
+      
+      kpdp = keyboard->readKey();
+      auto key = keyboard::get_char_key(kpdp.transient);
       auto lo_key = str::to_lower(key);
       if (lo_key == 'q')
         break;
         
      auto time_ms = benchmark::toc();
      
-     std::cout << get_key_description(kpd) << " : " << time_ms << " ms" << std::endl;
+     std::cout << get_key_description(kpdp.held) << " | " << get_key_description(kpdp.transient) << " : " << time_ms << " ms" << std::endl;
     }
   }
 

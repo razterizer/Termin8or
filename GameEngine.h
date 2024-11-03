@@ -78,6 +78,14 @@ class GameEngine
   double real_last_time_s = 0.;
   double real_dt_s = 0.;
   
+  struct AnimCtrData
+  {
+    int anim_count_per_frame_count = 1;
+    int anim_ctr = 0;
+  };
+  std::vector<AnimCtrData> anim_ctr_data;
+  int frame_ctr = 0;
+  
   YesNoButtons quit_confirm_button = YesNoButtons::No;
   
   std::vector<HiScoreItem> hiscore_list;
@@ -150,16 +158,20 @@ protected:
   
   Color bg_color = Color::Default;
   
-  int anim_ctr = 0;
-  
-  keyboard::KeyPressData kpd;
+  keyboard::KeyPressDataPair kpdp;
   std::unique_ptr<keyboard::StreamKeyboard> keyboard;
   
   bool exit_requested = false;
   
   unsigned int curr_rnd_seed = 0;
   
-  void set_real_fps(float fps_val) { real_fps = fps_val; }
+  void set_real_fps(float fps_val)
+  {
+    if (keyboard != nullptr)
+      keyboard->set_held_buffer_size_from_fps(fps_val);
+    anim_ctr_data[0].anim_count_per_frame_count = math::roundI(fps_val / 5);
+    real_fps = fps_val;
+  }
   
   // Used for dynamics and stuff.
   void set_sim_delay_us(float delay_us)
@@ -175,6 +187,32 @@ protected:
   
   float get_sim_time_s() const { return sim_time_s; }
   float get_sim_dt_s() const { return sim_dt_s; }
+  
+  void set_anim_rate(int anim_channel, int val)
+  {
+    if (anim_channel < 0)
+      return;
+    anim_channel++; // Reserving the true index 0 for system animations.
+    auto& ad = stlutils::at_growing(anim_ctr_data, anim_channel);
+    ad.anim_count_per_frame_count = std::max(1, val);
+  }
+  int get_anim_rate(int anim_channel)
+  {
+    if (anim_channel < 0)
+      return 1;
+    anim_channel++; // Reserving the true index 0 for system animations.
+    auto& ad = stlutils::at_growing(anim_ctr_data, anim_channel);
+    return ad.anim_count_per_frame_count;
+  }
+  int get_frame_count() const { return frame_ctr; }
+  int get_anim_count(int anim_channel)
+  {
+    if (anim_channel < 0)
+      return 1;
+    anim_channel++; // Reserving the true index 0 for system animations.
+    auto& ad = stlutils::at_growing(anim_ctr_data, anim_channel);
+    return ad.anim_ctr;
+  }
   
   std::string get_exe_folder() const { return exe_path; }
   
@@ -203,6 +241,7 @@ public:
              const GameEngineParams& params)
     : path_to_exe(exe_full_path)
     , m_params(params)
+    , anim_ctr_data(1)
   {
     std::tie(exe_path, exe_file) = folder::split_file_path(std::string(path_to_exe));
   }
@@ -215,6 +254,7 @@ public:
       return;
     
     keyboard = std::make_unique<keyboard::StreamKeyboard>();
+    keyboard->set_held_buffer_size_from_fps(real_fps);
     
     begin_screen();
     
@@ -284,8 +324,8 @@ private:
     return_cursor();
     sh.clear();
     
-    kpd = keyboard->readKey();
-    auto key = keyboard::get_char_key(kpd);
+    kpdp = keyboard->readKey();
+    auto key = keyboard::get_char_key(kpdp.transient);
     auto lo_key = str::to_lower(key);
     auto quit = lo_key == 'q';
     auto pause = lo_key == 'p';
@@ -312,7 +352,7 @@ private:
         titles.emplace_back("You have unsaved changes!");
       titles.emplace_back("Are you sure you want to quit?");
       
-      auto special_key = keyboard::get_special_key(kpd);
+      auto special_key = keyboard::get_special_key(kpdp.transient);
       
       draw_confirm(sh, titles, quit_confirm_button,
                    m_params.quit_confirm_title_style,
@@ -361,7 +401,7 @@ private:
       else if (show_game_over)
       {
         if (game_over_timer == 0)
-          draw_game_over(sh);
+          draw_game_over(sh, 0.1f*(7.f/real_fps));
         else
         {
           game_over_timer--;
@@ -384,7 +424,7 @@ private:
       else if (show_you_won)
       {
         if (you_won_timer == 0)
-          draw_you_won(sh);
+          draw_you_won(sh, 0.07f*(7.f/real_fps));
         else
         {
           you_won_timer--;
@@ -407,7 +447,7 @@ private:
       else if (show_input_hiscore)
       {
         bg_color = m_params.screen_bg_color_input_hiscore.value_or(bg_color);
-        if (draw_input_hiscore(sh, kpd, curr_score_item, hiscore_caret_idx, anim_ctr,
+        if (draw_input_hiscore(sh, kpdp.transient, curr_score_item, hiscore_caret_idx, anim_ctr_data[0].anim_ctr,
                                m_params.input_hiscore_title_style,
                                m_params.input_hiscore_prompt_style,
                                m_params.input_hiscore_info_style))
@@ -438,7 +478,7 @@ private:
       else if (paused)
       {
         bg_color = m_params.screen_bg_color_paused.value_or(bg_color);
-        draw_paused(sh, anim_ctr);
+        draw_paused(sh, anim_ctr_data[0].anim_ctr);
       }
       else
         update();
@@ -451,7 +491,10 @@ private:
     
   ///
     
-    anim_ctr++;
+    frame_ctr++;
+    for (auto& ad : anim_ctr_data)
+      if (frame_ctr % ad.anim_count_per_frame_count == 0)
+        ad.anim_ctr++;
     
     sim_time_s += sim_dt_s;
     

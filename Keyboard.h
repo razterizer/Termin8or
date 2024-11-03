@@ -28,18 +28,6 @@ namespace keyboard
     Backspace
   };
   
-  const std::vector<std::string> special_key_str
-  {
-    "None",
-    "Left",
-    "Right",
-    "Down",
-    "Up",
-    "Enter",
-    "Tab",
-    "Backspace"
-  };
-  
   using KeyPressData = std::optional<std::variant<SpecialKey, char>>;
   
   SpecialKey get_special_key(const KeyPressData& kpd)
@@ -60,18 +48,6 @@ namespace keyboard
     return 0;
   }
   
-  std::string get_key_description(const KeyPressData& kpd)
-  {
-    auto ch = get_char_key(kpd);
-    if (ch > 0)
-      return std::string(1, ch);
-    auto key = get_special_key(kpd);
-    auto idx = static_cast<int>(key);
-    if (idx == 0)
-      return "";
-    return special_key_str[idx];
-  }
-  
   std::string special_key_to_string(SpecialKey special_key)
   {
     switch (special_key)
@@ -88,13 +64,42 @@ namespace keyboard
     return "N/A";
   }
   
+  bool is_key_pressed(const KeyPressData& kpd)
+  {
+    auto ch = get_char_key(kpd);
+    if (ch > 0)
+      return true;
+    auto key = get_special_key(kpd);
+    if (key == SpecialKey::None)
+      return false;
+    return key != SpecialKey::None;
+  }
+  
+  std::string get_key_description(const KeyPressData& kpd)
+  {
+    auto ch = get_char_key(kpd);
+    if (ch > 0)
+      return std::string(1, ch);
+    auto key = get_special_key(kpd);
+    if (key == SpecialKey::None)
+      return "";
+    return special_key_to_string(key);
+  }
+  
+  struct KeyPressDataPair
+  {
+    KeyPressData transient = std::nullopt;
+    KeyPressData held = std::nullopt;
+  };
+  
   
   
   class StreamKeyboard
   {
   public:
-    StreamKeyboard()
+    StreamKeyboard(int buf_size = 10)
     {
+      key_press_buffer.resize(buf_size);
       enableRawMode();
     }
     
@@ -104,96 +109,63 @@ namespace keyboard
     }
     
     // Reads a key and returns either a SpecialKey or a regular character.
-    KeyPressData readKey()
+    KeyPressDataPair readKey()
     {
-#ifdef _WIN32
-      if (_kbhit())
+      KeyPressDataPair kpdp;
+      auto kpd = parseKey();
+      kpdp.transient = kpd;
+      
+      key_press_buffer[buffer_idx++] = kpd;
+      if (buffer_idx >= static_cast<int>(key_press_buffer.size()))
+        buffer_idx = 0;
+      if (is_key_pressed(kpd))
       {
-        int ch = _getch();
-        switch (ch)
-        {
-          case 224: // Special keys
-            ch = _getch();
-            switch (ch)
-            {
-              case 75: return SpecialKey::Left;
-              case 77: return SpecialKey::Right;
-              case 72: return SpecialKey::Up;
-              case 80: return SpecialKey::Down;
-            }
-            break;
-          case 13: return SpecialKey::Enter;
-          case 9: return SpecialKey::Tab;
-          case 8: return SpecialKey::Backspace;
-          default:
-            if (ch >= 32 && ch <= 126) // Printable ASCII characters
-              return static_cast<char>(ch);
-            return SpecialKey::None;
-        }
+        kpdp.held = kpd;
+        return kpdp;
       }
-      return std::nullopt;
-#else
-#ifndef __APPLE__
-      Delay::sleep(2000); // Seems to be needed on Ubuntu at least.
-#endif
-      unsigned char c;
-      if (read(STDIN_FILENO, &c, 1) == -1) return std::nullopt;
-
-      if (c == 27)
-      { // Escape sequence
-        if (read(STDIN_FILENO, &c, 1) == -1) return std::nullopt;
-        if (c == '[')
-        {
-          if (read(STDIN_FILENO, &c, 1) == -1) return std::nullopt;
-          switch (c)
-          {
-            case 'A': return SpecialKey::Up;
-            case 'B': return SpecialKey::Down;
-            case 'C': return SpecialKey::Right;
-            case 'D': return SpecialKey::Left;
-          }
-        }
-      }
-      else
+        
+      for (const auto& buf_kpd : key_press_buffer)
       {
-        switch (c)
+        if (char ch = get_char_key(buf_kpd); ch != 0)
         {
-          case 10:
-          case 13:
-            return SpecialKey::Enter;
-          case 9:
-            return SpecialKey::Tab;
-          case 8:
-          case 127: // 127 for backspace on MacOS.
-            return SpecialKey::Backspace;
-          default:
-            if (c >= 32 && c <= 126) // Printable ASCII characters
-              return static_cast<char>(c);
-            return SpecialKey::None;
+          kpdp.held = ch;
+          return kpdp;
+        }
+        if (SpecialKey key = get_special_key(buf_kpd); key != SpecialKey::None)
+        {
+          kpdp.held = key;
+          return kpdp;
         }
       }
-      return SpecialKey::None;
-#endif
+      kpdp.held = SpecialKey::None;
+      return kpdp;
     }
     
     KeyPressData waitKey()
     {
-      KeyPressData kpd = std::nullopt;
+      KeyPressDataPair kpdp;
       char char_key = 0;
       SpecialKey special_key = SpecialKey::None;
       do
       {
-        kpd = readKey();
-        char_key = get_char_key(kpd);
-        special_key = get_special_key(kpd);
+        kpdp = readKey();
+        char_key = get_char_key(kpdp.transient);
+        special_key = get_special_key(kpdp.transient);
       } while (char_key == 0 && special_key == SpecialKey::None);
-      return kpd;
+      return kpdp.transient;
     }
     
     void pressAnyKey(const std::string_view sv_msg = "Press any key to continue...")
     {
       std::cout << sv_msg << "\n";
       waitKey();
+    }
+    
+    void set_held_buffer_size_from_fps(float fps)
+    {
+      auto buf_size = static_cast<int>(std::max(5.f, -4.4893e-05f*math::sq(fps) + 1.9383e-01f*fps + 1.0662e+00f));
+      //std::cout << "fps = " << fps << ", buf_size = " << buf_size << std::endl;
+      key_press_buffer.resize(buf_size);
     }
     
   private:
@@ -267,11 +239,91 @@ namespace keyboard
 #endif
     }
     
+    KeyPressData parseKey()
+    {
+#ifdef _WIN32
+      if (_kbhit())
+      {
+        int ch = _getch();
+        switch (ch)
+        {
+          case 224: // Special keys
+            ch = _getch();
+            switch (ch)
+            {
+              case 75: return SpecialKey::Left;
+              case 77: return SpecialKey::Right;
+              case 72: return SpecialKey::Up;
+              case 80: return SpecialKey::Down;
+            }
+            break;
+          case 13: return SpecialKey::Enter;
+          case 9: return SpecialKey::Tab;
+          case 8: return SpecialKey::Backspace;
+          default:
+            if (ch >= 32 && ch <= 126) // Printable ASCII characters
+              return static_cast<char>(ch);
+            return SpecialKey::None;
+        }
+      }
+      return std::nullopt;
+#else
+      unsigned char c;
+      fd_set read_fds;
+      struct timeval tv = {0, 100}; // 100 microseconds to avoid CPU overload
+      
+      FD_ZERO(&read_fds);
+      FD_SET(STDIN_FILENO, &read_fds);
+      
+      int result = select(STDIN_FILENO + 1, &read_fds, nullptr, nullptr, &tv);
+      if (result > 0 && FD_ISSET(STDIN_FILENO, &read_fds))
+      {
+        if (read(STDIN_FILENO, &c, 1) == -1) return std::nullopt;
+        
+        // Process escape sequences and special keys
+        if (c == 27)
+        {
+          if (read(STDIN_FILENO, &c, 1) == -1) return std::nullopt;
+          if (c == '[')
+          {
+            if (read(STDIN_FILENO, &c, 1) == -1) return std::nullopt;
+            switch (c)
+            {
+              case 'A': return SpecialKey::Up;
+              case 'B': return SpecialKey::Down;
+              case 'C': return SpecialKey::Right;
+              case 'D': return SpecialKey::Left;
+            }
+          }
+        }
+        else
+        {
+          // Handle Enter, Tab, Backspace, and printable ASCII characters
+          switch (c)
+          {
+            case 10:
+            case 13: return SpecialKey::Enter;
+            case 9: return SpecialKey::Tab;
+            case 8:
+            case 127: return SpecialKey::Backspace;
+            default:
+              if (c >= 32 && c <= 126)
+                return static_cast<char>(c);
+              return SpecialKey::None;
+          }
+        }
+      }
+      return std::nullopt;
+#endif
+    }
+    
 #ifdef _WIN32
     HANDLE hStdin { nullptr };
     DWORD fdwSaveOldMode { 0 };
 #else
     struct termios orig_termios;
+    std::vector<KeyPressData> key_press_buffer;
+    int buffer_idx = 0;
 #endif
   };
   
