@@ -23,6 +23,7 @@ Supported platforms (including but not limited to) are:
 
 ## Showcase
 
+[Pilot Episode](https://github.com/razterizer/Pilot_Episode)
 ![image](https://github.com/razterizer/Pilot_Episode/assets/32767250/9b596d5c-e128-4dba-8fb5-02e9b3d8f412)
 ![image](https://github.com/razterizer/Pilot_Episode/assets/32767250/abd78df7-7314-43a2-8ef6-0270dc979575)
 <img width="568" alt="image" src="https://github.com/razterizer/SurgSim_Lite/assets/32767250/2d356a54-6117-4d6b-aeca-4a025e8ae372">
