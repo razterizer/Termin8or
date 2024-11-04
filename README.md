@@ -46,6 +46,7 @@ Supported platforms (including but not limited to) are:
 ---
 ## Header Files
 
+* `AABB` : A templetized (int, float) AABB class that can return a `Rectangle` object if needed. Used in `CollisionHandler` for broad-phase detection.
 * `ASCII_Fonts.h` : API for rendering text using FIGlet fonts and allows you to style your text with different colors. Supported FIGlet fonts are:
   * Larry3D.
   * SMSlant.
