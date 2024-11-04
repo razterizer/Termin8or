@@ -85,3 +85,7 @@ Supported platforms (including but not limited to) are:
 * `ScreenHandler.h` : Contains the screen buffers (char / fg-color / bg-color) and manages transparency etc. It outputs the contents to the terminal via a privatly owned `Text` object.
 * `SpriteHandler.h` : Manages bitmap sprites (`BitmapSprite`) and vector sprites (`VectorSprite`). A sprite can be controlled programmatically or be attached to a `RigidBody` object. Both sprite classes support sprite animations.
 * `UI.h` : Contains structs such as `TextBox` and `TextBoxDebug` to make it easy to display info on the screen and such. `MessageHandler` uses `TextBox`.
+* `Dynamics` : Headers concerning rigid body physics.
+  * `RigidBody.h` : A class that represents a rigid body. You attach a sprite to it if you want the sprite to be physically dynamic. The sprite also determines the "pixels" that make out the collison surface.
+  * `DynamicsSystem.h` : A class that governs the dynamical motions of the rigid bodies that are created from it.
+  * `CollisionHandler.h` : A class that governs collison detection and collison response between the rigid bodies created via the `DynamicsSystem` class. Broad-phase uses an AABB BVH and narrow-phase checks overlaps beteen sprite characters of a specified material index. Collision response uses an impulse equation as a function of the velocities of the two bodies and their collision normals.
