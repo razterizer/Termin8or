@@ -21,7 +21,7 @@ Supported platforms (including but not limited to) are:
 * MacOS.
 * Windows.
 
-## Showcases
+## Showcase
 
 ![image](https://github.com/razterizer/Pilot_Episode/assets/32767250/9b596d5c-e128-4dba-8fb5-02e9b3d8f412)
 ![image](https://github.com/razterizer/Pilot_Episode/assets/32767250/abd78df7-7314-43a2-8ef6-0270dc979575)
