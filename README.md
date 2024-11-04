@@ -63,7 +63,9 @@ Supported platforms (including but not limited to) are:
 * `RC.h` : A struct representing the row and column position on the screen or in a texture or bounding box to mention a few.
 * `Rectangle.h` : A rectangle struct that can be used for bounding boxes etc.
 * `ScreenUtils.h` : A collection of functions for rendering dialogs and such:
-  * Low-level functions: `clear_screen()`, `return_cursor()`, `restore_cursor()`, `gotorc()`.
+  * Low-level functions: `clear_screen()`, `return_cursor()`, `restore_cursor()`, `hide_cursor()`, `show_cursor()`, `gotorc()`.
+  * Medium-level functions: `get_terminal_window_size()`, `resize_terminal_window()`, `save_terminal_colors()`, `restore_terminal_colors()`.
+  * High-level functions: `begin_screen()`, `end_screen()`. These take care of color restoration, clearing screen, hiding the cursor etc, except for the resizing of the terminal window.
   * `draw_frame()` : Draws a simple frame around your frame buffer.
   * `draw_game_over()`, `draw_you_won()` : Draws wavy banners in the FIGlet font Grafitti. Used by `GameEngine` if those features are enabled.
   
