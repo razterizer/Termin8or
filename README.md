@@ -8,7 +8,7 @@
 
 ![Top Languages](https://img.shields.io/github/languages/top/razterizer/Termin8or)
 ![GitHub repo size](https://img.shields.io/github/repo-size/razterizer/Termin8or)
-![Goto](https://img.shields.io/github/search/razterizer/Termin8or/goto)
+<!-- ![Goto](https://img.shields.io/github/search/razterizer/Termin8or/goto) -->
 ![Commit Activity](https://img.shields.io/github/commit-activity/t/razterizer/Termin8or)
 ![Last Commit](https://img.shields.io/github/last-commit/razterizer/Termin8or?color=blue)
 ![Contributors](https://img.shields.io/github/contributors/razterizer/Termin8or?color=blue)
