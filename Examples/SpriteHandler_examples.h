@@ -14,7 +14,7 @@
 bool use_dynamics_system = true;
 bool dbg_draw_sprites = false;
 bool dbg_draw_rigid_bodies = false;
-bool dbg_draw_bvh = false;
+bool dbg_draw_broad_phase = false;
 
 namespace sprite_handler
 {
@@ -295,8 +295,8 @@ quit:
       sprh.draw(sh, anim_frame);
       if (dbg_draw_sprites)
         sprh.draw_dbg_bb(sh, anim_frame);
-      if (dbg_draw_bvh)
-        coll_handler.draw_BVH(sh, 0);
+      if (dbg_draw_broad_phase)
+        coll_handler.draw_dbg_broad_phase(sh, 0);
       sh.print_screen_buffer(Color::Black);
       Delay::sleep(delay);
       

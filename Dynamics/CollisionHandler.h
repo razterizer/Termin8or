@@ -249,7 +249,7 @@ namespace dynamics
     }
     
     template<int NR, int NC>
-    void draw_BVH(ScreenHandler<NR, NC>& sh, int start_level = -1) const
+    void draw_dbg_broad_phase(ScreenHandler<NR, NC>& sh, int start_level = -1) const
     {
       m_aabb_bvh->draw(sh, start_level);
     }
