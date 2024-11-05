@@ -15,6 +15,7 @@ bool use_dynamics_system = true;
 bool dbg_draw_sprites = false;
 bool dbg_draw_rigid_bodies = false;
 bool dbg_draw_broad_phase = false;
+bool dbg_draw_narrow_phase = false;
 
 namespace sprite_handler
 {
@@ -292,6 +293,8 @@ quit:
         dyn_sys.draw_dbg(sh);
       if (dbg_draw_sprites)
         sprh.draw_dbg_pts(sh, anim_frame);
+      if (dbg_draw_narrow_phase)
+        coll_handler.draw_dbg_narrow_phase(sh);
       sprh.draw(sh, anim_frame);
       if (dbg_draw_sprites)
         sprh.draw_dbg_bb(sh, anim_frame);
