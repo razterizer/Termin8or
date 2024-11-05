@@ -290,6 +290,8 @@ namespace dynamics
           
           auto contact_world_A = Vec2 { aabb_A.r_min(), aabb_A.c_min() } + contact_local_A;
           auto contact_world_B = Vec2 { aabb_B.r_min(), aabb_B.c_min() } + contact_local_B;
+          assert(contact_world_A.r == contact_world_B.r);
+          assert(contact_world_A.c == contact_world_B.c);
           
           // Calculate relative velocity at the contact point.
           auto vel_A = rb_A->calc_velocity_at(contact_world_A);
