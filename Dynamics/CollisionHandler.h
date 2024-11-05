@@ -244,7 +244,8 @@ namespace dynamics
             }
           }
         }
-        coll_data.emplace_back(cdata);
+        if (cdata.node_A != nullptr && cdata.node_B != nullptr)
+          coll_data.emplace_back(cdata);
       }
     }
     
