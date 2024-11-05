@@ -160,6 +160,8 @@ namespace dynamics
       std::vector<int> idx_A, idx_B;
       std::vector<Vec2> local_pos_A, local_pos_B;
     };
+    
+    std::vector<Vec2> isect_world_positions;
         
   public:
     CollisionHandler()
@@ -255,7 +257,14 @@ namespace dynamics
       m_aabb_bvh->draw(sh, start_level);
     }
     
-    void update_detection(std::vector<NarrowPhaseCollData>& collision_data)
+    template<int NR, int NC>
+    void draw_dbg_narrow_phase(ScreenHandler<NR, NC>& sh, Color coll_fg_color = Color::Magenta) const
+    {
+      for (const auto& pt : isect_world_positions)
+        sh.write_buffer("X", pt.r, pt.c, coll_fg_color);
+    }
+    
+    void update_detection(std::vector<NarrowPhaseCollData>& collision_data, bool verbose = false)
     {
       refit_BVH();
       
@@ -264,7 +273,21 @@ namespace dynamics
       //std::cout << "# coll proximities = " << proximity_pairs.size() << std::endl;
       
       detect_narrow_phase(proximity_pairs, collision_data);
-      //std::cout << "# collisions = " << collision_data.size() << std::endl;
+      
+      isect_world_positions.clear(); // For debug drawing.
+      for (const auto& cd : collision_data)
+      {
+        auto* node_A = cd.node_A;
+        const auto& aabb_A = node_A->aabb;
+      
+        size_t num_pts = cd.local_pos_A.size();
+        for (size_t pt_idx = 0; pt_idx < num_pts; ++pt_idx)
+        {
+          auto contact_local_A = cd.local_pos_A[pt_idx];
+          auto contact_world_A = Vec2 { aabb_A.r_min(), aabb_A.c_min() } + contact_local_A;
+          isect_world_positions.emplace_back(contact_world_A);
+        }
+      }
     }
     
     void update_response(const std::vector<NarrowPhaseCollData>& collision_data)
