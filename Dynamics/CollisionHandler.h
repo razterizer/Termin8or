@@ -270,7 +270,8 @@ namespace dynamics
       
       std::unordered_set<std::pair<BVH_Node*, BVH_Node*>, BVHNodePairHash> proximity_pairs;
       detect_broad_phase(proximity_pairs);
-      //std::cout << "# coll proximities = " << proximity_pairs.size() << std::endl;
+      if (verbose)
+        std::cout << "# coll proximities = " << proximity_pairs.size() << std::endl;
       
       detect_narrow_phase(proximity_pairs, collision_data);
       
@@ -288,6 +289,8 @@ namespace dynamics
           isect_world_positions.emplace_back(contact_world_A);
         }
       }
+      if (verbose)
+        std::cout << "# collisions = " << collision_data.size() << std::endl;
     }
     
     void update_response(const std::vector<NarrowPhaseCollData>& collision_data)
@@ -348,12 +351,12 @@ namespace dynamics
       }
     }
     
-    void update()
+    void update(bool verbose = false)
     {
-      std::vector<NarrowPhaseCollData> collision_data;
-      update_detection(collision_data);
+      std::vector<NarrowPhaseCollData> narrow_phase_collision_data;
+      update_detection(narrow_phase_collision_data, verbose);
       
-      update_response(collision_data);
+      update_response(narrow_phase_collision_data);
     }
     
     
