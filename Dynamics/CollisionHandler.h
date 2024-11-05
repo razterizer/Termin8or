@@ -208,9 +208,9 @@ namespace dynamics
       coll_data.reserve(proximity_pairs.size());
       for (const auto& prox_pair : proximity_pairs)
       {
-        auto coll_box = prox_pair.first->aabb.set_intersect(prox_pair.first->aabb);
         const auto& aabb_A = prox_pair.first->aabb;
         const auto& aabb_B = prox_pair.second->aabb;
+        auto coll_box = aabb_A.set_intersect(aabb_B);
         auto rmin_A = aabb_A.r_min();
         auto cmin_A = aabb_A.c_min();
         auto rmin_B = aabb_B.r_min();
