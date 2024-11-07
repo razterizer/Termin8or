@@ -223,8 +223,8 @@ protected:
   
   // Callbacks
   virtual void update() = 0;
-  virtual void draw_title() = 0;
-  virtual void draw_instructions() = 0;
+  virtual void draw_title() {}
+  virtual void draw_instructions() {}
   virtual void on_quit() {}
   virtual void on_exit_title() {}
   virtual void on_exit_instructions() {}
