@@ -57,7 +57,7 @@ namespace dynamics
       int rmax = curr_sprite_aabb.r_max();
       int cmin = curr_sprite_aabb.c_min();
       int cmax = curr_sprite_aabb.c_max();
-      float Ixx = 0.f, Iyy = 0.f; // Ixy = 0.f;
+      float Ixx = 0.f, Iyy = 0.f;
       for (int r = rmin; r <= rmax; ++r)
       {
         auto r_loc = r - rmin;
@@ -71,7 +71,6 @@ namespace dynamics
               curr_cm_local += { static_cast<float>(r_loc), static_cast<float>(c_loc) };
             Ixx += math::sq<float>(r_loc);
             Iyy += math::sq<float>(c_loc);
-            //Ixy += static_cast<float>(r_loc * c_loc);
             num_points++;
           }
         }
@@ -82,10 +81,6 @@ namespace dynamics
       auto density = mass / num_points;
       Ixx *= density;
       Iyy *= density;
-      //Ixy *= density;
-      //curr_I.m00 = Ixx;
-      //curr_I.m11 = Iyy;
-      //curr_I.m10 = curr_I.m01 = -Ixy;
       Iz = Ixx + Iyy;
       inv_Iz = 1.f / Iz;
     }
