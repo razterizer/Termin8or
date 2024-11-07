@@ -272,15 +272,15 @@ public:
     return set_sprite_data(texture->materials, bb, mat...);
   }
   
-  const drawing::Texture& get_curr_frame(int sim_frame) const
+  const drawing::Texture* get_curr_frame(int sim_frame) const
   {
     int frame_id = func_calc_anim_frame(sim_frame);
     if (frame_id >= stlutils::sizeI(texture_frames))
     {
       std::cerr << "ERROR in BitmapSprite::get_curr_frame() : Incorrect frame id: " + std::to_string(frame_id) + " for sprite \"" + name + "\"! Sprite only has " + std::to_string(texture_frames.size()) + " frames." << std::endl;
-      return;
+      return nullptr;
     }
-    return *texture_frames[frame_id];
+    return texture_frames[frame_id].get();
   }
   
   virtual int num_frames() const override
@@ -289,16 +289,19 @@ public:
   }
   
   template<int NR, int NC>
-  void draw(ScreenHandler<NR, NC>& sh, int sim_frame)
+  bool draw(ScreenHandler<NR, NC>& sh, int sim_frame)
   {
-    auto& texture = get_curr_frame(sim_frame);
+    auto* texture = get_curr_frame(sim_frame);
+    if (texture == nullptr)
+      return false;
     
     drawing::draw_box_textured(sh,
                                pos.r - 1, pos.c - 1,
-                               texture.size.r + 2, texture.size.c + 2,
+                               texture->size.r + 2, texture->size.c + 2,
                                drawing::SolarDirection::Zenith,
-                               texture);
+                               *texture);
     
+    return true;
   }
   
   virtual AABB<int> calc_curr_AABB(int /*sim_frame*/) const override
@@ -313,11 +316,13 @@ public:
   
   virtual bool_vector calc_curr_coll_mask(int sim_frame, int collision_material) override
   {
-    const auto& texture = get_curr_frame(sim_frame);
-    const auto num_mats = stlutils::sizeI(texture.materials);
+    const auto* texture = get_curr_frame(sim_frame);
+    if (texture == nullptr)
+      return {};
+    const auto num_mats = stlutils::sizeI(texture->materials);
     bool_vector coll_mask(num_mats);
     for (int mat_idx = 0; mat_idx < num_mats; ++mat_idx)
-      coll_mask[mat_idx] = (texture.materials[mat_idx] == collision_material);
+      coll_mask[mat_idx] = (texture->materials[mat_idx] == collision_material);
     return coll_mask;
   }
   
@@ -417,15 +422,15 @@ public:
     *frame_dst = frame;
   }
   
-  const VectorFrame& get_curr_frame(int sim_frame) const
+  const VectorFrame* get_curr_frame(int sim_frame) const
   {
     int frame_id = func_calc_anim_frame(sim_frame);
     if (frame_id >= stlutils::sizeI(vector_frames))
     {
       std::cerr << "ERROR in VectorSprite::get_curr_frame() : Incorrect frame id: " + std::to_string(frame_id) + " for sprite \"" + name + "\"! Sprite only has " + std::to_string(vector_frames.size()) + " frames." << std::endl;
-      return;
+      return nullptr;
     }
-    return *vector_frames[frame_id];
+    return vector_frames[frame_id].get();
   }
   
   virtual int num_frames() const override
@@ -444,23 +449,29 @@ public:
   }
   
   template<int NR, int NC>
-  void draw(ScreenHandler<NR, NC>& sh, int sim_frame)
+  bool draw(ScreenHandler<NR, NC>& sh, int sim_frame)
   {
-    auto& vector_frame = get_curr_frame(sim_frame);
+    auto* vector_frame = get_curr_frame(sim_frame);
+    if (vector_frame == nullptr)
+      return false;
     
-    for (const auto& line_seg : vector_frame.line_segments)
+    for (const auto& line_seg : vector_frame->line_segments)
     {
       auto [p0, p1] = calc_seg_world_pos_round(line_seg);
       bresenham::plot_line(sh, p0, p1, std::string(1, line_seg.ch), line_seg.style.fg_color, line_seg.style.bg_color);
     }
+    
+    return true;
   }
   
   virtual AABB<int> calc_curr_AABB(int sim_frame) const override
   {
-    auto& vector_frame = get_curr_frame(sim_frame);
+    auto* vector_frame = get_curr_frame(sim_frame);
+    if (vector_frame == nullptr)
+      return {};
 
     AABB<int> aabb;
-    for (const auto& line_seg : vector_frame.line_segments)
+    for (const auto& line_seg : vector_frame->line_segments)
     {
       auto [p0, p1] = calc_seg_world_pos_round(line_seg);
       aabb.add_point(p0);
@@ -471,11 +482,13 @@ public:
   
   virtual Vec2 calc_curr_centroid(int sim_frame) const override
   {
-    auto& vector_frame = get_curr_frame(sim_frame);
+    auto* vector_frame = get_curr_frame(sim_frame);
+    if (vector_frame == nullptr)
+      return {};
   
     Vec2 centroid;
     int ctr = 0;
-    for (const auto& line_seg : vector_frame.line_segments)
+    for (const auto& line_seg : vector_frame->line_segments)
     {
       auto [p0, p1] = calc_seg_world_pos_flt(line_seg);
       centroid += p0;
@@ -488,14 +501,17 @@ public:
   
   virtual bool_vector calc_curr_coll_mask(int sim_frame, int collision_material) override
   {
+    const auto* vector_frame = get_curr_frame(sim_frame);
+    if (vector_frame == nullptr)
+      return {};
+  
     auto aabb = calc_curr_AABB(sim_frame);
     auto rmin = aabb.r_min();
     auto cmin = aabb.c_min();
     const int num_points = aabb.width()*aabb.height();
     bool_vector coll_mask(num_points);
     std::vector<RC> points;
-    const auto& vector_frame = get_curr_frame(sim_frame);
-    for (const auto& line_seg : vector_frame.line_segments)
+    for (const auto& line_seg : vector_frame->line_segments)
     {
       if (line_seg.mat != collision_material)
         continue;
@@ -589,8 +605,9 @@ public:
       sprite_dst_bitmap->init(size.r, size.c);
       for (int frame_id = 0; frame_id < sprite_src_bitmap->num_frames(); ++frame_id)
       {
-        auto& texture = sprite_src_bitmap->get_curr_frame(frame_id);
-        sprite_dst_bitmap->set_frame(frame_id, texture);
+        auto* texture = sprite_src_bitmap->get_curr_frame(frame_id);
+        if (texture != nullptr)
+          sprite_dst_bitmap->set_frame(frame_id, *texture);
       }
       return sprite_dst_bitmap;
     }
@@ -601,8 +618,9 @@ public:
       sprite_dst_vector->set_rotation(sprite_src_vector->get_rotation());
       for (int frame_id = 0; frame_id < sprite_src_vector->num_frames(); ++frame_id)
       {
-        auto& frame = sprite_src_vector->get_curr_frame(frame_id);
-        sprite_dst_vector->set_frame(frame_id, frame);
+        auto* frame = sprite_src_vector->get_curr_frame(frame_id);
+        if (frame != nullptr)
+          sprite_dst_vector->set_frame(frame_id, *frame);
       }
       return sprite_dst_vector;
     }
