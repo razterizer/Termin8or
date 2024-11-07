@@ -16,6 +16,7 @@ bool dbg_draw_sprites = false;
 bool dbg_draw_rigid_bodies = false;
 bool dbg_draw_broad_phase = false;
 bool dbg_draw_narrow_phase = false;
+bool draw_sprites = true;
 
 namespace sprite_handler
 {
@@ -213,7 +214,8 @@ namespace sprite_handler
           dyn_sys.draw_dbg(sh);
         if (dbg_draw_sprites)
           sprh.draw_dbg_pts(sh, anim_frame);
-        sprh.draw(sh, anim_frame);
+        if (draw_sprites)
+          sprh.draw(sh, anim_frame);
         if (dbg_draw_sprites)
           sprh.draw_dbg_bb(sh, anim_frame);
         sh.print_screen_buffer(Color::Black);
@@ -295,7 +297,8 @@ quit:
         sprh.draw_dbg_pts(sh, anim_frame);
       if (dbg_draw_narrow_phase)
         coll_handler.draw_dbg_narrow_phase(sh);
-      sprh.draw(sh, anim_frame);
+      if (draw_sprites)
+        sprh.draw(sh, anim_frame);
       if (dbg_draw_sprites)
         sprh.draw_dbg_bb(sh, anim_frame);
       if (dbg_draw_broad_phase)
