@@ -52,20 +52,27 @@ class BitmapSprite : public Sprite
 {
   // Helper function for setting any vector data
   template<typename T, typename... Args>
-  void set_sprite_data(std::vector<T>& target, Args... args)
+  bool set_sprite_data(std::vector<T>& target, Args... args)
   {
     if (sizeof...(args) != static_cast<size_t>(area))
-      throw std::invalid_argument("Number of arguments must match sprite size.");
+    {
+      std::cerr << "ERROR in BitmapSprite::set_sprite_data() : Number of arguments must match sprite size." << std::endl;
+      return false;
+    }
     target = {static_cast<T>(args)...}; // Unpack and assign to the target vector
+    return true;
   }
   
   template<typename T, typename... Args>
-  void set_sprite_data(std::vector<T>& target, const ttl::Rectangle& bb, Args... args)
+  bool set_sprite_data(std::vector<T>& target, const ttl::Rectangle& bb, Args... args)
   {
     int nr = std::min(bb.r_len, size.r);
     int nc = std::min(bb.c_len, size.c);
     if (sizeof...(args) != static_cast<size_t>(nr * nc))
-      throw std::invalid_argument("Number of arguments must match sprite size and or bounding box size.");
+    {
+      std::cerr << "ERROR in BitmapSprite::set_sprite_data() : Number of arguments must match sprite size and or bounding box size." << std::endl;
+      return false;
+    }
     std::vector<T> source = {static_cast<T>(args)...}; // Unpack and assign to the target vector
 
     for (int i = 0; i < nr; ++i)
@@ -84,6 +91,8 @@ class BitmapSprite : public Sprite
             target[trg_index] = source[src_index];
         }
     }
+    
+    return true;
   }
 
   RC size { 0, 0 };
@@ -124,13 +133,17 @@ public:
     texture->materials.resize(area);
   }
   
-  void load_frame(int anim_frame, const std::string& file_path)
+  bool load_frame(int anim_frame, const std::string& file_path)
   {
     auto* texture = fetch_frame(anim_frame);
     texture->clear();
     texture->load(file_path);
     if (texture->size != size)
-      throw std::invalid_argument("Loaded sprite frame doesn't have the same size as the sprite itself.");
+    {
+      std::cerr << "ERROR in BitmapSprite::load_frame() : Loaded sprite frame doesn't have the same size as the sprite itself." << std::endl;
+      return false;
+    }
+    return true;
   }
   
   void save_frame(int anim_frame, const std::string& file_path)
@@ -182,7 +195,7 @@ public:
   
   // Set sprite characters from a string for each row
   template<typename... Strings>
-  void set_sprite_chars_from_strings(int anim_frame, Strings... rows)
+  bool set_sprite_chars_from_strings(int anim_frame, Strings... rows)
   {
     auto* texture = fetch_frame(anim_frame);
     
@@ -190,72 +203,83 @@ public:
     
     // Check that the number of rows matches the texture's height
     if (stlutils::sizeI(row_array) != texture->size.r)
-      throw std::invalid_argument("Number of strings must match the number of rows.");
+    {
+      std::cerr << "ERROR in BitmapSprite::set_sprite_chars_from_strings() : Number of strings must match the number of rows." << std::endl;
+      return false;
+    }
     
     for (const auto& row : row_array)
       if (stlutils::sizeI(row) != texture->size.c)
-        throw std::invalid_argument("Each string must have exactly NC characters.");
+      {
+        std::cerr << "ERROR in BitmapSprite::set_sprite_chars_from_strings() : Each string must have exactly NC characters." << std::endl;
+        return false;
+      }
     
     // Unpack strings into the characters vector
     int idx = 0;
     for (const auto& row : row_array)
       for (char ch : row)
         texture->characters[idx++] = ch;
+        
+    return true;
   }
   
   // Set sprite foreground colors
   template<typename... Colors>
-  void set_sprite_fg_colors(int anim_frame, Colors... fg_color)
+  bool set_sprite_fg_colors(int anim_frame, Colors... fg_color)
   {
     auto* texture = fetch_frame(anim_frame);
-    set_sprite_data(texture->fg_colors, fg_color...);
+    return set_sprite_data(texture->fg_colors, fg_color...);
   }
   
   // Set sprite foreground colors
   template<typename... Colors>
-  void set_sprite_fg_colors(int anim_frame, const ttl::Rectangle& bb, Colors... fg_color)
+  bool set_sprite_fg_colors(int anim_frame, const ttl::Rectangle& bb, Colors... fg_color)
   {
     auto* texture = fetch_frame(anim_frame);
-    set_sprite_data(texture->fg_colors, bb, fg_color...);
+    return set_sprite_data(texture->fg_colors, bb, fg_color...);
   }
   
   // Set sprite background colors
   template<typename... Colors>
-  void set_sprite_bg_colors(int anim_frame, Colors... bg_color)
+  bool set_sprite_bg_colors(int anim_frame, Colors... bg_color)
   {
     auto* texture = fetch_frame(anim_frame);
-    set_sprite_data(texture->bg_colors, bg_color...);
+    return set_sprite_data(texture->bg_colors, bg_color...);
   }
   
   // Set sprite background colors
   template<typename... Colors>
-  void set_sprite_bg_colors(int anim_frame, const ttl::Rectangle& bb, Colors... bg_color)
+  bool set_sprite_bg_colors(int anim_frame, const ttl::Rectangle& bb, Colors... bg_color)
   {
     auto* texture = fetch_frame(anim_frame);
-    set_sprite_data(texture->bg_colors, bb, bg_color...);
+    return set_sprite_data(texture->bg_colors, bb, bg_color...);
   }
   
   // Set sprite materials
   template<typename... Materials>
-  void set_sprite_materials(int anim_frame, Materials... mat)
+  bool set_sprite_materials(int anim_frame, Materials... mat)
   {
     auto* texture = fetch_frame(anim_frame);
-    set_sprite_data(texture->materials, mat...);
+    return set_sprite_data(texture->materials, mat...);
   }
   
   // Set sprite materials
   template<typename... Materials>
-  void set_sprite_materials(int anim_frame, const ttl::Rectangle& bb, Materials... mat)
+  bool set_sprite_materials(int anim_frame, const ttl::Rectangle& bb, Materials... mat)
   {
     auto* texture = fetch_frame(anim_frame);
-    set_sprite_data(texture->materials, bb, mat...);
+    return set_sprite_data(texture->materials, bb, mat...);
   }
   
   const drawing::Texture& get_curr_frame(int sim_frame) const
   {
     int frame_id = func_calc_anim_frame(sim_frame);
     if (frame_id >= stlutils::sizeI(texture_frames))
-      throw std::invalid_argument("ERROR: Incorrect frame id: " + std::to_string(frame_id) + " for sprite \"" + name + "\"! Sprite only has " + std::to_string(texture_frames.size()) + " frames.");
+    {
+      std::cerr << "ERROR in BitmapSprite::get_curr_frame() : Incorrect frame id: " + std::to_string(frame_id) + " for sprite \"" + name + "\"! Sprite only has " + std::to_string(texture_frames.size()) + " frames." << std::endl;
+      return;
+    }
     return *texture_frames[frame_id];
   }
   
@@ -397,7 +421,10 @@ public:
   {
     int frame_id = func_calc_anim_frame(sim_frame);
     if (frame_id >= stlutils::sizeI(vector_frames))
-      throw std::invalid_argument("ERROR: Incorrect frame id: " + std::to_string(frame_id) + " for sprite \"" + name + "\"! Sprite only has " + std::to_string(vector_frames.size()) + " frames.");
+    {
+      std::cerr << "ERROR in VectorSprite::get_curr_frame() : Incorrect frame id: " + std::to_string(frame_id) + " for sprite \"" + name + "\"! Sprite only has " + std::to_string(vector_frames.size()) + " frames." << std::endl;
+      return;
+    }
     return *vector_frames[frame_id];
   }
   
