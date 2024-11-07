@@ -43,7 +43,7 @@ public:
   
   virtual bool_vector calc_curr_coll_mask(int sim_frame, int collision_material) = 0;
   
-  virtual Vec2 get_pos_offs(int sim_frame) const = 0;
+  virtual bool calc_cm() const = 0;
 };
 
 // /////////////////////////////////////////////////
@@ -326,10 +326,7 @@ public:
     return coll_mask;
   }
   
-  virtual Vec2 get_pos_offs(int /*sim_frame*/) const override
-  {
-    return {};
-  }
+  virtual bool calc_cm() const override { return true; }
 };
 
 // /////////////////////////////////////////////////
@@ -386,6 +383,55 @@ class VectorSprite : public Sprite
   
 public:
   VectorSprite(const std::string& a_name) : Sprite(a_name) {}
+  
+  //               p0
+  //    +-----------+
+  //    |        *  |
+  //    |       ##  |
+  //    |     ## #  |
+  //    |   ##   #  |
+  // p2 | *# o x  # | o = (0, 0) local origo from line segments' coordsys. Corresponds to Sprite::pos in world coords.
+  //    |   ###   # | x = centre of mass. We rotate points around this point.
+  //    |      ###* |
+  //    +-----------+ p1
+  // p0 : { -4, 4 } // local coordsys
+  // p1 : { 2, 5 } // local coordsys
+  // p2 : { 0, -3 } // local coordsys
+  
+  // 1.
+  // (5, 5) AABB pos (world coordsys) from Sprite::pos + linesegs.
+  // +-----------+
+  // |           |
+  // |       ##  |
+  // |     ## #  |
+  // |   ##   #  |
+  // | ## o    # | o = (0, 0) @ Sprite::pos = { 3, 5 } (world coordsys).
+  // |   ###   # |
+  // |      #### |
+  // +-----------+
+  
+  // 2.
+  //
+  // +-----------+
+  // |           |
+  // |       ##  |
+  // |     ## #  |
+  // |   ##   #  |
+  // | ## o x  # | o = (0, 0) @ Sprite::pos = { 3, 5 } (world coordsys).
+  // |   ###   # | x = centre of mass = ~{ 3, 7 } (world coordsys).
+  // |      #### |
+  // +-----------+
+  // x = { 0.55, 2 } (local coordsys), { 3.55, 7 } (world coordsys) (Bresenham)
+  // x = { -0.6667   2.0000 } (local coordsys), { 2.3333, 7 } (world coordsys) (Points)
+  // x = { 0.2727   2.0303 } (local coordsys), { 3, 7 } (world coordsys) (Bresenham, filled) <-- most correct. aspect ratio's fault?
+  
+  // 3. Rotate around x.
+  
+  // 4. Deduce new o from x.
+  
+  // New idea: The user designs the sprite around an assumed center of mass.
+  // So "o" becomes the center of mass instead.
+  
   
   void add_line_segment(int anim_frame, const Vec2& p0, const Vec2& p1, char ch, const styles::Style& style, int mat = 0)
   {
@@ -482,21 +528,7 @@ public:
   
   virtual Vec2 calc_curr_centroid(int sim_frame) const override
   {
-    auto* vector_frame = get_curr_frame(sim_frame);
-    if (vector_frame == nullptr)
-      return {};
-  
-    Vec2 centroid;
-    int ctr = 0;
-    for (const auto& line_seg : vector_frame->line_segments)
-    {
-      auto [p0, p1] = calc_seg_world_pos_flt(line_seg);
-      centroid += p0;
-      centroid += p1;
-      ctr += 2;
-    }
-    centroid /= static_cast<float>(ctr);
-    return centroid;
+    return to_Vec2(pos); // Assuming you designed the sprite around the centroid / CoM.
   }
   
   virtual bool_vector calc_curr_coll_mask(int sim_frame, int collision_material) override
@@ -524,12 +556,7 @@ public:
     return coll_mask;
   }
   
-  virtual Vec2 get_pos_offs(int sim_frame) const override
-  {
-    auto aabb = calc_curr_AABB(sim_frame);
-    Vec2 p0 { static_cast<float>(aabb.r_min()), static_cast<float>(aabb.c_min()) };
-    return p0 - calc_curr_centroid(sim_frame);
-  }
+  virtual bool calc_cm() const override { return false; }
 };
 
 // /////////////////////////////////////////////////

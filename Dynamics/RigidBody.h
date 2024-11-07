@@ -49,6 +49,7 @@ namespace dynamics
     
     void calc_cm_and_I(int sim_frame)
     {
+      curr_cm_local = { 0.f, 0.f };
       curr_sprite_aabb = sprite->calc_curr_AABB(sim_frame);
       curr_coll_mask = sprite->calc_curr_coll_mask(sim_frame, collision_material);
       int num_points = 0;
@@ -66,8 +67,8 @@ namespace dynamics
           auto idx = r_loc * curr_sprite_aabb.width() + c_loc;
           if (curr_coll_mask[idx])
           {
-            // #FIXME: Need to use aspect_ratio factor.
-            curr_cm_local += { static_cast<float>(r_loc), static_cast<float>(c_loc) };
+            if (sprite->calc_cm())
+              curr_cm_local += { static_cast<float>(r_loc), static_cast<float>(c_loc) };
             Ixx += math::sq<float>(r_loc);
             Iyy += math::sq<float>(c_loc);
             //Ixy += static_cast<float>(r_loc * c_loc);
@@ -75,8 +76,8 @@ namespace dynamics
           }
         }
       }
-      curr_cm_local /= num_points;
-      curr_cm_local += sprite->get_pos_offs(sim_frame);
+      if (sprite->calc_cm())
+        curr_cm_local /= num_points;
       
       auto density = mass / num_points;
       Ixx *= density;
