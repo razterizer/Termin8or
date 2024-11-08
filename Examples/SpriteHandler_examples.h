@@ -10,6 +10,7 @@
 #include "../ScreenUtils.h"
 #include "../Dynamics/CollisionHandler.h"
 #include "../Dynamics/DynamicsSystem.h"
+#include <Core/Benchmark.h>
 
 bool use_dynamics_system = true;
 bool dbg_draw_sprites = false;
@@ -268,13 +269,16 @@ quit:
     //                        LET's GO !                        //
     // ///////////////////////////////////////////////////////////
     
-    const int delay = 0'20'000;
+    const int delay = 20'000;
     const float dt = 1e-6f * delay;
     
     begin_screen();
     
+    benchmark::tic();
+    
     int anim_frame = 0;
-    for (int i = 0; i < 2000; ++i)
+    const int num_frames = 2000;
+    for (int i = 0; i < num_frames; ++i)
     {
       if (use_dynamics_system)
       {
@@ -314,7 +318,11 @@ quit:
     }
     
 quit:
+    auto dur_s = 1e-3f * benchmark::toc();
     end_screen(sh);
+    
+    auto fps = num_frames / dur_s;
+    std::cout << "FPS = " << fps << std::endl;
   }
 
 }
