@@ -157,7 +157,6 @@ namespace dynamics
     {
       BVH_Node* node_A = nullptr;
       BVH_Node* node_B = nullptr;
-      std::vector<int> idx_A, idx_B;
       std::vector<Vec2> local_pos_A, local_pos_B;
     };
     
@@ -241,8 +240,6 @@ namespace dynamics
               //std::cout << "Collision!!!" << std::endl;
               cdata.node_A = prox_pair.first;
               cdata.node_B = prox_pair.second;
-              cdata.idx_A.emplace_back(idx_A);
-              cdata.idx_B.emplace_back(idx_B);
               cdata.local_pos_A.emplace_back(r_rel_A, c_rel_A);
               cdata.local_pos_B.emplace_back(r_rel_B, c_rel_B);
             }
