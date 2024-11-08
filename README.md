@@ -45,12 +45,22 @@ Supported platforms (including but not limited to) are:
 
 ![ubuntu_elli1an7bg_360](https://github.com/user-attachments/assets/19d3a6d6-b6f1-46a6-a80f-bcc15e202404)
 
+Attaching the spaceship to a rigid body object:
+
+![bitmap_sprite_dynamics](https://github.com/user-attachments/assets/74bfb3a8-51fe-4ffd-a06f-8792a476febb)
+
 ### Vector Sprites
+
 ![ubuntu_vhurwusqie_360](https://github.com/user-attachments/assets/35a03da6-d37d-479c-b84e-10891ac50825)
 
 ### Dynamics / Collision System
 
-![Kapture 2024-10-31 at 14 08 03](https://github.com/user-attachments/assets/2cd50164-db0f-4672-93e4-e0c508108079)
+<!-- ![Kapture 2024-10-31 at 14 08 03](https://github.com/user-attachments/assets/2cd50164-db0f-4672-93e4-e0c508108079) -->
+![vector_sprite_collisions](https://github.com/user-attachments/assets/0d562d19-059d-4af8-bb12-38578b5d1471)
+
+Debug-drawing the broad-phase (AABB BVH) and the narrow-phase (character/character overlap tests) collision detection:
+
+![vector_sprite_collisions_dbg](https://github.com/user-attachments/assets/20e3ba2c-d2d4-463c-939e-2f22b2a74c7d)
 
 ---
 ## Header Files
