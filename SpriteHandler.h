@@ -444,6 +444,11 @@ public:
     line_seg.mat = mat;
   }
   
+  void add_line_segment(int anim_frame, const Vec2& p0, const Vec2& p1, const styles::Style& style, int mat = 0)
+  {
+    add_line_segment(anim_frame, p0, p1, -1, style, mat);
+  }
+  
   virtual void clone_frame(int anim_frame, int from_anim_frame) override
   {
     const auto N = stlutils::sizeI(vector_frames);
@@ -504,7 +509,42 @@ public:
     for (const auto& line_seg : vector_frame->line_segments)
     {
       auto [p0, p1] = calc_seg_world_pos_round(line_seg);
-      bresenham::plot_line(sh, p0, p1, std::string(1, line_seg.ch), line_seg.style.fg_color, line_seg.style.bg_color);
+      
+      char ch = 0;
+      if (line_seg.ch == -1)
+      {
+        auto dir = p0 - p1;
+        if (!(dir.r == 0 && dir.c == 0))
+        {
+          auto dr = static_cast<float>(dir.r);
+          auto dc = static_cast<float>(dir.c);
+          auto lineseg_rot_deg = math::rad2deg(std::atan2(dr, dc));
+          if (math::in_range<float>(lineseg_rot_deg, -180.f, -158.f, Range::ClosedOpen))
+            ch = '-';
+          else if (math::in_range<float>(lineseg_rot_deg, -158.f, -112.f, Range::ClosedOpen))
+            ch = '\\';
+          else if (math::in_range<float>(lineseg_rot_deg, -112.f, -68.f, Range::ClosedOpen))
+            ch = '|';
+          else if (math::in_range<float>(lineseg_rot_deg, -68.f, -22.f, Range::ClosedOpen))
+            ch = '/';
+          else if (math::in_range<float>(lineseg_rot_deg, -22.f, 22.f, Range::ClosedOpen))
+            ch = '-';
+          else if (math::in_range<float>(lineseg_rot_deg, 22.f, 68.f, Range::ClosedOpen))
+            ch = '\\';
+          else if (math::in_range<float>(lineseg_rot_deg, 68.f, 112.f, Range::ClosedOpen))
+            ch = '|';
+          else if (math::in_range<float>(lineseg_rot_deg, 112.f, 158.f, Range::ClosedOpen))
+            ch = '/';
+          else if (math::in_range<float>(lineseg_rot_deg, 158.f, 180.f, Range::Closed))
+            ch = '-';
+          else
+            throw std::invalid_argument(std::to_string(lineseg_rot_deg));
+        }
+      }
+      else
+        ch = line_seg.ch;
+      
+      bresenham::plot_line(sh, p0, p1, std::string(1, ch), line_seg.style.fg_color, line_seg.style.bg_color);
     }
     
     return true;
