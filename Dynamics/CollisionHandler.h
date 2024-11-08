@@ -212,28 +212,30 @@ namespace dynamics
       {
         const auto& aabb_A = prox_pair.first->aabb;
         const auto& aabb_B = prox_pair.second->aabb;
+        const auto width_A = math::roundI(aabb_A.width());
+        const auto width_B = math::roundI(aabb_B.width());
         auto coll_box = aabb_A.set_intersect(aabb_B);
-        auto rmin_A = aabb_A.r_min();
-        auto cmin_A = aabb_A.c_min();
-        auto rmin_B = aabb_B.r_min();
-        auto cmin_B = aabb_B.c_min();
-        auto rmin = coll_box.r_min();
-        auto rmax = coll_box.r_max();
-        auto cmin = coll_box.c_min();
-        auto cmax = coll_box.c_max();
+        auto rmin_A = math::roundI(aabb_A.r_min());
+        auto cmin_A = math::roundI(aabb_A.c_min());
+        auto rmin_B = math::roundI(aabb_B.r_min());
+        auto cmin_B = math::roundI(aabb_B.c_min());
+        auto rmin = math::roundI(coll_box.r_min());
+        auto rmax = math::roundI(coll_box.r_max());
+        auto cmin = math::roundI(coll_box.c_min());
+        auto cmax = math::roundI(coll_box.c_max());
         const auto& coll_mask_A = prox_pair.first->rigid_body->get_curr_coll_mask();
         const auto& coll_mask_B = prox_pair.second->rigid_body->get_curr_coll_mask();
         NarrowPhaseCollData cdata;
-        for (int r = rmin; r <= rmax; ++r)
+        for (int r = rmin; r < rmax; ++r)
         {
           auto r_rel_A = r - rmin_A;
           auto r_rel_B = r - rmin_B;
-          for (int c = cmin; c <= cmax; ++c)
+          for (int c = cmin; c < cmax; ++c)
           {
             auto c_rel_A = c - cmin_A;
             auto c_rel_B = c - cmin_B;
-            auto idx_A = r_rel_A * aabb_A.width() + c_rel_A;
-            auto idx_B = r_rel_B * aabb_B.width() + c_rel_B;
+            auto idx_A = r_rel_A * width_A + c_rel_A;
+            auto idx_B = r_rel_B * width_B + c_rel_B;
             if (coll_mask_A[idx_A] && coll_mask_B[idx_B])
             {
               //std::cout << "Collision!!!" << std::endl;
