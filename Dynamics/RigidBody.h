@@ -84,7 +84,7 @@ namespace dynamics
       Ixx *= density;
       Iyy *= density;
       Iz = Ixx + Iyy;
-      inv_Iz = 1.f / Iz;
+      inv_Iz = Iz == 0.f ? 0.f : 1.f / Iz;
     }
     
   public:
@@ -96,7 +96,7 @@ namespace dynamics
       const std::vector<int>& coll_mats = { 1 })
       : sprite(s)
       , mass(rb_mass)
-      , inv_mass(1.f / rb_mass)
+      , inv_mass(rb_mass == 0.f ? 0.f : 1.f / rb_mass)
       , curr_vel(vel)
       , curr_force(force)
       , curr_ang_vel(ang_vel)
@@ -120,19 +120,22 @@ namespace dynamics
     {
       if (sprite != nullptr)
       {
-        curr_acc = curr_force / mass;
-        curr_vel += curr_acc * dt;
-        curr_cm += curr_vel * dt;
-        curr_centroid += curr_vel * dt;
-        curr_ang_acc = curr_torque / Iz;
-        curr_ang_vel += curr_ang_acc * dt;
-        curr_ang += curr_ang_vel * dt;
-        
-        // curr_cm + (orig_pos - orig_cm) + (orig_cm_local - curr_cm_local)
-        auto sprite_pos = curr_cm + cm_to_orig_pos + (curr_cm_local - orig_cm_local);
-        sprite->pos = to_RC_round(sprite_pos);
-        if (auto* vector_sprite = dynamic_cast<VectorSprite*>(sprite); vector_sprite != nullptr)
-          vector_sprite->set_rotation(math::rad2deg(curr_ang));
+        if (mass > 0.f)
+        {
+          curr_acc = curr_force / mass;
+          curr_vel += curr_acc * dt;
+          curr_cm += curr_vel * dt;
+          curr_centroid += curr_vel * dt;
+          curr_ang_acc = curr_torque / Iz;
+          curr_ang_vel += curr_ang_acc * dt;
+          curr_ang += curr_ang_vel * dt;
+          
+          // curr_cm + (orig_pos - orig_cm) + (orig_cm_local - curr_cm_local)
+          auto sprite_pos = curr_cm + cm_to_orig_pos + (curr_cm_local - orig_cm_local);
+          sprite->pos = to_RC_round(sprite_pos);
+          if (auto* vector_sprite = dynamic_cast<VectorSprite*>(sprite); vector_sprite != nullptr)
+            vector_sprite->set_rotation(math::rad2deg(curr_ang));
+        }
         
         calc_cm_and_I(sim_frame);
         curr_aabb = curr_sprite_aabb.convert<float>();
