@@ -45,15 +45,15 @@ namespace dynamics
     AABB<int> curr_sprite_aabb;
     AABB<float> curr_aabb;
     bool_vector curr_inertia_mask, curr_coll_mask;
-    int inertia_material = 1;
-    int collision_material = 1;
+    std::vector<int> inertia_materials { 1 };
+    std::vector<int> collision_materials { 1 };
     
     void calc_cm_and_I(int sim_frame)
     {
       curr_cm_local = { 0.f, 0.f };
       curr_sprite_aabb = sprite->calc_curr_AABB(sim_frame);
-      curr_coll_mask = sprite->calc_curr_mask(sim_frame, collision_material);
-      curr_inertia_mask = sprite->calc_curr_mask(sim_frame, inertia_material);
+      curr_coll_mask = sprite->calc_curr_mask(sim_frame, collision_materials);
+      curr_inertia_mask = sprite->calc_curr_mask(sim_frame, inertia_materials);
       int num_points = 0;
       int rmin = curr_sprite_aabb.r_min();
       int rmax = curr_sprite_aabb.r_max();
@@ -91,7 +91,9 @@ namespace dynamics
     RigidBody(Sprite* s, float rb_mass = 1.f,
       const Vec2& vel = {}, const Vec2& force = {},
       float ang_vel = 0.f, float torque = 0.f,
-      float e = 0.8f, int inertia_mat = 1, int coll_mat = 1)
+      float e = 0.8f,
+      const std::vector<int>& inertia_mats = { 1 },
+      const std::vector<int>& coll_mats = { 1 })
       : sprite(s)
       , mass(rb_mass)
       , inv_mass(1.f / rb_mass)
@@ -100,8 +102,8 @@ namespace dynamics
       , curr_ang_vel(ang_vel)
       , curr_torque(torque)
       , coeff_of_restitution(e)
-      , inertia_material(inertia_mat)
-      , collision_material(coll_mat)
+      , inertia_materials(inertia_mats)
+      , collision_materials(coll_mats)
     {
       //std::cout << "name: " << s->get_name() << std::endl;
       //std::cout << "pos: " << s->pos.str() << std::endl;

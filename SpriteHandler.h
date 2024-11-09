@@ -41,7 +41,7 @@ public:
   
   virtual int num_frames() const = 0;
   
-  virtual bool_vector calc_curr_mask(int sim_frame, int mask_material) = 0;
+  virtual bool_vector calc_curr_mask(int sim_frame, const std::vector<int>& mask_materials) = 0;
   
   virtual bool calc_cm() const = 0;
 };
@@ -314,7 +314,7 @@ public:
     return { static_cast<float>(pos.r) + size.r * 0.5f, static_cast<float>(pos.c) + size.c * 0.5f };
   }
   
-  virtual bool_vector calc_curr_mask(int sim_frame, int mask_material) override
+  virtual bool_vector calc_curr_mask(int sim_frame, const std::vector<int>& mask_materials) override
   {
     const auto* texture = get_curr_frame(sim_frame);
     if (texture == nullptr)
@@ -322,7 +322,7 @@ public:
     const auto num_mats = stlutils::sizeI(texture->materials);
     bool_vector mask(num_mats);
     for (int mat_idx = 0; mat_idx < num_mats; ++mat_idx)
-      mask[mat_idx] = (texture->materials[mat_idx] == mask_material);
+      mask[mat_idx] = stlutils::contains(mask_materials, texture->materials[mat_idx]);
     return mask;
   }
   
@@ -571,7 +571,7 @@ public:
     return to_Vec2(pos); // Assuming you designed the sprite around the centroid / CoM.
   }
   
-  virtual bool_vector calc_curr_mask(int sim_frame, int mask_material) override
+  virtual bool_vector calc_curr_mask(int sim_frame, const std::vector<int>& mask_materials) override
   {
     const auto* vector_frame = get_curr_frame(sim_frame);
     if (vector_frame == nullptr)
@@ -585,7 +585,7 @@ public:
     std::vector<RC> points;
     for (const auto& line_seg : vector_frame->line_segments)
     {
-      if (line_seg.mat != mask_material)
+      if (!stlutils::contains(mask_materials, line_seg.mat))
         continue;
       points.clear();
       auto [p0, p1] = calc_seg_world_pos_round(line_seg);
