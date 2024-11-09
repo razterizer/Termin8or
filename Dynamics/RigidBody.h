@@ -163,6 +163,8 @@ namespace dynamics
       return curr_vel + v_ang;
     }
     
+    Vec2 get_curr_lin_vel() const { return curr_vel; }
+    
     float get_inv_mass() const { return inv_mass; }
     
     float get_inv_Iz() const { return inv_Iz; }
