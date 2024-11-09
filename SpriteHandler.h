@@ -41,7 +41,7 @@ public:
   
   virtual int num_frames() const = 0;
   
-  virtual bool_vector calc_curr_coll_mask(int sim_frame, int collision_material) = 0;
+  virtual bool_vector calc_curr_mask(int sim_frame, int mask_material) = 0;
   
   virtual bool calc_cm() const = 0;
 };
@@ -314,16 +314,16 @@ public:
     return { static_cast<float>(pos.r) + size.r * 0.5f, static_cast<float>(pos.c) + size.c * 0.5f };
   }
   
-  virtual bool_vector calc_curr_coll_mask(int sim_frame, int collision_material) override
+  virtual bool_vector calc_curr_mask(int sim_frame, int mask_material) override
   {
     const auto* texture = get_curr_frame(sim_frame);
     if (texture == nullptr)
       return {};
     const auto num_mats = stlutils::sizeI(texture->materials);
-    bool_vector coll_mask(num_mats);
+    bool_vector mask(num_mats);
     for (int mat_idx = 0; mat_idx < num_mats; ++mat_idx)
-      coll_mask[mat_idx] = (texture->materials[mat_idx] == collision_material);
-    return coll_mask;
+      mask[mat_idx] = (texture->materials[mat_idx] == mask_material);
+    return mask;
   }
   
   virtual bool calc_cm() const override { return true; }
@@ -571,7 +571,7 @@ public:
     return to_Vec2(pos); // Assuming you designed the sprite around the centroid / CoM.
   }
   
-  virtual bool_vector calc_curr_coll_mask(int sim_frame, int collision_material) override
+  virtual bool_vector calc_curr_mask(int sim_frame, int mask_material) override
   {
     const auto* vector_frame = get_curr_frame(sim_frame);
     if (vector_frame == nullptr)
@@ -581,19 +581,19 @@ public:
     auto rmin = aabb.r_min();
     auto cmin = aabb.c_min();
     const int num_points = aabb.width()*aabb.height();
-    bool_vector coll_mask(num_points);
+    bool_vector mask(num_points);
     std::vector<RC> points;
     for (const auto& line_seg : vector_frame->line_segments)
     {
-      if (line_seg.mat != collision_material)
+      if (line_seg.mat != mask_material)
         continue;
       points.clear();
       auto [p0, p1] = calc_seg_world_pos_round(line_seg);
       bresenham::plot_line(p0, p1, points);
       for (const auto& pt : points)
-        coll_mask[(pt.r - rmin) * aabb.width() + (pt.c - cmin)] = true;
+        mask[(pt.r - rmin) * aabb.width() + (pt.c - cmin)] = true;
     }
-    return coll_mask;
+    return mask;
   }
   
   virtual bool calc_cm() const override { return false; }

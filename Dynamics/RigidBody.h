@@ -44,14 +44,16 @@ namespace dynamics
     
     AABB<int> curr_sprite_aabb;
     AABB<float> curr_aabb;
-    bool_vector curr_coll_mask;
+    bool_vector curr_inertia_mask, curr_coll_mask;
+    int inertia_material = 1;
     int collision_material = 1;
     
     void calc_cm_and_I(int sim_frame)
     {
       curr_cm_local = { 0.f, 0.f };
       curr_sprite_aabb = sprite->calc_curr_AABB(sim_frame);
-      curr_coll_mask = sprite->calc_curr_coll_mask(sim_frame, collision_material);
+      curr_coll_mask = sprite->calc_curr_mask(sim_frame, collision_material);
+      curr_inertia_mask = sprite->calc_curr_mask(sim_frame, inertia_material);
       int num_points = 0;
       int rmin = curr_sprite_aabb.r_min();
       int rmax = curr_sprite_aabb.r_max();
@@ -65,7 +67,7 @@ namespace dynamics
         {
           auto c_loc = c - cmin;
           auto idx = r_loc * curr_sprite_aabb.width() + c_loc;
-          if (curr_coll_mask[idx])
+          if (curr_inertia_mask[idx])
           {
             if (sprite->calc_cm())
               curr_cm_local += { static_cast<float>(r_loc), static_cast<float>(c_loc) };
@@ -89,7 +91,7 @@ namespace dynamics
     RigidBody(Sprite* s, float rb_mass = 1.f,
       const Vec2& vel = {}, const Vec2& force = {},
       float ang_vel = 0.f, float torque = 0.f,
-      float e = 0.8f, int coll_mat = 1)
+      float e = 0.8f, int inertia_mat = 1, int coll_mat = 1)
       : sprite(s)
       , mass(rb_mass)
       , inv_mass(1.f / rb_mass)
@@ -98,6 +100,7 @@ namespace dynamics
       , curr_ang_vel(ang_vel)
       , curr_torque(torque)
       , coeff_of_restitution(e)
+      , inertia_material(inertia_mat)
       , collision_material(coll_mat)
     {
       //std::cout << "name: " << s->get_name() << std::endl;
@@ -139,6 +142,8 @@ namespace dynamics
     Vec2 get_curr_centroid() const { return curr_centroid; }
     
     AABB<float> get_curr_AABB() const { return curr_aabb; }
+    
+    const bool_vector& get_curr_inertia_mask() const { return curr_inertia_mask; }
     
     const bool_vector& get_curr_coll_mask() const { return curr_coll_mask; }
     
