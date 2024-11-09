@@ -122,11 +122,11 @@ namespace dynamics
       {
         if (mass > 0.f)
         {
-          curr_acc = curr_force / mass;
+          curr_acc = curr_force * inv_mass;
           curr_vel += curr_acc * dt;
           curr_cm += curr_vel * dt;
           curr_centroid += curr_vel * dt;
-          curr_ang_acc = curr_torque / Iz;
+          curr_ang_acc = curr_torque * inv_Iz;
           curr_ang_vel += curr_ang_acc * dt;
           curr_ang += curr_ang_vel * dt;
           
