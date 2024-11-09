@@ -278,7 +278,8 @@ quit:
     
     int anim_frame = 0;
     const int num_frames = 2000;
-    for (int i = 0; i < num_frames; ++i)
+    int i;
+    for (i = 0; i < num_frames; ++i)
     {
       if (use_dynamics_system)
       {
@@ -321,7 +322,7 @@ quit:
     auto dur_s = 1e-3f * benchmark::toc();
     end_screen(sh);
     
-    auto fps = num_frames / dur_s;
+    auto fps = i / dur_s;
     std::cout << "FPS = " << fps << std::endl;
   }
 
