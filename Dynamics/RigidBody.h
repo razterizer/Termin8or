@@ -47,6 +47,7 @@ namespace dynamics
     bool_vector curr_inertia_mask, curr_coll_mask;
     std::vector<int> inertia_materials { 1 };
     std::vector<int> collision_materials { 1 };
+    std::vector<Vec2> surface_normals;
     
     void calc_cm_and_I(int sim_frame)
     {
