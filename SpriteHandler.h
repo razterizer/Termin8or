@@ -306,7 +306,7 @@ public:
     }
   }
   
-  const drawing::Texture* get_curr_frame(int sim_frame) const
+  drawing::Texture* get_curr_frame(int sim_frame) const
   {
     int frame_id = func_calc_anim_frame(sim_frame);
     if (frame_id >= stlutils::sizeI(texture_frames))
@@ -507,7 +507,7 @@ public:
     *frame_dst = frame;
   }
   
-  const VectorFrame* get_curr_frame(int sim_frame) const
+  VectorFrame* get_curr_frame(int sim_frame) const
   {
     int frame_id = func_calc_anim_frame(sim_frame);
     if (frame_id >= stlutils::sizeI(vector_frames))
