@@ -272,6 +272,40 @@ public:
     return set_sprite_data(texture->materials, bb, mat...);
   }
   
+  void flip_ud(int anim_frame)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    const int half_height = size.r/2;
+    for (int c = 0; c <= size.c; ++c)
+    {
+      for (int r = 0; r <= half_height; ++r)
+      {
+        int r_inv = size.r - r;
+        auto a = texture->operator()(r, c);
+        auto b = texture->operator()(r_inv, c);
+        texture->set_textel(r, c, b);
+        texture->set_textel(r_inv, c, a);
+      }
+    }
+  }
+  
+  void flip_lr(int anim_frame)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    const int half_width = size.c/2;
+    for (int r = 0; r < size.r; ++r)
+    {
+      for (int c = 0; c <= half_width; ++c)
+      {
+        int c_inv = size.c - c;
+        auto a = texture->operator()(r, c);
+        auto b = texture->operator()(r, c_inv);
+        texture->set_textel(r, c, b);
+        texture->set_textel(r, c_inv, a);
+      }
+    }
+  }
+  
   const drawing::Texture* get_curr_frame(int sim_frame) const
   {
     int frame_id = func_calc_anim_frame(sim_frame);
