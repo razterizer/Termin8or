@@ -304,6 +304,9 @@ namespace dynamics
         const auto& aabb_B = node_B->aabb;
         auto e_A = rb_A->get_e();
         auto e_B = rb_B->get_e();
+        auto dyn_friction_A = rb_A->get_dynamic_friction();
+        auto dyn_friction_B = rb_B->get_dynamic_friction();
+        auto friction = std::sqrt(dyn_friction_A * dyn_friction_B);
       
         size_t num_pts = cd.local_pos_A.size();
         for (size_t pt_idx = 0; pt_idx < num_pts; ++pt_idx)
@@ -344,6 +347,19 @@ namespace dynamics
           // Apply impulse to both objects.
           rb_A->apply_impulse(+(1.f + e_A) * impulse, contact_world_A);
           rb_B->apply_impulse(-(1.f + e_B) * impulse, contact_world_B);
+          
+          // Calculate tangential (frictional) component of relative velocity
+          Vec2 tangential_velocity = relative_velocity - collision_normal * velocity_along_normal;
+          auto tang_vel_magnitude = math::length(tangential_velocity);
+          if (tang_vel_magnitude > 0.f) // Only apply friction if there’s tangential movement
+          {
+            // Compute friction impulse magnitude
+            Vec2 friction_impulse = friction * tangential_velocity / j_den;
+            
+            // Apply friction impulse
+            rb_A->apply_impulse(friction_impulse, contact_world_A);
+            rb_B->apply_impulse(-friction_impulse, contact_world_B);
+          }
         }
       }
     }
