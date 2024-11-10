@@ -87,6 +87,52 @@ namespace dynamics
       inv_Iz = Iz == 0.f ? 0.f : 1.f / Iz;
     }
     
+    void calc_surface_normals()
+    {
+      int rmin = curr_sprite_aabb.r_min();
+      int rmax = curr_sprite_aabb.r_max();
+      int cmin = curr_sprite_aabb.c_min();
+      int cmax = curr_sprite_aabb.c_max();
+      for (int r = rmin; r <= rmax; ++r)
+      {
+        auto r_loc = r - rmin;
+        for (int c = cmin; c <= cmax; ++c)
+        {
+          //auto pos = to_Vec2({ r, c });
+          //auto cm_dir = math::normalize(pos - curr_cm_local);
+        
+          auto c_loc = c - cmin;
+          
+          auto idx = r_loc * curr_sprite_aabb.width() + c_loc;
+          
+          if (!curr_coll_mask[idx])
+            continue;
+          
+          Vec2 normal;
+          for (int i = -1; i <= 1; ++i)
+          {
+            for (int j = -1; j <= 1; ++j)
+            {
+              if (i == 0 && j == 0)
+                continue;
+              auto offs_pos = RC { r + i, c + j };
+              if (curr_sprite_aabb.contains(offs_pos))
+              {
+                auto idx_offs = (r_loc + i) * curr_sprite_aabb.width() + (c_loc + j);
+                if (curr_coll_mask[idx_offs])
+                {
+                  auto offs_dir = to_Vec2({ i, j });
+                  //if (math::dot(math::normalize(offs_dir), cm_dir) > 0.f)
+                    normal -= offs_dir;
+                }
+              }
+            }
+          }
+          stlutils::at_growing(surface_normals, idx) = math::normalize(normal);
+        }
+      }
+    }
+    
   public:
     RigidBody(Sprite* s, float rb_mass = 1.f,
       const Vec2& vel = {}, const Vec2& force = {},
