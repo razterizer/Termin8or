@@ -41,6 +41,7 @@ namespace dynamics
     float curr_torque = 0.f;
     
     float coeff_of_restitution = 0.8f;
+    float dynamic_friction = 0.f;
     
     AABB<int> curr_sprite_aabb;
     AABB<float> curr_aabb;
@@ -138,7 +139,7 @@ namespace dynamics
     RigidBody(Sprite* s, float rb_mass = 1.f,
       const Vec2& vel = {}, const Vec2& force = {},
       float ang_vel = 0.f, float torque = 0.f,
-      float e = 0.8f,
+      float e = 0.8f, float dyn_friction = 0.f,
       const std::vector<int>& inertia_mats = { 1 },
       const std::vector<int>& coll_mats = { 1 })
       : sprite(s)
@@ -149,6 +150,7 @@ namespace dynamics
       , curr_ang_vel(ang_vel)
       , curr_torque(torque)
       , coeff_of_restitution(e)
+      , dynamic_friction(math::clamp<float>(dyn_friction, 0.f, 1.f))
       , inertia_materials(inertia_mats)
       , collision_materials(coll_mats)
     {
@@ -239,6 +241,8 @@ namespace dynamics
       auto delta_w = tau * inv_Iz;
       curr_ang_vel += delta_w;
     }
+    
+    float get_dynamic_friction() const { return dynamic_friction; }
   };
   
   

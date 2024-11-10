@@ -24,14 +24,15 @@ namespace dynamics
     RigidBody* add_rigid_body(Sprite* sprite, float rb_mass = 1.f,
       const Vec2& vel = {}, const Vec2& force = {},
       float ang_vel = 0.f, float torque = 0.f,
-      float e = 0.8f,
+      float e = 0.8f, float dyn_friction = 0.f,
       const std::vector<int>& inertia_mats = { 1 },
       const std::vector<int>& coll_mats = { 1 })
     {
       auto& rb = m_rigid_bodies.emplace_back(std::make_unique<RigidBody>(sprite, rb_mass,
         vel, force,
         ang_vel, torque,
-        e, inertia_mats, coll_mats));
+        e, dyn_friction,
+        inertia_mats, coll_mats));
       return rb.get();
     }
     
