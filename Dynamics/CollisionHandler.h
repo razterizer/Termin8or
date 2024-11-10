@@ -302,8 +302,6 @@ namespace dynamics
         auto* rb_B = node_B->rigid_body;
         const auto& aabb_A = node_A->aabb;
         const auto& aabb_B = node_B->aabb;
-        const auto& cm_A = rb_A->get_curr_cm();
-        const auto& cm_B = rb_B->get_curr_cm();
         
         // Average coefficient of restitution.
         auto e = (rb_A->get_e() + rb_B->get_e()) * 0.5f;
@@ -324,8 +322,9 @@ namespace dynamics
           auto vel_B = rb_B->calc_velocity_at(contact_world_B);
           Vec2 relative_velocity = vel_B - vel_A;
           
-          // Compute collision normal (assuming simple separation along the line between points).
-          auto collision_normal = math::normalize(cm_B - cm_A);
+          auto normal_A = rb_A->fetch_surface_normal(to_RC_round(contact_local_A));
+          auto normal_B = rb_B->fetch_surface_normal(to_RC_round(contact_local_B));
+          auto collision_normal = math::normalize(normal_A - normal_B);
           
           // Calculate relative velocity in the direction of the normal.
           auto velocity_along_normal = math::dot(relative_velocity, collision_normal);
