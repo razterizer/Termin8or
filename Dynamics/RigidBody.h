@@ -156,6 +156,7 @@ namespace dynamics
       //std::cout << "pos: " << s->pos.str() << std::endl;
       orig_pos = to_Vec2(s->pos);
       calc_cm_and_I(0);
+      calc_surface_normals();
       orig_cm_local = curr_cm_local;
       curr_cm = orig_pos + curr_cm_local;
       curr_aabb = curr_sprite_aabb.convert<float>();
