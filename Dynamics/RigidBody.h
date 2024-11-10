@@ -200,6 +200,14 @@ namespace dynamics
     
     const bool_vector& get_curr_coll_mask() const { return curr_coll_mask; }
     
+    const Vec2 fetch_surface_normal(const RC& local_pos) const
+    {
+      auto idx = local_pos.r * curr_sprite_aabb.width() + local_pos.c;
+      if (idx < stlutils::sizeI(surface_normals))
+        return surface_normals[idx];
+      return {};
+    }
+    
     // Elasticity coefficient.
     float get_e() const { return coeff_of_restitution; }
     
