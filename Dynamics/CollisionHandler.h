@@ -302,9 +302,8 @@ namespace dynamics
         auto* rb_B = node_B->rigid_body;
         const auto& aabb_A = node_A->aabb;
         const auto& aabb_B = node_B->aabb;
-        
-        // Average coefficient of restitution.
-        auto e = (rb_A->get_e() + rb_B->get_e()) * 0.5f;
+        auto e_A = rb_A->get_e();
+        auto e_B = rb_B->get_e();
       
         size_t num_pts = cd.local_pos_A.size();
         for (size_t pt_idx = 0; pt_idx < num_pts; ++pt_idx)
@@ -333,7 +332,7 @@ namespace dynamics
           if (velocity_along_normal > 0.f) continue;
           
           // Compute impulse scalar
-          auto j_num = -(1.f + e) * velocity_along_normal;
+          auto j_num = velocity_along_normal;
           auto j_den = rb_A->get_inv_mass() + rb_B->get_inv_mass() +
           rb_A->get_inv_Iz() * math::sq(math::dot(contact_world_A - rb_A->get_curr_cm(), collision_normal)) +
           rb_B->get_inv_Iz() * math::sq(math::dot(contact_world_B - rb_B->get_curr_cm(), collision_normal));
@@ -343,8 +342,8 @@ namespace dynamics
           auto impulse = collision_normal * j;
           
           // Apply impulse to both objects.
-          rb_A->apply_impulse(-impulse, contact_world_A);
-          rb_B->apply_impulse(impulse, contact_world_B);
+          rb_A->apply_impulse(+(1.f + e_A) * impulse, contact_world_A);
+          rb_B->apply_impulse(-(1.f + e_B) * impulse, contact_world_B);
         }
       }
     }
