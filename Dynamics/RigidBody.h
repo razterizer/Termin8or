@@ -162,6 +162,8 @@ namespace dynamics
       curr_aabb = curr_sprite_aabb.convert<float>();
       curr_centroid = s->calc_curr_centroid(0);
       cm_to_orig_pos = orig_pos - curr_cm;
+      if (auto* vector_sprite = dynamic_cast<VectorSprite*>(sprite); vector_sprite != nullptr)
+        curr_ang = math::deg2rad(vector_sprite->get_rotation());
     }
     
     void update(float dt, int sim_frame)
