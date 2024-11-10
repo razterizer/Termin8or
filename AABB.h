@@ -141,7 +141,7 @@ public:
   
   bool contains(const RC& pt) const
   {
-    return is_inside(static_cast<T>(pt.r), static_cast<T>(pt.c));
+    return contains(static_cast<T>(pt.r), static_cast<T>(pt.c));
   }
   
   bool overlaps(const AABB<T>& aabb) const
