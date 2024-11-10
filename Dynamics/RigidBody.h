@@ -184,6 +184,7 @@ namespace dynamics
         }
         
         calc_cm_and_I(sim_frame);
+        calc_surface_normals();
         curr_aabb = curr_sprite_aabb.convert<float>();
       }
     }
