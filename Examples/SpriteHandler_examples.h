@@ -261,7 +261,7 @@ quit:
     sprite1->pos = { math::roundI(sh.num_rows()*0.75f), math::roundI(sh.num_cols()*0.25f) };
     sprite1->add_line_segment(0, { 1, -0.8f }, { 1, 0.8f }, '"', { Color::Green, Color::Transparent2 }, 1);
     sprite1->add_line_segment(0, { 0, 0, }, { 0, 0 }, 'O', { Color::Cyan, Color::Transparent2 }, 1);
-    dyn_sys.add_rigid_body(sprite1, 1.f, { -6.f, 10.f }, {}, -1.f);
+    dyn_sys.add_rigid_body(sprite1, 1.f, { -6.f, 8.5f }, {}, -1.f);
     
     coll_handler.rebuild_BVH(sh.num_rows(), sh.num_cols(), &dyn_sys);
     
