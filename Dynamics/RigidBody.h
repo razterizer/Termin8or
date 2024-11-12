@@ -284,6 +284,8 @@ namespace dynamics
     }
         
     bool is_sleeping() const { return enable_sleeping && sleeping; }
+    
+    Sprite* get_sprite() const { return sprite; }
   };
   
   
