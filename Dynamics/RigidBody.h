@@ -197,6 +197,10 @@ namespace dynamics
     
     Vec2 get_curr_cm() const { return curr_cm; }
     
+    void set_curr_cm(const Vec2& cm) { curr_cm = cm; }
+    
+    void reset_curr_cm() { curr_cm = orig_pos + curr_cm_local; }
+    
     Vec2 get_curr_centroid() const { return curr_centroid; }
     
     AABB<float> get_curr_AABB() const { return curr_aabb; }
