@@ -137,7 +137,7 @@ namespace dynamics
     
   public:
     RigidBody(Sprite* s, float rb_mass = 1.f,
-      const Vec2& vel = {}, const Vec2& force = {},
+      std::optional<Vec2> pos = std::nullopt, const Vec2& vel = {}, const Vec2& force = {},
       float ang_vel = 0.f, float torque = 0.f,
       float e = 0.8f, float dyn_friction = 0.f,
       const std::vector<int>& inertia_mats = { 1 },
@@ -156,7 +156,7 @@ namespace dynamics
     {
       //std::cout << "name: " << s->get_name() << std::endl;
       //std::cout << "pos: " << s->pos.str() << std::endl;
-      orig_pos = to_Vec2(s->pos);
+      orig_pos = pos.value_or(to_Vec2(s->pos));
       calc_cm_and_I(0);
       calc_surface_normals();
       orig_cm_local = curr_cm_local;
