@@ -36,6 +36,31 @@ namespace dynamics
       return rb.get();
     }
     
+    template<int NRB>
+    std::array<RigidBody*, NRB> add_rigid_bodies(const std::array<Sprite*, NRB>& sprites,
+      std::function<float(int)>&& rb_mass = [](int){ return 1.f; },
+      std::function<std::optional<Vec2>(int)>&& pos = [](int){ return std::nullopt; },
+      std::function<Vec2(int)>&& vel = [](int){ return Vec2 {}; },
+      std::function<Vec2(int)>&& force = [](int){ return Vec2 {}; },
+      std::function<float(int)>&& ang_vel = [](int){ return 0.f; },
+      std::function<float(int)>&& torque = [](int){ return 0.f; },
+      std::function<float(int)>&& e = [](int){ return 0.8f; },
+      std::function<float(int)>&& dyn_friction = [](int) { return 0.f; },
+      std::function<std::vector<int>(int)>&& inertia_mats = [](int){ return std::vector { 1 }; },
+      std::function<std::vector<int>(int)>&& coll_mats = [](int){ return std::vector { 1 }; })
+    {
+      std::array<RigidBody*, NRB> rigid_body_arr;
+      for (int s_idx = 0; s_idx < NRB; ++s_idx)
+      {
+        rigid_body_arr[s_idx] = add_rigid_body(sprites[s_idx], rb_mass(s_idx),
+          pos(s_idx), vel(s_idx), force(s_idx),
+          ang_vel(s_idx), torque(s_idx),
+          e(s_idx), dyn_friction(s_idx),
+          inertia_mats(s_idx), coll_mats(s_idx));
+      }
+      return rigid_body_arr;
+    }
+    
     const std::vector<RigidBody*> get_rigid_bodies_raw() const
     {
       std::vector<RigidBody*> rigid_bodies_raw;
