@@ -208,7 +208,7 @@ namespace sprite_handler
         }
         
         if (use_dynamics_system)
-          dyn_sys.update(0.02f, anim_frame);
+          dyn_sys.update(anim_frame*dt*2.f, dt*2.f, anim_frame);
         return_cursor();
         sh.clear();
         if (dbg_draw_rigid_bodies)
@@ -284,7 +284,7 @@ quit:
     {
       if (use_dynamics_system)
       {
-        dyn_sys.update(dt, anim_frame);
+        dyn_sys.update(i*dt, dt, anim_frame);
         coll_handler.update();
       }
       else

@@ -70,10 +70,10 @@ namespace dynamics
       return rigid_bodies_raw;
     }
     
-    void update(float dt, int sim_frame)
+    void update(float time, float dt, int sim_frame)
     {
       for (auto& rb : m_rigid_bodies)
-        rb->update(dt, sim_frame);
+        rb->update(time, dt, sim_frame);
     }
     
     template<int NR, int NC>

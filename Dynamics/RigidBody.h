@@ -50,6 +50,13 @@ namespace dynamics
     std::vector<int> collision_materials { 1 };
     std::vector<Vec2> surface_normals;
     
+    bool enable_sleeping = false;
+    bool sleeping = false;
+    float awake_impulse_threshold_sq = 1.f;
+    float sleep_velocity_threshold_sq = 0.1f;
+    float sleep_time_threshold = 5.f;
+    float sleep_timestamp = 0.f;
+    
     void calc_cm_and_I(int sim_frame)
     {
       curr_cm_local = { 0.f, 0.f };
@@ -168,11 +175,11 @@ namespace dynamics
         curr_ang = math::deg2rad(vector_sprite->get_rotation());
     }
     
-    void update(float dt, int sim_frame)
+    void update(float time, float dt, int sim_frame)
     {
       if (sprite != nullptr)
       {
-        if (mass > 0.f)
+        if (mass > 0.f && !(enable_sleeping && sleeping))
         {
           curr_acc = curr_force * inv_mass;
           curr_vel += curr_acc * dt;
@@ -187,6 +194,17 @@ namespace dynamics
           sprite->pos = to_RC_round(sprite_pos);
           if (auto* vector_sprite = dynamic_cast<VectorSprite*>(sprite); vector_sprite != nullptr)
             vector_sprite->set_rotation(math::rad2deg(curr_ang));
+          
+          if (enable_sleeping)
+          {
+            if (math::length_squared(curr_vel) < sleep_velocity_threshold_sq)
+            {
+              if (time - sleep_timestamp > sleep_time_threshold)
+                sleeping = true;
+            }
+            else
+              sleep_timestamp = time;
+          }
         }
         
         calc_cm_and_I(sim_frame);
@@ -244,9 +262,28 @@ namespace dynamics
       auto tau = r.c * impulse.r - r.r * impulse.c;
       auto delta_w = tau * inv_Iz;
       curr_ang_vel += delta_w;
+      
+      if (enable_sleeping)
+      {
+        if (math::length_squared(impulse) > awake_impulse_threshold_sq)
+          sleeping = false;
+      }
     }
     
     float get_dynamic_friction() const { return dynamic_friction; }
+    
+    void set_sleeping(bool enable,
+                      float a_sleep_velocity_threshold,
+                      float a_sleep_time_threshold,
+                      float a_awake_impulse_threshold)
+    {
+      enable_sleeping = enable;
+      sleep_velocity_threshold_sq = math::sq(a_sleep_velocity_threshold);
+      sleep_time_threshold = a_sleep_time_threshold;
+      awake_impulse_threshold_sq = math::sq(a_awake_impulse_threshold);
+    }
+        
+    bool is_sleeping() const { return enable_sleeping && sleeping; }
   };
   
   
