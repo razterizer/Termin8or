@@ -15,6 +15,13 @@ struct RC
   bool operator==(const RC& pt) const { return r == pt.r && c == pt.c; }
   bool operator!=(const RC& pt) const { return !(*this == pt); }
   
+  bool operator<(const RC& other) const
+  {
+    if (r != other.r)
+      return r < other.r;
+    return c < other.c;
+  }
+  
   const RC& operator+() const
   {
     return *this;
