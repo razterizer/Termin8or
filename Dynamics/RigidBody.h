@@ -42,6 +42,7 @@ namespace dynamics
     
     float coeff_of_restitution = 0.8f;
     float dynamic_friction = 0.f;
+    std::optional<float> crit_speed_sq = std::nullopt;
     
     AABB<int> curr_sprite_aabb;
     AABB<float> curr_aabb;
@@ -147,6 +148,7 @@ namespace dynamics
       std::optional<Vec2> pos = std::nullopt, const Vec2& vel = {}, const Vec2& force = {},
       float ang_vel = 0.f, float torque = 0.f,
       float e = 0.8f, float dyn_friction = 0.f,
+      std::optional<float> crit_speed = std::nullopt,
       const std::vector<int>& inertia_mats = { 1 },
       const std::vector<int>& coll_mats = { 1 })
       : sprite(s)
@@ -158,6 +160,7 @@ namespace dynamics
       , curr_torque(torque)
       , coeff_of_restitution(e)
       , dynamic_friction(math::clamp<float>(dyn_friction, 0.f, 1.f))
+      , crit_speed_sq(crit_speed.has_value() ? std::optional<float>(math::sq(crit_speed.value())) : std::nullopt)
       , inertia_materials(inertia_mats)
       , collision_materials(coll_mats)
     {
@@ -183,6 +186,9 @@ namespace dynamics
         {
           curr_acc = curr_force * inv_mass;
           curr_vel += curr_acc * dt;
+          auto curr_speed_sq = math::length_squared(curr_vel);
+          if (crit_speed_sq.has_value() && curr_speed_sq > crit_speed_sq.value())
+            curr_vel = math::normalize(curr_vel) * std::sqrt(crit_speed_sq.value());
           curr_cm += curr_vel * dt;
           curr_centroid += curr_vel * dt;
           curr_ang_acc = curr_torque * inv_Iz;

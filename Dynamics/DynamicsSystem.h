@@ -25,6 +25,7 @@ namespace dynamics
       std::optional<Vec2> pos = std::nullopt, const Vec2& vel = {}, const Vec2& force = {},
       float ang_vel = 0.f, float torque = 0.f,
       float e = 0.8f, float dyn_friction = 0.f,
+      std::optional<float> crit_speed = std::nullopt,
       const std::vector<int>& inertia_mats = { 1 },
       const std::vector<int>& coll_mats = { 1 })
     {
@@ -32,6 +33,7 @@ namespace dynamics
         pos, vel, force,
         ang_vel, torque,
         e, dyn_friction,
+        crit_speed,
         inertia_mats, coll_mats));
       return rb.get();
     }
@@ -46,6 +48,7 @@ namespace dynamics
       std::function<float(int)>&& torque = [](int){ return 0.f; },
       std::function<float(int)>&& e = [](int){ return 0.8f; },
       std::function<float(int)>&& dyn_friction = [](int) { return 0.f; },
+      std::function<std::optional<float>(int)>&& crit_speed = [](int){ return std::nullopt; },
       std::function<std::vector<int>(int)>&& inertia_mats = [](int){ return std::vector { 1 }; },
       std::function<std::vector<int>(int)>&& coll_mats = [](int){ return std::vector { 1 }; })
     {
@@ -56,6 +59,7 @@ namespace dynamics
           pos(s_idx), vel(s_idx), force(s_idx),
           ang_vel(s_idx), torque(s_idx),
           e(s_idx), dyn_friction(s_idx),
+          crit_speed(s_idx),
           inertia_mats(s_idx), coll_mats(s_idx));
       }
       return rigid_body_arr;
