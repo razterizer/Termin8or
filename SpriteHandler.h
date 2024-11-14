@@ -178,7 +178,6 @@ public:
   
   // #FIXME: Perhaps move these varyadic functions to Texture for more versatility.
   
-  // Set sprite characters
   template<typename... Chars>
   void set_sprite_chars(int anim_frame, Chars... ch)
   {
@@ -193,7 +192,13 @@ public:
     set_sprite_data(texture->characters, bb, ch...);
   }
   
-  // Set sprite characters from a string for each row
+  void fill_sprite_chars(int anim_frame, char ch)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    texture->characters.assign(area, ch);
+  }
+  
+  // Set sprite characters from a string for each row.
   template<typename... Strings>
   bool set_sprite_chars_from_strings(int anim_frame, Strings... rows)
   {
@@ -215,7 +220,7 @@ public:
         return false;
       }
     
-    // Unpack strings into the characters vector
+    // Unpack strings into the characters vector.
     int idx = 0;
     for (const auto& row : row_array)
       for (char ch : row)
@@ -224,7 +229,6 @@ public:
     return true;
   }
   
-  // Set sprite foreground colors
   template<typename... Colors>
   bool set_sprite_fg_colors(int anim_frame, Colors... fg_color)
   {
@@ -232,7 +236,6 @@ public:
     return set_sprite_data(texture->fg_colors, fg_color...);
   }
   
-  // Set sprite foreground colors
   template<typename... Colors>
   bool set_sprite_fg_colors(int anim_frame, const ttl::Rectangle& bb, Colors... fg_color)
   {
@@ -240,7 +243,12 @@ public:
     return set_sprite_data(texture->fg_colors, bb, fg_color...);
   }
   
-  // Set sprite background colors
+  void fill_sprite_fg_colors(int anim_frame, Color fg_color)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    texture->fg_colors.assign(area, fg_color);
+  }
+  
   template<typename... Colors>
   bool set_sprite_bg_colors(int anim_frame, Colors... bg_color)
   {
@@ -248,7 +256,6 @@ public:
     return set_sprite_data(texture->bg_colors, bg_color...);
   }
   
-  // Set sprite background colors
   template<typename... Colors>
   bool set_sprite_bg_colors(int anim_frame, const ttl::Rectangle& bb, Colors... bg_color)
   {
@@ -256,7 +263,12 @@ public:
     return set_sprite_data(texture->bg_colors, bb, bg_color...);
   }
   
-  // Set sprite materials
+  void fill_sprite_bg_colors(int anim_frame, Color bg_color)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    texture->bg_colors.assign(area, bg_color);
+  }
+  
   template<typename... Materials>
   bool set_sprite_materials(int anim_frame, Materials... mat)
   {
@@ -264,12 +276,17 @@ public:
     return set_sprite_data(texture->materials, mat...);
   }
   
-  // Set sprite materials
   template<typename... Materials>
   bool set_sprite_materials(int anim_frame, const ttl::Rectangle& bb, Materials... mat)
   {
     auto* texture = fetch_frame(anim_frame);
     return set_sprite_data(texture->materials, bb, mat...);
+  }
+  
+  void fill_sprite_materials(int anim_frame, int mat)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    texture->materials.assign(area, mat);
   }
   
   void flip_ud(int anim_frame)
