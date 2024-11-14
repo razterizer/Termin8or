@@ -344,6 +344,9 @@ namespace dynamics
         auto* node_B = cd.node_B;
         auto* rb_A = node_A->rigid_body;
         auto* rb_B = node_B->rigid_body;
+        // Nothing can happen if both rbs are sleeping.
+        if (rb_A->is_sleeping() && rb_B->is_sleeping())
+          continue;
         const auto& aabb_A = node_A->aabb;
         const auto& aabb_B = node_B->aabb;
         auto e_A = rb_A->get_e();
