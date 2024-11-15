@@ -171,10 +171,14 @@ namespace dynamics
     
     void exclude_rigid_body_pairs(RigidBody* rb_A, RigidBody* rb_B)
     {
-      if (rb_A < rb_B)
-        exclusion_pairs.emplace_back(rb_A, rb_B);
-      else
-        exclusion_pairs.emplace_back(rb_B, rb_A);
+      if (!stlutils::contains_if(exclusion_pairs,
+            [rb_A, rb_B](const auto& rbp) { return rbp.first == rb_A && rbp.second == rb_B; }))
+      {
+        if (rb_A < rb_B)
+          exclusion_pairs.emplace_back(rb_A, rb_B);
+        else
+          exclusion_pairs.emplace_back(rb_B, rb_A);
+      }
     }
     
     void exclude_all_rigid_bodies_of_prefix(const DynamicsSystem* dyn_sys,
@@ -182,16 +186,13 @@ namespace dynamics
                                             const std::string& sprite_prefix_B)
     {
       auto rb_vec = dyn_sys->get_rigid_bodies_raw();
-      int num_rb = stlutils::sizeI(rb_vec);
-      for (int rb_A_idx = 0; rb_A_idx < num_rb; ++rb_A_idx)
+      for (auto* rb_A : rb_vec)
       {
-        auto* rb_A = rb_vec[rb_A_idx];
         auto* sprite_A = rb_A->get_sprite();
         if (sprite_A == nullptr || !sprite_A->get_name().starts_with(sprite_prefix_A))
           continue;
-        for (int rb_B_idx = rb_A_idx + 1; rb_B_idx < num_rb; ++rb_B_idx)
+        for (auto* rb_B : rb_vec)
         {
-          auto* rb_B = rb_vec[rb_B_idx];
           auto* sprite_B = rb_B->get_sprite();
           if (sprite_B == nullptr || !sprite_B->get_name().starts_with(sprite_prefix_B))
             continue;
