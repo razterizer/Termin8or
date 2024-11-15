@@ -289,6 +289,31 @@ public:
     texture->materials.assign(area, mat);
   }
   
+  bool plot_line(int sim_frame, const RC& p0, const RC& p1,
+                 std::optional<char> ch,
+                 std::optional<Color> fg_color,
+                 std::optional<Color> bg_color,
+                 std::optional<int> mat)
+  {
+    auto* texture = get_curr_frame(sim_frame);
+    if (texture == nullptr)
+      return false;
+    std::vector<RC> points;
+    bresenham::plot_line(p0, p1, points);
+    for (const auto& pt : points)
+    {
+      auto r = math::roundI(pt.r) - pos.r;
+      auto c = math::roundI(pt.c) - pos.c;
+      auto textel = (*texture)(r, c);
+      textel.ch = ch.value_or(textel.ch);
+      textel.fg_color = fg_color.value_or(textel.fg_color);
+      textel.bg_color = bg_color.value_or(textel.bg_color);
+      textel.mat = mat.value_or(textel.mat);
+      texture->set_textel(r, c, textel);
+    }
+    return true;
+  }
+  
   void flip_ud(int anim_frame)
   {
     auto* texture = fetch_frame(anim_frame);
