@@ -205,7 +205,7 @@ public:
     texture->characters.assign(area, ch);
   }
   
-  void fill_sprite_char_r(int anim_frame, int r0, int r1, int c, char ch)
+  void fill_sprite_chars_r(int anim_frame, int r0, int r1, int c, char ch)
   {
     auto* texture = fetch_frame(anim_frame);
     if (texture != nullptr)
@@ -213,7 +213,7 @@ public:
         texture->set_textel_char(r, c, ch);
   }
   
-  void fill_sprite_char_c(int anim_frame, int r, int c0, int c1, char ch)
+  void fill_sprite_chars_c(int anim_frame, int r, int c0, int c1, char ch)
   {
     auto* texture = fetch_frame(anim_frame);
     if (texture != nullptr)
@@ -279,7 +279,7 @@ public:
     texture->fg_colors.assign(area, fg_color);
   }
   
-  void fill_sprite_fg_color_r(int anim_frame, int r0, int r1, int c, Color fg_color)
+  void fill_sprite_fg_colors_r(int anim_frame, int r0, int r1, int c, Color fg_color)
   {
     auto* texture = fetch_frame(anim_frame);
     if (texture != nullptr)
@@ -287,7 +287,7 @@ public:
         texture->set_textel_fg_color(r, c, fg_color);
   }
   
-  void fill_sprite_fg_color_c(int anim_frame, int r, int c0, int c1, Color fg_color)
+  void fill_sprite_fg_colors_c(int anim_frame, int r, int c0, int c1, Color fg_color)
   {
     auto* texture = fetch_frame(anim_frame);
     if (texture != nullptr)
@@ -322,7 +322,7 @@ public:
     texture->bg_colors.assign(area, bg_color);
   }
   
-  void fill_sprite_bg_color_r(int anim_frame, int r0, int r1, int c, Color bg_color)
+  void fill_sprite_bg_colors_r(int anim_frame, int r0, int r1, int c, Color bg_color)
   {
     auto* texture = fetch_frame(anim_frame);
     if (texture != nullptr)
@@ -330,7 +330,7 @@ public:
         texture->set_textel_bg_color(r, c, bg_color);
   }
   
-  void fill_sprite_bg_color_c(int anim_frame, int r, int c0, int c1, Color bg_color)
+  void fill_sprite_bg_colors_c(int anim_frame, int r, int c0, int c1, Color bg_color)
   {
     auto* texture = fetch_frame(anim_frame);
     if (texture != nullptr)
@@ -365,7 +365,7 @@ public:
     texture->materials.assign(area, mat);
   }
   
-  void fill_sprite_material_r(int anim_frame, int r0, int r1, int c, int mat)
+  void fill_sprite_materials_r(int anim_frame, int r0, int r1, int c, int mat)
   {
     auto* texture = fetch_frame(anim_frame);
     if (texture != nullptr)
@@ -373,7 +373,7 @@ public:
         texture->set_textel_material(r, c, mat);
   }
   
-  void fill_sprite_material_c(int anim_frame, int r, int c0, int c1, int mat)
+  void fill_sprite_materials_c(int anim_frame, int r, int c0, int c1, int mat)
   {
     auto* texture = fetch_frame(anim_frame);
     if (texture != nullptr)
