@@ -89,9 +89,7 @@ namespace drawing
     
     Textel operator()(int r, int c) const
     {
-      if (!math::in_range<int>(r, 0, size.r, Range::ClosedOpen))
-        return {};
-      if (!math::in_range<int>(c, 0, size.c, Range::ClosedOpen))
+      if (!check_range(r, c))
         return {};
       Textel tex;
       int idx = r * size.c + c;
@@ -109,9 +107,7 @@ namespace drawing
     
     void set_textel(int r, int c, const Textel& textel)
     {
-      if (!math::in_range<int>(r, 0, size.r, Range::ClosedOpen))
-        return;
-      if (!math::in_range<int>(c, 0, size.c, Range::ClosedOpen))
+      if (!check_range(r, c))
         return;
       int idx = r * size.c + c;
       characters[idx] = textel.ch;
@@ -123,6 +119,58 @@ namespace drawing
     void set_textel(const RC& pos, const Textel& textel)
     {
       set_textel(pos.r, pos.c, textel);
+    }
+    
+    void set_textel_char(int r, int c, char ch)
+    {
+      if (!check_range(r, c))
+        return;
+      int idx = r * size.c + c;
+      characters[idx] = ch;
+    }
+    
+    void set_textel_char(const RC& pos, char ch)
+    {
+      set_textel_char(pos.r, pos.c, ch);
+    }
+    
+    void set_textel_fg_color(int r, int c, Color fg_color)
+    {
+      if (!check_range(r, c))
+        return;
+      int idx = r * size.c + c;
+      fg_colors[idx] = fg_color;
+    }
+    
+    void set_textel_fg_color(const RC& pos, Color fg_color)
+    {
+      set_textel_fg_color(pos.r, pos.c, fg_color);
+    }
+    
+    void set_textel_bg_color(int r, int c, Color bg_color)
+    {
+      if (!check_range(r, c))
+        return;
+      int idx = r * size.c + c;
+      bg_colors[idx] = bg_color;
+    }
+    
+    void set_textel_bg_color(const RC& pos, Color bg_color)
+    {
+      set_textel_bg_color(pos.r, pos.c, bg_color);
+    }
+    
+    void set_textel_material(int r, int c, int mat)
+    {
+      if (!check_range(r, c))
+        return;
+      int idx = r * size.c + c;
+      materials[idx] = mat;
+    }
+    
+    void set_textel_material(const RC& pos, int mat)
+    {
+      set_textel_material(pos.r, pos.c, mat);
     }
     
     // File format:
@@ -419,6 +467,16 @@ namespace drawing
       fg_colors.clear();
       bg_colors.clear();
       materials.clear();
+    }
+    
+  private:
+    bool check_range(int r, int c) const
+    {
+      if (!math::in_range<int>(r, 0, size.r, Range::ClosedOpen))
+        return false;
+      if (!math::in_range<int>(c, 0, size.c, Range::ClosedOpen))
+        return false;
+      return true;
     }
   };
 
