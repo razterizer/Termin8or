@@ -192,10 +192,33 @@ public:
     set_sprite_data(texture->characters, bb, ch...);
   }
   
+  void set_sprite_char(int anim_frame, int r, int c, char ch)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    if (texture != nullptr)
+      texture->set_textel_char(r, c, ch);
+  }
+  
   void fill_sprite_chars(int anim_frame, char ch)
   {
     auto* texture = fetch_frame(anim_frame);
     texture->characters.assign(area, ch);
+  }
+  
+  void fill_sprite_char_r(int anim_frame, int r0, int r1, int c, char ch)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    if (texture != nullptr)
+      for (int r = r0; r <= r1; ++r)
+        texture->set_textel_char(r, c, ch);
+  }
+  
+  void fill_sprite_char_c(int anim_frame, int r, int c0, int c1, char ch)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    if (texture != nullptr)
+      for (int c = c0; c <= c1; ++c)
+        texture->set_textel_char(r, c, ch);
   }
   
   // Set sprite characters from a string for each row.
@@ -243,10 +266,33 @@ public:
     return set_sprite_data(texture->fg_colors, bb, fg_color...);
   }
   
+  void set_sprite_fg_color(int anim_frame, int r, int c, Color fg_color)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    if (texture != nullptr)
+      texture->set_textel_fg_color(r, c, fg_color);
+  }
+  
   void fill_sprite_fg_colors(int anim_frame, Color fg_color)
   {
     auto* texture = fetch_frame(anim_frame);
     texture->fg_colors.assign(area, fg_color);
+  }
+  
+  void fill_sprite_fg_color_r(int anim_frame, int r0, int r1, int c, Color fg_color)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    if (texture != nullptr)
+      for (int r = r0; r <= r1; ++r)
+        texture->set_textel_fg_color(r, c, fg_color);
+  }
+  
+  void fill_sprite_fg_color_c(int anim_frame, int r, int c0, int c1, Color fg_color)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    if (texture != nullptr)
+      for (int c = c0; c <= c1; ++c)
+        texture->set_textel_fg_color(r, c, fg_color);
   }
   
   template<typename... Colors>
@@ -263,10 +309,33 @@ public:
     return set_sprite_data(texture->bg_colors, bb, bg_color...);
   }
   
+  void set_sprite_bg_color(int anim_frame, int r, int c, Color bg_color)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    if (texture != nullptr)
+      texture->set_textel_bg_color(r, c, bg_color);
+  }
+  
   void fill_sprite_bg_colors(int anim_frame, Color bg_color)
   {
     auto* texture = fetch_frame(anim_frame);
     texture->bg_colors.assign(area, bg_color);
+  }
+  
+  void fill_sprite_bg_color_r(int anim_frame, int r0, int r1, int c, Color bg_color)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    if (texture != nullptr)
+      for (int r = r0; r <= r1; ++r)
+        texture->set_textel_bg_color(r, c, bg_color);
+  }
+  
+  void fill_sprite_bg_color_c(int anim_frame, int r, int c0, int c1, Color bg_color)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    if (texture != nullptr)
+      for (int c = c0; c <= c1; ++c)
+        texture->set_textel_bg_color(r, c, bg_color);
   }
   
   template<typename... Materials>
@@ -283,10 +352,33 @@ public:
     return set_sprite_data(texture->materials, bb, mat...);
   }
   
+  void set_sprite_material(int anim_frame, int r, int c, int mat)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    if (texture != nullptr)
+      texture->set_textel_material(r, c, mat);
+  }
+  
   void fill_sprite_materials(int anim_frame, int mat)
   {
     auto* texture = fetch_frame(anim_frame);
     texture->materials.assign(area, mat);
+  }
+  
+  void fill_sprite_material_r(int anim_frame, int r0, int r1, int c, int mat)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    if (texture != nullptr)
+      for (int r = r0; r <= r1; ++r)
+        texture->set_textel_material(r, c, mat);
+  }
+  
+  void fill_sprite_material_c(int anim_frame, int r, int c0, int c1, int mat)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    if (texture != nullptr)
+      for (int c = c0; c <= c1; ++c)
+        texture->set_textel_material(r, c, mat);
   }
   
   bool plot_line(int sim_frame, const RC& p0, const RC& p1,
