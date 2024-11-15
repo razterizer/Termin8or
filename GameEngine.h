@@ -228,6 +228,8 @@ protected:
   virtual void on_quit() {}
   virtual void on_exit_title() {}
   virtual void on_exit_instructions() {}
+  virtual void on_enter_game_loop() {}
+  virtual void on_exit_game_loop() {}
   virtual void on_enter_game_over() {}
   virtual void on_exit_game_over() {}
   virtual void on_enter_you_won() {}
@@ -285,8 +287,10 @@ public:
       
     // RT-Loop
     clear_screen();
+    on_enter_game_loop();
     auto update_func = std::bind(&GameEngine::engine_update, this);
     Delay::update_loop(real_fps, update_func);
+    on_exit_game_loop();
   }
   
   float get_real_fps() const { return real_fps; }
