@@ -181,9 +181,9 @@ namespace dynamics
       }
     }
     
-    void exclude_all_rigid_bodies_of_prefix(const DynamicsSystem* dyn_sys,
-                                            const std::string& sprite_prefix_A,
-                                            const std::string& sprite_prefix_B)
+    void exclude_all_rigid_bodies_of_prefixes(const DynamicsSystem* dyn_sys,
+                                              const std::string& sprite_prefix_A,
+                                              const std::string& sprite_prefix_B)
     {
       auto rb_vec = dyn_sys->get_rigid_bodies_raw();
       for (auto* rb_A : rb_vec)
