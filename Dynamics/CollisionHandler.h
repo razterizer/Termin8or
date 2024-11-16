@@ -9,7 +9,10 @@
 #include "../Rectangle.h"
 #include "RigidBody.h"
 #include "DynamicsSystem.h"
+#include <Core/Utils.h>
 #include <unordered_set>
+
+using namespace utils::literals;
 
 
 namespace dynamics
@@ -153,6 +156,7 @@ namespace dynamics
     std::unique_ptr<BVH_Node> m_aabb_bvh;
     std::vector<BVH_Node*> m_aabb_bvh_leaves;
     std::vector<std::pair<RigidBody*, RigidBody*>> exclusion_pairs;
+    std::vector<std::pair<std::string, std::string>> exclusion_prefixes;
     
     struct NarrowPhaseCollData
     {
@@ -171,33 +175,61 @@ namespace dynamics
     
     void exclude_rigid_body_pairs(RigidBody* rb_A, RigidBody* rb_B)
     {
+      if (rb_A > rb_B)
+        std::swap(rb_A, rb_B);
+        
       if (!stlutils::contains_if(exclusion_pairs,
             [rb_A, rb_B](const auto& rbp) { return rbp.first == rb_A && rbp.second == rb_B; }))
       {
-        if (rb_A < rb_B)
-          exclusion_pairs.emplace_back(rb_A, rb_B);
-        else
-          exclusion_pairs.emplace_back(rb_B, rb_A);
+        exclusion_pairs.emplace_back(rb_A, rb_B);
       }
     }
     
     void exclude_all_rigid_bodies_of_prefixes(const DynamicsSystem* dyn_sys,
-                                              const std::string& sprite_prefix_A,
-                                              const std::string& sprite_prefix_B)
+                                              std::string sprite_prefix_A,
+                                              std::string sprite_prefix_B)
     {
       auto rb_vec = dyn_sys->get_rigid_bodies_raw();
-      for (auto* rb_A : rb_vec)
+      
+      const auto num_A = stlutils::count_if(rb_vec, [sprite_prefix_A](const auto* rb)
       {
-        auto* sprite_A = rb_A->get_sprite();
-        if (sprite_A == nullptr || !sprite_A->get_name().starts_with(sprite_prefix_A))
-          continue;
-        for (auto* rb_B : rb_vec)
+        return rb->get_sprite()->get_name().starts_with(sprite_prefix_A);
+      });
+      const auto num_B = stlutils::count_if(rb_vec, [sprite_prefix_B](const auto* rb)
+      {
+        return rb->get_sprite()->get_name().starts_with(sprite_prefix_B);
+      });
+      
+      if (num_A * num_B > 1e4_i)
+      {
+        if (sprite_prefix_A > sprite_prefix_B)
+          std::swap(sprite_prefix_A, sprite_prefix_B);
+        
+        if (!stlutils::contains_if(exclusion_prefixes,
+              [sprite_prefix_A, sprite_prefix_B](const auto& strp)
+              { return strp.first == sprite_prefix_A && strp.second == sprite_prefix_B; }))
         {
-          auto* sprite_B = rb_B->get_sprite();
-          if (sprite_B == nullptr || !sprite_B->get_name().starts_with(sprite_prefix_B))
+          exclusion_prefixes.emplace_back(sprite_prefix_A, sprite_prefix_B);
+        }
+      }
+      else
+      {
+        for (auto* rb_A : rb_vec)
+        {
+          auto* sprite_A = rb_A->get_sprite();
+          if (sprite_A == nullptr || !sprite_A->get_name().starts_with(sprite_prefix_A))
             continue;
-            
-          exclude_rigid_body_pairs(rb_A, rb_B);
+          for (auto* rb_B : rb_vec)
+          {
+            if (rb_B == rb_A)
+              continue;
+        
+            auto* sprite_B = rb_B->get_sprite();
+            if (sprite_B == nullptr || !sprite_B->get_name().starts_with(sprite_prefix_B))
+              continue;
+        
+            exclude_rigid_body_pairs(rb_A, rb_B);
+          }
         }
       }
     }
@@ -239,6 +271,20 @@ namespace dynamics
             
           if (stlutils::contains_if(exclusion_pairs,
             [rb_A, rb_B](const auto& rbp) { return rbp.first == rb_A && rbp.second == rb_B; }))
+          {
+            continue;
+          }
+          const auto& name_A = rb_A->get_sprite()->get_name();
+          const auto& name_B = rb_B->get_sprite()->get_name();
+          if (stlutils::contains_if(exclusion_prefixes,
+            [&name_A, &name_B](const auto& strp)
+            {
+              if (name_A.starts_with(strp.first) && name_B.starts_with(strp.second))
+                return true;
+              if (name_B.starts_with(strp.first) && name_A.starts_with(strp.second))
+                return true;
+              return false;
+            }))
           {
             continue;
           }
