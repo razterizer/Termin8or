@@ -26,6 +26,12 @@ namespace drawing
     int mat = 0;
     
     styles::Style get_style() const { return { fg_color, bg_color }; }
+    void set_style(const styles::Style& style)
+    {
+      fg_color = style.fg_color;
+      bg_color = style.bg_color;
+    }
+    
     std::string str() const { return std::string(1, ch); }
     
     // 0 to 15 is hexadecimal, then just continue down the alphabet.
