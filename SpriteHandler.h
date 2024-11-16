@@ -44,6 +44,8 @@ public:
   virtual bool_vector calc_curr_mask(int sim_frame, const std::vector<int>& mask_materials) = 0;
   
   virtual bool calc_cm() const = 0;
+  
+  virtual bool is_opaque(int sim_frame, const RC& pt) const = 0;
 };
 
 // /////////////////////////////////////////////////
@@ -495,6 +497,18 @@ public:
   }
   
   virtual bool calc_cm() const override { return true; }
+  
+  virtual bool is_opaque(int sim_frame, const RC& pt) const override
+  {
+    const auto* texture = get_curr_frame(sim_frame);
+    if (texture == nullptr)
+      return false;
+      
+    int r = pt.r - pos.r;
+    int c = pt.c - pos.c;
+    auto textel = (*texture)(r, c);
+    return !(textel.bg_color == Color::Transparent || textel.bg_color == Color::Transparent2);
+  }
 };
 
 // /////////////////////////////////////////////////
@@ -765,6 +779,29 @@ public:
   }
   
   virtual bool calc_cm() const override { return false; }
+  
+  virtual bool is_opaque(int sim_frame, const RC& pos) const override
+  {
+    const auto* vector_frame = get_curr_frame(sim_frame);
+    if (vector_frame == nullptr)
+      return false;
+      
+    auto aabb = calc_curr_AABB(sim_frame);
+    if (!aabb.contains(pos))
+      return false;
+
+    std::vector<RC> points;
+    for (const auto& line_seg : vector_frame->line_segments)
+    {
+      points.clear();
+      auto [p0, p1] = calc_seg_world_pos_round(line_seg);
+      bresenham::plot_line(p0, p1, points);
+      for (const auto& pt : points)
+        if (pt == pos)
+          return true;
+    }
+    return false;
+  }
 };
 
 // /////////////////////////////////////////////////
