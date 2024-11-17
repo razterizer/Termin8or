@@ -46,6 +46,8 @@ public:
   virtual bool calc_cm() const = 0;
   
   virtual bool is_opaque(int sim_frame, const RC& pt) const = 0;
+  
+  virtual std::vector<RC> get_opaque_points(int sim_frame) const = 0;
 };
 
 // /////////////////////////////////////////////////
@@ -509,6 +511,27 @@ public:
     auto textel = (*texture)(r, c);
     return !(textel.bg_color == Color::Transparent || textel.bg_color == Color::Transparent2);
   }
+  
+  virtual std::vector<RC> get_opaque_points(int sim_frame) const override
+  {
+    const auto* texture = get_curr_frame(sim_frame);
+    if (texture == nullptr)
+      return {};
+      
+    auto aabb = calc_curr_AABB(sim_frame);
+    std::vector<RC> opaque_points;
+    for (int r = aabb.r_min(); r <= aabb.r_max(); ++r)
+    {
+      for (int c = aabb.c_min(); c <= aabb.c_max(); ++c)
+      {
+        auto textel = (*texture)(r - pos.r, c - pos.c);
+        if (!(textel.bg_color == Color::Transparent || textel.bg_color == Color::Transparent2))
+          opaque_points.emplace_back(RC {r, c});
+      }
+    }
+
+    return opaque_points;
+  }
 };
 
 // /////////////////////////////////////////////////
@@ -801,6 +824,22 @@ public:
           return true;
     }
     return false;
+  }
+  
+  virtual std::vector<RC> get_opaque_points(int sim_frame) const override
+  {
+    const auto* vector_frame = get_curr_frame(sim_frame);
+    if (vector_frame == nullptr)
+      return {};
+    
+    std::vector<RC> opaque_points;
+    for (const auto& line_seg : vector_frame->line_segments)
+    {
+      auto [p0, p1] = calc_seg_world_pos_round(line_seg);
+      bresenham::plot_line(p0, p1, opaque_points);
+    }
+
+    return opaque_points;
   }
 };
 
