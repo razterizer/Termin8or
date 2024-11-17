@@ -439,6 +439,13 @@ public:
     }
   }
   
+  void flip_ud()
+  {
+    auto num_frames = stlutils::sizeI(texture_frames);
+    for (int anim_frame = 0; anim_frame < num_frames; ++anim_frame)
+      flip_ud(anim_frame);
+  }
+  
   void flip_lr(int anim_frame)
   {
     auto* texture = fetch_frame(anim_frame);
@@ -454,6 +461,13 @@ public:
         texture->set_textel(r, c_inv, a);
       }
     }
+  }
+  
+  void flip_lr()
+  {
+    auto num_frames = stlutils::sizeI(texture_frames);
+    for (int anim_frame = 0; anim_frame < num_frames; ++anim_frame)
+      flip_lr(anim_frame);
   }
   
   drawing::Texture* get_curr_frame(int sim_frame) const
