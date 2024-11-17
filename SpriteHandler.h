@@ -385,26 +385,38 @@ public:
         texture->set_textel_material(r, c, mat);
   }
   
+  // Replace args mean they replace the attribute if the main argument/attribute was found on that pixel.
+  // E.g. if bg_color was found on a pixel, then bg_color_replace will be used instead, if set.
+  // If a replace argument is set but not the main argument, then nothing will happen with that attribute.
+  // E.g. if ch is nullopt but ch_replace is non-nullopt, then it is the same as if both are nullopt.
+  // This mechanism allows you to do penumbra / umbra shading techniques and stuff like that.
   bool plot_line(int sim_frame, const RC& p0, const RC& p1,
-                 std::optional<char> ch,
-                 std::optional<Color> fg_color,
-                 std::optional<Color> bg_color,
-                 std::optional<int> mat)
+                 std::optional<char> ch, std::optional<char> ch_replace,
+                 std::optional<Color> fg_color, std::optional<Color> fg_color_replace,
+                 std::optional<Color> bg_color, std::optional<Color> bg_color_replace,
+                 std::optional<int> mat, std::optional<int> mat_replace)
   {
     auto* texture = get_curr_frame(sim_frame);
     if (texture == nullptr)
       return false;
     std::vector<RC> points;
     bresenham::plot_line(p0, p1, points);
+    auto f_set_attribute = [](auto& dst, const auto& src, const auto& src_replace)
+    {
+      if (src.has_value() && src_replace.has_value() && dst == src.value())
+        dst = src_replace.value();
+      else
+        dst = src.value_or(dst);
+    };
     for (const auto& pt : points)
     {
       auto r = math::roundI(pt.r) - pos.r;
       auto c = math::roundI(pt.c) - pos.c;
       auto textel = (*texture)(r, c);
-      textel.ch = ch.value_or(textel.ch);
-      textel.fg_color = fg_color.value_or(textel.fg_color);
-      textel.bg_color = bg_color.value_or(textel.bg_color);
-      textel.mat = mat.value_or(textel.mat);
+      f_set_attribute(textel.ch, ch, ch_replace);
+      f_set_attribute(textel.fg_color, fg_color, fg_color_replace);
+      f_set_attribute(textel.bg_color, bg_color, bg_color_replace);
+      f_set_attribute(textel.mat, mat, mat_replace);
       texture->set_textel(r, c, textel);
     }
     return true;
