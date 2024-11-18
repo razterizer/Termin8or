@@ -424,6 +424,21 @@ public:
   
   void flip_ud(int anim_frame)
   {
+    auto f_flip_char = [](drawing::Textel& txt)
+    {
+      auto& ch = txt.ch;
+      switch(ch)
+      {
+        case '_': ch = '-'; break;
+        case '-': ch = '_'; break;
+        case 'W': ch = 'M'; break;
+        case 'M': ch = 'W'; break;
+        case 'w': ch = 'm'; break;
+        case 'm': ch = 'w'; break;
+        default: break;
+      }
+    };
+  
     auto* texture = fetch_frame(anim_frame);
     const int half_height = size.r/2;
     for (int c = 0; c < size.c; ++c)
@@ -433,6 +448,8 @@ public:
         int r_inv = size.r - r - 1;
         auto a = texture->operator()(r, c);
         auto b = texture->operator()(r_inv, c);
+        f_flip_char(a);
+        f_flip_char(b);
         texture->set_textel(r, c, b);
         texture->set_textel(r_inv, c, a);
       }
@@ -448,6 +465,28 @@ public:
   
   void flip_lr(int anim_frame)
   {
+    auto f_flip_char = [](drawing::Textel& txt)
+    {
+      auto& ch = txt.ch;
+      switch(ch)
+      {
+        case '/': ch = '\\'; break;
+        case '\\': ch = '/'; break;
+        case '(': ch = ')'; break;
+        case ')': ch = '('; break;
+        case '[': ch = ']'; break;
+        case ']': ch = '['; break;
+        case '}': ch = '{'; break;
+        case 'd': ch = 'b'; break;
+        case 'b': ch = 'd'; break;
+        case 'J': ch = 'L'; break;
+        case 'L': ch = 'J'; break;
+        case '<': ch = '>'; break;
+        case '>': ch = '<'; break;
+        default: break;
+      }
+    };
+  
     auto* texture = fetch_frame(anim_frame);
     const int half_width = size.c/2;
     for (int r = 0; r < size.r; ++r)
@@ -457,6 +496,8 @@ public:
         int c_inv = size.c - c - 1;
         auto a = texture->operator()(r, c);
         auto b = texture->operator()(r, c_inv);
+        f_flip_char(a);
+        f_flip_char(b);
         texture->set_textel(r, c, b);
         texture->set_textel(r, c_inv, a);
       }
