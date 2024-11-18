@@ -1,5 +1,5 @@
 //
-//  Animations.h
+//  Animation.h
 //  Termin8or
 //
 //  Created by Rasmus Anthin on 2024-11-18.
