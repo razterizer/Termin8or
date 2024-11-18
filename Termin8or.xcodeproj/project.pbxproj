@@ -34,6 +34,7 @@
 		0760B6F02B9CEABC0032CACD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		07685DAB2CD510E200472204 /* Keyboard_examples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Keyboard_examples.h; sourceTree = "<group>"; };
 		07A763102B555BE100705D31 /* ParticleSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
+		07B91EF72CEAC36900449D7E /* Animation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Animation.h; sourceTree = "<group>"; };
 		07C2A7822C2239BB00869A56 /* MessageHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessageHandler.h; sourceTree = "<group>"; };
 		07C2A7832C24910300869A56 /* Color.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Color.h; sourceTree = "<group>"; };
 		07C2A78A2C2B214300869A56 /* Texture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Texture.h; sourceTree = "<group>"; };
@@ -95,6 +96,7 @@
 				071CC3D829046819007B4B98 /* Rectangle.h */,
 				070C60C82CCAA36B00BC7F51 /* AABB.h */,
 				071CC3D72904679E007B4B98 /* ScreenHandler.h */,
+				07B91EF72CEAC36900449D7E /* Animation.h */,
 				07D007BE2CBD387200CCB5E7 /* SpriteHandler.h */,
 				07D007C72CC82CFD00CCB5E7 /* Dynamics */,
 				071CC3DA2904851A007B4B98 /* Pixel.h */,
