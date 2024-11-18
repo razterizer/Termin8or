@@ -26,20 +26,24 @@ namespace easings
 
 struct TransitionAnimation
 {
-  float ease_in_start_time_s = 0.f;
-  float ease_in_end_time_s = 0.f;
-  float ease_out_start_time_s = 0.f;
-  float ease_out_end_time_s = 0.f;
+  float transition_start_time_s = 0.f;
+  // Relative to transition_start_time_s.
+  float enter_rel_start_time_s = 0.f;
+  float enter_rel_end_time_s = 0.f;
+  float exit_rel_start_time_s = 0.f;
+  float exit_rel_end_time_s = 0.f;
   
   float animate(float time_s, float value_start, float value_stationary, float value_end,
                 std::function<float(float)>& ease_enter_func, std::function<float(float)>& ease_exit_func) const
   {
-    float t_enter = math::value_to_param(time_s, ease_in_start_time_s, ease_in_end_time_s);
+    auto rel_time_s = time_s - transition_start_time_s;
+    
+    float t_enter = math::value_to_param(rel_time_s, enter_rel_start_time_s, enter_rel_end_time_s);
     if (math::in_range<float>(t_enter, {}, 0.f, Range::FreeOpen))
       return value_start;
     if (math::in_range<float>(t_enter, 0.f, 1.f, Range::ClosedOpen))
       return math::lerp(ease_enter_func(t_enter), value_start, value_stationary);
-    float t_exit = math::value_to_param(time_s, ease_out_start_time_s, ease_out_end_time_s);
+    float t_exit = math::value_to_param(rel_time_s, exit_rel_start_time_s, exit_rel_end_time_s);
     if (math::in_range<float>(t_exit, 0.f, 1.f, Range::ClosedOpen))
       return math::lerp(ease_exit_func(t_exit), value_stationary, value_end);
     if (math::in_range<float>(t_exit, 1.f, {}, Range::ClosedFree))
@@ -49,7 +53,6 @@ struct TransitionAnimation
   
   bool done(float time_s) const
   {
-    float t_ease_out = math::value_to_param(time_s, ease_out_start_time_s, ease_out_end_time_s);
-    return math::in_range<float>(t_ease_out, 1.f, {}, Range::ClosedFree);
+    return time_s - transition_start_time_s >= exit_rel_end_time_s;
   }
 };
