@@ -38,10 +38,10 @@ struct TransitionAnimation
     if (math::in_range<float>(t_ease_in, {}, 0.f, Range::FreeOpen))
       return value_start;
     if (math::in_range<float>(t_ease_in, 0.f, 1.f, Range::ClosedOpen))
-      return math::lerp(ease_in_func(1.f - t_ease_in), value_stationary, value_start);
+      return math::lerp(ease_in_func(t_ease_in), value_start, value_stationary);
     float t_ease_out = math::value_to_param(time_s, ease_out_start_time_s, ease_out_end_time_s);
     if (math::in_range<float>(t_ease_out, 0.f, 1.f, Range::ClosedOpen))
-      return math::lerp(ease_out_func(1.f - t_ease_out), value_end, value_stationary);
+      return math::lerp(ease_out_func(t_ease_out), value_stationary, value_end);
     if (math::in_range<float>(t_ease_out, 1.f, {}, Range::ClosedFree))
       return value_end;
     return value_stationary;
