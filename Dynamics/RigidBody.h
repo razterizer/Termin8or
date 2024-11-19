@@ -225,7 +225,15 @@ namespace dynamics
     
     Vec2 get_curr_cm() const { return curr_cm; }
     
+    float get_curr_cm_r() const { return curr_cm.r; }
+    
+    float get_curr_cm_c() const { return curr_cm.c; }
+    
     void set_curr_cm(const Vec2& cm) { curr_cm = cm; }
+    
+    void set_curr_cm_r(float row_loc) { curr_cm.r = row_loc; }
+    
+    void set_curr_cm_c(float col_loc) { curr_cm.c = col_loc; }
     
     void reset_curr_cm() { curr_cm = orig_pos + curr_cm_local; }
     
@@ -258,7 +266,15 @@ namespace dynamics
     
     Vec2 get_curr_lin_vel() const { return curr_vel; }
     
+    float get_curr_lin_vel_r() const { return curr_vel.r; }
+    
+    float get_curr_lin_vel_c() const { return curr_vel.c; }
+    
     void set_curr_lin_vel(const Vec2& vel) { curr_vel = vel; }
+    
+    void set_curr_lin_speed_r(float row_speed) { curr_vel.r = row_speed; }
+    
+    void set_curr_lin_speed_c(float col_speed) { curr_vel.c = col_speed; }
     
     float get_inv_mass() const { return inv_mass; }
     
