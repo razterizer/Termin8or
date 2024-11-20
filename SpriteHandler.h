@@ -437,7 +437,6 @@ public:
       switch(ch)
       {
         case '_': ch = '-'; break;
-        case '-': ch = '_'; break;
         case 'W': ch = 'M'; break;
         case 'M': ch = 'W'; break;
         case 'w': ch = 'm'; break;
