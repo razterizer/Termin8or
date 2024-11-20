@@ -435,6 +435,16 @@ public:
         case 'M': ch = 'W'; break;
         case 'w': ch = 'm'; break;
         case 'm': ch = 'w'; break;
+        case '^': ch = 'v'; break;
+        case 'v': ch = '^'; break;
+        case '/': ch = '\\'; break;
+        case '\\': ch = '/'; break;
+        case 'b': ch = 'p'; break;
+        case 'p': ch = 'b'; break;
+        case 'z': ch = 's'; break;
+        case 's': ch = 'z'; break;
+        case 'Z': ch = 'S'; break;
+        case 'S': ch = 'Z'; break;
         default: break;
       }
     };
@@ -483,6 +493,10 @@ public:
         case 'L': ch = 'J'; break;
         case '<': ch = '>'; break;
         case '>': ch = '<'; break;
+        case 'z': ch = 's'; break;
+        case 's': ch = 'z'; break;
+        case 'Z': ch = 'S'; break;
+        case 'S': ch = 'Z'; break;
         default: break;
       }
     };
