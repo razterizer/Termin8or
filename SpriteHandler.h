@@ -174,6 +174,13 @@ public:
       std::cout << "ERROR in clone_frame() : from_anim_frame cannot be larger than or equal to the number of texture frames!" << std::endl;
   }
   
+  drawing::Texture* try_get_frame(int anim_frame)
+  {
+    if (anim_frame < stlutils::sizeI(texture_frames))
+      return texture_frames[anim_frame].get();
+    return nullptr;
+  }
+  
   void set_frame(int anim_frame, const drawing::Texture& texture)
   {
     auto* texture_dst = fetch_frame(anim_frame);
