@@ -246,6 +246,9 @@ public:
     , anim_ctr_data(1)
   {
     std::tie(exe_path, exe_file) = folder::split_file_path(std::string(path_to_exe));
+    show_title = params.enable_title_screen;
+    if (!show_title)
+      show_instructions = params.enable_instructions_screen;
   }
   
   virtual ~GameEngine() = default;
