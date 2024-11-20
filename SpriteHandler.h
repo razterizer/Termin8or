@@ -1037,6 +1037,11 @@ public:
     return sprite_arr;
   }
   
+  void clear()
+  {
+    m_sprites.clear();
+  }
+  
   template<int NR, int NC>
   void draw(ScreenHandler<NR, NC>& sh, int sim_frame) const
   {
