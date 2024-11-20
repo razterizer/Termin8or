@@ -22,6 +22,17 @@ struct OrderedText
   styles::Style style;
 };
 
+struct OffscreenBuffer
+{
+  drawing::Texture* buffer_texture = nullptr;
+  RC buffer_screen_pos { 0, 0 }; //
+  std::vector<char> exclude_src_chars;
+  std::vector<Color> exclude_src_fg_colors;
+  std::vector<Color> exclude_src_bg_colors;
+  std::vector<Color> dst_fill_bg_colors;
+  std::vector<std::pair<Color, Color>> replace_src_dst_bg_colors;
+};
+
 struct RGBA
 {
   RGBA(double v) : r(v), g(v), b(v), a(v) {}
