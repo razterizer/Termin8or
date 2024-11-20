@@ -307,6 +307,45 @@ public:
     }
     m_text->print_complex(colored_str);
   }
+  
+  void print_screen_buffer(Color bg_color, const OffscreenBuffer& offscreen_buffer)
+  {
+    auto* texture = offscreen_buffer.buffer_texture;
+    if (texture == nullptr)
+      return;
+      
+    auto pos = offscreen_buffer.buffer_screen_pos;
+      
+    for (int r = 0; r < NR; ++r)
+    {
+      auto rl = r - pos.r;
+      for (int c = 0; c < NC; ++c)
+      {
+        auto cl = c - pos.c;
+        
+        auto textel = texture->operator()(rl, cl);
+        if (!stlutils::contains(offscreen_buffer.dst_fill_bg_colors, textel.bg_color))
+          continue;
+        
+        textel.ch = screen_buffer[r][c];
+        textel.fg_color = fg_color_buffer[r][c];
+        textel.bg_color = bg_color_buffer[r][c];
+        
+        if (stlutils::contains(offscreen_buffer.exclude_src_chars, textel.ch))
+          continue;
+        if (stlutils::contains(offscreen_buffer.exclude_src_fg_colors, textel.fg_color))
+          continue;
+        if (stlutils::contains(offscreen_buffer.exclude_src_bg_colors, textel.bg_color))
+          continue;
+          
+        for (const auto& rp : offscreen_buffer.replace_src_dst_bg_colors)
+          if (textel.bg_color == rp.first)
+            textel.bg_color = rp.second;
+        
+        texture->set_textel(rl, cl, textel);
+      }
+    }
+  }
 
   void print_screen_buffer_chars() const
   {
