@@ -498,12 +498,15 @@ private:
     
   ///
     
-    frame_ctr++;
-    for (auto& ad : anim_ctr_data)
-      if (frame_ctr % ad.anim_count_per_frame_count == 0)
-        ad.anim_ctr++;
-    
-    sim_time_s += sim_dt_s;
+    if (!show_title && !show_instructions && !show_quit_confirm && !show_input_hiscore && !show_hiscores && !paused)
+    {
+      frame_ctr++;
+      for (auto& ad : anim_ctr_data)
+        if (frame_ctr % ad.anim_count_per_frame_count == 0)
+          ad.anim_ctr++;
+      
+      sim_time_s += sim_dt_s;
+    }
     
     return true;
   }
