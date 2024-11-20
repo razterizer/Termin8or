@@ -278,44 +278,23 @@ public:
     }
   }
 
-  void print_screen_buffer(Color bg_color, drawing::Texture* texture = nullptr, const RC& pos = {}) const
+  void print_screen_buffer(Color bg_color) const
   {
-    if (texture != nullptr)
+    std::vector<std::tuple<char, Color, Color>> colored_str;
+    colored_str.resize(NR*(NC + 1));
+    int i = 0;
+    for (int r = 0; r < NR; ++r)
     {
-      for (int r = 0; r < NR; ++r)
+      for (int c = 0; c < NC; ++c)
       {
-        auto rl = r - pos.r;
-        for (int c = 0; c < NC; ++c)
-        {
-          auto cl = c - pos.c;
-          
-          drawing::Textel textel;
-          textel.ch = screen_buffer[r][c];
-          textel.fg_color = fg_color_buffer[r][c];
-          textel.bg_color = bg_color_buffer[r][c];
-          
-          texture->set_textel(rl, cl, textel);
-        }
+        Color bg_col_buf = bg_color_buffer[r][c];
+        if (bg_col_buf == Color::Transparent || bg_col_buf == Color::Transparent2)
+          bg_col_buf = bg_color;
+        colored_str[i++] = { screen_buffer[r][c], fg_color_buffer[r][c], bg_col_buf };
       }
+      colored_str[i++] = { '\n', Color::Default, Color::Default };
     }
-    else
-    {
-      std::vector<std::tuple<char, Color, Color>> colored_str;
-      colored_str.resize(NR*(NC + 1));
-      int i = 0;
-      for (int r = 0; r < NR; ++r)
-      {
-        for (int c = 0; c < NC; ++c)
-        {
-          Color bg_col_buf = bg_color_buffer[r][c];
-          if (bg_col_buf == Color::Transparent || bg_col_buf == Color::Transparent2)
-            bg_col_buf = bg_color;
-          colored_str[i++] = { screen_buffer[r][c], fg_color_buffer[r][c], bg_col_buf };
-        }
-        colored_str[i++] = { '\n', Color::Default, Color::Default };
-      }
-      m_text->print_complex(colored_str);
-    }
+    m_text->print_complex(colored_str);
   }
 
   void print_screen_buffer_chars() const
