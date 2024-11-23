@@ -96,6 +96,8 @@ class GameEngine
   int term_win_rows = 0;
   int term_win_cols = 0;
   
+  OneShot trg_update_halted, trg_update_resumed;
+  
   bool handle_hiscores(const HiScoreItem& curr_hsi)
   {
     const int c_max_num_hiscores = 20;
@@ -231,12 +233,16 @@ protected:
   virtual void on_enter_game_loop() {}
   virtual void on_exit_game_loop() {}
   virtual void on_enter_game_over() {}
+  virtual void on_halt_game_loop() {}
+  virtual void on_resume_game_loop() {}
   virtual void on_exit_game_over() {}
   virtual void on_enter_you_won() {}
   virtual void on_exit_you_won() {}
   virtual void on_enter_input_hiscore() {}
   virtual void on_exit_input_hiscore() {}
   virtual void on_enter_hiscores() {}
+  virtual void on_enter_paused() {}
+  virtual void on_exit_paused() {}
   
 public:
   GameEngine(std::string_view exe_full_path,
@@ -345,7 +351,13 @@ private:
       quit_confirm_button = YesNoButtons::No;
     }
     else if (m_params.enable_pause && pause)
+    {
       math::toggle(paused);
+      if (paused)
+        on_enter_paused();
+      else
+        on_exit_paused();
+    }
       
     if (!m_params.enable_quit_confirm_screen && quit)
     {
@@ -502,12 +514,26 @@ private:
     
     if (!show_title && !show_instructions && !show_quit_confirm && !show_input_hiscore && !show_hiscores && !paused)
     {
+      if (trg_update_resumed.once())
+      {
+        on_resume_game_loop();
+        trg_update_halted.reset();
+      }
+      
       frame_ctr++;
       for (auto& ad : anim_ctr_data)
         if (frame_ctr % ad.anim_count_per_frame_count == 0)
           ad.anim_ctr++;
       
       sim_time_s += sim_dt_s;
+    }
+    else
+    {
+      if (trg_update_halted.once())
+      {
+        on_halt_game_loop();
+        trg_update_resumed.reset();
+      }
     }
     
     return true;
