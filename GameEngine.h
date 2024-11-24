@@ -85,6 +85,7 @@ class GameEngine
   };
   std::vector<AnimCtrData> anim_ctr_data;
   int frame_ctr = 0;
+  int frame_ctr_measure = 0;
   
   YesNoButtons quit_confirm_button = YesNoButtons::No;
   
@@ -207,6 +208,7 @@ protected:
     return ad.anim_count_per_frame_count;
   }
   int get_frame_count() const { return frame_ctr; }
+  int get_frame_count_measure() const { return frame_ctr_measure; }
   int get_anim_count(int anim_channel)
   {
     if (anim_channel < 0)
@@ -524,8 +526,10 @@ private:
         trg_update_halted.reset();
       }
       
+      frame_ctr_measure++;
+      
       for (size_t ad_idx = 0; ad_idx < anim_ctr_data.size(); ++ad_idx)
-        if (frame_ctr % anim_ctr_data[ad_idx].anim_count_per_frame_count == 0)
+        if (frame_ctr_measure % anim_ctr_data[ad_idx].anim_count_per_frame_count == 0)
           anim_ctr_data[ad_idx].anim_ctr++;
       
       sim_time_s += sim_dt_s;
