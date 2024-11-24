@@ -512,6 +512,10 @@ private:
     
   ///
     
+    frame_ctr++;
+    if (frame_ctr % anim_ctr_data[0].anim_count_per_frame_count == 0)
+      anim_ctr_data[0].anim_ctr++;
+    
     if (!show_title && !show_instructions && !show_quit_confirm && !show_input_hiscore && !show_hiscores && !paused)
     {
       if (trg_update_resumed.once())
@@ -520,10 +524,9 @@ private:
         trg_update_halted.reset();
       }
       
-      frame_ctr++;
-      for (auto& ad : anim_ctr_data)
-        if (frame_ctr % ad.anim_count_per_frame_count == 0)
-          ad.anim_ctr++;
+      for (size_t ad_idx = 0; ad_idx < anim_ctr_data.size(); ++ad_idx)
+        if (frame_ctr % anim_ctr_data[ad_idx].anim_count_per_frame_count == 0)
+          anim_ctr_data[ad_idx].anim_ctr++;
       
       sim_time_s += sim_dt_s;
     }
