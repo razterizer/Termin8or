@@ -12,6 +12,11 @@
 
 namespace easings
 {
+  std::function<float(float)> ease_lin = [](float t)
+  {
+    return t;
+  };
+
   std::function<float(float)> ease_in_sine = [](float t)
   {
     return 1.f - std::cos((t * math::c_pi) * 0.5f);
