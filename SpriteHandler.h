@@ -101,6 +101,32 @@ class BitmapSprite : public Sprite
     
     return true;
   }
+  
+  template<typename T>
+  void fill_sprite_data(std::vector<T>& target, const ttl::Rectangle& bb, T arg)
+  {
+    int nr = std::min(bb.r_len, size.r);
+    int nc = std::min(bb.c_len, size.c);
+    
+    auto N_trg = target.size();
+    
+    for (int i = 0; i < nr; ++i)
+    {
+      for (int j = 0; j < nc; ++j)
+      {
+        // Map bounding box (i, j) to the target sprite data
+        int trg_row = bb.r + i;
+        int trg_col = bb.c + j;
+        
+        // Calculate linear index into the target vector and src_data
+        int trg_index = trg_row * size.c + trg_col;
+        
+        // Assign data to the target vector
+        if (trg_index < N_trg)
+          target[trg_index] = arg;
+      }
+    }
+  }
 
   RC size { 0, 0 };
   int area = 0;
