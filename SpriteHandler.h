@@ -319,6 +319,12 @@ public:
     texture->fg_colors.assign(area, fg_color);
   }
   
+  void fill_sprite_fg_colors(int anim_frame, const ttl::Rectangle& bb, Color fg_color)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    fill_sprite_data(texture->fg_colors, bb, fg_color);
+  }
+  
   void fill_sprite_fg_colors_vert(int anim_frame, int r0, int r1, int c, Color fg_color)
   {
     auto* texture = fetch_frame(anim_frame);
@@ -362,6 +368,12 @@ public:
     texture->bg_colors.assign(area, bg_color);
   }
   
+  void fill_sprite_bg_colors(int anim_frame, const ttl::Rectangle& bb, Color bg_color)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    fill_sprite_data(texture->bg_colors, bb, bg_color);
+  }
+  
   void fill_sprite_bg_colors_vert(int anim_frame, int r0, int r1, int c, Color bg_color)
   {
     auto* texture = fetch_frame(anim_frame);
@@ -403,6 +415,12 @@ public:
   {
     auto* texture = fetch_frame(anim_frame);
     texture->materials.assign(area, mat);
+  }
+  
+  void fill_sprite_materials(int anim_frame, const ttl::Rectangle& bb, int mat)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    fill_sprite_data(texture->materials, bb, mat);
   }
   
   void fill_sprite_materials_vert(int anim_frame, int r0, int r1, int c, int mat)
