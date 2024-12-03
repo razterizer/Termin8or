@@ -78,22 +78,25 @@ class BitmapSprite : public Sprite
       return false;
     }
     std::vector<T> source = {static_cast<T>(args)...}; // Unpack and assign to the target vector
+    auto N_trg = target.size();
+    auto N_src = source.size();
 
     for (int i = 0; i < nr; ++i)
     {
-        for (int j = 0; j < nc; ++j)
-        {
-            // Map bounding box (i, j) to the target sprite data
-            int trg_row = bb.r + i;
-            int trg_col = bb.c + j;
-
-            // Calculate linear index into the target vector and src_data
-            int trg_index = trg_row * size.c + trg_col;
-            int src_index = i * nc + j;
-
-            // Assign data to the target vector
-            target[trg_index] = source[src_index];
-        }
+      for (int j = 0; j < nc; ++j)
+      {
+        // Map bounding box (i, j) to the target sprite data
+        int trg_row = bb.r + i;
+        int trg_col = bb.c + j;
+        
+        // Calculate linear index into the target vector and src_data
+        int trg_index = trg_row * size.c + trg_col;
+        int src_index = i * nc + j;
+        
+        // Assign data to the target vector
+        if (trg_index < N_trg && src_index < N_src)
+          target[trg_index] = source[src_index];
+      }
     }
     
     return true;
