@@ -245,6 +245,12 @@ public:
     texture->characters.assign(area, ch);
   }
   
+  void fill_sprite_chars(int anim_frame, const ttl::Rectangle& bb, char ch)
+  {
+    auto* texture = fetch_frame(anim_frame);
+    fill_sprite_data(texture->characters, bb, ch);
+  }
+  
   void fill_sprite_chars_vert(int anim_frame, int r0, int r1, int c, char ch)
   {
     auto* texture = fetch_frame(anim_frame);
