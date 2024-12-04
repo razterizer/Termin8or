@@ -450,7 +450,7 @@ public:
                  std::optional<Color> bg_color, std::optional<Color> bg_color_replace,
                  std::optional<int> mat, std::optional<int> mat_replace)
   {
-    auto* texture = get_curr_frame(sim_frame);
+    auto* texture = get_curr_sim_frame(sim_frame);
     if (texture == nullptr)
       return false;
     std::vector<RC> points;
@@ -578,9 +578,14 @@ public:
       flip_lr(anim_frame);
   }
   
-  drawing::Texture* get_curr_frame(int sim_frame) const
+  drawing::Texture* get_curr_sim_frame(int sim_frame) const
   {
     int frame_id = func_calc_anim_frame(sim_frame);
+    return get_curr_local_frame(frame_id);
+  }
+  
+  drawing::Texture* get_curr_local_frame(int frame_id) const
+  {
     if (frame_id >= stlutils::sizeI(texture_frames))
     {
       std::cerr << "ERROR in BitmapSprite::get_curr_frame() : Incorrect frame id: " + std::to_string(frame_id) + " for sprite \"" + name + "\"! Sprite only has " + std::to_string(texture_frames.size()) + " frames." << std::endl;
@@ -597,7 +602,7 @@ public:
   template<int NR, int NC>
   bool draw(ScreenHandler<NR, NC>& sh, int sim_frame)
   {
-    auto* texture = get_curr_frame(sim_frame);
+    auto* texture = get_curr_sim_frame(sim_frame);
     if (texture == nullptr)
       return false;
     
@@ -622,7 +627,7 @@ public:
   
   virtual bool_vector calc_curr_mask(int sim_frame, const std::vector<int>& mask_materials) override
   {
-    const auto* texture = get_curr_frame(sim_frame);
+    const auto* texture = get_curr_sim_frame(sim_frame);
     if (texture == nullptr)
       return {};
     const auto num_mats = stlutils::sizeI(texture->materials);
@@ -636,7 +641,7 @@ public:
   
   virtual bool is_opaque(int sim_frame, const RC& pt) const override
   {
-    const auto* texture = get_curr_frame(sim_frame);
+    const auto* texture = get_curr_sim_frame(sim_frame);
     if (texture == nullptr)
       return false;
       
@@ -648,7 +653,7 @@ public:
   
   virtual std::vector<RC> get_opaque_points(int sim_frame) const override
   {
-    const auto* texture = get_curr_frame(sim_frame);
+    const auto* texture = get_curr_sim_frame(sim_frame);
     if (texture == nullptr)
       return {};
       
@@ -812,9 +817,14 @@ public:
     *frame_dst = frame;
   }
   
-  VectorFrame* get_curr_frame(int sim_frame) const
+  VectorFrame* get_curr_sim_frame(int sim_frame) const
   {
     int frame_id = func_calc_anim_frame(sim_frame);
+    return get_curr_local_frame(frame_id);
+  }
+  
+  VectorFrame* get_curr_local_frame(int frame_id) const
+  {
     if (frame_id >= stlutils::sizeI(vector_frames))
     {
       std::cerr << "ERROR in VectorSprite::get_curr_frame() : Incorrect frame id: " + std::to_string(frame_id) + " for sprite \"" + name + "\"! Sprite only has " + std::to_string(vector_frames.size()) + " frames." << std::endl;
@@ -841,7 +851,7 @@ public:
   template<int NR, int NC>
   bool draw(ScreenHandler<NR, NC>& sh, int sim_frame)
   {
-    auto* vector_frame = get_curr_frame(sim_frame);
+    auto* vector_frame = get_curr_sim_frame(sim_frame);
     if (vector_frame == nullptr)
       return false;
     
@@ -891,7 +901,7 @@ public:
   
   virtual AABB<int> calc_curr_AABB(int sim_frame) const override
   {
-    auto* vector_frame = get_curr_frame(sim_frame);
+    auto* vector_frame = get_curr_sim_frame(sim_frame);
     if (vector_frame == nullptr)
       return {};
 
@@ -912,7 +922,7 @@ public:
   
   virtual bool_vector calc_curr_mask(int sim_frame, const std::vector<int>& mask_materials) override
   {
-    const auto* vector_frame = get_curr_frame(sim_frame);
+    const auto* vector_frame = get_curr_sim_frame(sim_frame);
     if (vector_frame == nullptr)
       return {};
   
@@ -939,7 +949,7 @@ public:
   
   virtual bool is_opaque(int sim_frame, const RC& pos) const override
   {
-    const auto* vector_frame = get_curr_frame(sim_frame);
+    const auto* vector_frame = get_curr_sim_frame(sim_frame);
     if (vector_frame == nullptr)
       return false;
       
@@ -962,7 +972,7 @@ public:
   
   virtual std::vector<RC> get_opaque_points(int sim_frame) const override
   {
-    const auto* vector_frame = get_curr_frame(sim_frame);
+    const auto* vector_frame = get_curr_sim_frame(sim_frame);
     if (vector_frame == nullptr)
       return {};
     
@@ -1050,7 +1060,7 @@ public:
       sprite_dst_bitmap->init(size.r, size.c);
       for (int frame_id = 0; frame_id < sprite_src_bitmap->num_frames(); ++frame_id)
       {
-        auto* texture = sprite_src_bitmap->get_curr_frame(frame_id);
+        auto* texture = sprite_src_bitmap->get_curr_local_frame(frame_id);
         if (texture != nullptr)
           sprite_dst_bitmap->set_frame(frame_id, *texture);
       }
@@ -1063,7 +1073,7 @@ public:
       sprite_dst_vector->set_rotation(sprite_src_vector->get_rotation());
       for (int frame_id = 0; frame_id < sprite_src_vector->num_frames(); ++frame_id)
       {
-        auto* frame = sprite_src_vector->get_curr_frame(frame_id);
+        auto* frame = sprite_src_vector->get_curr_local_frame(frame_id);
         if (frame != nullptr)
           sprite_dst_vector->set_frame(frame_id, *frame);
       }
