@@ -232,6 +232,20 @@ public:
     set_sprite_data(texture->characters, bb, ch...);
   }
   
+  template<typename... Chars>
+  void set_sprite_chars_vert(int anim_frame, int r0, int r1, int c, Chars... ch)
+  {
+    ttl::Rectangle bb { r0, c, r1 - r0 + 1, 1 };
+    set_sprite_chars(anim_frame, bb, ch...);
+  }
+  
+  template<typename... Chars>
+  void set_sprite_chars_horiz(int anim_frame, int r, int c0, int c1, Chars... ch)
+  {
+    ttl::Rectangle bb { r, c0, 1, c1 - c0 + 1 };
+    set_sprite_chars(anim_frame, bb, ch...);
+  }
+  
   void set_sprite_char(int anim_frame, int r, int c, char ch)
   {
     auto* texture = fetch_frame(anim_frame);
@@ -312,6 +326,20 @@ public:
     return set_sprite_data(texture->fg_colors, bb, fg_color...);
   }
   
+  template<typename... Colors>
+  void set_sprite_fg_colors_vert(int anim_frame, int r0, int r1, int c, Colors... fg_color)
+  {
+    ttl::Rectangle bb { r0, c, r1 - r0 + 1, 1 };
+    set_sprite_fg_colors(anim_frame, bb, fg_color...);
+  }
+  
+  template<typename... Colors>
+  void set_sprite_fg_colors_horiz(int anim_frame, int r, int c0, int c1, Colors... fg_color)
+  {
+    ttl::Rectangle bb { r, c0, 1, c1 - c0 + 1 };
+    set_sprite_fg_colors(anim_frame, bb, fg_color...);
+  }
+  
   void set_sprite_fg_color(int anim_frame, int r, int c, Color fg_color)
   {
     auto* texture = fetch_frame(anim_frame);
@@ -361,6 +389,20 @@ public:
     return set_sprite_data(texture->bg_colors, bb, bg_color...);
   }
   
+  template<typename... Colors>
+  void set_sprite_bg_colors_vert(int anim_frame, int r0, int r1, int c, Colors... bg_color)
+  {
+    ttl::Rectangle bb { r0, c, r1 - r0 + 1, 1 };
+    set_sprite_bg_colors(anim_frame, bb, bg_color...);
+  }
+  
+  template<typename... Colors>
+  void set_sprite_bg_colors_horiz(int anim_frame, int r, int c0, int c1, Colors... bg_color)
+  {
+    ttl::Rectangle bb { r, c0, 1, c1 - c0 + 1 };
+    set_sprite_bg_colors(anim_frame, bb, bg_color...);
+  }
+  
   void set_sprite_bg_color(int anim_frame, int r, int c, Color bg_color)
   {
     auto* texture = fetch_frame(anim_frame);
@@ -408,6 +450,20 @@ public:
   {
     auto* texture = fetch_frame(anim_frame);
     return set_sprite_data(texture->materials, bb, mat...);
+  }
+  
+  template<typename... Materials>
+  void set_sprite_materials_vert(int anim_frame, int r0, int r1, int c, Materials... mat)
+  {
+    ttl::Rectangle bb { r0, c, r1 - r0 + 1, 1 };
+    set_sprite_materials(anim_frame, bb, mat...);
+  }
+  
+  template<typename... Materials>
+  void set_sprite_materials_horiz(int anim_frame, int r, int c0, int c1, Materials... mat)
+  {
+    ttl::Rectangle bb { r, c0, 1, c1 - c0 + 1 };
+    set_sprite_materials(anim_frame, bb, mat...);
   }
   
   void set_sprite_material(int anim_frame, int r, int c, int mat)
