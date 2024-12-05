@@ -64,6 +64,11 @@ struct TransitionAnimationInOut
     return math::in_range<float>(t, 0.f, 1.f, Range::ClosedOpen);
   }
   
+  bool begun(float time_s) const
+  {
+    return time_s - transition_start_time_s >= enter_rel_start_time_s;
+  }
+  
   bool done(float time_s) const
   {
     return time_s - transition_start_time_s >= exit_rel_end_time_s;
@@ -96,6 +101,11 @@ struct TransitionAnimationSingle
     auto rel_time_s = time_s - transition_start_time_s;
     float t = math::value_to_param(rel_time_s, enter_rel_start_time_s, exit_rel_end_time_s);
     return math::in_range<float>(t, 0.f, 1.f, Range::ClosedOpen);
+  }
+  
+  bool begun(float time_s) const
+  {
+    return time_s - transition_start_time_s >= enter_rel_start_time_s;
   }
   
   bool done(float time_s) const
