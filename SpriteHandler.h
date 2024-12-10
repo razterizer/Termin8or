@@ -78,8 +78,8 @@ class BitmapSprite : public Sprite
       return false;
     }
     std::vector<T> source = {static_cast<T>(args)...}; // Unpack and assign to the target vector
-    auto N_trg = target.size();
-    auto N_src = source.size();
+    auto N_trg = stlutils::sizeI(target);
+    auto N_src = stlutils::sizeI(source);
 
     for (int i = 0; i < nr; ++i)
     {
@@ -108,7 +108,7 @@ class BitmapSprite : public Sprite
     int nr = std::min(bb.r_len, size.r);
     int nc = std::min(bb.c_len, size.c);
     
-    auto N_trg = target.size();
+    auto N_trg = stlutils::sizeI(target);
     
     for (int i = 0; i < nr; ++i)
     {
