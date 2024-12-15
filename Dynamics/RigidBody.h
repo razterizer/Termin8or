@@ -82,14 +82,14 @@ namespace dynamics
           {
             if (sprite->calc_cm())
               curr_cm_local += { static_cast<float>(r_loc), static_cast<float>(c_loc) };
-            Ixx += math::sq<float>(r_loc);
-            Iyy += math::sq<float>(c_loc);
+            Ixx += static_cast<float>(math::sq(r_loc));
+            Iyy += static_cast<float>(math::sq(c_loc));
             num_points++;
           }
         }
       }
       if (sprite->calc_cm())
-        curr_cm_local /= num_points;
+        curr_cm_local /= static_cast<float>(num_points);
       
       auto density = mass / num_points;
       Ixx *= density;
