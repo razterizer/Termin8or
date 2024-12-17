@@ -351,7 +351,10 @@ namespace dynamics
     void draw_dbg_narrow_phase(ScreenHandler<NR, NC>& sh, Color coll_fg_color = Color::Magenta) const
     {
       for (const auto& pt : isect_world_positions)
-        sh.write_buffer("X", pt.r, pt.c, coll_fg_color);
+      {
+        auto rc = to_RC_round(pt);
+        sh.write_buffer("X", rc.r, rc.c, coll_fg_color);
+      }
     }
     
     void update_detection(std::vector<NarrowPhaseCollData>& collision_data, bool verbose = false)
