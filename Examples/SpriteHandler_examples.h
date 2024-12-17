@@ -123,7 +123,7 @@ namespace sprite_handler
     // ///////////////////////////////////////////////////////////
     
     std::array<std::tuple<Sprite*, float, float>, 16> asteroids;
-    for (int a_idx = 0; a_idx < asteroids.size(); ++a_idx)
+    for (int a_idx = 0; a_idx < stlutils::sizeI(asteroids); ++a_idx)
     {
       auto* sprite2 = sprh.create_bitmap_sprite("asteroid" + std::to_string(a_idx));
       sprite2->pos.r = rnd::rand_int(0, sh.num_rows()-1);
@@ -198,7 +198,7 @@ namespace sprite_handler
         sprite1->pos.c = math::roundI(20.f + 10.f*std::cos(math::c_2pi * 7.13 * t));
         sprite1->pos.r = math::roundI(10.f + 5*std::sin(math::c_2pi * 10 * t));
         
-        for (int a_idx = 0; a_idx < asteroids.size(); ++a_idx)
+        for (int a_idx = 0; a_idx < stlutils::sizeI(asteroids); ++a_idx)
         {
           auto& [ast_sprite, r_pos, r_vel] = asteroids[a_idx];
           r_pos += r_vel * dt;
