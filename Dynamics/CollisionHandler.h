@@ -331,8 +331,8 @@ namespace dynamics
               //std::cout << "Collision!!!" << std::endl;
               cdata.node_A = prox_pair.first;
               cdata.node_B = prox_pair.second;
-              cdata.local_pos_A.emplace_back(r_rel_A, c_rel_A);
-              cdata.local_pos_B.emplace_back(r_rel_B, c_rel_B);
+              cdata.local_pos_A.emplace_back(static_cast<float>(r_rel_A), static_cast<float>(c_rel_A));
+              cdata.local_pos_B.emplace_back(static_cast<float>(r_rel_B), static_cast<float>(c_rel_B));
             }
           }
         }
