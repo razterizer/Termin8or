@@ -9,6 +9,34 @@ on:
       - main
 
 jobs:
+  build-examples:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      # Step 2: Move to the parent directory and fetch dependencies
+      - name: Fetch dependencies
+        run: |
+          cd ..
+          git clone https://github.com/razterizer/Core.git
+
+      # Step 3: Change to the correct directory and build
+      - name: Build
+        run: |
+          cd Examples
+          ./build_examples.sh
+        continue-on-error: false # Ensure errors are not bypassed
+
+      # Step 4: Upload the built unit test binaries as artifacts
+      - name: Upload unit test binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: unit-test-artifacts
+          path: Tests/bin
+
   build-unit-tests:
     runs-on: ubuntu-latest
     
