@@ -1156,7 +1156,7 @@ public:
             }
           }
           
-          if (std::abs(c1 - c0) > 1)
+          if (c1 - c0 > 1)
             enable_fill ^= true;
         }
       }
