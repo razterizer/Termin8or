@@ -750,6 +750,10 @@ class VectorSprite : public Sprite
   struct VectorFrame
   {
     std::vector<LineSeg> line_segments;
+    bool fill_closed_polylines = false; // not yet implemented.
+    char fill_char = 'S'; // not yet implemented.
+    std::vector<std::vector<LineSeg>> closed_polylines; // not yet implemented.
+    std::vector<LineSeg> open_polylines; // not yet implemented.
   };
   
   std::vector<std::unique_ptr<VectorFrame>> vector_frames;
