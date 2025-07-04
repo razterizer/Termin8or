@@ -77,15 +77,6 @@ namespace bresenham
     }
   }
   
-  void scan_line(float r0, float c0, float r1, float c1, float r, float* c)
-  {
-    // r = k*c + m.
-    auto k = (r1 - r0)/(c1 - c0);
-    auto m = r0 - k*c0;
-    if (c != nullptr)
-      *c = (r - m)/k;
-  }
-  
   void plot_line(const RC& p0, const RC& p1, std::vector<RC>& points)
   {
     plot_line(
