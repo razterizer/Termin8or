@@ -11,7 +11,9 @@
 #include "Drawing.h"
 #include "AABB.h"
 #include <Core/Vec2.h>
+#include <Core/bool_vector.h>
 #include <map>
+#include <set>
 #include <memory>
 
 
@@ -852,6 +854,152 @@ public:
     line_seg.ch = ch;
     line_seg.style = style;
     line_seg.mat = mat;
+  }
+    
+  void finalize_topology(int anim_frame)
+  {
+    struct LineSegData
+    {
+      int idx = -1;
+      int v_idx = -1;
+    };
+    std::vector<Vec2> positions;
+    std::map<int, std::vector<LineSegData>> pos_lineseg_map;
+    float c_snap_dist_sq = 1e-6f;
+    
+    auto* vector_frame = fetch_frame(anim_frame);
+    //vector_frame->open_polylines.emplace_back(line_seg);
+    vector_frame->open_polylines = vector_frame->line_segments;
+    auto N = stlutils::sizeI(vector_frame->open_polylines);
+    
+    //     p1   s0:01   p5
+    //         +------+
+    //  s3:10 /        \ s1:01
+    //    p0 +          \
+    //        \          + p3
+    //   s2:10 \        / s5:10
+    //       p4 +------+ p2
+    //           s4:01
+    //
+    // p0 -> s3:1*, s2:1
+    // p1 -> s3:0*, s0:0*
+    // p2 -> s4:1, s5:1
+    // p3 -> s5:0, s1:1*
+    // p4 -> s2:0, s4:0
+    // p5 -> s0:1*, s1:0*
+    // p0 -> s3:1 -> s3:0 -> p1 -> s0:0 -> s0:1 -> p5 -> s1:0 -> s1:1 -> p3 ->
+    
+    // 1. Register all positions.
+    for (const auto& ls : vector_frame->open_polylines)
+    {
+      const auto& p0 = ls.pos[0];
+      const auto& p1 = ls.pos[1];
+      stlutils::emplace_back_if_not(positions, p0, [c_snap_dist_sq, &p0](const Vec2& pos)
+        { return math::distance_squared(pos, p0) < c_snap_dist_sq; });
+      stlutils::emplace_back_if_not(positions, p1, [c_snap_dist_sq, &p1](const Vec2& pos)
+        { return math::distance_squared(pos, p1) < c_snap_dist_sq; });
+    }
+    // 2. Map position to lineseg and its vtx-idx.
+    for (int ls_idx = 0; ls_idx < N; ++ls_idx)
+    {
+      const auto& ls = vector_frame->open_polylines[ls_idx];
+      const auto& p0 = ls.pos[0];
+      const auto& p1 = ls.pos[1];
+      auto idx_pos_lsv0 = stlutils::find_if_idx(positions, [c_snap_dist_sq, &p0](const auto& pos)
+        { return math::distance_squared(pos, p0) < c_snap_dist_sq; });
+      auto idx_pos_lsv1 = stlutils::find_if_idx(positions, [c_snap_dist_sq, &p1](const auto& pos)
+        { return math::distance_squared(pos, p1) < c_snap_dist_sq; });
+      if (idx_pos_lsv0 != -1)
+      {
+        LineSegData lsd { ls_idx, 0 };
+        pos_lineseg_map[idx_pos_lsv0].emplace_back(lsd);
+      }
+      if (idx_pos_lsv1 != -1)
+      {
+        LineSegData lsd { ls_idx, 1 };
+        pos_lineseg_map[idx_pos_lsv1].emplace_back(lsd);
+      }
+    }
+    
+    // 3. Try to connect linesegs via positions.
+    
+    bool_vector visited(N, false); // Mark line segments.
+    std::vector<int> path_indices;
+    std::set<int> visited_positions;
+    
+    for (int start_idx = 0; start_idx < N; ++start_idx)
+    {
+      if (visited[start_idx])
+        continue;
+        
+      path_indices.clear();
+      visited_positions.clear();
+      
+      int curr_idx = start_idx;
+      int curr_vtx = 0; // Can also try both ends.
+      
+      for (;;)
+      {
+        const auto& seg = vector_frame->open_polylines[curr_idx];
+        visited[curr_idx] = true;
+        path_indices.emplace_back(curr_idx);
+        
+        Vec2 next_pos = seg.pos[1 - curr_vtx];
+        int next_pos_idx = stlutils::find_if_idx(positions,
+                                                 [c_snap_dist_sq, &next_pos](const Vec2& pos)
+                                                 { return math::distance_squared(pos, next_pos) < c_snap_dist_sq; });
+        
+        if (next_pos_idx == -1 || visited_positions.count(next_pos_idx) > 0)
+          break; // Either disconnected or looping over visited node.
+        
+        visited_positions.insert(next_pos_idx);
+        
+        // Closed loop check.
+        int start_pos_idx = stlutils::find_if_idx(positions,
+                                                  [c_snap_dist_sq, &vector_frame, start_idx, curr_vtx](const Vec2& pos)
+        {
+          return math::distance_squared(pos, vector_frame->open_polylines[start_idx].pos[curr_vtx]) < c_snap_dist_sq;
+        });
+        if (next_pos_idx == start_pos_idx)
+        {
+          // Closed loop detected!
+          std::vector<LineSeg> closed;
+          for (int idx : path_indices)
+            closed.emplace_back(vector_frame->open_polylines[idx]);
+          
+          vector_frame->closed_polylines.emplace_back(std::move(closed));
+          
+          // Remove from open_polylines later
+          for (int idx : path_indices)
+            visited[idx] = true;
+          
+          break;
+        }
+        
+        const auto& candidates = pos_lineseg_map[next_pos_idx];
+        
+        // Try to find unvisited segment.
+        bool found = false;
+        for (const auto& lsd : candidates)
+        {
+          if (!visited[lsd.idx])
+          {
+            curr_idx = lsd.idx;
+            curr_vtx = lsd.v_idx;
+            found = true;
+            break;
+          }
+        }
+        
+        if (!found)
+          break;
+      }
+    }
+    
+    // Remove visited from open_polylines (in reverse to not break indices).
+    for (int i = N - 1; i >= 0; --i)
+      if (visited[i])
+        stlutils::erase_at(vector_frame->open_polylines, i);
   }
   
   void add_line_segment(int anim_frame, const Vec2& p0, const Vec2& p1, const styles::Style& style, int mat = 0)
