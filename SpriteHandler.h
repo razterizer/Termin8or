@@ -1070,6 +1070,9 @@ public:
     auto* vector_frame = get_curr_sim_frame(sim_frame);
     if (vector_frame == nullptr)
       return false;
+      
+    std::vector<RC> raster_pts;
+    std::map<int, std::vector<int>> map_row_to_occupied_cols;
     
     for (const auto& line_seg : vector_frame->line_segments)
     {
@@ -1109,7 +1112,80 @@ public:
       else
         ch = line_seg.ch;
       
-      bresenham::plot_line(sh, p0, p1, std::string(1, ch), line_seg.style.fg_color, line_seg.style.bg_color);
+      raster_pts.clear();
+      bresenham::plot_line(p0, p1, raster_pts);
+      //bresenham::plot_line(sh, p0, p1, std::string(1, ch), line_seg.style.fg_color, line_seg.style.bg_color);
+      for (const auto& rc : raster_pts)
+      {
+        sh.write_buffer(std::string(1, ch), rc.r, rc.c, line_seg.style);
+        map_row_to_occupied_cols[rc.r].emplace_back(rc.c);
+      }
+    }
+    
+    if (vector_frame->fill_closed_polylines)
+    {
+      std::vector<RC> isect_pts;
+      for (int r = 0; r < sh.num_rows(); ++r)
+      {
+        const auto& occupied_cols = map_row_to_occupied_cols[r];
+        for (const auto& polygon : vector_frame->closed_polylines)
+        {
+          isect_pts.clear();
+          for (const auto& line_seg : polygon)
+          {
+            auto [p0, p1] = calc_seg_world_pos_round(line_seg);
+            if (std::min(p0.r, p1.r) < r && r < std::max(p0.r, p1.r))
+            {
+              float c = -1.f;
+              bresenham::scan_line(p0.r, p0.c, p1.r, p1.c, r, &c);
+              if (c != -1.f)
+              {
+                if (isect_pts.size() % 2 == 0)
+                {
+                  int cc = math::ceilI(c);
+                  if (stlutils::contains(occupied_cols, cc))
+                    isect_pts.emplace_back(RC { r, cc + 1});
+                  else
+                    isect_pts.emplace_back(RC { r, cc });
+                }
+                else
+                {
+                  int cf = math::floorI(c);
+                  if (stlutils::contains(occupied_cols, cf))
+                    isect_pts.emplace_back(RC { r, cf - 1 });
+                  else
+                    isect_pts.emplace_back(RC { r, cf });
+                }
+              }
+            }
+          }
+          
+          if (isect_pts.size() % 2 == 1)
+          {
+            std::cerr << "ERROR in VectorSprite::draw() : Odd number of scan-line isect pts detected.\n";
+            continue;
+          }
+          
+          stlutils::sort(isect_pts, [](const auto& rc0, const auto& rc1) { return rc0.c < rc1.c; });
+          
+          //for (int c = 0; c < sh.num_cols(); ++c)
+          bool enable_fill = true;
+          for (int ci = 0; ci < stlutils::sizeI(isect_pts) - 1; ++ci)
+          {
+            if (enable_fill)
+            {
+              const auto& pt0 = isect_pts[ci];
+              const auto& pt1 = isect_pts[ci + 1];
+              for (int c = pt0.c; c <= pt1.c; ++c)
+              {
+                sh.write_buffer(std::string(1, vector_frame->fill_char), r, c, vector_frame->fill_style);
+              }
+            }
+          
+            enable_fill ^= true;
+          }
+        }
+      }
     }
     
     return true;
