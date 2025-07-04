@@ -255,6 +255,11 @@ quit:
     sprite0->add_line_segment(0, { -2, 0 }, { 2, -2 }, 'o', { Color::Yellow, Color::Transparent2 }, 1);
     sprite0->add_line_segment(0, { 2, -2 }, { 2, 2 }, 'o', { Color::Yellow, Color::Transparent2 }, 1);
     sprite0->set_rotation(0.f);
+    sprite0->finalize_topology(0);
+    auto* frame = sprite0->get_curr_local_frame(0);
+    frame->fill_closed_polylines = true;
+    frame->fill_char = '#';
+    frame->fill_style = { Color::LightGray, Color::DarkGray };
     dyn_sys.add_rigid_body(sprite0, 4.f, std::nullopt, { 1.f, -3.f }, {}, 2.f);
     
     auto* sprite1 = sprh.create_vector_sprite("alien");
