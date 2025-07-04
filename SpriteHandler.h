@@ -1157,7 +1157,7 @@ public:
           }
           
           if (c1 - c0 > 1)
-            enable_fill ^= true;
+            math::toggle(enable_fill);
         }
       }
     }
