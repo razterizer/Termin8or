@@ -1072,7 +1072,7 @@ public:
       return false;
       
     std::vector<RC> raster_pts;
-    std::map<int, std::vector<int>> map_row_to_occupied_cols;
+    std::vector<std::map<int, std::vector<int>>> polygons_map_row_to_occupied_cols;
     
     for (const auto& line_seg : vector_frame->line_segments)
     {
@@ -1119,6 +1119,7 @@ public:
     {
       for (const auto& polygon : vector_frame->closed_polylines)
       {
+        auto& map_row_to_occupied_cols = polygons_map_row_to_occupied_cols.emplace_back();
         for (const auto& line_seg : polygon)
         {
           auto [p0, p1] = calc_seg_world_pos_round(line_seg);
@@ -1131,33 +1132,32 @@ public:
       
       for (int r = 0; r < sh.num_rows(); ++r)
       {
-        auto& occupied_cols = map_row_to_occupied_cols[r];
-        
-        /*
-        if (occupied_cols.size() % 2 == 1)
+        for (auto& map_row_to_occupied_cols : polygons_map_row_to_occupied_cols)
         {
-          //std::cerr << "ERROR in VectorSprite::draw() : Odd number of scan-line isect pts detected.\n";
-          continue;
-        }
-        */
-        
-        stlutils::sort(occupied_cols);
-        
-        bool enable_fill = true;
-        for (int ci = 0; ci < stlutils::sizeI(occupied_cols) - 1; ++ci)
-        {
-          const auto& c0 = occupied_cols[ci];
-          const auto& c1 = occupied_cols[ci + 1];
-          if (enable_fill)
-          {
-            for (int c = c0 + 1; c < c1; ++c)
-            {
-              sh.write_buffer(std::string(1, vector_frame->fill_char), r, c, vector_frame->fill_style);
-            }
-          }
+          auto& occupied_cols = map_row_to_occupied_cols[r];
           
-          if (c1 - c0 > 1)
-            math::toggle(enable_fill);
+          /*
+          if (occupied_cols.size() % 2 == 1)
+          {
+            //std::cerr << "ERROR in VectorSprite::draw() : Odd number of scan-line isect pts detected.\n";
+            continue;
+          }
+          */
+          
+          stlutils::sort(occupied_cols);
+          
+          bool enable_fill = true;
+          for (int ci = 0; ci < stlutils::sizeI(occupied_cols) - 1; ++ci)
+          {
+            const auto& c0 = occupied_cols[ci];
+            const auto& c1 = occupied_cols[ci + 1];
+            if (enable_fill)
+              for (int c = c0 + 1; c < c1; ++c)
+                sh.write_buffer(std::string(1, vector_frame->fill_char), r, c, vector_frame->fill_style);
+          
+            if (c1 - c0 > 1)
+              math::toggle(enable_fill);
+          }
         }
       }
     }
