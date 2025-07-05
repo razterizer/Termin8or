@@ -10,6 +10,7 @@
 #include "../RC.h"
 #include "../SpriteHandler.h"
 #include <Core/bool_vector.h>
+#include <Core/Math.h>
 
 
 namespace dynamics
