@@ -929,54 +929,54 @@ public:
     
     // 3. Try to connect linesegs via positions.
     
-    bool_vector visited(N, false); // Mark line segments.
-    std::vector<int> path_indices;
-    std::vector<int> temp_path_indices;
-    std::unordered_set<int> visited_in_this_walk;
+    bool_vector segs_visited(N, false); // Mark line segments.
+    std::vector<int> path_seg_indices;
+    std::vector<int> temp_path_seg_indices;
+    std::unordered_set<int> segs_visited_in_this_walk;
     
-    for (int start_idx = 0; start_idx < N; ++start_idx)
+    for (int start_seg_idx = 0; start_seg_idx < N; ++start_seg_idx)
     {
-      if (visited[start_idx])
+      if (segs_visited[start_seg_idx])
         continue;
         
-      path_indices.clear();
+      path_seg_indices.clear();
       
-      for (int initial_vtx = 0; initial_vtx < 2; ++initial_vtx)
+      for (int init_vtx_idx = 0; init_vtx_idx < 2; ++init_vtx_idx)
       {
-        int curr_idx = start_idx;
-        int curr_vtx = initial_vtx;
-        Vec2 start_pos = vector_frame->open_polylines[start_idx].pos[initial_vtx];
+        int curr_seg_idx = start_seg_idx;
+        int curr_vtx_idx = init_vtx_idx;
+        Vec2 start_pos = vector_frame->open_polylines[start_seg_idx].pos[init_vtx_idx];
         
-        temp_path_indices.clear();
-        visited_in_this_walk.clear();
+        temp_path_seg_indices.clear();
+        segs_visited_in_this_walk.clear();
         
         for (;;)
         {
            // Check early exit.
-          if (visited[curr_idx] || visited_in_this_walk.count(curr_idx))
+          if (segs_visited[curr_seg_idx] || segs_visited_in_this_walk.count(curr_seg_idx))
             break;
             
-          visited_in_this_walk.insert(curr_idx);
-          temp_path_indices.push_back(curr_idx);
+          segs_visited_in_this_walk.insert(curr_seg_idx);
+          temp_path_seg_indices.push_back(curr_seg_idx);
         
-          const auto& seg = vector_frame->open_polylines[curr_idx];
+          const auto& seg = vector_frame->open_polylines[curr_seg_idx];
           //visited[curr_idx] = true;
           //path_indices.emplace_back(curr_idx);
           
-          Vec2 next_pos = seg.pos[1 - curr_vtx];
+          Vec2 next_pos = seg.pos[1 - curr_vtx_idx];
                     
-          // Closed loop check.
+          // Closed path (loop) check.
           if (math::distance_squared(next_pos, start_pos) < c_snap_dist_sq)
           {
-            // Closed loop detected!
-            std::vector<LineSeg> closed;
-            for (int idx : temp_path_indices)
+            // Closed path (loop) detected!
+            std::vector<LineSeg> closed_path;
+            for (int seg_idx : temp_path_seg_indices)
             {
-              closed.emplace_back(vector_frame->open_polylines[idx]);
-              visited[idx] = true;
+              closed_path.emplace_back(vector_frame->open_polylines[seg_idx]);
+              segs_visited[seg_idx] = true;
             }
             
-            vector_frame->closed_polylines.emplace_back(std::move(closed));
+            vector_frame->closed_polylines.emplace_back(std::move(closed_path));
             break;
           }
           
@@ -989,16 +989,16 @@ public:
           if (next_pos_idx == -1)
             break;
           
-          const auto& candidates = pos_lineseg_map[next_pos_idx];
+          const auto& candidate_segs = pos_lineseg_map[next_pos_idx];
           
           // Try to find unvisited segment.
           bool found = false;
-          for (const auto& lsd : candidates)
+          for (const auto& lsd : candidate_segs)
           {
-            if (!visited[lsd.idx] && !visited_in_this_walk.count(lsd.idx))
+            if (!segs_visited[lsd.idx] && !segs_visited_in_this_walk.count(lsd.idx))
             {
-              curr_idx = lsd.idx;
-              curr_vtx = lsd.v_idx;
+              curr_seg_idx = lsd.idx;
+              curr_vtx_idx = lsd.v_idx;
               found = true;
               break;
             }
@@ -1012,7 +1012,7 @@ public:
     
     // Remove visited from open_polylines (in reverse to not break indices).
     for (int i = N - 1; i >= 0; --i)
-      if (visited[i])
+      if (segs_visited[i])
         stlutils::erase_at(vector_frame->open_polylines, i);
   }
   
