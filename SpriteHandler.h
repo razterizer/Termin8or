@@ -13,7 +13,7 @@
 #include <Core/Vec2.h>
 #include <Core/bool_vector.h>
 #include <map>
-#include <set>
+#include <unordered_set>
 #include <memory>
 
 
@@ -931,7 +931,8 @@ public:
     
     bool_vector visited(N, false); // Mark line segments.
     std::vector<int> path_indices;
-    std::set<int> visited_positions;
+    std::vector<int> temp_path_indices;
+    std::unordered_set<int> visited_in_this_walk;
     
     for (int start_idx = 0; start_idx < N; ++start_idx)
     {
@@ -939,66 +940,73 @@ public:
         continue;
         
       path_indices.clear();
-      visited_positions.clear();
       
-      int curr_idx = start_idx;
-      int curr_vtx = 0; // Can also try both ends.
-      
-      for (;;)
+      for (int initial_vtx = 0; initial_vtx < 2; ++initial_vtx)
       {
-        const auto& seg = vector_frame->open_polylines[curr_idx];
-        visited[curr_idx] = true;
-        path_indices.emplace_back(curr_idx);
+        int curr_idx = start_idx;
+        int curr_vtx = initial_vtx;
+        Vec2 start_pos = vector_frame->open_polylines[start_idx].pos[initial_vtx];
         
-        Vec2 next_pos = seg.pos[1 - curr_vtx];
-        int next_pos_idx = stlutils::find_if_idx(positions,
-                                                 [c_snap_dist_sq, &next_pos](const Vec2& pos)
-                                                 { return math::distance_squared(pos, next_pos) < c_snap_dist_sq; });
+        temp_path_indices.clear();
+        visited_in_this_walk.clear();
         
-        if (next_pos_idx == -1 || visited_positions.count(next_pos_idx) > 0)
-          break; // Either disconnected or looping over visited node.
-        
-        visited_positions.insert(next_pos_idx);
-        
-        // Closed loop check.
-        int start_pos_idx = stlutils::find_if_idx(positions,
-                                                  [c_snap_dist_sq, &vector_frame, start_idx, curr_vtx](const Vec2& pos)
+        for (;;)
         {
-          return math::distance_squared(pos, vector_frame->open_polylines[start_idx].pos[curr_vtx]) < c_snap_dist_sq;
-        });
-        if (next_pos_idx == start_pos_idx)
-        {
-          // Closed loop detected!
-          std::vector<LineSeg> closed;
-          for (int idx : path_indices)
-            closed.emplace_back(vector_frame->open_polylines[idx]);
-          
-          vector_frame->closed_polylines.emplace_back(std::move(closed));
-          
-          // Remove from open_polylines later
-          for (int idx : path_indices)
-            visited[idx] = true;
-          
-          break;
-        }
+           // Check early exit.
+          if (visited[curr_idx] || visited_in_this_walk.count(curr_idx))
+            break;
+            
+          visited_in_this_walk.insert(curr_idx);
+          temp_path_indices.push_back(curr_idx);
         
-        const auto& candidates = pos_lineseg_map[next_pos_idx];
-        
-        // Try to find unvisited segment.
-        bool found = false;
-        for (const auto& lsd : candidates)
-        {
-          if (!visited[lsd.idx])
+          const auto& seg = vector_frame->open_polylines[curr_idx];
+          //visited[curr_idx] = true;
+          //path_indices.emplace_back(curr_idx);
+          
+          Vec2 next_pos = seg.pos[1 - curr_vtx];
+                    
+          // Closed loop check.
+          if (math::distance_squared(next_pos, start_pos) < c_snap_dist_sq)
           {
-            curr_idx = lsd.idx;
-            curr_vtx = lsd.v_idx;
-            found = true;
+            // Closed loop detected!
+            std::vector<LineSeg> closed;
+            for (int idx : temp_path_indices)
+            {
+              closed.emplace_back(vector_frame->open_polylines[idx]);
+              visited[idx] = true;
+            }
+            
+            vector_frame->closed_polylines.emplace_back(std::move(closed));
             break;
           }
+          
+          // Find next segment
+          int next_pos_idx = stlutils::find_if_idx(positions,
+                                                   [c_snap_dist_sq, &next_pos](const Vec2& pos)
+                                                   { return math::distance_squared(pos, next_pos) < c_snap_dist_sq; });
+          
+          // Disconnected.
+          if (next_pos_idx == -1)
+            break;
+          
+          const auto& candidates = pos_lineseg_map[next_pos_idx];
+          
+          // Try to find unvisited segment.
+          bool found = false;
+          for (const auto& lsd : candidates)
+          {
+            if (!visited[lsd.idx] && !visited_in_this_walk.count(lsd.idx))
+            {
+              curr_idx = lsd.idx;
+              curr_vtx = lsd.v_idx;
+              found = true;
+              break;
+            }
+          }
+          
+          if (!found)
+            break;
         }
-        
-        if (!found)
-          break;
       }
     }
     
