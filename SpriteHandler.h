@@ -763,6 +763,10 @@ class VectorSprite : public Sprite
   std::vector<std::unique_ptr<VectorFrame>> vector_frames;
   
   float rot_rad = 0.f;
+  float r_scale_pre = 1.f;
+  float c_scale_pre = 1.f;
+  float r_scale_post = 1.f;
+  float c_scale_post = 1.f;
   
   VectorFrame* fetch_frame(int anim_frame)
   {
@@ -774,16 +778,16 @@ class VectorSprite : public Sprite
   std::pair<Vec2, Vec2> calc_seg_world_pos_flt(const LineSeg& line_seg) const
   {
     const auto aspect_ratio = 1.5f;
-    auto rr0 = line_seg.pos[0].r;
-    auto cc0 = line_seg.pos[0].c;
-    auto rr1 = line_seg.pos[1].r;
-    auto cc1 = line_seg.pos[1].c;
+    auto rr0 = r_scale_pre*line_seg.pos[0].r;
+    auto cc0 = c_scale_pre*line_seg.pos[0].c;
+    auto rr1 = r_scale_pre*line_seg.pos[1].r;
+    auto cc1 = c_scale_pre*line_seg.pos[1].c;
     float C = std::cos(rot_rad);
     float S = std::sin(rot_rad);
-    auto r0 = pos.r + (C*rr0 - S*cc0);
-    auto c0 = pos.c + (S*rr0 + C*cc0)*aspect_ratio;
-    auto r1 = pos.r + (C*rr1 - S*cc1);
-    auto c1 = pos.c + (S*rr1 + C*cc1)*aspect_ratio;
+    auto r0 = pos.r + r_scale_post*(C*rr0 - S*cc0);
+    auto c0 = pos.c + c_scale_post*(S*rr0 + C*cc0)*aspect_ratio;
+    auto r1 = pos.r + r_scale_post*(C*rr1 - S*cc1);
+    auto c1 = pos.c + c_scale_post*(S*rr1 + C*cc1)*aspect_ratio;
     Vec2 p0 { r0, c0 };
     Vec2 p1 { r1, c1 };
     return { p0, p1 };
@@ -1064,6 +1068,30 @@ public:
     return math::rad2deg(rot_rad);
   }
   
+  // Applied before rotation.
+  void set_rc_scale_pre(float r_s, float c_s)
+  {
+    r_scale_pre = r_s;
+    c_scale_pre = c_s;
+  }
+  
+  // Applied before rotation.
+  void set_rc_scale_post(float r_s, float c_s)
+  {
+    r_scale_post = r_s;
+    c_scale_post = c_s;
+  }
+  
+  std::pair<float, float> get_rc_scale_pre() const
+  {
+    return { r_scale_pre, c_scale_pre };
+  }
+  
+  std::pair<float, float> get_rc_scale_post() const
+  {
+    return { r_scale_post, c_scale_post };
+  }
+    
   template<int NR, int NC>
   bool draw(ScreenHandler<NR, NC>& sh, int sim_frame)
   {
