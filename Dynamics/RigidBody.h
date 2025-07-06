@@ -271,9 +271,9 @@ namespace dynamics
     
     Vec2 get_curr_lin_vel() const { return curr_vel; }
     
-    float get_curr_lin_vel_r() const { return curr_vel.r; }
+    float get_curr_lin_speed_r() const { return curr_vel.r; }
     
-    float get_curr_lin_vel_c() const { return curr_vel.c; }
+    float get_curr_lin_speed_c() const { return curr_vel.c; }
     
     void set_curr_lin_vel(const Vec2& vel) { curr_vel = vel; }
     
