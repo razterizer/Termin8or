@@ -11,6 +11,7 @@
 #include "../SpriteHandler.h"
 #include <Core/bool_vector.h>
 #include <Core/Math.h>
+#include <Core/Mtx2.h>
 
 
 namespace dynamics
@@ -27,6 +28,7 @@ namespace dynamics
     Vec2 curr_cm_local; // local pos
     Vec2 curr_cm;
     float curr_ang = 0.f;
+    Vec2 orig_dir { 0.f, 1.f };
     
     float mass = 1.f;
     float inv_mass = 1.f;
@@ -301,6 +303,54 @@ namespace dynamics
         if (math::length_squared(impulse) > awake_impulse_threshold_sq)
           sleeping = false;
       }
+    }
+    
+    // w [rad/s]
+    float get_curr_ang_vel() const
+    {
+      return curr_ang_vel;
+    }
+    
+    // w [rad/s]
+    void set_curr_ang_vel(float w_rad_s)
+    {
+      curr_ang_vel = w_rad_s;
+    }
+    
+    // phi [rad]
+    float get_curr_ang() const
+    {
+      return curr_ang;
+    }
+    
+    // phi [rad]
+    void set_curr_ang(float phi_rad)
+    {
+      curr_ang = phi_rad;
+    }
+    
+    Mtx2 get_curr_rot_mtx() const
+    {
+      return Mtx2
+        {
+          std::cos(curr_ang), -std::sin(curr_ang),
+          std::sin(curr_ang), std::cos(curr_ang)
+        };
+    }
+    
+    Vec2 get_orig_dir() const
+    {
+      return orig_dir;
+    }
+    
+    void set_orig_dir(const Vec2& dir)
+    {
+      orig_dir = math::normalize(dir);
+    }
+    
+    Vec2 get_curr_dir() const
+    {
+      return get_curr_rot_mtx() * orig_dir;
     }
     
     float get_dynamic_friction() const { return dynamic_friction; }
