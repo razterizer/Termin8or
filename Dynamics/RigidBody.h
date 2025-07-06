@@ -265,6 +265,10 @@ namespace dynamics
       return curr_vel + v_ang;
     }
     
+    Vec2 get_curr_lin_force() const { return curr_force; }
+    
+    void set_curr_lin_force(const Vec2& force) { curr_force = force; }
+    
     Vec2 get_curr_lin_vel() const { return curr_vel; }
     
     float get_curr_lin_vel_r() const { return curr_vel.r; }
