@@ -741,6 +741,8 @@ public:
 
 class VectorSprite : public Sprite
 {
+  float aspect_ratio = 1.5f;
+
   struct LineSeg
   {
     std::array<Vec2, 2> pos;
@@ -777,7 +779,6 @@ class VectorSprite : public Sprite
   
   std::pair<Vec2, Vec2> calc_seg_world_pos_flt(const LineSeg& line_seg) const
   {
-    const auto aspect_ratio = 1.5f;
     auto rr0 = r_scale_pre*line_seg.pos[0].r;
     auto cc0 = c_scale_pre*line_seg.pos[0].c;
     auto rr1 = r_scale_pre*line_seg.pos[1].r;
@@ -801,6 +802,11 @@ class VectorSprite : public Sprite
   
 public:
   VectorSprite(const std::string& a_name) : Sprite(a_name) {}
+  
+  void set_aspect_ratio(float ar = 1.5f)
+  {
+    aspect_ratio = ar;
+  }
   
   //               p0
   //    +-----------+
