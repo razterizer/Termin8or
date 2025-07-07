@@ -173,6 +173,11 @@ namespace dynamics
       m_aabb_bvh = std::make_unique<BVH_Node>();
     }
     
+    const std::vector<Vec2>& get_isect_world_positions() const
+    {
+      return isect_world_positions;
+    }
+    
     void exclude_rigid_body_pairs(RigidBody* rb_A, RigidBody* rb_B)
     {
       if (rb_A > rb_B)
