@@ -1402,6 +1402,16 @@ public:
     return sprite_arr;
   }
   
+  void remove_sprite(Sprite* sprite)
+  {
+    stlutils::erase_if(m_sprites, [sprite](const auto& kv_pair) { return kv_pair.second.get() == sprite; });
+  }
+  
+  void remove_sprite(const std::string& sprite_name)
+  {
+    stlutils::erase_if(m_sprites, [&sprite_name](const auto& kv_pair) { return kv_pair.first == sprite_name; });
+  }
+  
   void clear()
   {
     m_sprites.clear();
