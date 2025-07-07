@@ -39,6 +39,11 @@ namespace dynamics
       return rb.get();
     }
     
+    void remove_rigid_body(RigidBody* rb)
+    {
+      stlutils::erase_if(m_rigid_bodies, [rb](const auto& rb_uptr) { return rb_uptr.get() == rb; });
+    }
+    
     template<int NRB>
     std::array<RigidBody*, NRB> add_rigid_bodies(const std::array<Sprite*, NRB>& sprites,
       std::function<float(int)> rb_mass = [](int){ return 1.f; },
