@@ -461,12 +461,14 @@ namespace dynamics
       }
     }
     
-    void update(bool verbose = false)
+    std::vector<NarrowPhaseCollData> update(bool verbose = false)
     {
       std::vector<NarrowPhaseCollData> narrow_phase_collision_data;
       update_detection(narrow_phase_collision_data, verbose);
       
       update_response(narrow_phase_collision_data);
+      
+      return narrow_phase_collision_data;
     }
     
     
