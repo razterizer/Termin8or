@@ -153,6 +153,15 @@ namespace dynamics
   
   class CollisionHandler
   {
+  public:
+    struct IsectData
+    {
+      Vec2 world_pos;
+      BVH_Node* node_A = nullptr;
+      BVH_Node* node_B = nullptr;
+    };
+    
+  private:
     std::unique_ptr<BVH_Node> m_aabb_bvh;
     std::vector<BVH_Node*> m_aabb_bvh_leaves;
     std::vector<std::pair<RigidBody*, RigidBody*>> exclusion_pairs;
@@ -165,7 +174,7 @@ namespace dynamics
       std::vector<Vec2> local_pos_A, local_pos_B;
     };
     
-    std::vector<Vec2> isect_world_positions;
+    std::vector<IsectData> isect_world_positions;
         
   public:
     CollisionHandler()
@@ -173,7 +182,7 @@ namespace dynamics
       m_aabb_bvh = std::make_unique<BVH_Node>();
     }
     
-    const std::vector<Vec2>& get_isect_world_positions() const
+    const std::vector<IsectData>& get_isect_world_positions() const
     {
       return isect_world_positions;
     }
@@ -357,7 +366,7 @@ namespace dynamics
     {
       for (const auto& pt : isect_world_positions)
       {
-        auto rc = to_RC_round(pt);
+        auto rc = to_RC_round(pt.world_pos);
         sh.write_buffer("X", rc.r, rc.c, coll_fg_color);
       }
     }
@@ -384,7 +393,7 @@ namespace dynamics
         {
           auto contact_local_A = cd.local_pos_A[pt_idx];
           auto contact_world_A = Vec2 { aabb_A.r_min(), aabb_A.c_min() } + contact_local_A;
-          isect_world_positions.emplace_back(contact_world_A);
+          isect_world_positions.emplace_back(IsectData { contact_world_A, cd.node_A, cd.node_B });
         }
       }
       if (verbose)
@@ -466,14 +475,12 @@ namespace dynamics
       }
     }
     
-    std::vector<NarrowPhaseCollData> update(bool verbose = false)
+    void update(bool verbose = false)
     {
       std::vector<NarrowPhaseCollData> narrow_phase_collision_data;
       update_detection(narrow_phase_collision_data, verbose);
       
       update_response(narrow_phase_collision_data);
-      
-      return narrow_phase_collision_data;
     }
     
     
