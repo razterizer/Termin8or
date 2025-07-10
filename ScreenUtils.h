@@ -283,19 +283,20 @@ void draw_game_over(ScreenHandler<NR, NC>& sh, float wave_step = 0.1f)
     return math::roundI(x1);
   };
 
-  int c = 18;
-  sh.write_buffer("  ________    _____      _____  ___________", 7,  wave_func(c, 0), Color::DarkRed, Color::White);
-  sh.write_buffer(" /  _____/   /  _  \\    /     \\ \\_   _____/", 8,  wave_func(c, 1), Color::DarkRed, Color::Yellow);
-  sh.write_buffer("/   \\  ___  /  /_\\  \\  /  \\ /  \\ |    __)_ ",9,  wave_func(c, 2), Color::DarkRed, Color::Yellow);
-  sh.write_buffer("\\    \\_\\  \\/    |    \\/    Y    \\|        \\", 10, wave_func(c, 3), Color::DarkRed, Color::DarkYellow);
-  sh.write_buffer(" \\______  /\\____|__  /\\____|__  /_______  /", 11, wave_func(c, 4), Color::DarkRed, Color::DarkYellow);
-  sh.write_buffer("        \\/         \\/         \\/        \\/ ", 12, wave_func(c, 5), Color::DarkRed, Color::DarkYellow);
-  sh.write_buffer("____________   _________________________   ", 13, wave_func(c, 6), Color::DarkRed, Color::DarkYellow);
-  sh.write_buffer("\\_____  \\   \\ /   /\\_   _____/\\______   \\  ", 14, wave_func(c, 7), Color::DarkRed, Color::DarkYellow);
-  sh.write_buffer(" /   |   \\   Y   /  |    __)_  |       _/  ", 15, wave_func(c, 8), Color::DarkRed, Color::DarkYellow);
-  sh.write_buffer("/    |    \\     /   |        \\ |    |   \\  ", 16, wave_func(c, 9), Color::DarkRed, Color::Yellow);
-  sh.write_buffer("\\_______  /\\___/   /_______  / |____|_  /  ", 17, wave_func(c, 10), Color::DarkRed, Color::Yellow);
-  sh.write_buffer("        \\/                 \\/         \\/   ", 18, wave_func(c, 11), Color::DarkRed, Color::White);
+  int c = NC/2 - 22; // 18 = 80/2 - 22
+  int r0 = NR/2 - 8; // 7 = 30/2 - 8
+  sh.write_buffer("  ________    _____      _____  ___________",        r0 + 0,  wave_func(c, 0), Color::DarkRed, Color::White);
+  sh.write_buffer(" /  _____/   /  _  \\    /     \\ \\_   _____/",     r0 + 1,  wave_func(c, 1), Color::DarkRed, Color::Yellow);
+  sh.write_buffer("/   \\  ___  /  /_\\  \\  /  \\ /  \\ |    __)_ ",   r0 + 2,  wave_func(c, 2), Color::DarkRed, Color::Yellow);
+  sh.write_buffer("\\    \\_\\  \\/    |    \\/    Y    \\|        \\", r0 + 3,  wave_func(c, 3), Color::DarkRed, Color::DarkYellow);
+  sh.write_buffer(" \\______  /\\____|__  /\\____|__  /_______  /",     r0 + 4,  wave_func(c, 4), Color::DarkRed, Color::DarkYellow);
+  sh.write_buffer("        \\/         \\/         \\/        \\/ ",    r0 + 5,  wave_func(c, 5), Color::DarkRed, Color::DarkYellow);
+  sh.write_buffer("____________   _________________________   ",        r0 + 6,  wave_func(c, 6), Color::DarkRed, Color::DarkYellow);
+  sh.write_buffer("\\_____  \\   \\ /   /\\_   _____/\\______   \\  ",  r0 + 7,  wave_func(c, 7), Color::DarkRed, Color::DarkYellow);
+  sh.write_buffer(" /   |   \\   Y   /  |    __)_  |       _/  ",       r0 + 8,  wave_func(c, 8), Color::DarkRed, Color::DarkYellow);
+  sh.write_buffer("/    |    \\     /   |        \\ |    |   \\  ",     r0 + 9,  wave_func(c, 9), Color::DarkRed, Color::Yellow);
+  sh.write_buffer("\\_______  /\\___/   /_______  / |____|_  /  ",      r0 + 10, wave_func(c, 10), Color::DarkRed, Color::Yellow);
+  sh.write_buffer("        \\/                 \\/         \\/   ",     r0 + 11, wave_func(c, 11), Color::DarkRed, Color::White);
 
   wave_x0 += wave_step;
   if (std::abs(wave_x0 - 100.f) < 1e-4f)
@@ -322,13 +323,14 @@ void draw_you_won(ScreenHandler<NR, NC>& sh, float wave_step = 0.07f)
     return math::roundI(x1);
   };
 
-  int c = 15;
-  sh.write_buffer("_____.___.               __      __            ._.", 10, wave_func(c, 0), Color::DarkBlue, Color::Cyan);
-  sh.write_buffer("\\__  |   | ____  __ __  /  \\    /  \\____   ____| |", 11, wave_func(c, 1), Color::DarkBlue, Color::Cyan);
-  sh.write_buffer(" /   |   |/  _ \\|  |  \\ \\   \\/\\/   /  _ \\ /    \\ |", 12, wave_func(c, 2), Color::DarkBlue, Color::Cyan);
-  sh.write_buffer(" \\____   (  <_> )  |  /  \\        (  <_> )   |  \\|", 13, wave_func(c, 3), Color::DarkBlue, Color::DarkCyan);
-  sh.write_buffer(" / ______|\\____/|____/    \\__/\\  / \\____/|___|  /_", 14, wave_func(c, 4), Color::DarkBlue, Color::DarkCyan);
-  sh.write_buffer(" \\/                            \\/             \\/\\/", 15, wave_func(c, 5), Color::DarkBlue, Color::DarkCyan);
+  int c = NC/2 - 25; // 18 = 80/2 - 25
+  int r0 = NR/2 - 5; // 10 = 30/2 - 5
+  sh.write_buffer("_____.___.               __      __            ._.",        r0 + 0, wave_func(c, 0), Color::DarkBlue, Color::Cyan);
+  sh.write_buffer("\\__  |   | ____  __ __  /  \\    /  \\____   ____| |",     r0 + 1, wave_func(c, 1), Color::DarkBlue, Color::Cyan);
+  sh.write_buffer(" /   |   |/  _ \\|  |  \\ \\   \\/\\/   /  _ \\ /    \\ |", r0 + 2, wave_func(c, 2), Color::DarkBlue, Color::Cyan);
+  sh.write_buffer(" \\____   (  <_> )  |  /  \\        (  <_> )   |  \\|",     r0 + 3, wave_func(c, 3), Color::DarkBlue, Color::DarkCyan);
+  sh.write_buffer(" / ______|\\____/|____/    \\__/\\  / \\____/|___|  /_",    r0 + 4, wave_func(c, 4), Color::DarkBlue, Color::DarkCyan);
+  sh.write_buffer(" \\/                            \\/             \\/\\/",    r0 + 5, wave_func(c, 5), Color::DarkBlue, Color::DarkCyan);
 
   wave_x0 += wave_step;
   if (std::abs(wave_x0 - 100.f) < 1e-4f)
@@ -351,7 +353,9 @@ void draw_paused(ScreenHandler<NR, NC>& sh, int anim_ctr)
     case 0: msg = "      "; break;
     default: msg = "PAUSED"; break;
   }
-  sh.write_buffer(msg, 15, 36, Color::White, Color::DarkCyan);
+  int r = NR/2;
+  int c = (NC - 6)/2; // 36
+  sh.write_buffer(msg, r, c, Color::White, Color::DarkCyan);
 }
 
 enum class YesNoButtons { No = 0, Yes = 1 };
