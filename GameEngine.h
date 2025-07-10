@@ -429,12 +429,16 @@ private:
         {
           game_over_timer--;
           if (game_over_timer == 0)
+          {
             on_enter_game_over();
+            timestamp_game_over = real_time_s;
+          }
         }
         
         update();
           
-        if (m_params.enable_hiscores && key == ' ')
+        if (m_params.enable_hiscores && key == ' ' &&
+            (real_time_s - timestamp_game_over > c_min_time_game_over))
         {
           on_exit_game_over();
           show_game_over = false;
@@ -452,12 +456,16 @@ private:
         {
           you_won_timer--;
           if (you_won_timer == 0)
+          {
             on_enter_you_won();
+            timestamp_you_won = real_time_s;
+          }
         }
         
         update();
         
-        if (m_params.enable_hiscores && key == ' ')
+        if (m_params.enable_hiscores && key == ' ' &&
+            (real_time_s - timestamp_you_won > c_min_time_you_won))
         {
           on_exit_you_won();
           show_you_won = false;

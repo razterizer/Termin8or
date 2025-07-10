@@ -19,9 +19,13 @@ static WORD savedAttributes;
 styles::Style orig_style = { Color::White, Color::Black };
 
 
-// Game Over
+// Game Over / You Won
 int game_over_timer = 10;
 int you_won_timer = 10;
+float timestamp_game_over = 0.f;
+float timestamp_you_won = 0.f;
+const float c_min_time_game_over = 3.f;
+const float c_min_time_you_won = 3.f;
 // Wavey Text
 float wave_x0 = 0.f;
 float wave_f = 0.4f;
