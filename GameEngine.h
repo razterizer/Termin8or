@@ -31,6 +31,7 @@ struct GameEngineParams
   Color screen_bg_color_instructions = Color::Default;
   
   std::optional<Color> screen_bg_color_paused = std::nullopt;
+  styles::Style pause_info_style { Color::White, Color::DarkCyan };
   
   std::optional<Color> screen_bg_color_quit_confirm = Color::DarkCyan;
   styles::Style quit_confirm_title_style { Color::Black, Color::DarkCyan };
@@ -509,7 +510,7 @@ private:
       else if (paused)
       {
         bg_color = m_params.screen_bg_color_paused.value_or(bg_color);
-        draw_paused(sh, anim_ctr_data[0].anim_ctr);
+        draw_paused(sh, anim_ctr_data[0].anim_ctr, m_params.pause_info_style);
       }
       else
         update();

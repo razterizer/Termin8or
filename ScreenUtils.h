@@ -342,7 +342,7 @@ void draw_you_won(ScreenHandler<NR, NC>& sh, float wave_step = 0.07f)
 }
 
 template<int NR, int NC>
-void draw_paused(ScreenHandler<NR, NC>& sh, int anim_ctr)
+void draw_paused(ScreenHandler<NR, NC>& sh, int anim_ctr, const styles::Style& info_style)
 {
   int anim = anim_ctr % 10;
   std::string msg;
@@ -359,7 +359,7 @@ void draw_paused(ScreenHandler<NR, NC>& sh, int anim_ctr)
   }
   int r = NR/2;
   int c = (NC - 6)/2; // 36
-  sh.write_buffer(msg, r, c, Color::White, Color::DarkCyan);
+  sh.write_buffer(msg, r, c, info_style);
 }
 
 enum class YesNoButtons { No = 0, Yes = 1 };
