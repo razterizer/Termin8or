@@ -49,6 +49,15 @@ struct GameEngineParams
   styles::HiliteFGStyle hiscores_score_style { Color::Green, Color::Black, Color::Cyan };
   styles::HiliteFGStyle hiscores_name_style { Color::Green, Color::Black, Color::Cyan };
   styles::Style hiscores_info_style { Color::DarkGreen, Color::Black };
+  
+  styles::Style game_over_line_0_style { Color::DarkRed, Color::White };
+  styles::Style game_over_line_1_style { Color::DarkRed, Color::Yellow };
+  styles::Style game_over_line_2_style { Color::DarkRed, Color::DarkYellow };
+  styles::Style game_over_line_3_style { Color::DarkRed, Color::Yellow };
+  styles::Style game_over_line_4_style { Color::DarkRed, Color::White };
+  
+  styles::Style you_won_line_0_style { Color::DarkBlue, Color::Cyan };
+  styles::Style you_won_line_1_style { Color::DarkBlue, Color::DarkCyan };
 };
 
 template<int NR = 30, int NC = 80>
@@ -425,7 +434,12 @@ private:
       else if (show_game_over)
       {
         if (game_over_timer == 0)
-          draw_game_over(sh, 0.1f*(7.f/real_fps));
+          draw_game_over(sh, 0.1f*(7.f/real_fps),
+                         m_params.game_over_line_0_style,
+                         m_params.game_over_line_1_style,
+                         m_params.game_over_line_2_style,
+                         m_params.game_over_line_3_style,
+                         m_params.game_over_line_4_style);
         else
         {
           game_over_timer--;
@@ -452,7 +466,9 @@ private:
       else if (show_you_won)
       {
         if (you_won_timer == 0)
-          draw_you_won(sh, 0.07f*(7.f/real_fps));
+          draw_you_won(sh, 0.07f*(7.f/real_fps),
+                       m_params.you_won_line_0_style,
+                       m_params.you_won_line_1_style);
         else
         {
           you_won_timer--;

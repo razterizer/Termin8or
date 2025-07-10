@@ -277,7 +277,12 @@ void draw_frame(ScreenHandler<NR, NC>& sh, Color fg_color)
 // # \_______  /\___/   /_______  / |____|_  /   #
 // #         \/                 \/         \/    #
 template<int NR, int NC>
-void draw_game_over(ScreenHandler<NR, NC>& sh, float wave_step = 0.1f)
+void draw_game_over(ScreenHandler<NR, NC>& sh, float wave_step = 0.1f,
+                    const styles::Style& line_0_style = { Color::DarkRed, Color::White },
+                    const styles::Style& line_1_style = { Color::DarkRed, Color::Yellow },
+                    const styles::Style& line_2_style = { Color::DarkRed, Color::DarkYellow },
+                    const styles::Style& line_3_style = { Color::DarkRed, Color::Yellow },
+                    const styles::Style& line_4_style = { Color::DarkRed, Color::White })
 {
   auto wave_func = [](int c, int i)
   {
@@ -289,18 +294,18 @@ void draw_game_over(ScreenHandler<NR, NC>& sh, float wave_step = 0.1f)
 
   int c = NC/2 - 22; // 18 = 80/2 - 22
   int r0 = NR/2 - 8; // 7 = 30/2 - 8
-  sh.write_buffer("  ________    _____      _____  ___________",        r0 + 0,  wave_func(c, 0), Color::DarkRed, Color::White);
-  sh.write_buffer(" /  _____/   /  _  \\    /     \\ \\_   _____/",     r0 + 1,  wave_func(c, 1), Color::DarkRed, Color::Yellow);
-  sh.write_buffer("/   \\  ___  /  /_\\  \\  /  \\ /  \\ |    __)_ ",   r0 + 2,  wave_func(c, 2), Color::DarkRed, Color::Yellow);
-  sh.write_buffer("\\    \\_\\  \\/    |    \\/    Y    \\|        \\", r0 + 3,  wave_func(c, 3), Color::DarkRed, Color::DarkYellow);
-  sh.write_buffer(" \\______  /\\____|__  /\\____|__  /_______  /",     r0 + 4,  wave_func(c, 4), Color::DarkRed, Color::DarkYellow);
-  sh.write_buffer("        \\/         \\/         \\/        \\/ ",    r0 + 5,  wave_func(c, 5), Color::DarkRed, Color::DarkYellow);
-  sh.write_buffer("____________   _________________________   ",        r0 + 6,  wave_func(c, 6), Color::DarkRed, Color::DarkYellow);
-  sh.write_buffer("\\_____  \\   \\ /   /\\_   _____/\\______   \\  ",  r0 + 7,  wave_func(c, 7), Color::DarkRed, Color::DarkYellow);
-  sh.write_buffer(" /   |   \\   Y   /  |    __)_  |       _/  ",       r0 + 8,  wave_func(c, 8), Color::DarkRed, Color::DarkYellow);
-  sh.write_buffer("/    |    \\     /   |        \\ |    |   \\  ",     r0 + 9,  wave_func(c, 9), Color::DarkRed, Color::Yellow);
-  sh.write_buffer("\\_______  /\\___/   /_______  / |____|_  /  ",      r0 + 10, wave_func(c, 10), Color::DarkRed, Color::Yellow);
-  sh.write_buffer("        \\/                 \\/         \\/   ",     r0 + 11, wave_func(c, 11), Color::DarkRed, Color::White);
+  sh.write_buffer("  ________    _____      _____  ___________",        r0 + 0,  wave_func(c, 0), line_0_style);
+  sh.write_buffer(" /  _____/   /  _  \\    /     \\ \\_   _____/",     r0 + 1,  wave_func(c, 1), line_1_style);
+  sh.write_buffer("/   \\  ___  /  /_\\  \\  /  \\ /  \\ |    __)_ ",   r0 + 2,  wave_func(c, 2), line_1_style);
+  sh.write_buffer("\\    \\_\\  \\/    |    \\/    Y    \\|        \\", r0 + 3,  wave_func(c, 3), line_2_style);
+  sh.write_buffer(" \\______  /\\____|__  /\\____|__  /_______  /",     r0 + 4,  wave_func(c, 4), line_2_style);
+  sh.write_buffer("        \\/         \\/         \\/        \\/ ",    r0 + 5,  wave_func(c, 5), line_2_style);
+  sh.write_buffer("____________   _________________________   ",        r0 + 6,  wave_func(c, 6), line_2_style);
+  sh.write_buffer("\\_____  \\   \\ /   /\\_   _____/\\______   \\  ",  r0 + 7,  wave_func(c, 7), line_2_style);
+  sh.write_buffer(" /   |   \\   Y   /  |    __)_  |       _/  ",       r0 + 8,  wave_func(c, 8), line_2_style);
+  sh.write_buffer("/    |    \\     /   |        \\ |    |   \\  ",     r0 + 9,  wave_func(c, 9), line_3_style);
+  sh.write_buffer("\\_______  /\\___/   /_______  / |____|_  /  ",      r0 + 10, wave_func(c, 10), line_3_style);
+  sh.write_buffer("        \\/                 \\/         \\/   ",     r0 + 11, wave_func(c, 11), line_4_style);
 
   wave_x0 += wave_step;
   if (std::abs(wave_x0 - 100.f) < 1e-4f)
@@ -314,7 +319,9 @@ void draw_game_over(ScreenHandler<NR, NC>& sh, float wave_step = 0.1f)
 // #  / ______|\____/|____/    \__/\  / \____/|___|  /_ #
 // #  \/                            \/             \/\/ #
 template<int NR, int NC>
-void draw_you_won(ScreenHandler<NR, NC>& sh, float wave_step = 0.07f)
+void draw_you_won(ScreenHandler<NR, NC>& sh, float wave_step = 0.07f,
+                  const styles::Style& line_0_style = { Color::DarkBlue, Color::Cyan },
+                  const styles::Style& line_1_style = { Color::DarkBlue, Color::DarkCyan })
 {
   wave_f = 1.5f;//0.4f;
   wave_a = 1.f;//5.f;
@@ -329,12 +336,12 @@ void draw_you_won(ScreenHandler<NR, NC>& sh, float wave_step = 0.07f)
 
   int c = NC/2 - 25; // 18 = 80/2 - 25
   int r0 = NR/2 - 5; // 10 = 30/2 - 5
-  sh.write_buffer("_____.___.               __      __            ._.",        r0 + 0, wave_func(c, 0), Color::DarkBlue, Color::Cyan);
-  sh.write_buffer("\\__  |   | ____  __ __  /  \\    /  \\____   ____| |",     r0 + 1, wave_func(c, 1), Color::DarkBlue, Color::Cyan);
-  sh.write_buffer(" /   |   |/  _ \\|  |  \\ \\   \\/\\/   /  _ \\ /    \\ |", r0 + 2, wave_func(c, 2), Color::DarkBlue, Color::Cyan);
-  sh.write_buffer(" \\____   (  <_> )  |  /  \\        (  <_> )   |  \\|",     r0 + 3, wave_func(c, 3), Color::DarkBlue, Color::DarkCyan);
-  sh.write_buffer(" / ______|\\____/|____/    \\__/\\  / \\____/|___|  /_",    r0 + 4, wave_func(c, 4), Color::DarkBlue, Color::DarkCyan);
-  sh.write_buffer(" \\/                            \\/             \\/\\/",    r0 + 5, wave_func(c, 5), Color::DarkBlue, Color::DarkCyan);
+  sh.write_buffer("_____.___.               __      __            ._.",        r0 + 0, wave_func(c, 0), line_0_style);
+  sh.write_buffer("\\__  |   | ____  __ __  /  \\    /  \\____   ____| |",     r0 + 1, wave_func(c, 1), line_0_style);
+  sh.write_buffer(" /   |   |/  _ \\|  |  \\ \\   \\/\\/   /  _ \\ /    \\ |", r0 + 2, wave_func(c, 2), line_0_style);
+  sh.write_buffer(" \\____   (  <_> )  |  /  \\        (  <_> )   |  \\|",     r0 + 3, wave_func(c, 3), line_1_style);
+  sh.write_buffer(" / ______|\\____/|____/    \\__/\\  / \\____/|___|  /_",    r0 + 4, wave_func(c, 4), line_1_style);
+  sh.write_buffer(" \\/                            \\/             \\/\\/",    r0 + 5, wave_func(c, 5), line_1_style);
 
   wave_x0 += wave_step;
   if (std::abs(wave_x0 - 100.f) < 1e-4f)
