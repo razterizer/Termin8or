@@ -7,6 +7,7 @@
 
 #pragma once
 #include "Keyboard.h"
+#include "Logging.h"
 #include "ScreenUtils.h"
 #include <Core/Delay.h>
 #include <Core/Rand.h>
@@ -15,8 +16,6 @@
 #include <Core/OneShot.h>
 #include <chrono>
 #include <sstream>
-
-enum class LogMode { None, Record, Replay };
 
 struct GameEngineParams
 {
@@ -114,10 +113,6 @@ class GameEngine
   
   OneShot trg_update_halted, trg_update_resumed;
   
-  std::ofstream rec_file;
-  std::ifstream rep_file;
-  bool log_finished = false;
-  
   bool handle_hiscores(const HiScoreItem& curr_hsi)
   {
     const int c_max_num_hiscores = 20;
@@ -170,124 +165,6 @@ class GameEngine
       return false;
     
     return true;
-  }
-  
-  void setup_logging()
-  {
-    switch (m_params.log_mode)
-    {
-      case LogMode::None:
-        break;
-      case LogMode::Record:
-        folder::delete_file("rec.txt");
-        rec_file = std::ofstream { "rec.txt", std::ios::out | std::ios::trunc };
-        rec_file << curr_rnd_seed << '\n';
-        break;
-      case LogMode::Replay:
-        std::string log_filepath;
-#ifndef _WIN32
-        const char* xcode_env = std::getenv("RUNNING_FROM_XCODE");
-        if (xcode_env != nullptr)
-          log_filepath = m_params.xcode_log_filepath;
-#endif
-        if (log_filepath.empty())
-          log_filepath = "rec.txt";
-        else
-          log_filepath = folder::join_file_path({ log_filepath, "rec.txt" });
-        rep_file = std::ifstream { log_filepath, std::ios::in };
-        if (!rep_file.is_open())
-        {
-          std::cerr << "Error opening log file \"rec.txt\"!" << std::endl;
-          exit(EXIT_FAILURE);
-        }
-        std::string line;
-        if (std::getline(rep_file, line))
-        {
-          std::istringstream iss(line);
-          iss >> curr_rnd_seed;
-          rnd::srand(curr_rnd_seed);
-        }
-        //rep_file >> curr_rnd_seed;
-        break;
-    }
-  }
-  
-  void update_log_stream()
-  {
-    if (m_params.log_mode == LogMode::Replay)
-    {
-      std::string line;
-      if (std::getline(rep_file, line))
-      {
-        std::istringstream iss(line);
-        int log_frame_count = 0;
-        iss >> log_frame_count;
-        if (log_frame_count != get_frame_count())
-        {
-          std::cerr << "REPLAY ERROR : Expected frame number " << get_frame_count() << " but received frame number " << log_frame_count << ". Exiting!" << std::endl;
-          exit(EXIT_FAILURE);
-        }
-        std::string log_key_transient = "";
-        std::string log_key_held = "";
-        iss >> log_key_transient >> log_key_held;
-        if (log_key_transient.size() == 1)
-          kpdp.transient = log_key_transient[0];
-        else if (log_key_transient == "Space")
-          kpdp.transient = ' ';
-        else if (log_key_transient.size() > 1)
-          kpdp.transient = keyboard::string_to_special_key(log_key_transient);
-          
-        if (log_key_held.size() == 1)
-          kpdp.held = log_key_held[0];
-        else if (log_key_held == "Space")
-          kpdp.held = ' ';
-        else if (log_key_held.size() > 1)
-          kpdp.held = keyboard::string_to_special_key(log_key_held);
-      }
-      else
-        log_finished = true;
-    }
-    else
-    {
-      kpdp = keyboard->readKey();
-      if (m_params.log_mode == LogMode::Record)
-      {
-        rec_file << std::to_string(get_frame_count()) << ' ';
-        
-        auto special_key_transient = keyboard::get_special_key(kpdp.transient);
-        if (special_key_transient != keyboard::SpecialKey::None)
-          rec_file << keyboard::special_key_to_string(special_key_transient);
-        else
-        {
-          char char_key = keyboard::get_char_key(kpdp.transient);
-          if (char_key == ' ')
-            rec_file << "Space";
-          else if (33 <= char_key && char_key <= 126)
-            rec_file << char_key;
-          else
-            rec_file << "--";
-        }
-        
-        rec_file << ' ';
-        
-        auto special_key_held = keyboard::get_special_key(kpdp.held);
-        if (special_key_held != keyboard::SpecialKey::None)
-          rec_file << keyboard::special_key_to_string(special_key_held);
-        else
-        {
-          char char_key = keyboard::get_char_key(kpdp.held);
-          if (char_key == ' ')
-            rec_file << "Space";
-          else if (33 <= char_key && char_key <= 126)
-            rec_file << char_key;
-          else
-            rec_file << "--";
-        }
-        
-        rec_file << '\n';
-        rec_file.flush();
-      }
-    }
   }
   
 protected:
@@ -422,7 +299,7 @@ public:
     
     curr_rnd_seed = rnd::srand_time();
     
-    setup_logging();
+    log::setup_logging(m_params.log_mode, m_params.xcode_log_filepath, curr_rnd_seed);
     
     if (time_inited.once())
       real_start_time_s = std::chrono::steady_clock::now();
@@ -480,7 +357,7 @@ private:
     return_cursor();
     sh.clear();
     
-    update_log_stream();
+    log::update_log_stream(m_params.log_mode, kpdp, keyboard.get(), get_frame_count());
     auto key = keyboard::get_char_key(kpdp.transient);
     auto lo_key = str::to_lower(key);
     auto quit = lo_key == 'q';
@@ -697,7 +574,7 @@ private:
       }
     }
     
-    if (log_finished)
+    if (log::log_finished)
       exit(EXIT_SUCCESS);
     
     return true;
