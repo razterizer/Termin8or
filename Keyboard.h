@@ -64,6 +64,27 @@ namespace keyboard
     return "N/A";
   }
   
+  SpecialKey string_to_special_key(const std::string& special_key_str)
+  {
+    if (special_key_str == "None")
+      return SpecialKey::None;
+    else if (special_key_str == "Left")
+      return SpecialKey::Left;
+    else if (special_key_str == "Right")
+      return SpecialKey::Right;
+    else if (special_key_str == "Down")
+      return SpecialKey::Down;
+    else if (special_key_str == "Up")
+      return SpecialKey::Up;
+    else if (special_key_str == "Enter")
+      return SpecialKey::Enter;
+    else if (special_key_str == "Tab")
+      return SpecialKey::Tab;
+    else if (special_key_str == "Backspace")
+      return SpecialKey::Backspace;
+    return SpecialKey::None;
+  }
+  
   bool is_key_pressed(const KeyPressData& kpd)
   {
     auto ch = get_char_key(kpd);
