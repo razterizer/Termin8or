@@ -210,7 +210,8 @@ namespace dynamics
     
     void exclude_all_rigid_bodies_of_prefixes(const DynamicsSystem* dyn_sys,
                                               std::string sprite_prefix_A,
-                                              std::string sprite_prefix_B)
+                                              std::string sprite_prefix_B,
+                                              bool enforce_prefixes = false)
     {
       auto rb_vec = dyn_sys->get_rigid_bodies_raw();
       
@@ -223,7 +224,7 @@ namespace dynamics
         return rb->get_sprite()->get_name().starts_with(sprite_prefix_B);
       });
       
-      if (num_A * num_B > 1e4_i)
+      if (num_A * num_B > 1e4_i || enforce_prefixes)
       {
         if (sprite_prefix_A > sprite_prefix_B)
           std::swap(sprite_prefix_A, sprite_prefix_B);
