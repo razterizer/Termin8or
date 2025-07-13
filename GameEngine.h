@@ -299,7 +299,7 @@ public:
     
     curr_rnd_seed = rnd::srand_time();
     
-    log::setup_logging(m_params.log_mode, m_params.xcode_log_filepath, curr_rnd_seed);
+    logging::setup_logging(m_params.log_mode, m_params.xcode_log_filepath, curr_rnd_seed);
     
     if (time_inited.once())
       real_start_time_s = std::chrono::steady_clock::now();
@@ -357,7 +357,7 @@ private:
     return_cursor();
     sh.clear();
     
-    log::update_log_stream(m_params.log_mode, kpdp, keyboard.get(), get_frame_count());
+    logging::update_log_stream(m_params.log_mode, kpdp, keyboard.get(), get_frame_count());
     auto key = keyboard::get_char_key(kpdp.transient);
     auto lo_key = str::to_lower(key);
     auto quit = lo_key == 'q';
@@ -574,7 +574,7 @@ private:
       }
     }
     
-    if (log::log_finished)
+    if (logging::log_finished)
       exit(EXIT_SUCCESS);
     
     return true;

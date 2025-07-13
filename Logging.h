@@ -10,7 +10,7 @@
 
 enum class LogMode { None, Record, Replay };
 
-namespace log
+namespace logging
 {
   std::ofstream rec_file;
   std::ifstream rep_file;
