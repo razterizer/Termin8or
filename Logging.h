@@ -7,6 +7,7 @@
 
 #pragma once
 #include "Keyboard.h"
+#include <Core/FolderHelper.h>
 #include <fstream>
 
 enum class LogMode { None, Record, Replay };
