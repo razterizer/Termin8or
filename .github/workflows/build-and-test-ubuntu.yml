@@ -19,7 +19,7 @@ jobs:
 
       # Step 1.5 : Make loc badge
       - name: Make Code Badge
-        enabled: false
+        if: false
         uses: shadowmoose/GHA-LoC-Badge@1.0.0
         id: badge
         with:
