@@ -25,7 +25,8 @@ namespace keyboard
     Up,
     Enter,
     Tab,
-    Backspace
+    Backspace,
+    Escape
   };
   
   using KeyPressData = std::optional<std::variant<SpecialKey, char>>;
@@ -60,6 +61,7 @@ namespace keyboard
       case SpecialKey::Enter: return "Enter";
       case SpecialKey::Tab: return "Tab";
       case SpecialKey::Backspace: return "Backspace";
+      case SpecialKey::Escape: return "Escape";
     }
     return "N/A";
   }
@@ -82,6 +84,8 @@ namespace keyboard
       return SpecialKey::Tab;
     else if (special_key_str == "Backspace")
       return SpecialKey::Backspace;
+    else if (special_key_str == "Escape")
+      return SpecialKey::Escape;
     return SpecialKey::None;
   }
   
@@ -278,6 +282,7 @@ namespace keyboard
               case 80: return SpecialKey::Down;
             }
             break;
+          case 27: return SpecialKey::Escape;
           case 13: return SpecialKey::Enter;
           case 9: return SpecialKey::Tab;
           case 8: return SpecialKey::Backspace;
@@ -316,6 +321,7 @@ namespace keyboard
               case 'D': return SpecialKey::Left;
             }
           }
+          return SpecialKey::Escape;
         }
         else
         {
