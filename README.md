@@ -8,7 +8,7 @@
 
 ![Top Languages](https://img.shields.io/github/languages/top/razterizer/Termin8or)
 ![GitHub repo size](https://img.shields.io/github/repo-size/razterizer/Termin8or)
-![C++ LOC](https://raw.githubusercontent.com/razterizer/DungGine/badges/loc-badge.svg)
+![C++ LOC](https://raw.githubusercontent.com/razterizer/Termin8or/badges/loc-badge.svg)
 ![Commit Activity](https://img.shields.io/github/commit-activity/t/razterizer/Termin8or)
 ![Last Commit](https://img.shields.io/github/last-commit/razterizer/Termin8or?color=blue)
 ![Contributors](https://img.shields.io/github/contributors/razterizer/Termin8or?color=blue)
