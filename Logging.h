@@ -19,15 +19,15 @@ namespace logging
   std::ifstream rep_file;
   bool log_finished = false;
   
-  void setup_logging(LogMode log_mode, const std::string& xcode_log_filepath, unsigned int& curr_rnd_seed)
+  void setup_logging(LogMode log_mode, const std::string& xcode_log_filepath, const std::string& log_filename, unsigned int& curr_rnd_seed)
   {
     switch (log_mode)
     {
       case LogMode::None:
         break;
       case LogMode::Record:
-        folder::delete_file("rec.txt");
-        rec_file = std::ofstream { "rec.txt", std::ios::out | std::ios::trunc };
+        folder::delete_file(log_filename);
+        rec_file = std::ofstream { log_filename, std::ios::out | std::ios::trunc };
         rec_file << curr_rnd_seed << '\n';
         break;
       case LogMode::Replay:
@@ -38,13 +38,13 @@ namespace logging
           log_filepath = xcode_log_filepath;
 #endif
         if (log_filepath.empty())
-          log_filepath = "rec.txt";
+          log_filepath = log_filename;
         else
-          log_filepath = folder::join_file_path({ log_filepath, "rec.txt" });
+          log_filepath = folder::join_file_path({ log_filepath, log_filename });
         rep_file = std::ifstream { log_filepath, std::ios::in };
         if (!rep_file.is_open())
         {
-          std::cerr << "Error opening log file \"rec.txt\"!" << std::endl;
+          std::cerr << "Error opening log file \"" + log_filepath + "\"!" << std::endl;
           exit(EXIT_FAILURE);
         }
         std::string line;

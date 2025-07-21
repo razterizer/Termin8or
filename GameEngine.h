@@ -62,6 +62,7 @@ struct GameEngineParams
   
   LogMode log_mode = LogMode::None;
   std::string xcode_log_filepath; // e.g. "../../../../../../../../Documents/xcode/Asciiroids/Asciiroids/"
+  std::string log_filename = "rec.txt";
   
   bool suppress_tty_output = false;
   bool suppress_tty_input = false;
@@ -305,7 +306,7 @@ public:
     
     curr_rnd_seed = rnd::srand_time();
     
-    logging::setup_logging(m_params.log_mode, m_params.xcode_log_filepath, curr_rnd_seed);
+    logging::setup_logging(m_params.log_mode, m_params.xcode_log_filepath, m_params.log_filename, curr_rnd_seed);
     
     if (time_inited.once())
       real_start_time_s = std::chrono::steady_clock::now();
