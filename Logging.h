@@ -94,7 +94,7 @@ namespace logging
       else
         log_finished = true;
     }
-    else
+    else if (keyboard != nullptr)
     {
       kpdp = keyboard->readKey();
       if (log_mode == LogMode::Record)
