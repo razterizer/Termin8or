@@ -62,6 +62,9 @@ struct GameEngineParams
   
   LogMode log_mode = LogMode::None;
   std::string xcode_log_filepath; // e.g. "../../../../../../../../Documents/xcode/Asciiroids/Asciiroids/"
+  
+  bool suppress_tty_output = false;
+  bool suppress_tty_input = false;
 };
 
 template<int NR = 30, int NC = 80>
@@ -280,8 +283,11 @@ public:
     if (exit_requested)
       return;
     
-    keyboard = std::make_unique<keyboard::StreamKeyboard>();
-    keyboard->set_held_buffer_size_from_fps(real_fps);
+    if (!m_params.suppress_tty_input)
+    {
+      keyboard = std::make_unique<keyboard::StreamKeyboard>();
+      keyboard->set_held_buffer_size_from_fps(real_fps);
+    }
     
     begin_screen();
     
@@ -538,10 +544,13 @@ private:
         update();
     }
       
-    sh.print_screen_buffer(bg_color);
-    //sh.print_screen_buffer_chars();
-    //sh.print_screen_buffer_fg_colors();
-    //sh.print_screen_buffer_bg_colors();
+    if (!m_params.suppress_tty_output)
+    {
+      sh.print_screen_buffer(bg_color);
+      //sh.print_screen_buffer_chars();
+      //sh.print_screen_buffer_fg_colors();
+      //sh.print_screen_buffer_bg_colors();
+    }
     
   ///
     
