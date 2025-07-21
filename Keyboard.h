@@ -204,14 +204,18 @@ namespace keyboard
         exit(EXIT_FAILURE);
       }
 #else
-      if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1)
+      if (raw_mode_enabled)
       {
-        std::cerr << "Error in tcsetattr()!" << std::endl;
-        exit(EXIT_FAILURE);
+        if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1)
+        {
+          std::cerr << "Error in tcsetattr()!" << std::endl;
+          exit(EXIT_FAILURE);
+        }
+        raw_mode_enabled = false;
       }
 #endif
     }
-    
+
     void enableRawMode()
     {
 #ifdef _WIN32
@@ -242,25 +246,33 @@ namespace keyboard
       // Perform any additional configuration needed for raw mode in Windows.
       // ...
 #else
+      if (!isatty(STDIN_FILENO))
+      {
+        std::cerr << "Warning: stdin is not a TTY. Raw mode disabled." << std::endl;
+        raw_mode_enabled = false;
+        return;
+      }
+
       if (tcgetattr(STDIN_FILENO, &orig_termios) == -1)
       {
         std::cerr << "Error in tcgetattr()!" << std::endl;
         exit(EXIT_FAILURE);
       }
-      
+
       struct termios raw = orig_termios;
       raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-      //raw.c_oflag &= ~(OPOST);
       raw.c_cflag |= (CS8);
       raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
       raw.c_cc[VMIN] = 0;
       raw.c_cc[VTIME] = 1;
-      
+
       if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1)
       {
         std::cerr << "Error in tcsetattr()!" << std::endl;
         exit(EXIT_FAILURE);
       }
+
+      raw_mode_enabled = true;
 #endif
     }
     
@@ -349,6 +361,7 @@ namespace keyboard
     DWORD fdwSaveOldMode { 0 };
 #else
     struct termios orig_termios;
+    bool raw_mode_enabled = false;
 #endif
     std::vector<KeyPressData> key_press_buffer;
     int buffer_idx = 0;
