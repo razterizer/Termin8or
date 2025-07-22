@@ -186,13 +186,6 @@ protected:
   
   unsigned int curr_rnd_seed = 0;
   
-  // Used for dynamics and stuff.
-  void set_sim_delay_us(float delay_us)
-  {
-    sim_delay = math::roundI(delay_us);
-    sim_dt_s = static_cast<float>(sim_delay) / 1e6f;
-  }
-  
   int& ref_score() { return score; }
   
   double get_real_time_s() const { return real_time_s; }
@@ -328,6 +321,12 @@ public:
     real_fps = fps_val;
   }
   int get_sim_delay_us() const { return sim_delay; }
+  // Used for dynamics and stuff.
+  void set_sim_delay_us(float delay_us)
+  {
+    sim_delay = math::roundI(delay_us);
+    sim_dt_s = static_cast<float>(sim_delay) / 1e6f;
+  }
   
   void set_state_game_over() { show_game_over = true; }
   void set_state_you_won() { show_you_won = true; }
