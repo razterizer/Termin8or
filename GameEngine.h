@@ -186,14 +186,6 @@ protected:
   
   unsigned int curr_rnd_seed = 0;
   
-  void set_real_fps(float fps_val)
-  {
-    if (keyboard != nullptr)
-      keyboard->set_held_buffer_size_from_fps(fps_val);
-    anim_ctr_data[0].anim_count_per_frame_count = math::roundI(fps_val / 5);
-    real_fps = fps_val;
-  }
-  
   // Used for dynamics and stuff.
   void set_sim_delay_us(float delay_us)
   {
@@ -328,6 +320,13 @@ public:
   }
   
   float get_real_fps() const { return real_fps; }
+  void set_real_fps(float fps_val)
+  {
+    if (keyboard != nullptr)
+      keyboard->set_held_buffer_size_from_fps(fps_val);
+    anim_ctr_data[0].anim_count_per_frame_count = math::roundI(fps_val / 5);
+    real_fps = fps_val;
+  }
   int get_sim_delay_us() const { return sim_delay; }
   
   void set_state_game_over() { show_game_over = true; }
