@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		073096BD2E21135A0090584B /* Logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 073096BC2E2113540090584B /* Logging.h */; };
+		075D43042E365FC4005DD356 /* RectangleHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 075D43032E365FB7005DD356 /* RectangleHelper.h */; };
 		07A763112B555BE100705D31 /* ParticleSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 07A763102B555BE100705D31 /* ParticleSystem.h */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +34,7 @@
 		0739D9BF2BA2229100964E96 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		0739D9C02BA2229100964E96 /* LICENSE_FIGlet */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE_FIGlet; sourceTree = "<group>"; };
 		075C651A2C3BFFF500B15451 /* UI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UI.h; sourceTree = "<group>"; };
+		075D43032E365FB7005DD356 /* RectangleHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RectangleHelper.h; sourceTree = "<group>"; };
 		0760B6F02B9CEABC0032CACD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		07685DAB2CD510E200472204 /* Keyboard_examples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Keyboard_examples.h; sourceTree = "<group>"; };
 		07A763102B555BE100705D31 /* ParticleSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 				07A763102B555BE100705D31 /* ParticleSystem.h */,
 				071CC3D5290466FE007B4B98 /* ScreenUtils.h */,
 				071CC3D829046819007B4B98 /* Rectangle.h */,
+				075D43032E365FB7005DD356 /* RectangleHelper.h */,
 				070C60C82CCAA36B00BC7F51 /* AABB.h */,
 				071CC3D72904679E007B4B98 /* ScreenHandler.h */,
 				07B91EF72CEAC36900449D7E /* Animation.h */,
@@ -171,6 +174,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				073096BD2E21135A0090584B /* Logging.h in Headers */,
+				075D43042E365FC4005DD356 /* RectangleHelper.h in Headers */,
 				07A763112B555BE100705D31 /* ParticleSystem.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -356,6 +360,7 @@
 		071CC3CF290465B3007B4B98 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -371,6 +376,7 @@
 		071CC3D0290465B3007B4B98 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
