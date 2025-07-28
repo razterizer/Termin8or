@@ -85,6 +85,8 @@ class GameEngine
   std::string exe_path; // Excludes the <program>.exe file.
   GameEngineParams m_params;
   
+  unsigned int curr_rnd_seed = 0;
+  
   // Simulation delay.
   int sim_delay = 50'000; // 100'000 (10 FPS) // 60'000 (16.67 FPS);
   // Real-time FPS.
@@ -184,7 +186,12 @@ protected:
   
   bool exit_requested = false;
   
-  unsigned int curr_rnd_seed = 0;
+  unsigned int get_curr_rnd_seed() const { return curr_rnd_seed; }
+  void set_curr_rnd_seed(unsigned int new_seed)
+  {
+    curr_rnd_seed = new_seed;
+    rnd::srand(curr_rnd_seed);
+  }
   
   int& ref_score() { return score; }
   
