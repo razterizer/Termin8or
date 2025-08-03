@@ -436,7 +436,8 @@ private:
         {
           on_exit_title();
           show_title = false;
-          show_instructions = true;
+          if (m_params.enable_instructions_screen)
+            show_instructions = true;
         }
       }
       else if (m_params.enable_instructions_screen & show_instructions)
