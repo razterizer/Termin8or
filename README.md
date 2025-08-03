@@ -58,6 +58,10 @@ Attaching the spaceship to a rigid body object:
 
 ![ubuntu_vhurwusqie_360](https://github.com/user-attachments/assets/35a03da6-d37d-479c-b84e-10891ac50825)
 
+Now also supports filled vector sprites with character and style of your choice!
+
+<img width="320" alt="image" src="https://github.com/user-attachments/assets/09de3a27-2951-4b99-8b17-f072ec1acdea" />
+
 ### Dynamics / Collision System
 
 <!-- ![Kapture 2024-10-31 at 14 08 03](https://github.com/user-attachments/assets/2cd50164-db0f-4672-93e4-e0c508108079) -->
@@ -97,7 +101,7 @@ Debug-drawing the broad-phase (AABB BVH) and the narrow-phase (character/charact
 * `Styles.h` : `Style` and its derivatives are just fancy structs grouping a foreground colour with a background colour.
 * `Texture.h`: The `Texture` struct allows you to save and load text-based texture in text format to and from disk. There are four parts in a texture: characters, foreground colors, background colors and material IDs. Header also contains texture element `Textel` (humouristic portmantau of "text" and "texel" suggested by my dear colleague Göran Wallgren).
 * `ScreenHandler.h` : Contains the screen buffers (char / fg-color / bg-color) and manages transparency etc. It outputs the contents to the terminal via a privatly owned `Text` object.
-* `SpriteHandler.h` : Manages bitmap sprites (`BitmapSprite`) and vector sprites (`VectorSprite`). A sprite can be controlled programmatically or be attached to a `RigidBody` object. Both sprite classes support sprite animations.
+* `SpriteHandler.h` : Manages bitmap sprites (`BitmapSprite`) and vector sprites (`VectorSprite`). A sprite can be controlled programmatically or be attached to a `RigidBody` object. Both sprite classes support sprite animations. A vector sprite can be filled for enclosed areas of the sprite. A scan-line algorithm is used for this.
 * `UI.h` : Contains structs such as `TextBox` and `TextBoxDebug` to make it easy to display info on the screen and such. `MessageHandler` uses `TextBox`.
 * `Dynamics` : Headers concerning rigid body physics.
   * `RigidBody.h` : A class that represents a rigid body. You attach a sprite to it if you want the sprite to be physically dynamic. The sprite also determines the "pixels" that make out the collison surface.
