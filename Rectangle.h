@@ -17,6 +17,14 @@ namespace ttl
     int c = 0;
     int r_len = 0; // #NOTE: Downwards height!
     int c_len = 0;
+    
+    void clear()
+    {
+      r = 0;
+      c = 0;
+      r_len = 0;
+      c_len = 0;
+    }
   
     bool is_inside(int rr, int cc) const
     {
