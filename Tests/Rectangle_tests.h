@@ -29,6 +29,12 @@ namespace ttl
       assert(rec.r_len == 0);
       assert(rec.c_len == 0);
       
+      rec.clear();
+      assert(rec.r == 0);
+      assert(rec.c == 0);
+      assert(rec.r_len == 0);
+      assert(rec.c_len == 0);
+      
       assert(!rec.is_inside(0, 0));
       assert(!rec.is_inside(1, 0));
       assert(!rec.is_inside(0, 1));
@@ -182,6 +188,13 @@ namespace ttl
       assert(rec.c == +1);
       assert(rec.r_len == 2);
       assert(rec.c_len == 1);
+      
+      rec.clear();
+      assert(rec.r == 0);
+      assert(rec.c == 0);
+      assert(rec.r_len == 0);
+      assert(rec.c_len == 0);
+      rec = { -1, +1, 2, 1};
       
       assert(!rec.is_inside(0, 0));
       assert(!rec.is_inside(1, 0));
