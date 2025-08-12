@@ -152,6 +152,11 @@ namespace ttl
       return find_location_offs(pos.r, pos.c, top_offs, bottom_offs, left_offs, right_offs);
     }
     
+    Rectangle extrude(int offs)
+    {
+      return { r - offs, c - offs, r_len + 2*offs, c_len + 2*offs };
+    }
+    
     bool is_empty() const
     {
       return r_len == 0 && c_len == 0;
