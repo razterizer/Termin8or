@@ -310,6 +310,21 @@ namespace ttl
       assert(rec.find_location_offs(pt4, 0, +1, +1, +1) == BBLocation::OutsideLeft);
       assert(rec.find_location_offs(pt4, -1, 0, -1, 0) == BBLocation::None); // rec:[-1..0, 1] -> [0, .], pt4:[0, -1]
       
+      {
+        auto rec2 = rec.extrude(1);
+        assert(rec2.r == -2);
+        assert(rec2.c == 0);
+        assert(rec2.r_len = 4);
+        assert(rec2.c_len = 3);
+      }
+      {
+        auto rec2 = rec.extrude(-1);
+        assert(rec2.r == 0);
+        assert(rec2.c == 2);
+        assert(rec2.r_len == 0);
+        assert(rec2.c_len == -1);
+      }
+      
       assert(!rec.is_empty());
       assert(!rec.is_inverted());
       assert(!rec.is_collapsed());
