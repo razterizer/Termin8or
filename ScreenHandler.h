@@ -346,6 +346,19 @@ public:
       }
     }
   }
+  
+  std::vector<std::string> get_screen_buffer_chars() const
+  {
+    std::vector<std::string> ret(NR);
+    for (int r = 0; r < NR; ++r)
+    {
+      auto& line = ret[r];
+      line.resize(NC);
+      for (int c = 0; c < NC; ++c)
+        line[c] = screen_buffer[r][c];
+    }
+    return ret;
+  }
 
   void print_screen_buffer_chars() const
   {
