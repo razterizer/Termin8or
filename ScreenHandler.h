@@ -135,6 +135,16 @@ public:
     ordered_texts.clear();
   }
   
+  void write_buffer(const std::string& str, const RC& pos, const styles::Style& style)
+  {
+    write_buffer(str, pos.r, pos.c, style.fg_color, style.bg_color);
+  }
+  
+  void write_buffer(const std::string& str, const RC& pos, Color fg_color, Color bg_color = Color::Transparent)
+  {
+    write_buffer(str, pos.r, pos.c, fg_color, bg_color);
+  }
+  
   void write_buffer(const std::string& str, int r, int c, const styles::Style& style)
   {
     write_buffer(str, r, c, style.fg_color, style.bg_color);
