@@ -6,6 +6,7 @@
 //
 
 #pragma once
+#include "RC.h"
 #include <Core/StringBox.h>
 
 #define PARAM(var) #var, &var
@@ -52,6 +53,7 @@ namespace ui
     size_t N = 0;
     size_t len_max = 0;
     std::vector<styles::Style> line_styles;
+    std::vector<std::pair<RC, styles::Style>> override_textel_styles;
     
     void init()
     {
@@ -84,10 +86,13 @@ namespace ui
       return sb.empty();
     }
     
-    void set_text(const std::vector<std::string>& text_lines, const std::vector<styles::Style>& styles = {})
+    void set_text(const std::vector<std::string>& text_lines,
+                  const std::vector<styles::Style>& styles = {},
+                  const std::vector<std::pair<RC, styles::Style>>& override_styles = {})
     {
       sb = str::StringBox { text_lines };
       line_styles = styles;
+      override_textel_styles = override_styles;
       init();
       if (text_lines.size() != line_styles.size())
         line_styles.clear();
@@ -96,6 +101,7 @@ namespace ui
     void set_text(const std::string& text)
     {
       sb = str::StringBox { text };
+      override_textel_styles.clear();
       init();
     }
     
@@ -104,6 +110,7 @@ namespace ui
       sb = str::StringBox { text };
       line_styles.clear();
       line_styles.emplace_back(style);
+      override_textel_styles.clear();
       init();
     }
     
@@ -135,6 +142,11 @@ namespace ui
       int box_padding_lr = args.base.box_padding_lr;
       std::optional<styles::Style> box_outline_style = args.base.box_outline_style;
       drawing::OutlineType outline_type = args.base.outline_type;
+      for (const auto& rc_style : override_textel_styles)
+        if (rc_style.first.r < N && rc_style.first.c < len_max)
+          sh.write_buffer(std::string(1, sb[rc_style.first.r][rc_style.first.c]),
+                          pos.r + rc_style.first.r, pos.c + rc_style.first.c,
+                          rc_style.second);
       for (size_t l_idx = 0; l_idx < N; ++l_idx)
         sh.write_buffer(sb[l_idx], pos.r + static_cast<int>(l_idx), pos.c, line_styles.empty() ? box_style : line_styles[l_idx]);
       if (draw_box_outline)
