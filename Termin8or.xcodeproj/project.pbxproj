@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		073096BD2E21135A0090584B /* Logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 073096BC2E2113540090584B /* Logging.h */; };
+		0744BF482E5B6B87007FDD90 /* KeyboardEnums.h in Headers */ = {isa = PBXBuildFile; fileRef = 0744BF472E5B6B7E007FDD90 /* KeyboardEnums.h */; };
 		075D43042E365FC4005DD356 /* StringConversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 075D43032E365FB7005DD356 /* StringConversion.h */; };
 		07A763112B555BE100705D31 /* ParticleSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 07A763102B555BE100705D31 /* ParticleSystem.h */; };
 /* End PBXBuildFile section */
@@ -33,6 +34,7 @@
 		073096BC2E2113540090584B /* Logging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		0739D9BF2BA2229100964E96 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		0739D9C02BA2229100964E96 /* LICENSE_FIGlet */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE_FIGlet; sourceTree = "<group>"; };
+		0744BF472E5B6B7E007FDD90 /* KeyboardEnums.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KeyboardEnums.h; sourceTree = "<group>"; };
 		075C651A2C3BFFF500B15451 /* UI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UI.h; sourceTree = "<group>"; };
 		075D43032E365FB7005DD356 /* StringConversion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StringConversion.h; sourceTree = "<group>"; };
 		0760B6F02B9CEABC0032CACD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -94,6 +96,7 @@
 				07C2A7832C24910300869A56 /* Color.h */,
 				0709B9B22C8631E100A43834 /* Gradient.h */,
 				071CC3DD290485FD007B4B98 /* LineData.h */,
+				0744BF472E5B6B7E007FDD90 /* KeyboardEnums.h */,
 				071CC3DF29048851007B4B98 /* Keyboard.h */,
 				073096BC2E2113540090584B /* Logging.h */,
 				07A763102B555BE100705D31 /* ParticleSystem.h */,
@@ -175,6 +178,7 @@
 			files = (
 				073096BD2E21135A0090584B /* Logging.h in Headers */,
 				075D43042E365FC4005DD356 /* StringConversion.h in Headers */,
+				0744BF482E5B6B87007FDD90 /* KeyboardEnums.h in Headers */,
 				07A763112B555BE100705D31 /* ParticleSystem.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -210,6 +214,7 @@
 				TargetAttributes = {
 					071CC3C9290465B3007B4B98 = {
 						CreatedOnToolsVersion = 13.2.1;
+						LastSwiftMigration = 1640;
 					};
 				};
 			};
@@ -370,6 +375,8 @@
 				EXECUTABLE_PREFIX = lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -386,6 +393,7 @@
 				EXECUTABLE_PREFIX = lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
