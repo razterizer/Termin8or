@@ -1,4 +1,5 @@
 #pragma once
+#include "KeyboardEnums.h"
 #ifdef _WIN32
 #define NOMINMAX // Should fix the std::min()/max() and std::numeric_limits<T>::min()/max() compilation problems
 #include <windows.h>
@@ -15,19 +16,6 @@
 
 namespace keyboard
 {
-
-  enum class SpecialKey
-  {
-    None,
-    Left,
-    Right,
-    Down,
-    Up,
-    Enter,
-    Tab,
-    Backspace,
-    Escape
-  };
   
   using KeyPressData = std::optional<std::variant<SpecialKey, char>>;
   
