@@ -160,6 +160,10 @@ namespace color
     Color::DarkMagenta,
   };
   
+  // #NOTE: these color vectors are to be compared with each other, line by line.
+  // These are not absolute categories! E.g. In colors_dark there is LightGray,
+  //   but it is only there because it is darker than the corresponding White color
+  //   in the colors_bright vector.
   std::vector<Color> colors_bright
   {
     Color::White,
