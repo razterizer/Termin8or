@@ -221,6 +221,120 @@ namespace color
     return Color::Default;
   }
   
+  std::optional<bool> is_bright(Color color, bool perceived = false)
+  {
+    if (perceived)
+    {
+#ifndef _WIN32
+      switch (color)
+      {
+        case Color::DarkGreen: return true;
+        case Color::DarkYellow: return true;
+        case Color::DarkCyan: return true;
+        case Color::Red: return false;
+        case Color::Blue: return false;
+        default:
+          break;
+      }
+#endif
+    }
+    switch (color)
+    {
+      case Color::Transparent:
+      case Color::Transparent2:
+      case Color::Default:
+        return std::nullopt;
+      case Color::Black:
+      case Color::DarkRed:
+      case Color::DarkGreen:
+      case Color::DarkYellow:
+      case Color::DarkBlue:
+      case Color::DarkMagenta:
+      case Color::DarkCyan:
+        return false;
+      case Color::LightGray: return true;
+      case Color::DarkGray: return false;
+      case Color::Red:
+      case Color::Green:
+      case Color::Yellow:
+      case Color::Blue:
+      case Color::Magenta:
+      case Color::Cyan:
+      case Color::White:
+        return true;
+    }
+  }
+  
+  std::optional<bool> is_dark(Color color, bool perceived = false)
+  {
+    if (perceived)
+    {
+#ifndef _WIN32
+      switch (color)
+      {
+        case Color::DarkGreen: return false;
+        case Color::DarkYellow: return false;
+        case Color::DarkCyan: return false;
+        case Color::Red: return true;
+        case Color::Blue: return true;
+        default:
+          break;
+      }
+#endif
+    }
+    switch (color)
+    {
+      case Color::Transparent:
+      case Color::Transparent2:
+      case Color::Default:
+        return std::nullopt;
+      case Color::Black:
+      case Color::DarkRed:
+      case Color::DarkGreen:
+      case Color::DarkYellow:
+      case Color::DarkBlue:
+      case Color::DarkMagenta:
+      case Color::DarkCyan:
+        return true;
+      case Color::LightGray: return false;
+      case Color::DarkGray: return true;
+      case Color::Red:
+      case Color::Green:
+      case Color::Yellow:
+      case Color::Blue:
+      case Color::Magenta:
+      case Color::Cyan:
+      case Color::White:
+        return false;
+    }
+  }
+  
+  Color get_contrast_color(Color color)
+  {
+    switch (color)
+    {
+      case Color::Transparent: return Color::Transparent;
+      case Color::Transparent2: return Color::Transparent2;
+      case Color::Default: return Color::Default;
+      case Color::Black: return Color::White;
+      case Color::DarkRed: return Color::Cyan;
+      case Color::DarkGreen: return Color::Magenta;
+      case Color::DarkYellow: return Color::Blue;
+      case Color::DarkBlue: return Color::Yellow;
+      case Color::DarkMagenta: return Color::Green;
+      case Color::DarkCyan: return Color::Red;
+      case Color::LightGray: return Color::Black;
+      case Color::DarkGray: return Color::White;
+      case Color::Red: return Color::DarkCyan;
+      case Color::Green: return Color::DarkMagenta;
+      case Color::Yellow: return Color::DarkBlue;
+      case Color::Blue: return Color::DarkYellow;
+      case Color::Magenta: return Color::DarkGreen;
+      case Color::Cyan: return Color::DarkRed;
+      case Color::White: return Color::Black;
+    }
+  }
+  
   int get_color_value_win(Color color)
   {
     switch (color)
