@@ -737,9 +737,7 @@ namespace ui
     void draw(ScreenHandler<NR, NC>& sh, const TextBoxDrawingArgsPos& args, int anim_ctr)
     {
       auto pos = args.pos;
-            
-      //sh.write_buffer("*", pos.r, pos.c, Color::Green);
-      
+                  
       button_group.draw(sh, { pos.r + static_cast<int>(N) + 1, pos.c }, static_cast<int>(len_max));
       
       for (const auto& tfp : text_fields)
