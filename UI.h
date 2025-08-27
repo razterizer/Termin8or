@@ -565,9 +565,7 @@ namespace ui
       int box_padding_lr = args.base.box_padding_lr;
       std::optional<styles::Style> box_outline_style = args.base.box_outline_style;
       drawing::OutlineType outline_type = args.base.outline_type;
-      
-      //sh.write_buffer("*", pos.r, pos.c, Color::Green);
-      
+            
       for (const auto& rc_style : override_textel_styles)
         if (rc_style.first.r < N && rc_style.first.c < len_max)
           sh.write_buffer(std::string(1, sb[rc_style.first.r][rc_style.first.c]),
