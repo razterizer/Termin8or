@@ -49,7 +49,7 @@ namespace ui
   // ////
   
   enum class ButtonFrame { None, Space, SquareBrackets, AngleBrackets, Braces, Parentheses, Pipes };
-  enum class TextFieldMode { Numeric, AlphaNumeric, Alphabetic };
+  enum class TextFieldMode { Numeric, AlphaNumeric, Alphabetic, All };
   enum class ColorPickerCursorColoring { BlackWhite, Contrast };
   
   class Widget
@@ -294,7 +294,8 @@ namespace ui
     {
       if (!is_selected())
         return;
-      
+      if (mode == TextFieldMode::All && curr_key != 0)
+        add_char(curr_key);
       if (str::is_digit(curr_key))
       {
         if (mode == TextFieldMode::Numeric || mode == TextFieldMode::AlphaNumeric)
