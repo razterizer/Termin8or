@@ -713,6 +713,13 @@ namespace ui
       return "";
     }
     
+    void set_text_field_input(int tab, const std::string& str)
+    {
+      auto it = stlutils::find_if(text_fields, [tab](const auto& tfp) { return tfp.second.get_tab_order() == tab; });
+      if (it != text_fields.end())
+        return it->second.set_input(str);
+    }
+    
     void clear_text_field_input(int tab)
     {
       auto it = stlutils::find_if(text_fields, [tab](const auto& tfp) { return tfp.second.get_tab_order() == tab; });
