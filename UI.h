@@ -614,6 +614,7 @@ namespace ui
   
   class Dialog : public TextBox
   {
+    std::vector<std::tuple<RC, styles::Style, char>> override_textels_pre;
     ButtonGroup button_group; // Buttons have their own reserved row two rows down.
     std::vector<std::pair<RC, TextField>> text_fields;
     std::vector<std::pair<RC, ColorPicker>> color_pickers;
@@ -652,6 +653,22 @@ namespace ui
       for (auto& cpp : color_pickers)
         if (cpp.second.try_tab_select(tab))
           return;
+    }
+    
+    void set_textel_pre(const RC& local_pos, char ch, Color fg_color, Color bg_color)
+    {
+      //stlutils::emplace_back_if_not(override_textels_pre,
+      //  std::tuple<RC, styles::Style, char> { local_pos, { fg_color, bg_color }, ch},
+      //  [&local_pos](const auto& otp) { return std::get<0>(otp) == local_pos; });
+      auto it = stlutils::find_if(override_textels_pre,
+                  [&local_pos](const auto& otp) { return std::get<0>(otp) == local_pos; });
+      if (it != override_textels_pre.end())
+      {
+        std::get<1>(*it) = { fg_color, bg_color };
+        std::get<2>(*it) = ch;
+      }
+      else
+        override_textels_pre.emplace_back(local_pos, styles::Style { fg_color, bg_color }, ch);
     }
     
     void add_button(const Button& button)
@@ -754,6 +771,18 @@ namespace ui
     void draw(ScreenHandler<NR, NC>& sh, const TextBoxDrawingArgsPos& args, int anim_ctr)
     {
       auto pos = args.pos;
+      
+      for (const auto& ot : override_textels_pre)
+      {
+        const auto& tp = std::get<0>(ot);
+        if (math::in_range<int>(tp.r, 0, static_cast<int>(N), Range::ClosedOpen) &&
+            math::in_range<int>(tp.c, 0, static_cast<int>(len_max), Range::ClosedOpen))
+        {
+          sh.write_buffer(std::string(1, std::get<2>(ot)),
+                          pos.r + tp.r, pos.c + tp.c,
+                          std::get<1>(ot));
+        }
+      }
                   
       button_group.draw(sh, { pos.r + static_cast<int>(N) + 1, pos.c }, static_cast<int>(len_max));
       
