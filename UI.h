@@ -424,6 +424,14 @@ namespace ui
       return get_color(caret);
     }
     
+    void set_color(Color color)
+    {
+      int idx = static_cast<int>(color) - 1;
+      if (idx < 0)
+        return;
+      caret = idx;
+    }
+    
     void clear()
     {
       caret = 0;
