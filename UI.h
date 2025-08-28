@@ -322,7 +322,17 @@ namespace ui
       sh.write_buffer(input, pos, style.fg_color, style.bg_color);
     }
     
-    const std::string& get_input() const { return input; }
+    const std::string get_input() const
+    {
+      return input.substr(0, caret);
+    }
+    
+    void set_input(const std::string& str)
+    {
+      int len = std::min(input.length(), str.length());
+      input.replace(0, len, str.substr(0, len));
+      caret = len;
+    }
     
     void clear_input()
     {
