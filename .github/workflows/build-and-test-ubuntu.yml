@@ -30,6 +30,27 @@ jobs:
           ./build_examples.sh
         continue-on-error: false # Ensure errors are not bypassed
 
+  build-examples-with-locked-dependencies:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      # Step 2: Move to the parent directory and fetch dependencies
+      - name: Fetch dependencies
+        run: |
+          cd ..
+          ./Termin8or/fetch-dependencies.py Termin8or/dependencies -y
+      
+      # Step 3: Change to the correct directory and build
+      - name: Build
+        run: |
+          cd Examples
+          ./build_examples.sh
+        continue-on-error: false # Ensure errors are not bypassed
+
   build-unit-tests:
     runs-on: ubuntu-latest
     
