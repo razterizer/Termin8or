@@ -749,6 +749,13 @@ namespace ui
       return Color::Default;
     }
     
+    void set_color_picker_color(int tab, Color color)
+    {
+      auto it = stlutils::find_if(color_pickers, [tab](const auto& cpp) { return cpp.second.get_tab_order() == tab; });
+      if (it != color_pickers.end())
+        return it->second.set_color(color);
+    }
+    
     void reset_color_picker(int tab)
     {
       auto it = stlutils::find_if(color_pickers, [tab](const auto& cpp) { return cpp.second.get_tab_order() == tab; });
