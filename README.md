@@ -107,3 +107,39 @@ Debug-drawing the broad-phase (AABB BVH) and the narrow-phase (character/charact
   * `RigidBody.h` : A class that represents a rigid body. You attach a sprite to it if you want the sprite to be physically dynamic. The sprite also determines the "pixels" that make out the collison surface.
   * `DynamicsSystem.h` : A class that governs the dynamical motions of the rigid bodies that are created from it.
   * `CollisionHandler.h` : A class that governs collison detection and collison response between the rigid bodies created via the `DynamicsSystem` class. Broad-phase uses an AABB BVH and narrow-phase checks overlaps beteen sprite characters of a specified material index. Collision response uses an impulse equation as a function of the velocities of the two bodies and their collision normals.
+
+## Build & Run Instructions
+
+`Termin8or` only depends on [`Core`](https://github.com/razterizer/Core).
+
+There are two options when dealing with this repo dependency:
+
+### Repo Dependencies Option 1
+
+This method will ensure that you are running the latest stable version of the dependency `Core`.
+
+The script `fetch-dependencies.py` used for this was created by [Thibaut Buchert](https://github.com/thibautbuchert).
+
+You cd to the folder below the repo root folder of your `Termin8or` checkout and then run:
+
+```
+./Termin8or/fetch-dependencies.py Termin8or/dependencies
+```
+The folder structure should now look something like this, where Core and Termin8or are sibling folders:
+```
+<my_source_code_dir>/lib/Core/                   ; Core repo workspace/checkout goes here.
+<my_source_code_dir>/lib/Termin8or/              ; Termin8or repo workspace/checkout goes here.
+```
+
+### Repo Dependencies Option 2
+
+This method is more suitable for development as we're not necessarily working with a "locked" dependency but rather the latest version of the dependency.
+
+You need the following header-only library:
+* https://github.com/razterizer/Core
+
+Make sure the folder structure looks like this:
+```
+<my_source_code_dir>/lib/Core/                   ; Core repo workspace/checkout goes here.
+<my_source_code_dir>/lib/Termin8or/              ; Termin8or repo workspace/checkout goes here.
+```
