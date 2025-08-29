@@ -357,6 +357,7 @@ namespace ui
     int caret = 0;
     static constexpr int c_num_colors = 16; // 16
     // #FIXME: Add transparency (T2) support.
+    bool wrapping = false;
     
     Color get_color(int idx) const
     {
@@ -366,13 +367,14 @@ namespace ui
     }
     
   public:
-    ColorPicker(Color fg_sel, Color fg_sel_hilite, ColorPickerCursorColoring fg_cursor_coloring_scheme, int tab = 0, char sel_char = '*', char unsel_char = ' ', bool sel = false)
+    ColorPicker(Color fg_sel, Color fg_sel_hilite, ColorPickerCursorColoring fg_cursor_coloring_scheme, int tab = 0, bool cursor_wrapping = false, char sel_char = '*', char unsel_char = ' ', bool sel = false)
       : Widget(tab, sel)
       , fg_color_sel(fg_sel)
       , fg_color_sel_hilite(fg_sel_hilite)
       , fg_cursor_coloring(fg_cursor_coloring_scheme)
       , select_char(sel_char)
       , unselect_char(unsel_char)
+      , wrapping(cursor_wrapping)
     {
       field = str::rep_char(unselect_char, c_num_colors);
     }
@@ -386,13 +388,13 @@ namespace ui
       {
         caret--;
         if (caret < 0)
-          caret = 0;
+          caret = wrapping ? (c_num_colors - 1) : 0;
       }
       else if (curr_special_key == keyboard::SpecialKey::Right)
       {
         caret++;
         if (caret >= c_num_colors)
-          caret = c_num_colors - 1;
+          caret = wrapping ? 0 : c_num_colors - 1;
       }
     }
     
