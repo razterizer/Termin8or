@@ -329,7 +329,7 @@ namespace ui
     
     void set_input(const std::string& str)
     {
-      int len = std::min(input.length(), str.length());
+      auto len = std::min(input.length(), str.length());
       input.replace(0, len, str.substr(0, len));
       caret = len;
     }
