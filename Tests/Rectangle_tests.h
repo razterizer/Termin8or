@@ -314,8 +314,8 @@ namespace ttl
         auto rec2 = rec.extrude(1);
         assert(rec2.r == -2);
         assert(rec2.c == 0);
-        assert(rec2.r_len = 4);
-        assert(rec2.c_len = 3);
+        assert(rec2.r_len == 4);
+        assert(rec2.c_len == 3);
       }
       {
         auto rec2 = rec.extrude(-1);
