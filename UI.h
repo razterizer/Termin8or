@@ -331,7 +331,7 @@ namespace ui
     {
       auto len = std::min(input.length(), str.length());
       input.replace(0, len, str.substr(0, len));
-      caret = len;
+      caret = static_cast<int>(len);
     }
     
     void clear_input()
