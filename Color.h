@@ -338,7 +338,7 @@ namespace color
       case Color::White: return Color::Black;
     }
     assert(false && "Unhandled Color in get_contrast_color()");
-    return std::nullopt;
+    return Color::Default;
   }
   
   int get_color_value_win(Color color)
