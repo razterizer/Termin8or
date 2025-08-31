@@ -588,7 +588,7 @@ namespace ui
       drawing::OutlineType outline_type = args.base.outline_type;
             
       for (const auto& rc_style : override_textel_styles)
-        if (rc_style.first.r < N && rc_style.first.c < len_max)
+        if (rc_style.first.r < static_cast<int>(N) && rc_style.first.c < static_cast<int>(len_max))
           sh.write_buffer(std::string(1, sb[rc_style.first.r][rc_style.first.c]),
                           pos.r + rc_style.first.r, pos.c + rc_style.first.c,
                           rc_style.second);
