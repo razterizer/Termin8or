@@ -263,6 +263,8 @@ namespace color
       case Color::White:
         return true;
     }
+    assert(false && "Unhandled Color in is_bright()");
+    return std::nullopt;
   }
   
   std::optional<bool> is_dark(Color color, bool perceived = false)
@@ -307,6 +309,8 @@ namespace color
       case Color::White:
         return false;
     }
+    assert(false && "Unhandled Color in is_dark()");
+    return std::nullopt;
   }
   
   Color get_contrast_color(Color color)
@@ -333,6 +337,8 @@ namespace color
       case Color::Cyan: return Color::DarkRed;
       case Color::White: return Color::Black;
     }
+    assert(false && "Unhandled Color in get_contrast_color()");
+    return std::nullopt;
   }
   
   int get_color_value_win(Color color)
