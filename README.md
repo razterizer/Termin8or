@@ -144,3 +144,10 @@ Make sure the folder structure looks like this:
 <my_source_code_dir>/lib/Core/                   ; Core repo workspace/checkout goes here.
 <my_source_code_dir>/lib/Termin8or/              ; Termin8or repo workspace/checkout goes here.
 ```
+
+## How ScreenHandler Works
+
+The `ScreenHandler` uses `Text.h` for translation of text and color information to strings of escape sequences.
+You mainly update the screenbuffer by calling `ScreenHandler::write_buffer()` (non-static) for every string that has a fixed style (one fg color + one bg color).
+So a game or application typically calls `write_buffer()` many times in a single frame. It is important to note that you call it in reverse-painter's-algorithm order, which means you write to the buffer in the order of foreground to background,
+e.g. you write your playable character first and then end with scenery such as mountains etc. The reason for this is that every call to `write_buffer()` checks character by character (or tiles, or textels if you will) for already occupying characters before allowing any new characters/tiles/textels to be written into the buffer.
