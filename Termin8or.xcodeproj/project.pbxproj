@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		073096BD2E21135A0090584B /* Logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 073096BC2E2113540090584B /* Logging.h */; };
 		0744BF482E5B6B87007FDD90 /* KeyboardEnums.h in Headers */ = {isa = PBXBuildFile; fileRef = 0744BF472E5B6B7E007FDD90 /* KeyboardEnums.h */; };
+		0744BF4C2E664562007FDD90 /* ScreenScaling.h in Headers */ = {isa = PBXBuildFile; fileRef = 0744BF4B2E66454F007FDD90 /* ScreenScaling.h */; };
 		075D43042E365FC4005DD356 /* StringConversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 075D43032E365FB7005DD356 /* StringConversion.h */; };
 		07A763112B555BE100705D31 /* ParticleSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 07A763102B555BE100705D31 /* ParticleSystem.h */; };
 /* End PBXBuildFile section */
@@ -35,6 +36,7 @@
 		0739D9BF2BA2229100964E96 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		0739D9C02BA2229100964E96 /* LICENSE_FIGlet */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE_FIGlet; sourceTree = "<group>"; };
 		0744BF472E5B6B7E007FDD90 /* KeyboardEnums.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KeyboardEnums.h; sourceTree = "<group>"; };
+		0744BF4B2E66454F007FDD90 /* ScreenScaling.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenScaling.h; sourceTree = "<group>"; };
 		075C651A2C3BFFF500B15451 /* UI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UI.h; sourceTree = "<group>"; };
 		075D43032E365FB7005DD356 /* StringConversion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StringConversion.h; sourceTree = "<group>"; };
 		0760B6F02B9CEABC0032CACD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -105,6 +107,7 @@
 				075D43032E365FB7005DD356 /* StringConversion.h */,
 				070C60C82CCAA36B00BC7F51 /* AABB.h */,
 				071CC3D72904679E007B4B98 /* ScreenHandler.h */,
+				0744BF4B2E66454F007FDD90 /* ScreenScaling.h */,
 				07B91EF72CEAC36900449D7E /* Animation.h */,
 				07D007BE2CBD387200CCB5E7 /* SpriteHandler.h */,
 				07D007C72CC82CFD00CCB5E7 /* Dynamics */,
@@ -179,6 +182,7 @@
 				073096BD2E21135A0090584B /* Logging.h in Headers */,
 				075D43042E365FC4005DD356 /* StringConversion.h in Headers */,
 				0744BF482E5B6B87007FDD90 /* KeyboardEnums.h in Headers */,
+				0744BF4C2E664562007FDD90 /* ScreenScaling.h in Headers */,
 				07A763112B555BE100705D31 /* ParticleSystem.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
