@@ -14,7 +14,7 @@
 
 
 template<int NR, int NC>
-class ScreenHandler; // forward declare the class itself
+class ScreenHandler;
 
 namespace screen_scaling
 {
