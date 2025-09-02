@@ -16,10 +16,11 @@
 template<int NR, int NC>
 class ScreenHandler; // forward declare the class itself
 
-namespace screen_scaling {
-    template<int NRo, int NCo, int NRi, int NCi>
-    void resample(const ScreenHandler<NRi, NCi>& sh_src,
-                  ScreenHandler<NRo, NCo>& sh_dst);
+namespace screen_scaling
+{
+  template<int NRo, int NCo, int NRi, int NCi>
+  void resample(const ScreenHandler<NRi, NCi>& sh_src,
+                ScreenHandler<NRo, NCo>& sh_dst);
 }
 
 struct OrderedText
