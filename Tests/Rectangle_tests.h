@@ -10,11 +10,13 @@
 #include <iostream>
 #include <cassert>
 
-namespace ttl
+namespace rectangle
 {
 
   void unit_tests()
   {
+    using namespace t8;
+  
     RC pt0 { 0, 0 };
     RC pt1 { 1, 0 };
     RC pt2 { 0, 1 };

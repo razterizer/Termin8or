@@ -9,30 +9,33 @@
 #include <Core/Rand.h>
 #include <string>
 
-enum class Color
+namespace t8
 {
-  Transparent = -1,
-  Transparent2 = -2,
-  Default = 0,
-  Black,         //  1
-  DarkRed,       //  2
-  DarkGreen,     //  3
-  DarkYellow,    //  4
-  DarkBlue,      //  5
-  DarkMagenta,   //  6
-  DarkCyan,      //  7
-  LightGray,     //  8
-  DarkGray,      //  9
-  Red,           // 10
-  Green,         // 11
-  Yellow,        // 12
-  Blue,          // 13
-  Magenta,       // 14
-  Cyan,          // 15
-  White          // 16
-};
+  enum class Color
+  {
+    Transparent = -1,
+    Transparent2 = -2,
+    Default = 0,
+    Black,         //  1
+    DarkRed,       //  2
+    DarkGreen,     //  3
+    DarkYellow,    //  4
+    DarkBlue,      //  5
+    DarkMagenta,   //  6
+    DarkCyan,      //  7
+    LightGray,     //  8
+    DarkGray,      //  9
+    Red,           // 10
+    Green,         // 11
+    Yellow,        // 12
+    Blue,          // 13
+    Magenta,       // 14
+    Cyan,          // 15
+    White          // 16
+  };
+}
 
-namespace color
+namespace t8::color
 {
 
   Color string2color(const std::string& str)

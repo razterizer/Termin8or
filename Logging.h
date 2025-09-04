@@ -13,7 +13,7 @@
 
 enum class LogMode { None, Record, Replay };
 
-namespace logging
+namespace t8::log
 {
   std::ofstream rec_file;
   std::ifstream rep_file;
@@ -59,7 +59,7 @@ namespace logging
     }
   }
   
-  void update_log_stream(LogMode log_mode, keyboard::KeyPressDataPair& kpdp, keyboard::StreamKeyboard* keyboard, const int frame_count)
+  void update_log_stream(LogMode log_mode, input::KeyPressDataPair& kpdp, input::StreamKeyboard* keyboard, const int frame_count)
   {
     if (log_mode == LogMode::Replay)
     {
@@ -82,14 +82,14 @@ namespace logging
         else if (log_key_transient == "Space")
           kpdp.transient = ' ';
         else if (log_key_transient.size() > 1)
-          kpdp.transient = keyboard::string_to_special_key(log_key_transient);
+          kpdp.transient = input::string_to_special_key(log_key_transient);
           
         if (log_key_held.size() == 1)
           kpdp.held = log_key_held[0];
         else if (log_key_held == "Space")
           kpdp.held = ' ';
         else if (log_key_held.size() > 1)
-          kpdp.held = keyboard::string_to_special_key(log_key_held);
+          kpdp.held = input::string_to_special_key(log_key_held);
       }
       else
         log_finished = true;
@@ -101,12 +101,12 @@ namespace logging
       {
         rec_file << std::to_string(frame_count) << ' ';
         
-        auto special_key_transient = keyboard::get_special_key(kpdp.transient);
-        if (special_key_transient != keyboard::SpecialKey::None)
-          rec_file << keyboard::special_key_to_string(special_key_transient);
+        auto special_key_transient = input::get_special_key(kpdp.transient);
+        if (special_key_transient != input::SpecialKey::None)
+          rec_file << input::special_key_to_string(special_key_transient);
         else
         {
-          char char_key = keyboard::get_char_key(kpdp.transient);
+          char char_key = input::get_char_key(kpdp.transient);
           if (char_key == ' ')
             rec_file << "Space";
           else if (33 <= char_key && char_key <= 126)
@@ -117,12 +117,12 @@ namespace logging
         
         rec_file << ' ';
         
-        auto special_key_held = keyboard::get_special_key(kpdp.held);
-        if (special_key_held != keyboard::SpecialKey::None)
-          rec_file << keyboard::special_key_to_string(special_key_held);
+        auto special_key_held = input::get_special_key(kpdp.held);
+        if (special_key_held != input::SpecialKey::None)
+          rec_file << input::special_key_to_string(special_key_held);
         else
         {
-          char char_key = keyboard::get_char_key(kpdp.held);
+          char char_key = input::get_char_key(kpdp.held);
           if (char_key == ' ')
             rec_file << "Space";
           else if (33 <= char_key && char_key <= 126)

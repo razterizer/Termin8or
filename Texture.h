@@ -14,7 +14,7 @@
 #include <sstream>
 
 
-namespace drawing
+namespace t8::drawing
 {
 
   // size.r = 1, size.c = 1 yields a 1x1 texture.
@@ -25,8 +25,8 @@ namespace drawing
     Color bg_color = Color::Transparent2;
     int mat = 0;
     
-    styles::Style get_style() const { return { fg_color, bg_color }; }
-    void set_style(const styles::Style& style)
+    color::Style get_style() const { return { fg_color, bg_color }; }
+    void set_style(const color::Style& style)
     {
       fg_color = style.fg_color;
       bg_color = style.bg_color;
@@ -437,7 +437,7 @@ namespace drawing
     // r_len = 0, c_len = 0
     // +
     
-    Texture subset(const ttl::Rectangle& bb_subset, bool zero_area_is_one_char = false)
+    Texture subset(const Rectangle& bb_subset, bool zero_area_is_one_char = false)
     {
       auto bb = bb_subset; //
       if (zero_area_is_one_char)

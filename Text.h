@@ -34,142 +34,146 @@
 //
 // Reset : \033[0m
 
-class Text
+namespace t8::screen
 {
-
-  template<typename EnumType>
-  constexpr int to_int(EnumType e) const noexcept
-  {
-    return static_cast<int>(e);
-  }
-
-public:
-  Text()
-  {
-    std::ios_base::sync_with_stdio(false);
-  }
-
-  std::string get_color_string(Color text_color, Color bg_color = Color::Default) const
-  {
-    if (bg_color == Color::Transparent || bg_color == Color::Transparent2)
-      bg_color = Color::Default;
-    std::string fg = "\033[";
-    std::string bg = "\033[";
-    if (text_color == Color::Default)
-      fg += "39";
-    else if (Color::Default < text_color && text_color <= Color::LightGray)
-      fg += std::to_string(to_int(text_color) + 29);
-    else
-      fg += std::to_string(to_int(text_color) + 81);
-
-    if (bg_color == Color::Default)
-      bg += "49";
-    else if (Color::Default < bg_color && bg_color <= Color::LightGray)
-      bg += std::to_string(to_int(bg_color) + 39);
-    else
-      bg += std::to_string(to_int(bg_color) + 91);
-
-    fg += "m";
-    bg += "m";
-    return fg + bg;
-  }
   
-  
-  void set_color_win(Color text_color, Color bg_color = Color::Default) const
+  class Text
   {
-#ifdef _WIN32
-    int foreground = color::get_color_value_win(text_color);
-    if (foreground == -1)
-      foreground = color::get_color_value_win(Color::White);
-    int background = 16 * color::get_color_value_win(bg_color);
-    if (background == -1)
-      background = 16 * color::get_color_value_win(Color::Black);
-
-    int color = static_cast<int>(foreground) + static_cast<int>(background);
     
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
-#endif
-  }
-
-  void print(const std::string& text, Color text_color, Color bg_color = Color::Default) const
-  {
-#ifdef _WIN32
-    set_color_win(text_color, bg_color);
-    std::cout << text;
-#else
-    std::string output = get_color_string(text_color, bg_color) + text + "\033[0m";
-    //printf("%s", output.c_str());
-    std::cout << output;
-#endif
-  }
-
-  void print_line(const std::string& text, Color text_color, Color bg_color = Color::Default) const
-  {
-    print(text, text_color, bg_color);
-    //printf("\n");
-    std::cout << "\n";
-  }
-
-  void print_char(char c, Color text_color, Color bg_color = Color::Default) const
-  {
-#ifdef _WIN32
-    set_color_win(text_color, bg_color);
-    std::cout << c;
-#else
-    std::string output = get_color_string(text_color, bg_color) + c;
-    //printf("%s", output.c_str());
-    std::cout << output;
-#endif
-  }
-
-  void print_complex(const std::vector<std::tuple<char, Color, Color>>& text)
-  {
-    size_t n = text.size();
-    std::string output;
-#ifdef _WIN32
-    auto fg_color_prev = Color::Default;
-    auto bg_color_prev = Color::Default;
-    char c_prev = -1;
-#endif
-    for (size_t i = 0; i < n; ++i)
+    template<typename EnumType>
+    constexpr int to_int(EnumType e) const noexcept
     {
-      const auto& ti = text[i];
-      char c = std::get<0>(ti);
-      auto fg_color = std::get<1>(ti);
-      auto bg_color = std::get<2>(ti);
+      return static_cast<int>(e);
+    }
+    
+  public:
+    Text()
+    {
+      std::ios_base::sync_with_stdio(false);
+    }
+    
+    std::string get_color_string(Color text_color, Color bg_color = Color::Default) const
+    {
+      if (bg_color == Color::Transparent || bg_color == Color::Transparent2)
+        bg_color = Color::Default;
+      std::string fg = "\033[";
+      std::string bg = "\033[";
+      if (text_color == Color::Default)
+        fg += "39";
+      else if (Color::Default < text_color && text_color <= Color::LightGray)
+        fg += std::to_string(to_int(text_color) + 29);
+      else
+        fg += std::to_string(to_int(text_color) + 81);
+      
+      if (bg_color == Color::Default)
+        bg += "49";
+      else if (Color::Default < bg_color && bg_color <= Color::LightGray)
+        bg += std::to_string(to_int(bg_color) + 39);
+      else
+        bg += std::to_string(to_int(bg_color) + 91);
+      
+      fg += "m";
+      bg += "m";
+      return fg + bg;
+    }
+    
+    
+    void set_color_win(Color text_color, Color bg_color = Color::Default) const
+    {
 #ifdef _WIN32
-      if (c_prev != -1)
-        output += c_prev;
-      if (fg_color != fg_color_prev || bg_color != bg_color_prev)
-      {
-        set_color_win(fg_color_prev, bg_color_prev);
-        std::cout << output;
-        output = "";
-      }
-      c_prev = c;
-      fg_color_prev = fg_color;
-      bg_color_prev = bg_color;
-#else
-      auto col_str = get_color_string(fg_color, c == '\n' ? Color::Default : bg_color);
-      std::string char_str(1, c);
-      output += col_str + char_str;
+      int foreground = color::get_color_value_win(text_color);
+      if (foreground == -1)
+        foreground = color::get_color_value_win(Color::White);
+      int background = 16 * color::get_color_value_win(bg_color);
+      if (background == -1)
+        background = 16 * color::get_color_value_win(Color::Black);
+      
+      int color = static_cast<int>(foreground) + static_cast<int>(background);
+      
+      SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 #endif
     }
-#ifndef _WIN32
-    output += "\033[0m";
-    //printf("%s", output.c_str());
-    std::cout << output;
-#endif
-  }
-
-  void print_reset() const
-  {
+    
+    void print(const std::string& text, Color text_color, Color bg_color = Color::Default) const
+    {
 #ifdef _WIN32
-    set_color_win(Color::White, Color::Black);
+      set_color_win(text_color, bg_color);
+      std::cout << text;
 #else
-    //printf("%s", "\033[0m");
-    std::cout << "\033[0m";
+      std::string output = get_color_string(text_color, bg_color) + text + "\033[0m";
+      //printf("%s", output.c_str());
+      std::cout << output;
 #endif
-  }
-};
-
+    }
+    
+    void print_line(const std::string& text, Color text_color, Color bg_color = Color::Default) const
+    {
+      print(text, text_color, bg_color);
+      //printf("\n");
+      std::cout << "\n";
+    }
+    
+    void print_char(char c, Color text_color, Color bg_color = Color::Default) const
+    {
+#ifdef _WIN32
+      set_color_win(text_color, bg_color);
+      std::cout << c;
+#else
+      std::string output = get_color_string(text_color, bg_color) + c;
+      //printf("%s", output.c_str());
+      std::cout << output;
+#endif
+    }
+    
+    void print_complex(const std::vector<std::tuple<char, Color, Color>>& text)
+    {
+      size_t n = text.size();
+      std::string output;
+#ifdef _WIN32
+      auto fg_color_prev = Color::Default;
+      auto bg_color_prev = Color::Default;
+      char c_prev = -1;
+#endif
+      for (size_t i = 0; i < n; ++i)
+      {
+        const auto& ti = text[i];
+        char c = std::get<0>(ti);
+        auto fg_color = std::get<1>(ti);
+        auto bg_color = std::get<2>(ti);
+#ifdef _WIN32
+        if (c_prev != -1)
+          output += c_prev;
+        if (fg_color != fg_color_prev || bg_color != bg_color_prev)
+        {
+          set_color_win(fg_color_prev, bg_color_prev);
+          std::cout << output;
+          output = "";
+        }
+        c_prev = c;
+        fg_color_prev = fg_color;
+        bg_color_prev = bg_color;
+#else
+        auto col_str = get_color_string(fg_color, c == '\n' ? Color::Default : bg_color);
+        std::string char_str(1, c);
+        output += col_str + char_str;
+#endif
+      }
+#ifndef _WIN32
+      output += "\033[0m";
+      //printf("%s", output.c_str());
+      std::cout << output;
+#endif
+    }
+    
+    void print_reset() const
+    {
+#ifdef _WIN32
+      set_color_win(Color::White, Color::Black);
+#else
+      //printf("%s", "\033[0m");
+      std::cout << "\033[0m";
+#endif
+    }
+  };
+  
+}

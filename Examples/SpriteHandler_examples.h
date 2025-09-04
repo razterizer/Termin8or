@@ -21,16 +21,26 @@ bool draw_sprites = true;
 
 namespace sprite_handler
 {
+  template<int NR, int NC>
+  using ScreenHandler = t8::screen::ScreenHandler<NR, NC>;
+  using SpriteHandler = t8x::sprite::SpriteHandler;
+  using Sprite = t8x::sprite::Sprite;
+  using DynamicsSystem = t8x::physics::DynamicsSystem;
+  using CollisionHandler = t8x::physics::CollisionHandler;
+  using StreamKeyboard = t8::input::StreamKeyboard;
+  using KeyPressDataPair = t8::input::KeyPressDataPair;
+  using Rectangle = t8::Rectangle;
+  using Color = t8::Color;
 
   void example1()
   {
     ScreenHandler<20, 40> sh;
     SpriteHandler sprh;
-    keyboard::KeyPressDataPair kpdp;
-    auto keyboard = std::make_unique<keyboard::StreamKeyboard>();
+    KeyPressDataPair kpdp;
+    auto keyboard = std::make_unique<StreamKeyboard>();
     
-    dynamics::DynamicsSystem dyn_sys;
-    dynamics::CollisionHandler coll_handler;
+    DynamicsSystem dyn_sys;
+    CollisionHandler coll_handler;
     
     rnd::srand_time();
     
@@ -64,7 +74,7 @@ namespace sprite_handler
       1, 1, 1, 1, 1,
       0, 0, 0, 0, 0
     );
-    ttl::Rectangle bb0 { 3, 2, 1, 1 };
+    Rectangle bb0 { 3, 2, 1, 1 };
     sprite0->clone_frame(1, 0);
     sprite0->set_sprite_chars(1, bb0, '#');
     sprite0->set_sprite_fg_colors(1, bb0, Color::Yellow);
@@ -106,7 +116,7 @@ namespace sprite_handler
       0, 1, 0,
       1, 1, 1
     );
-    ttl::Rectangle bbL { 1, 0, 1, 1 }, bbR { 1, 2, 1, 1 };
+    Rectangle bbL { 1, 0, 1, 1 }, bbR { 1, 2, 1, 1 };
     sprite1->clone_frame(1, 0);
     sprite1->set_sprite_chars(1, bbL, '#');
     sprite1->set_sprite_chars(1, bbR, '#');
@@ -180,7 +190,7 @@ namespace sprite_handler
     //                        LET's GO !                        //
     // ///////////////////////////////////////////////////////////
         
-    begin_screen();
+    t8::screen::begin_screen();
     
     float dt = 0.01f;
     for (int i = -3; i < sh.num_rows(); ++i)
@@ -209,7 +219,7 @@ namespace sprite_handler
         
         if (use_dynamics_system)
           dyn_sys.update(anim_frame*dt*2.f, dt*2.f, anim_frame);
-        return_cursor();
+        t8::screen::return_cursor();
         sh.clear();
         if (dbg_draw_rigid_bodies)
           dyn_sys.draw_dbg(sh);
@@ -223,7 +233,7 @@ namespace sprite_handler
         Delay::sleep(0'400'000);
         
         kpdp = keyboard->readKey();
-        auto key = keyboard::get_char_key(kpdp.transient);
+        auto key = t8::input::get_char_key(kpdp.transient);
         auto lo_key = str::to_lower(key);
         if (lo_key == 'q' || sprite0->pos.r > sh.num_rows())
           goto quit;
@@ -238,11 +248,11 @@ quit:
   {
     ScreenHandler<20, 40> sh;
     SpriteHandler sprh;
-    keyboard::KeyPressDataPair kpdp;
-    auto keyboard = std::make_unique<keyboard::StreamKeyboard>();
+    KeyPressDataPair kpdp;
+    auto keyboard = std::make_unique<StreamKeyboard>();
     
-    dynamics::DynamicsSystem dyn_sys;
-    dynamics::CollisionHandler coll_handler;
+    DynamicsSystem dyn_sys;
+    CollisionHandler coll_handler;
     
     rnd::srand_time();
     
@@ -278,7 +288,7 @@ quit:
     const int delay = 20'000;
     const float dt = 1e-6f * delay;
     
-    begin_screen();
+    t8::screen::begin_screen();
     
     benchmark::tic();
     
@@ -300,7 +310,7 @@ quit:
         sprite1->set_rotation(-ang*0.8f);
       }
       
-      return_cursor();
+      t8::screen::return_cursor();
       sh.clear();
       if (dbg_draw_rigid_bodies)
         dyn_sys.draw_dbg(sh);
@@ -318,7 +328,7 @@ quit:
       Delay::sleep(delay);
       
       kpdp = keyboard->readKey();
-      auto key = keyboard::get_char_key(kpdp.transient);
+      auto key = t8::input::get_char_key(kpdp.transient);
       auto lo_key = str::to_lower(key);
       if (lo_key == 'q')
         goto quit;

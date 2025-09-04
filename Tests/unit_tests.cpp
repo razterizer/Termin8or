@@ -12,7 +12,7 @@
 int main(int argc, char** argv)
 {
   std::cout << "### Rectangle Tests ###" << std::endl;
-  ttl::unit_tests();
+  rectangle::unit_tests();
   
   return 0;
 }

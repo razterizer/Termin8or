@@ -15,8 +15,11 @@
 using namespace utils::literals;
 
 
-namespace dynamics
+namespace t8x::physics
 {
+  template<int NR, int NC>
+  using ScreenHandler = t8::screen::ScreenHandler<NR, NC>;
+  
   
   struct BVH_Node
   {
@@ -130,9 +133,9 @@ namespace dynamics
       if (level >= start_level)
       {
         auto rec = aabb.to_rectangle();
-        auto color = color::colors_hue_light[static_cast<size_t>(level) % color::colors_hue_light.size()];
+        auto color = t8::color::colors_hue_light[static_cast<size_t>(level) % t8::color::colors_hue_light.size()];
         if (order == 1)
-          color = color::shade_color(color, color::ShadeType::Dark);
+          color = t8::color::shade_color(color, t8::color::ShadeType::Dark);
         drawing::draw_box_outline(sh, rec, drawing::OutlineType::Line, { color, Color::Transparent2 });
       }
       for (const auto& ch : children)
@@ -408,7 +411,7 @@ namespace dynamics
     {
       for (const auto& pt : isect_world_positions)
       {
-        auto rc = to_RC_round(pt.world_pos);
+        auto rc = t8::to_RC_round(pt.world_pos);
         sh.write_buffer("X", rc.r, rc.c, coll_fg_color);
       }
     }
@@ -477,8 +480,8 @@ namespace dynamics
           auto vel_B = rb_B->calc_velocity_at(contact_world_B);
           Vec2 relative_velocity = vel_B - vel_A;
           
-          auto normal_A = rb_A->fetch_surface_normal(to_RC_round(contact_local_A));
-          auto normal_B = rb_B->fetch_surface_normal(to_RC_round(contact_local_B));
+          auto normal_A = rb_A->fetch_surface_normal(t8::to_RC_round(contact_local_A));
+          auto normal_B = rb_B->fetch_surface_normal(t8::to_RC_round(contact_local_B));
           auto collision_normal = math::normalize(normal_A - normal_B);
           
           // Calculate relative velocity in the direction of the normal.

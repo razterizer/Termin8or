@@ -24,8 +24,13 @@
 //#define DEBUG_PRINT
 
 
-namespace ASCII_Fonts
+namespace t8x::fonts
 {
+  using Color = t8::Color;
+  using Style = t8::color::Style;
+  template<int NR, int NC>
+  using ScreenHandler = t8::screen::ScreenHandler<NR, NC>;
+  
 
   enum class Font
   {
@@ -36,12 +41,12 @@ namespace ASCII_Fonts
 
   struct ColorScheme
   {
-    styles::Style internal { Color::White, Color::DarkGray };
-    styles::Style side_h { Color::White, Color::Black };
-    styles::Style side_v { Color::LightGray, Color::White };
-    styles::Style dot_internal { Color::White, Color::Red };
-    styles::Style dot_side_h { Color::White, Color::DarkRed };
-    styles::Style dot_side_v { Color::LightGray, Color::White };
+    Style internal { Color::White, Color::DarkGray };
+    Style side_h { Color::White, Color::Black };
+    Style side_v { Color::LightGray, Color::White };
+    Style dot_internal { Color::White, Color::Red };
+    Style dot_side_h { Color::White, Color::DarkRed };
+    Style dot_side_v { Color::LightGray, Color::White };
   };
 
   struct FontPiece
@@ -396,7 +401,7 @@ namespace ASCII_Fonts
     {
       for (const auto& piece : curr_char->font_pieces)
       {
-        OrderedText t;
+        t8::screen::OrderedText t;
         t.str = piece.part;
         t.r = r + piece.r;
         t.c = c + piece.c;

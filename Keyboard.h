@@ -14,7 +14,7 @@
 #include <Core/Delay.h>
 
 
-namespace keyboard
+namespace t8::input
 {
   
   using KeyPressData = std::optional<std::variant<SpecialKey, char>>;

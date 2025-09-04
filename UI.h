@@ -8,25 +8,34 @@
 #pragma once
 #include "RC.h"
 #include "KeyboardEnums.h"
+#include "Drawing.h"
 #include <Core/StringBox.h>
 #include <Core/Utils.h>
 
 #define PARAM(var) #var, &var
 
-namespace ui
+namespace t8x::ui
 {
+  using Style = t8::color::Style;
+  using ButtonStyle = t8::color::ButtonStyle;
+  using PromptStyle = t8::color::PromptStyle;
+  using RC = t8::RC;
+  template<int NR, int NC>
+  using ScreenHandler = t8::screen::ScreenHandler<NR, NC>;
+  using SpecialKey = t8::input::SpecialKey;
+  
 
   enum class VerticalAlignment { TOP, CENTER, BOTTOM };
   enum class HorizontalAlignment { LEFT, CENTER, RIGHT };
   
   struct TextBoxDrawingArgs
   {
-    styles::Style box_style;
+    Style box_style;
     bool draw_box_outline = true;
     bool draw_box_bkg = true;
     int box_padding_ud = 0;
     int box_padding_lr = 0;
-    std::optional<styles::Style> box_outline_style = std::nullopt;
+    std::optional<Style> box_outline_style = std::nullopt;
     drawing::OutlineType outline_type = drawing::OutlineType::Line;
   };
   
@@ -83,11 +92,11 @@ namespace ui
   class Button : public Widget
   {
     std::string text;
-    styles::ButtonStyle style;
+    ButtonStyle style;
     ButtonFrame frame = ButtonFrame::SquareBrackets;
     
   public:
-    Button(const std::string& txt, styles::ButtonStyle btn_style, ButtonFrame btn_frame, int tab = 0, bool sel = false)
+    Button(const std::string& txt, ButtonStyle btn_style, ButtonFrame btn_frame, int tab = 0, bool sel = false)
       : Widget(tab, sel)
       , text(txt)
       , style(btn_style)
@@ -256,7 +265,7 @@ namespace ui
   {
     int field_width = 0;
     TextFieldMode mode = TextFieldMode::AlphaNumeric;
-    styles::PromptStyle style;
+    PromptStyle style;
     char clear_char;
     std::string input;
     int caret = 0;
@@ -280,7 +289,7 @@ namespace ui
     }
     
   public:
-    TextField(int width, TextFieldMode tf_mode, styles::PromptStyle tf_style, int tab = 0, char clear_ch = '_', bool sel = false)
+    TextField(int width, TextFieldMode tf_mode, PromptStyle tf_style, int tab = 0, char clear_ch = '_', bool sel = false)
       : Widget(tab, sel)
       , field_width(width)
       , mode(tf_mode)
@@ -290,7 +299,7 @@ namespace ui
       input = str::rep_char(clear_ch, width);
     }
   
-    void update(char curr_key, keyboard::SpecialKey curr_special_key)
+    void update(char curr_key, SpecialKey curr_special_key)
     {
       if (!is_selected())
         return;
@@ -306,7 +315,7 @@ namespace ui
         if (mode == TextFieldMode::Alphabetic || mode == TextFieldMode::AlphaNumeric)
           add_char(curr_key);
       }
-      else if (curr_special_key == keyboard::SpecialKey::Backspace)
+      else if (curr_special_key == SpecialKey::Backspace)
         backspace();
     }
     
@@ -379,18 +388,18 @@ namespace ui
       field = str::rep_char(unselect_char, c_num_colors);
     }
     
-    void update(keyboard::SpecialKey curr_special_key)
+    void update(SpecialKey curr_special_key)
     {
       if (!is_selected())
         return;
       
-      if (curr_special_key == keyboard::SpecialKey::Left)
+      if (curr_special_key == SpecialKey::Left)
       {
         caret--;
         if (caret < 0)
           caret = wrapping ? (c_num_colors - 1) : 0;
       }
-      else if (curr_special_key == keyboard::SpecialKey::Right)
+      else if (curr_special_key == SpecialKey::Right)
       {
         caret++;
         if (caret >= c_num_colors)
@@ -408,10 +417,10 @@ namespace ui
         switch (fg_cursor_coloring)
         {
           case ColorPickerCursorColoring::BlackWhite:
-            caret_fg_color = color::is_dark(caret_bg_color, true).value_or(false) ? Color::White : Color::Black;
+            caret_fg_color = t8::color::is_dark(caret_bg_color, true).value_or(false) ? Color::White : Color::Black;
             break;
           case ColorPickerCursorColoring::Contrast:
-            caret_fg_color = color::get_contrast_color(caret_bg_color);
+            caret_fg_color = t8::color::get_contrast_color(caret_bg_color);
             break;
         }
       }
@@ -446,8 +455,8 @@ namespace ui
     str::StringBox sb;
     size_t N = 0;
     size_t len_max = 0;
-    std::vector<styles::Style> line_styles;
-    std::vector<std::pair<RC, styles::Style>> override_textel_styles;
+    std::vector<Style> line_styles;
+    std::vector<std::pair<RC, Style>> override_textel_styles;
     
     void init()
     {
@@ -511,7 +520,7 @@ namespace ui
     {
       init();
     }
-    TextBox(const std::vector<std::string>& text_lines, const std::vector<styles::Style>& styles = {})
+    TextBox(const std::vector<std::string>& text_lines, const std::vector<Style>& styles = {})
       : sb(text_lines)
       , line_styles(styles)
     {
@@ -531,8 +540,8 @@ namespace ui
     }
     
     void set_text(const std::vector<std::string>& text_lines,
-                  const std::vector<styles::Style>& styles = {},
-                  const std::vector<std::pair<RC, styles::Style>>& override_styles = {})
+                  const std::vector<Style>& styles = {},
+                  const std::vector<std::pair<RC, Style>>& override_styles = {})
     {
       sb = str::StringBox { text_lines };
       line_styles = styles;
@@ -549,7 +558,7 @@ namespace ui
       init();
     }
     
-    void set_text(const std::string& text, styles::Style style)
+    void set_text(const std::string& text, Style style)
     {
       sb = str::StringBox { text };
       line_styles.clear();
@@ -579,12 +588,12 @@ namespace ui
     void draw(ScreenHandler<NR, NC>& sh, const TextBoxDrawingArgsPos& args)
     {
       auto pos = args.pos;
-      const styles::Style& box_style = args.base.box_style;
+      const Style& box_style = args.base.box_style;
       bool draw_box_outline = args.base.draw_box_outline;
       bool draw_box_bkg = args.base.draw_box_bkg;
       int box_padding_ud = args.base.box_padding_ud;
       int box_padding_lr = args.base.box_padding_lr;
-      std::optional<styles::Style> box_outline_style = args.base.box_outline_style;
+      std::optional<Style> box_outline_style = args.base.box_outline_style;
       drawing::OutlineType outline_type = args.base.outline_type;
             
       for (const auto& rc_style : override_textel_styles)
@@ -616,7 +625,7 @@ namespace ui
   
   class Dialog : public TextBox
   {
-    std::vector<std::tuple<RC, styles::Style, char>> override_textels_pre;
+    std::vector<std::tuple<RC, Style, char>> override_textels_pre;
     ButtonGroup button_group; // Buttons have their own reserved row two rows down.
     std::vector<std::pair<RC, TextField>> text_fields;
     std::vector<std::pair<RC, ColorPicker>> color_pickers;
@@ -630,7 +639,7 @@ namespace ui
     Dialog(size_t num_lines)
       : TextBox(num_lines)
     {}
-    Dialog(const std::vector<std::string>& text_lines, const std::vector<styles::Style>& styles = {})
+    Dialog(const std::vector<std::string>& text_lines, const std::vector<Style>& styles = {})
       : TextBox(text_lines, styles)
     {}
     Dialog(const std::string& text)
@@ -660,7 +669,7 @@ namespace ui
     void set_textel_pre(const RC& local_pos, char ch, Color fg_color, Color bg_color)
     {
       //stlutils::emplace_back_if_not(override_textels_pre,
-      //  std::tuple<RC, styles::Style, char> { local_pos, { fg_color, bg_color }, ch},
+      //  std::tuple<RC, Style, char> { local_pos, { fg_color, bg_color }, ch},
       //  [&local_pos](const auto& otp) { return std::get<0>(otp) == local_pos; });
       auto it = stlutils::find_if(override_textels_pre,
                   [&local_pos](const auto& otp) { return std::get<0>(otp) == local_pos; });
@@ -670,7 +679,7 @@ namespace ui
         std::get<2>(*it) = ch;
       }
       else
-        override_textels_pre.emplace_back(local_pos, styles::Style { fg_color, bg_color }, ch);
+        override_textels_pre.emplace_back(local_pos, Style { fg_color, bg_color }, ch);
     }
     
     void add_button(const Button& button)
@@ -765,16 +774,16 @@ namespace ui
         return it->second.clear();
     }
     
-    void update(char curr_key, keyboard::SpecialKey curr_special_key)
+    void update(char curr_key, SpecialKey curr_special_key)
     {
-      if (curr_special_key == keyboard::SpecialKey::Tab)
+      if (curr_special_key == SpecialKey::Tab)
       {
         tab_idx = (tab_idx + 1) % (max_tab_idx + 1);
         set_tab_order(tab_idx);
       }
-      else if (curr_special_key == keyboard::SpecialKey::Left)
+      else if (curr_special_key == SpecialKey::Left)
         dec_button_selection();
-      else if (curr_special_key == keyboard::SpecialKey::Right)
+      else if (curr_special_key == SpecialKey::Right)
         inc_button_selection();
 
       for (auto& tfp : text_fields)

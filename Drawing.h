@@ -4,9 +4,20 @@
 #include "Styles.h"
 #include "Texture.h"
 
-// Bresenham Algorithm.
-namespace bresenham
+ 
+namespace t8x::drawing
 {
+  using RC = t8::RC;
+  using Rectangle = t8::Rectangle;
+  using Color = t8::Color;
+  using Style = t8::color::Style;
+  using ShadeType = t8::color::ShadeType;
+  using Texture = t8::drawing::Texture;
+  template<int NR, int NC>
+  using ScreenHandler = t8::screen::ScreenHandler<NR, NC>;
+  
+  
+  // Bresenham Algorithm.
   void plot_line_low(float r0, float c0, float r1, float c1, std::vector<RC>& points)
   {
     auto dr = r1 - r0;
@@ -106,12 +117,8 @@ namespace bresenham
     for (const auto& pt : points)
       sh.write_buffer(str, pt.r, pt.c, fg_color, bg_color);
   }
-}
-
-// ////////////////////////////////
- 
-namespace drawing
-{
+  
+  // ////////////////////////////////
 
   enum class OutlineType { Line, Masonry, Masonry2, Masonry3, Masonry4, Temple, Hash, NUM_ITEMS };
   enum class SolarDirection
@@ -126,7 +133,7 @@ namespace drawing
   void draw_box_outline(ScreenHandler<NR, NC>& sh,
                         int r, int c, int len_r, int len_c,
                         OutlineType outline_type,
-                        const styles::Style& outline_style = { Color::Default, Color::Transparent2 },
+                        const Style& outline_style = { Color::Default, Color::Transparent2 },
                         const bool_vector& light_field = {})
   {
     // len_r = 4, len_c = 3
@@ -217,10 +224,10 @@ namespace drawing
       return static_cast<bool>(light_field[r0 * len_c + c0]);
     };
     
-    auto f_shade_style = [&](const styles::Style& style, int r0, int c0)
+    auto f_shade_style = [&](const Style& style, int r0, int c0)
     {
       return shade_style(style, f_has_light(r0, c0) ?
-          color::ShadeType::Bright : color::ShadeType::Unchanged, true);
+          ShadeType::Bright : ShadeType::Unchanged, true);
     };
     
     // Outline
@@ -244,9 +251,9 @@ namespace drawing
   
   template<int NR, int NC>
   void draw_box_outline(ScreenHandler<NR, NC>& sh,
-                        const ttl::Rectangle& bb,
+                        const Rectangle& bb,
                         OutlineType outline_type,
-                        const styles::Style& outline_style = { Color::Default, Color::Transparent2 },
+                        const Style& outline_style = { Color::Default, Color::Transparent2 },
                         const bool_vector& light_field = {})
   {
     draw_box_outline(sh, bb.r, bb.c, bb.r_len, bb.c_len, outline_type, outline_style, light_field);
@@ -255,10 +262,10 @@ namespace drawing
   template<int NR, int NC>
   void draw_box(ScreenHandler<NR, NC>& sh,
                 int r, int c, int len_r, int len_c,
-                const styles::Style& fill_style = { Color::Default, Color::Transparent2 },
+                const Style& fill_style = { Color::Default, Color::Transparent2 },
                 char fill_char = ' ',
                 SolarDirection shadow_type = SolarDirection::Zenith,
-                const styles::Style& shadow_style = { Color::Default, Color::Transparent2 },
+                const Style& shadow_style = { Color::Default, Color::Transparent2 },
                 char shadow_char = ' ',
                 const bool_vector& light_field = {})
   {
@@ -270,10 +277,10 @@ namespace drawing
       return static_cast<bool>(light_field[r0 * len_c + c0]);
     };
     
-    auto f_shade_style = [&](const styles::Style& style, int r0, int c0)
+    auto f_shade_style = [&](const Style& style, int r0, int c0)
     {
       return shade_style(style, f_has_light(r0, c0) ?
-          color::ShadeType::Bright : color::ShadeType::Unchanged, true);
+          ShadeType::Bright : ShadeType::Unchanged, true);
     };
     
     // Filling
@@ -330,11 +337,11 @@ namespace drawing
   
   template<int NR, int NC>
   void draw_box(ScreenHandler<NR, NC>& sh,
-                const ttl::Rectangle& bb,
-                const styles::Style& fill_style = { Color::Default, Color::Transparent2 },
+                const Rectangle& bb,
+                const Style& fill_style = { Color::Default, Color::Transparent2 },
                 char fill_char = ' ',
                 SolarDirection shadow_type = SolarDirection::Zenith,
-                const styles::Style& shadow_style = { Color::Default, Color::Transparent2 },
+                const Style& shadow_style = { Color::Default, Color::Transparent2 },
                 char shadow_char = ' ',
                 const bool_vector& light_field = {})
   {
@@ -465,7 +472,7 @@ namespace drawing
   
   template<int NR, int NC>
   void draw_box_textured(ScreenHandler<NR, NC>& sh,
-                         const ttl::Rectangle& bb,
+                         const Rectangle& bb,
                          SolarDirection shadow_type = SolarDirection::Zenith,
                          const Texture& fill_texture = {},
                          const Texture& shadow_texture = {},
@@ -504,7 +511,7 @@ namespace drawing
   
   template<int NR, int NC>
   void draw_box_texture_materials(ScreenHandler<NR, NC>& sh,
-                                  const ttl::Rectangle& bb,
+                                  const Rectangle& bb,
                                   const Texture& texture = {})
   {
     draw_box_texture_materials(sh,

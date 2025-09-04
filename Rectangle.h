@@ -1,7 +1,7 @@
 #pragma once
 #include "RC.h"
 
-namespace ttl
+namespace t8
 {
 
   enum class BBLocation { None, Inside, OutsideTop, OutsideTopLeft, OutsideLeft, OutsideBottomLeft, OutsideBottom, OutsideBottomRight, OutsideRight, OutsideTopRight };

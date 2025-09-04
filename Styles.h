@@ -8,7 +8,7 @@
 #pragma once
 #include "Color.h"
 
-namespace styles
+namespace t8::color
 {
 
   struct Style

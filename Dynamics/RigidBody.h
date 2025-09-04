@@ -14,12 +14,12 @@
 #include <Core/Mtx2.h>
 
 
-namespace dynamics
+namespace t8x::physics
 {
   
   class RigidBody
   {
-    Sprite* sprite = nullptr; // Position to be controlled by this rigid body object.
+    sprite::Sprite* sprite = nullptr; // Position to be controlled by this rigid body object.
     
     Vec2 orig_pos; // world location of sprite handle pos
     Vec2 cm_to_orig_pos;
@@ -135,7 +135,7 @@ namespace dynamics
                 auto idx_offs = (r_loc + i) * curr_sprite_aabb.width() + (c_loc + j);
                 if (curr_coll_mask[idx_offs])
                 {
-                  auto offs_dir = to_Vec2({ i, j });
+                  auto offs_dir = t8::to_Vec2({ i, j });
                   //if (math::dot(math::normalize(offs_dir), cm_dir) > 0.f)
                     normal -= offs_dir;
                 }
@@ -148,7 +148,7 @@ namespace dynamics
     }
     
   public:
-    RigidBody(Sprite* s, float rb_mass = 1.f,
+    RigidBody(sprite::Sprite* s, float rb_mass = 1.f,
       std::optional<Vec2> pos = std::nullopt, const Vec2& vel = {}, const Vec2& force = {},
       float ang_vel = 0.f, float torque = 0.f,
       float e = 0.8f, float dyn_friction = 0.f,
@@ -180,7 +180,7 @@ namespace dynamics
       curr_aabb = curr_sprite_aabb.convert<float>();
       curr_centroid = s->calc_curr_centroid(0);
       cm_to_orig_pos = orig_pos - curr_cm;
-      if (auto* vector_sprite = dynamic_cast<VectorSprite*>(sprite); vector_sprite != nullptr)
+      if (auto* vector_sprite = dynamic_cast<sprite::VectorSprite*>(sprite); vector_sprite != nullptr)
         curr_ang = math::deg2rad(vector_sprite->get_rotation());
     }
     
@@ -204,8 +204,8 @@ namespace dynamics
           
           // curr_cm + (orig_pos - orig_cm) + (orig_cm_local - curr_cm_local)
           auto sprite_pos = curr_cm + cm_to_orig_pos + (curr_cm_local - orig_cm_local);
-          sprite->pos = to_RC_round(sprite_pos);
-          if (auto* vector_sprite = dynamic_cast<VectorSprite*>(sprite); vector_sprite != nullptr)
+          sprite->pos = t8::to_RC_round(sprite_pos);
+          if (auto* vector_sprite = dynamic_cast<sprite::VectorSprite*>(sprite); vector_sprite != nullptr)
             vector_sprite->set_rotation(math::rad2deg(curr_ang));
           
           if (enable_sleeping)
@@ -368,7 +368,7 @@ namespace dynamics
         
     bool is_sleeping() const { return enable_sleeping && sleeping; }
     
-    Sprite* get_sprite() const { return sprite; }
+    sprite::Sprite* get_sprite() const { return sprite; }
   };
   
   
