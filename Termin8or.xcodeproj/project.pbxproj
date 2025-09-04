@@ -11,7 +11,7 @@
 		0744BF482E5B6B87007FDD90 /* KeyboardEnums.h in Headers */ = {isa = PBXBuildFile; fileRef = 0744BF472E5B6B7E007FDD90 /* KeyboardEnums.h */; };
 		0744BF4C2E664562007FDD90 /* ScreenScaling.h in Headers */ = {isa = PBXBuildFile; fileRef = 0744BF4B2E66454F007FDD90 /* ScreenScaling.h */; };
 		0744BF582E6A063D007FDD90 /* namespace_aliases.h in Headers */ = {isa = PBXBuildFile; fileRef = 0744BF572E6A0631007FDD90 /* namespace_aliases.h */; };
-		0744BF5A2E6A06BF007FDD90 /* common_type_aliases.h in Headers */ = {isa = PBXBuildFile; fileRef = 0744BF592E6A06BA007FDD90 /* common_type_aliases.h */; };
+		0744BF5A2E6A06BF007FDD90 /* t8_common_type_aliases.h in Headers */ = {isa = PBXBuildFile; fileRef = 0744BF592E6A06BA007FDD90 /* t8_common_type_aliases.h */; };
 		075D43042E365FC4005DD356 /* StringConversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 075D43032E365FB7005DD356 /* StringConversion.h */; };
 		07A763112B555BE100705D31 /* ParticleSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 07A763102B555BE100705D31 /* ParticleSystem.h */; };
 /* End PBXBuildFile section */
@@ -40,7 +40,7 @@
 		0744BF472E5B6B7E007FDD90 /* KeyboardEnums.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KeyboardEnums.h; sourceTree = "<group>"; };
 		0744BF4B2E66454F007FDD90 /* ScreenScaling.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenScaling.h; sourceTree = "<group>"; };
 		0744BF572E6A0631007FDD90 /* namespace_aliases.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = namespace_aliases.h; sourceTree = "<group>"; };
-		0744BF592E6A06BA007FDD90 /* common_type_aliases.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common_type_aliases.h; sourceTree = "<group>"; };
+		0744BF592E6A06BA007FDD90 /* t8_common_type_aliases.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = t8_common_type_aliases.h; sourceTree = "<group>"; };
 		075C651A2C3BFFF500B15451 /* UI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UI.h; sourceTree = "<group>"; };
 		075D43032E365FB7005DD356 /* StringConversion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StringConversion.h; sourceTree = "<group>"; };
 		0760B6F02B9CEABC0032CACD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -94,7 +94,7 @@
 				0739D9BF2BA2229100964E96 /* LICENSE */,
 				0760B6F02B9CEABC0032CACD /* README.md */,
 				0744BF572E6A0631007FDD90 /* namespace_aliases.h */,
-				0744BF592E6A06BA007FDD90 /* common_type_aliases.h */,
+				0744BF592E6A06BA007FDD90 /* t8_common_type_aliases.h */,
 				07FDE9812CA0C72000116BA7 /* workflows */,
 				070BE6892B406FB2009D9BFB /* GameEngine.h */,
 				07043C6F2B05240D00834CED /* ASCII_Fonts.h */,
@@ -186,7 +186,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				073096BD2E21135A0090584B /* Logging.h in Headers */,
-				0744BF5A2E6A06BF007FDD90 /* common_type_aliases.h in Headers */,
+				0744BF5A2E6A06BF007FDD90 /* t8_common_type_aliases.h in Headers */,
 				075D43042E365FC4005DD356 /* StringConversion.h in Headers */,
 				0744BF482E5B6B87007FDD90 /* KeyboardEnums.h in Headers */,
 				0744BF4C2E664562007FDD90 /* ScreenScaling.h in Headers */,
