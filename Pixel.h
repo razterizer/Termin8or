@@ -5,6 +5,8 @@ namespace t8x::drawing
   
   struct Pixel
   {
+    using Color = t8::Color;
+  
     Pixel(char c, Color fg, Color bg,
           int rr = -1, int cc = -1, int ln_idx = -1, int ch_idx = -1, bool enabled = true)
       : ch(c), str(1, ch), fg_color(fg), bg_color(bg),
