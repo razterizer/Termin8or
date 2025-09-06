@@ -72,42 +72,47 @@ Debug-drawing the broad-phase (AABB BVH) and the narrow-phase (character/charact
 ![vector_sprite_collisions_dbg](https://github.com/user-attachments/assets/20e3ba2c-d2d4-463c-939e-2f22b2a74c7d)
 
 ---
+## Namespaces
+
+There are now two namespaces: `t8` and `t8x`. `t8` contain the core features and `t8x` contain extra features that likely be lifted out from this repo to a separate repo in the future in order to keep `Termin8or` (core) lightweight enough.
+
 ## Header Files
 
-* `AABB` : A templetized (int, float) AABB class that can return a `Rectangle` object if needed. Used in `CollisionHandler` for broad-phase detection.
-* `ASCII_Fonts.h` : API for rendering text using FIGlet fonts and allows you to style your text with different colors. Supported FIGlet fonts are:
-  * Larry3D.
-  * SMSlant.
-  * Avatar.
-* `Color.h` : Contains colour definitions for the 16 colors that Termin8or (and the terminal) supports. There are also two transparency colours / modes which allows you to overlay text using the same colours that are already present in a given location in the screen buffer (see `ScreenHandler.h`).
-* `Gradient.h` : Allows you to access a vector of given objects using a normalized (0 to 1) t parameter. Useful for particle systems and things like that where it is used for color gradients.
-* `Drawing.h` : Features some drawing functions such as `plot_line()`, `draw_box()`, `draw_box_textured()`, `draw_box_outline()` and `filled_circle_positions()`.
-* `GameEngine.h` : A highly customizable buy easy to use game engine (or engine for any real-time terminal-based program).
-* `Keyboard.h` : A keyboard handling API that is easy to use. Use class `StreamKeyboard` to poll key presses. Function `readKey()` scans keypresses in an un-blocked manner and returns a struct `KeyPressDataPair` containing two objects of type `KeyPressData`; `transient` and `held`. The former being the raw key presses and the latter being the raw key presses buffered in a buffer that has a size proportional to the FPS of the application. These two modes have their pros and cons: Transient mode is more accurate but cannot capture held key presses, held mode on the other hand is great at capturing held keys but due to buffering, it suffers from minor inaccurracies.
-* `Logging.h` : Allows you to record the current random seed, frame numbers and respective keypresses in your program and then replay it. This makes finding runtime bugs a breeze.
-* `LineData.h` : a struct that helps to convert bigger chunks of strings / colors along a single line of text to individual "pixels" that can be "streamed" to the `ScreenHandler`. This will likely be deprecated in the future in favour of more recent tools such as sprites.
-* `Pixel.h` : a struct containing data such as character (or std::string of a single character), foreground color, background color (r,c) position (and original position), line index to `LineData` object and char index to within a `LineData` object and an enabled flag. This will likely be deprecated in the future in favour of more recent tools such as sprites.
-* `MessageHandler.h` : The `MessageHandler` class allows you to queue up messages of different severity levels and durations. Messages are displayed in a `TextBox` in the middle of the screen.
-* `ParticleSystem.h` : This ASCII-style particle system allows you to make cool real-time VFX such as liquids and fire-smoke. See ([`SurgSim_Lite`](https://github.com/razterizer/SurgSim_Lite),  [`Pilot_Episode`](https://github.com/razterizer/Pilot_Episode) and [`DungGine`](https://github.com/razterizer/DungGine) for examples).
-* `RC.h` : A struct representing the row and column position on the screen or in a texture or bounding box to mention a few.
-* `Rectangle.h` : A rectangle struct that can be used for bounding boxes etc.
-* `ScreenUtils.h` : A collection of functions for rendering dialogs and such:
+* `geom/RC.h` (`t8`) : A struct representing the row and column position on the screen or in a texture or bounding box to mention a few.
+* `geom/Rectangle.h` (`t8`) : A rectangle struct that can be used for bounding boxes etc.
+* `geom/AABB` (`t8x`) : A templetized (int, float) AABB class that can return a `Rectangle` object if needed. Used in `CollisionHandler` for broad-phase detection.
+* `screen/Color.h` (`t8`) : Contains colour definitions for the 16 colors that Termin8or (and the terminal) supports. There are also two transparency colours / modes which allows you to overlay text using the same colours that are already present in a given location in the screen buffer (see `ScreenHandler.h`).
+* `screen/Styles.h` (`t8`) : `Style` and its derivatives are just fancy structs grouping a foreground colour with a background colour.
+* `screen/ScreenUtils.h` (`t8`) : A collection of functions for rendering dialogs and such:
   * Low-level functions: `clear_screen()`, `return_cursor()`, `restore_cursor()`, `hide_cursor()`, `show_cursor()`, `gotorc()`.
   * Medium-level functions: `get_terminal_window_size()`, `resize_terminal_window()`, `save_terminal_colors()`, `restore_terminal_colors()`.
   * High-level functions: `begin_screen()`, `end_screen()`. These take care of color restoration, clearing screen, hiding the cursor etc, except for the resizing of the terminal window.
   * `draw_frame()` : Draws a simple frame around your frame buffer.
   * `draw_game_over()`, `draw_you_won()` : Draws wavy banners in the FIGlet font Grafitti. Used by `GameEngine` if those features are enabled.
-* `Text.h` : `Text` handles text output and translates Color enum items to corresponding color values depending on platform compiled. Is also responsible for creating the appropriate ANDI escape sequences for the TTY and such.
-* `Styles.h` : `Style` and its derivatives are just fancy structs grouping a foreground colour with a background colour.
-* `Texture.h`: The `Texture` struct allows you to save and load text-based texture in text format to and from disk. There are four parts in a texture: characters, foreground colors, background colors and material IDs. Header also contains texture element `Textel` (humouristic portmantau of "text" and "texel" suggested by my dear colleague Göran Wallgren).
-* `ScreenHandler.h` : Contains the screen buffers (char / fg-color / bg-color) and manages transparency etc. It outputs the contents to the terminal via a privatly owned `Text` object.
-* `ScreenScaling.h` : Friend with `ScreenHandler.h` which allows you to scale the screen buffer. Beware that any acutal text or ASCII banner will not be readable when scaled up or down!
-* `SpriteHandler.h` : Manages bitmap sprites (`BitmapSprite`) and vector sprites (`VectorSprite`). A sprite can be controlled programmatically or be attached to a `RigidBody` object. Both sprite classes support sprite animations. A vector sprite can be filled for enclosed areas of the sprite. A scan-line algorithm is used for this.
-* `UI.h` : Contains structs such as `TextBox` and `TextBoxDebug` to make it easy to display info on the screen and such. `MessageHandler` uses `TextBox`. There is also a new class `Dialog` which can hold widgets such as `TextField`, `Button` (via an instance of `ButtonGroup`) and `ColorPicker`.
-* `Dynamics` : Headers concerning rigid body physics.
-  * `RigidBody.h` : A class that represents a rigid body. You attach a sprite to it if you want the sprite to be physically dynamic. The sprite also determines the "pixels" that make out the collison surface.
-  * `DynamicsSystem.h` : A class that governs the dynamical motions of the rigid bodies that are created from it.
-  * `CollisionHandler.h` : A class that governs collison detection and collison response between the rigid bodies created via the `DynamicsSystem` class. Broad-phase uses an AABB BVH and narrow-phase checks overlaps beteen sprite characters of a specified material index. Collision response uses an impulse equation as a function of the velocities of the two bodies and their collision normals.
+* `screen/Text.h` (`t8`) : `Text` handles text output and translates Color enum items to corresponding color values depending on platform compiled. Is also responsible for creating the appropriate ANDI escape sequences for the TTY and such.
+* `screen/ScreenHandler.h` (`t8`) : Contains the screen buffers (char / fg-color / bg-color) and manages transparency etc. It outputs the contents to the terminal via a privatly owned `Text` object.
+* `screen/ScreenScaling.h` (`t8x`) : Friend with `ScreenHandler.h` which allows you to scale the screen buffer. Beware that any acutal text or ASCII banner will not be readable when scaled up or down!
+* `input/Keyboard.h` (`t8`) : A keyboard handling API that is easy to use. Use class `StreamKeyboard` to poll key presses. Function `readKey()` scans keypresses in an un-blocked manner and returns a struct `KeyPressDataPair` containing two objects of type `KeyPressData`; `transient` and `held`. The former being the raw key presses and the latter being the raw key presses buffered in a buffer that has a size proportional to the FPS of the application. These two modes have their pros and cons: Transient mode is more accurate but cannot capture held key presses, held mode on the other hand is great at capturing held keys but due to buffering, it suffers from minor inaccurracies.
+* `input/KeyboardEnums.h` just the `SpecialKey` enum class for now so you don't have to include all of `Keyboard.h` to be able to interpret keypresses.
+* `drawing/Gradient.h` (`t8x`) : Allows you to access a vector of given objects using a normalized (0 to 1) t parameter. Useful for particle systems and things like that where it is used for color gradients.
+* `drawing/Drawing.h` (`t8x`) : Features some drawing functions such as `plot_line()`, `draw_box()`, `draw_box_textured()`, `draw_box_outline()` and `filled_circle_positions()`.
+* `drawing/LineData.h` (`t8x`) : a struct that helps to convert bigger chunks of strings / colors along a single line of text to individual "pixels" that can be "streamed" to the `ScreenHandler`. This will likely be deprecated in the future in favour of more recent tools such as sprites.
+* `drawing/Pixel.h` (`t8x`) : a struct containing data such as character (or std::string of a single character), foreground color, background color (r,c) position (and original position), line index to `LineData` object and char index to within a `LineData` object and an enabled flag. This will likely be deprecated in the future in favour of more recent tools such as sprites.
+* `drawing/Texture.h` (`t8`) : The `Texture` struct allows you to save and load text-based texture in text format to and from disk. There are four parts in a texture: characters, foreground colors, background colors and material IDs. Header also contains texture element `Textel` (humouristic portmantau of "text" and "texel" suggested by my dear colleague Göran Wallgren).
+* `ui/MessageHandler.h` (`t8x`) : The `MessageHandler` class allows you to queue up messages of different severity levels and durations. Messages are displayed in a `TextBox` in the middle of the screen.
+* `ui/UI.h` (`t8x`) : Contains structs such as `TextBox` and `TextBoxDebug` to make it easy to display info on the screen and such. `MessageHandler` uses `TextBox`. There is also a new class `Dialog` which can hold widgets such as `TextField`, `Button` (via an instance of `ButtonGroup`) and `ColorPicker`.
+* `title/ASCII_Fonts.h` (`t8x`) : API for rendering text using FIGlet fonts and allows you to style your text with different colors. Supported FIGlet fonts are:
+  * Larry3D.
+  * SMSlant.
+  * Avatar.
+* `sys/GameEngine.h` (`t8x`) : A highly customizable buy easy to use game engine (or engine for any real-time terminal-based program).
+* `sys/Logging.h` (`t8x`) : Allows you to record the current random seed, frame numbers and respective keypresses in your program and then replay it. This makes finding runtime bugs a breeze.
+* `str/StringConversion.h` (`t8`) : Allows you to convert objects to `std::string` strings.
+* `sprite/SpriteHandler.h` (`t8x`) : Manages bitmap sprites (`BitmapSprite`) and vector sprites (`VectorSprite`). A sprite can be controlled programmatically or be attached to a `RigidBody` object. Both sprite classes support sprite animations. A vector sprite can be filled for enclosed areas of the sprite. A scan-line algorithm is used for this.
+* `physics/ParticleSystem.h` (`t8x`) : This ASCII-style particle system allows you to make cool real-time VFX such as liquids and fire-smoke. See ([`SurgSim_Lite`](https://github.com/razterizer/SurgSim_Lite),  [`Pilot_Episode`](https://github.com/razterizer/Pilot_Episode) and [`DungGine`](https://github.com/razterizer/DungGine) for examples).
+* `physics/dynamics/RigidBody.h` (`t8x`) : A class that represents a rigid body. You attach a sprite to it if you want the sprite to be physically dynamic. The sprite also determines the "pixels" that make out the collison surface.
+* `physics/dynamics/DynamicsSystem.h` (`t8x`) : A class that governs the dynamical motions of the rigid bodies that are created from it.
+* `physics/dynamics/CollisionHandler.h` (`t8x`) : A class that governs collison detection and collison response between the rigid bodies created via the `DynamicsSystem` class. Broad-phase uses an AABB BVH and narrow-phase checks overlaps beteen sprite characters of a specified material index. Collision response uses an impulse equation as a function of the velocities of the two bodies and their collision normals.
 
 ## Build & Run Instructions
 
