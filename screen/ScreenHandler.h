@@ -1,9 +1,9 @@
 #pragma once
 #include "Text.h"
-#include "Rectangle.h"
 #include "Styles.h"
-#include "RC.h"
-#include "Texture.h"
+#include "../geom/Rectangle.h"
+#include "../geom/RC.h"
+#include "../drawing/Texture.h"
 #include <Core/StringHelper.h>
 #include <Core/StringBox.h>
 #include <Core/StlUtils.h>
@@ -13,7 +13,7 @@
 #include <memory>
 
 
-namespace t8::screen
+namespace t8
 {
   
   template<int NR, int NC>
@@ -32,12 +32,12 @@ namespace t8::screen
     int r = -1;
     int c = -1;
     int priority = 0;
-    color::Style style;
+    Style style;
   };
   
   struct OffscreenBuffer
   {
-    drawing::Texture* buffer_texture = nullptr;
+    Texture* buffer_texture = nullptr;
     RC buffer_screen_pos { 0, 0 }; //
     std::vector<char> exclude_src_chars;
     std::vector<Color> exclude_src_fg_colors;
@@ -133,7 +133,7 @@ namespace t8::screen
       ordered_texts.clear();
     }
     
-    void write_buffer(const std::string& str, const RC& pos, const color::Style& style)
+    void write_buffer(const std::string& str, const RC& pos, const Style& style)
     {
       write_buffer(str, pos.r, pos.c, style.fg_color, style.bg_color);
     }
@@ -143,7 +143,7 @@ namespace t8::screen
       write_buffer(str, pos.r, pos.c, fg_color, bg_color);
     }
     
-    void write_buffer(const std::string& str, int r, int c, const color::Style& style)
+    void write_buffer(const std::string& str, int r, int c, const Style& style)
     {
       write_buffer(str, r, c, style.fg_color, style.bg_color);
     }

@@ -6,23 +6,23 @@
 //
 
 #pragma once
-#include "RC.h"
-#include "KeyboardEnums.h"
-#include "Drawing.h"
+#include "../geom/RC.h"
+#include "../input/KeyboardEnums.h"
+#include "../drawing/Drawing.h"
 #include <Core/StringBox.h>
 #include <Core/Utils.h>
 
 #define PARAM(var) #var, &var
 
-namespace t8x::ui
+namespace t8x
 {
-  using Style = t8::color::Style;
-  using ButtonStyle = t8::color::ButtonStyle;
-  using PromptStyle = t8::color::PromptStyle;
+  using Style = t8::Style;
+  using ButtonStyle = t8::ButtonStyle;
+  using PromptStyle = t8::PromptStyle;
   using RC = t8::RC;
   template<int NR, int NC>
-  using ScreenHandler = t8::screen::ScreenHandler<NR, NC>;
-  using SpecialKey = t8::input::SpecialKey;
+  using ScreenHandler = t8::ScreenHandler<NR, NC>;
+  using SpecialKey = t8::SpecialKey;
   
 
   enum class VerticalAlignment { TOP, CENTER, BOTTOM };
@@ -36,7 +36,7 @@ namespace t8x::ui
     int box_padding_ud = 0;
     int box_padding_lr = 0;
     std::optional<Style> box_outline_style = std::nullopt;
-    drawing::OutlineType outline_type = drawing::OutlineType::Line;
+    OutlineType outline_type = OutlineType::Line;
   };
   
   struct TextBoxDrawingArgsPos
@@ -417,10 +417,10 @@ namespace t8x::ui
         switch (fg_cursor_coloring)
         {
           case ColorPickerCursorColoring::BlackWhite:
-            caret_fg_color = t8::color::is_dark(caret_bg_color, true).value_or(false) ? Color::White : Color::Black;
+            caret_fg_color = t8::is_dark(caret_bg_color, true).value_or(false) ? Color::White : Color::Black;
             break;
           case ColorPickerCursorColoring::Contrast:
-            caret_fg_color = t8::color::get_contrast_color(caret_bg_color);
+            caret_fg_color = t8::get_contrast_color(caret_bg_color);
             break;
         }
       }
@@ -594,7 +594,7 @@ namespace t8x::ui
       int box_padding_ud = args.base.box_padding_ud;
       int box_padding_lr = args.base.box_padding_lr;
       std::optional<Style> box_outline_style = args.base.box_outline_style;
-      drawing::OutlineType outline_type = args.base.outline_type;
+      OutlineType outline_type = args.base.outline_type;
             
       for (const auto& rc_style : override_textel_styles)
         if (rc_style.first.r < static_cast<int>(N) && rc_style.first.c < static_cast<int>(len_max))
@@ -609,9 +609,9 @@ namespace t8x::ui
       int r_len = static_cast<int>(N + 2 + 2*has_buttons() + 2*box_padding_ud);
       int c_len = static_cast<int>(len_max + 2 + 2*box_padding_lr);
       if (draw_box_outline)
-        drawing::draw_box_outline(sh, r, c, r_len, c_len, outline_type, box_outline_style.value_or(box_style));
+        draw_box_outline(sh, r, c, r_len, c_len, outline_type, box_outline_style.value_or(box_style));
       if (draw_box_bkg)
-        drawing::draw_box(sh, r, c, r_len, c_len, box_style);
+        draw_box(sh, r, c, r_len, c_len, box_style);
     }
     
     template<int NR, int NC>

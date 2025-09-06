@@ -8,7 +8,7 @@
 #pragma once
 #include "Color.h"
 
-namespace t8::color
+namespace t8
 {
 
   struct Style
@@ -67,42 +67,42 @@ namespace t8::color
   
   // ////
   
-  Style make_shaded_style(Color base_color, color::ShadeType shade)
+  Style make_shaded_style(Color base_color, ShadeType shade)
   {
     Style ret;
     switch (shade)
     {
-      case color::ShadeType::Unchanged:
+      case ShadeType::Unchanged:
         ret.fg_color = base_color;
         ret.bg_color = base_color;
         break;
-      case color::ShadeType::Bright:
-        ret.fg_color = color::shade_color(base_color, color::ShadeType::Dark);
-        ret.bg_color = color::shade_color(base_color, color::ShadeType::Bright);
+      case ShadeType::Bright:
+        ret.fg_color = shade_color(base_color, ShadeType::Dark);
+        ret.bg_color = shade_color(base_color, ShadeType::Bright);
         break;
-      case color::ShadeType::Dark:
-        ret.fg_color = color::shade_color(base_color, color::ShadeType::Bright);
-        ret.bg_color = color::shade_color(base_color, color::ShadeType::Dark);
+      case ShadeType::Dark:
+        ret.fg_color = shade_color(base_color, ShadeType::Bright);
+        ret.bg_color = shade_color(base_color, ShadeType::Dark);
         break;
     }
     return ret;
   }
   
-  Style shade_style(const Style& style, color::ShadeType shade, bool only_swap_if_fg_bg_same = false)
+  Style shade_style(const Style& style, ShadeType shade, bool only_swap_if_fg_bg_same = false)
   {
     Style ret;
     switch (shade)
     {
-      case color::ShadeType::Unchanged:
+      case ShadeType::Unchanged:
         ret = style;
         break;
-      case color::ShadeType::Bright:
-        ret.fg_color = color::shade_color(style.fg_color, color::ShadeType::Dark);
-        ret.bg_color = color::shade_color(style.bg_color, color::ShadeType::Bright);
+      case ShadeType::Bright:
+        ret.fg_color = shade_color(style.fg_color, ShadeType::Dark);
+        ret.bg_color = shade_color(style.bg_color, ShadeType::Bright);
         break;
-      case color::ShadeType::Dark:
-        ret.fg_color = color::shade_color(style.fg_color, color::ShadeType::Bright);
-        ret.bg_color = color::shade_color(style.bg_color, color::ShadeType::Dark);
+      case ShadeType::Dark:
+        ret.fg_color = shade_color(style.fg_color, ShadeType::Bright);
+        ret.bg_color = shade_color(style.bg_color, ShadeType::Dark);
         break;
     }
     if (only_swap_if_fg_bg_same && ret.fg_color == ret.bg_color)

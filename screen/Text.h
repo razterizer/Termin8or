@@ -34,7 +34,7 @@
 //
 // Reset : \033[0m
 
-namespace t8::screen
+namespace t8
 {
   
   class Text
@@ -81,12 +81,12 @@ namespace t8::screen
     void set_color_win(Color text_color, Color bg_color = Color::Default) const
     {
 #ifdef _WIN32
-      int foreground = color::get_color_value_win(text_color);
+      int foreground = get_color_value_win(text_color);
       if (foreground == -1)
-        foreground = color::get_color_value_win(Color::White);
-      int background = 16 * color::get_color_value_win(bg_color);
+        foreground = get_color_value_win(Color::White);
+      int background = 16 * get_color_value_win(bg_color);
       if (background == -1)
-        background = 16 * color::get_color_value_win(Color::Black);
+        background = 16 * get_color_value_win(Color::Black);
       
       int color = static_cast<int>(foreground) + static_cast<int>(background);
       

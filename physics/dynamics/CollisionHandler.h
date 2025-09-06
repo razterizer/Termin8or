@@ -6,7 +6,7 @@
 //
 
 #pragma once
-#include "../Rectangle.h"
+#include "../../geom/Rectangle.h"
 #include "RigidBody.h"
 #include "DynamicsSystem.h"
 #include <Core/Utils.h>
@@ -15,10 +15,10 @@
 using namespace utils::literals;
 
 
-namespace t8x::physics
+namespace t8x
 {
   template<int NR, int NC>
-  using ScreenHandler = t8::screen::ScreenHandler<NR, NC>;
+  using ScreenHandler = t8::ScreenHandler<NR, NC>;
   
   
   struct BVH_Node
@@ -133,10 +133,10 @@ namespace t8x::physics
       if (level >= start_level)
       {
         auto rec = aabb.to_rectangle();
-        auto color = t8::color::colors_hue_light[static_cast<size_t>(level) % t8::color::colors_hue_light.size()];
+        auto color = t8::colors_hue_light[static_cast<size_t>(level) % t8::colors_hue_light.size()];
         if (order == 1)
-          color = t8::color::shade_color(color, t8::color::ShadeType::Dark);
-        drawing::draw_box_outline(sh, rec, drawing::OutlineType::Line, { color, Color::Transparent2 });
+          color = t8::shade_color(color, t8::ShadeType::Dark);
+        draw_box_outline(sh, rec, OutlineType::Line, { color, Color::Transparent2 });
       }
       for (const auto& ch : children)
         ch->draw(sh);

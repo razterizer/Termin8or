@@ -9,7 +9,7 @@
 #include "Color.h"
 #include <map>
 
-namespace t8x::screen
+namespace t8x
 {
 
   struct RGBA

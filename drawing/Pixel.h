@@ -1,6 +1,7 @@
 #pragma once
+#include "../screen/Color.h"
 
-namespace t8x::drawing
+namespace t8x
 {
   
   struct Pixel

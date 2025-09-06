@@ -1,18 +1,18 @@
 #pragma once
-#include "ScreenUtils.h"
-#include "RC.h"
-#include "Gradient.h"
+#include "../screen/ScreenUtils.h"
+#include "../geom/RC.h"
+#include "../drawing/Gradient.h"
 #include <Core/Rand.h>
 #include <Core/Math.h>
 
-namespace t8x::physics
+namespace t8x
 {
   using RC = t8::RC;
   using Color = t8::Color;
   template<typename T>
-  using Gradient = t8x::drawing::Gradient<T>;
+  using Gradient = t8x::Gradient<T>;
   template<int NR, int NC>
-  using ScreenHandler = t8::screen::ScreenHandler<NR, NC>;
+  using ScreenHandler = t8::ScreenHandler<NR, NC>;
   
   struct Particle
   {
@@ -43,7 +43,7 @@ namespace t8x::physics
     void update(float dt)
     {
       pos_c += vel_c * dt;
-      pos_r += vel_r * dt / t8::screen::pix_ar;
+      pos_r += vel_r * dt / t8::pix_ar;
       pos_r += g * dt; // r is pointing down.
     }
     

@@ -6,13 +6,13 @@
 //
 
 #pragma once
-#include "Color.h"
-#include "UI.h"
+#include "../screen/Color.h"
+#include "../ui/UI.h"
 #include <execution>
 #include <queue>
 
 
-namespace t8x::ui
+namespace t8x
 {
   
   struct MessageBoxDrawingArgs
@@ -21,9 +21,9 @@ namespace t8x::ui
     bool draw_box_bkg = true;
     int box_padding_ud = 0;
     int box_padding_lr = 1;
-    drawing::OutlineType outline_type = drawing::OutlineType::Line;
-    ui::VerticalAlignment v_align = ui::VerticalAlignment::CENTER;
-    ui::HorizontalAlignment h_align = ui::HorizontalAlignment::CENTER;
+    OutlineType outline_type = OutlineType::Line;
+    VerticalAlignment v_align = VerticalAlignment::CENTER;
+    HorizontalAlignment h_align = HorizontalAlignment::CENTER;
     int v_align_offs = 0;
     int h_align_offs = 0;
     bool framed_mode = true;
@@ -43,7 +43,7 @@ namespace t8x::ui
     std::string curr_message;
     Level curr_level;
     float curr_duration_s = 1.5f;
-    ui::TextBox tb;
+    TextBox tb;
     int str_len = 0;
     
     Color get_fg_color() const
@@ -117,7 +117,7 @@ namespace t8x::ui
     }
     
     template<int NR, int NC>
-    void update(t8::screen::ScreenHandler<NR, NC>& sh, float time, const MessageBoxDrawingArgs& args = {})
+    void update(t8::ScreenHandler<NR, NC>& sh, float time, const MessageBoxDrawingArgs& args = {})
     {
       if (message_empty && has_messages())
       {
@@ -133,7 +133,7 @@ namespace t8x::ui
         auto bg_color = get_bg_color();
         tb.set_text(curr_message);
         tb.calc_pre_draw(str::Adjustment::Center);
-        ui::TextBoxDrawingArgsAlign aargs;
+        TextBoxDrawingArgsAlign aargs;
         aargs.v_align = args.v_align;
         aargs.h_align = args.h_align;
         aargs.v_align_offs = args.v_align_offs;

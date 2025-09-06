@@ -1,7 +1,7 @@
 #pragma once
 #include "ScreenHandler.h"
-#include "Keyboard.h"
 #include "Styles.h"
+#include "../input/Keyboard.h"
 #include <Core/TextIO.h>
 #include <cmath>
 #ifdef _WIN32
@@ -13,13 +13,13 @@
 #endif
 #include <ranges>
 
-namespace t8::screen
+namespace t8
 {
   
 #ifdef _WIN32
   static WORD savedAttributes;
 #endif
-  color::Style orig_style = { Color::White, Color::Black };
+  Style orig_style = { Color::White, Color::Black };
   
   
   // Game Over / You Won
@@ -207,10 +207,10 @@ namespace t8::screen
     {
       savedAttributes = consoleInfo.wAttributes;
       int bg_color = static_cast<int>(savedAttributes & 0xF0) >> 4;
-      orig_style.bg_color = color::get_color_win(bg_color);
+      orig_style.bg_color = get_color_win(bg_color);
       
       int fg_color = static_cast<int>(savedAttributes & 0x0F);
-      orig_style.fg_color = color::get_color_win(fg_color);
+      orig_style.fg_color = get_color_win(fg_color);
     }
     else
       std::cerr << "Error: Unable to get console screen buffer info." << std::endl;
@@ -218,7 +218,7 @@ namespace t8::screen
   }
   
   // Function to restore the saved console colors.
-  color::Style restore_terminal_colors()
+  Style restore_terminal_colors()
   {
 #if _WIN32
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -281,11 +281,11 @@ namespace t8::screen
   // #         \/                 \/         \/    #
   template<int NR, int NC>
   void draw_game_over(ScreenHandler<NR, NC>& sh, float wave_step = 0.1f,
-                      const color::Style& line_0_style = { Color::DarkRed, Color::White },
-                      const color::Style& line_1_style = { Color::DarkRed, Color::Yellow },
-                      const color::Style& line_2_style = { Color::DarkRed, Color::DarkYellow },
-                      const color::Style& line_3_style = { Color::DarkRed, Color::Yellow },
-                      const color::Style& line_4_style = { Color::DarkRed, Color::White })
+                      const Style& line_0_style = { Color::DarkRed, Color::White },
+                      const Style& line_1_style = { Color::DarkRed, Color::Yellow },
+                      const Style& line_2_style = { Color::DarkRed, Color::DarkYellow },
+                      const Style& line_3_style = { Color::DarkRed, Color::Yellow },
+                      const Style& line_4_style = { Color::DarkRed, Color::White })
   {
     auto wave_func = [](int c, int i)
     {
@@ -323,8 +323,8 @@ namespace t8::screen
   // #  \/                            \/             \/\/ #
   template<int NR, int NC>
   void draw_you_won(ScreenHandler<NR, NC>& sh, float wave_step = 0.07f,
-                    const color::Style& line_0_style = { Color::DarkBlue, Color::Cyan },
-                    const color::Style& line_1_style = { Color::DarkBlue, Color::DarkCyan })
+                    const Style& line_0_style = { Color::DarkBlue, Color::Cyan },
+                    const Style& line_1_style = { Color::DarkBlue, Color::DarkCyan })
   {
     wave_f = 1.5f;//0.4f;
     wave_a = 1.f;//5.f;
@@ -352,7 +352,7 @@ namespace t8::screen
   }
   
   template<int NR, int NC>
-  void draw_paused(ScreenHandler<NR, NC>& sh, int anim_ctr, const color::Style& info_style)
+  void draw_paused(ScreenHandler<NR, NC>& sh, int anim_ctr, const Style& info_style)
   {
     int anim = anim_ctr % 10;
     std::string msg;
@@ -377,9 +377,9 @@ namespace t8::screen
   void draw_confirm(ScreenHandler<NR, NC>& sh,
                     const std::vector<std::string>& titles,
                     YesNoButtons button,
-                    const color::Style& title_style,
-                    const color::ButtonStyle& button_style,
-                    const color::Style& info_style)
+                    const Style& title_style,
+                    const ButtonStyle& button_style,
+                    const Style& info_style)
   {
     const auto nr = static_cast<int>(NR);
     const auto nc = static_cast<int>(NC);
@@ -424,11 +424,11 @@ namespace t8::screen
   
   template<int NR, int NC>
   bool draw_input_hiscore(ScreenHandler<NR, NC>& sh,
-                          const input::KeyPressData& kpd,
+                          const KeyPressData& kpd,
                           HiScoreItem& hsi, int& caret_idx, int anim_ctr,
-                          const color::Style& title_style,
-                          const color::PromptStyle& prompt_style,
-                          const color::Style& info_style)
+                          const Style& title_style,
+                          const PromptStyle& prompt_style,
+                          const Style& info_style)
   {
     const auto nr = static_cast<int>(NR);
     const auto nc = static_cast<int>(NC);
@@ -440,8 +440,8 @@ namespace t8::screen
     
     sh.write_buffer(msg, r, c_base, title_style);
     
-    auto key = input::get_char_key(kpd);
-    auto special_key = input::get_special_key(kpd);
+    auto key = get_char_key(kpd);
+    auto special_key = get_special_key(kpd);
     
     if (str::is_letter(key) || key == ' ')
     {
@@ -461,29 +461,29 @@ namespace t8::screen
     msg_len = static_cast<int>(msg.length());
     sh.write_buffer(msg, nr/2 + 6, (nc - msg_len)/2, info_style);
     
-    if (special_key == input::SpecialKey::Left)
+    if (special_key == SpecialKey::Left)
     {
       caret_idx--;
       if (caret_idx < 0)
         caret_idx = 0;
     }
-    else if (special_key == input::SpecialKey::Right)
+    else if (special_key == SpecialKey::Right)
     {
       caret_idx++;
       if (caret_idx >= c_hiscore_name_max_len)
         caret_idx = c_hiscore_name_max_len - 1;
     }
     
-    return special_key == input::SpecialKey::Enter;
+    return special_key == SpecialKey::Enter;
   }
   
   template<int NR, int NC>
   void draw_hiscores(ScreenHandler<NR, NC>& sh, const std::vector<HiScoreItem>& hiscore_list,
-                     const color::Style& title_style,
-                     const color::HiliteFGStyle& nr_style,
-                     const color::HiliteFGStyle& score_style,
-                     const color::HiliteFGStyle& name_style,
-                     const color::Style& info_style)
+                     const Style& title_style,
+                     const HiliteFGStyle& nr_style,
+                     const HiliteFGStyle& score_style,
+                     const HiliteFGStyle& name_style,
+                     const Style& info_style)
   {
     const auto nr = static_cast<int>(NR);
     const auto nc = static_cast<int>(NC);

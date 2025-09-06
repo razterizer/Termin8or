@@ -10,7 +10,7 @@
 #include <functional>
 
 
-namespace t8x::drawing
+namespace t8x
 {
 
   namespace easings

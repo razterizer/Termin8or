@@ -9,7 +9,7 @@
 #include <Core/Math.h>
 #include <assert.h>
 
-namespace t8x::drawing
+namespace t8x
 {
   
   // Param values define the centers of the ranges for the values.

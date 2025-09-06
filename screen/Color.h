@@ -11,6 +11,7 @@
 
 namespace t8
 {
+
   enum class Color
   {
     Transparent = -1,
@@ -33,10 +34,6 @@ namespace t8
     Cyan,          // 15
     White          // 16
   };
-}
-
-namespace t8::color
-{
 
   Color string2color(const std::string& str)
   {

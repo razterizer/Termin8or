@@ -7,7 +7,7 @@
 
 #pragma once
 
-namespace t8::input
+namespace t8
 {
 
   enum class SpecialKey

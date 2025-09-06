@@ -6,9 +6,9 @@
 //
 
 #pragma once
-#include "Keyboard.h"
 #include "Logging.h"
-#include "ScreenUtils.h"
+#include "../input/Keyboard.h"
+#include "../screen/ScreenUtils.h"
 #include <Core/Delay.h>
 #include <Core/Rand.h>
 #include <Core/Math.h>
@@ -20,10 +20,10 @@
 namespace t8x
 {
   using Color = t8::Color;
-  using Style = t8::color::Style;
-  using ButtonStyle = t8::color::ButtonStyle;
-  using PromptStyle = t8::color::PromptStyle;
-  using HiliteFGStyle = t8::color::HiliteFGStyle;
+  using Style = t8::Style;
+  using ButtonStyle = t8::ButtonStyle;
+  using PromptStyle = t8::PromptStyle;
+  using HiliteFGStyle = t8::HiliteFGStyle;
 
 
   struct GameEngineParams
@@ -41,7 +41,7 @@ namespace t8x
     Color screen_bg_color_instructions = Color::Default;
     
     std::optional<t8::Color> screen_bg_color_paused = std::nullopt;
-    t8::color::Style pause_info_style { t8::Color::White, t8::Color::DarkCyan };
+    t8::Style pause_info_style { t8::Color::White, t8::Color::DarkCyan };
     
     std::optional<t8::Color> screen_bg_color_quit_confirm = t8::Color::DarkCyan;
     Style quit_confirm_title_style { Color::Black, Color::DarkCyan };
@@ -116,11 +116,11 @@ namespace t8x
     int frame_ctr = 0;
     int frame_ctr_measure = 0;
     
-    t8::screen::YesNoButtons quit_confirm_button = t8::screen::YesNoButtons::No;
+    t8::YesNoButtons quit_confirm_button = t8::YesNoButtons::No;
     
-    std::vector<t8::screen::HiScoreItem> hiscore_list;
+    std::vector<t8::HiScoreItem> hiscore_list;
     int score = 0;
-    t8::screen::HiScoreItem curr_score_item;
+    t8::HiScoreItem curr_score_item;
     int hiscore_caret_idx = 0;
     
     int term_win_rows = 0;
@@ -128,7 +128,7 @@ namespace t8x
     
     OneShot trg_update_halted, trg_update_resumed;
     
-    bool handle_hiscores(const t8::screen::HiScoreItem& curr_hsi)
+    bool handle_hiscores(const t8::HiScoreItem& curr_hsi)
     {
       const int c_max_num_hiscores = 20;
       const std::string c_file_path = folder::join_file_path({ exe_path, "hiscores.txt" });
@@ -146,7 +146,7 @@ namespace t8x
       for (const auto& hs_str : lines)
       {
         std::istringstream iss(hs_str);
-        t8::screen::HiScoreItem hsi;
+        t8::HiScoreItem hsi;
         iss >> hsi.name >> hsi.score;
         hiscore_list.emplace_back(hsi);
       }
@@ -186,12 +186,12 @@ namespace t8x
     std::chrono::time_point<std::chrono::steady_clock> real_start_time_s;
     OneShot time_inited;
     
-    t8::screen::ScreenHandler<NR, NC> sh;
+    t8::ScreenHandler<NR, NC> sh;
     
     Color bg_color = Color::Default;
     
-    t8::input::KeyPressDataPair kpdp;
-    std::unique_ptr<t8::input::StreamKeyboard> keyboard;
+    t8::KeyPressDataPair kpdp;
+    std::unique_ptr<t8::StreamKeyboard> keyboard;
     
     bool exit_requested = false;
     
@@ -287,27 +287,27 @@ namespace t8x
       
       if (!m_params.suppress_tty_input)
       {
-        keyboard = std::make_unique<t8::input::StreamKeyboard>();
+        keyboard = std::make_unique<t8::StreamKeyboard>();
         keyboard->set_held_buffer_size_from_fps(real_fps);
       }
       
-      t8::screen::begin_screen();
+      t8::begin_screen();
       
       if (m_params.enable_terminal_window_resize)
       {
-        std::tie(term_win_rows, term_win_cols) = t8::screen::get_terminal_window_size();
+        std::tie(term_win_rows, term_win_cols) = t8::get_terminal_window_size();
         int new_rows = term_win_rows;
         int new_cols = term_win_cols;
         math::maximize(new_rows, NR + 1);
         math::maximize(new_cols, NC);
-        t8::screen::resize_terminal_window(new_rows, new_cols);
+        t8::resize_terminal_window(new_rows, new_cols);
       }
       
       //nodelay(stdscr, TRUE);
       
       curr_rnd_seed = rnd::srand_time();
       
-      t8::log::setup_logging(m_params.log_mode, m_params.xcode_log_filepath, m_params.log_filename, curr_rnd_seed);
+      t8x::setup_logging(m_params.log_mode, m_params.xcode_log_filepath, m_params.log_filename, curr_rnd_seed);
       
       if (time_inited.once())
         real_start_time_s = std::chrono::steady_clock::now();
@@ -321,7 +321,7 @@ namespace t8x
         return;
       
       // RT-Loop
-      t8::screen::clear_screen();
+      t8::clear_screen();
       on_enter_game_loop();
       auto update_func = std::bind(&GameEngine::engine_update, this);
       Delay::update_loop(real_fps, update_func);
@@ -357,7 +357,7 @@ namespace t8x
       end_screen(sh);
       if (m_params.enable_terminal_window_resize)
         if (term_win_rows > 0 && term_win_cols > 0)
-          t8::screen::resize_terminal_window(term_win_rows, term_win_cols);
+          t8::resize_terminal_window(term_win_rows, term_win_cols);
       on_quit();
     }
     
@@ -375,11 +375,11 @@ namespace t8x
         real_dt_s = real_time_s - real_last_time_s;
       }
       
-      t8::screen::return_cursor();
+      t8::return_cursor();
       sh.clear();
       
-      t8::log::update_log_stream(m_params.log_mode, kpdp, keyboard.get(), get_frame_count());
-      auto key = t8::input::get_char_key(kpdp.transient);
+      t8x::update_log_stream(m_params.log_mode, kpdp, keyboard.get(), get_frame_count());
+      auto key = t8::get_char_key(kpdp.transient);
       auto lo_key = str::to_lower(key);
       auto quit = lo_key == 'q';
       auto pause = lo_key == 'p';
@@ -387,7 +387,7 @@ namespace t8x
       if (quit)
       {
         math::toggle(show_quit_confirm);
-        quit_confirm_button = t8::screen::YesNoButtons::No;
+        quit_confirm_button = t8::YesNoButtons::No;
       }
       else if (m_params.enable_pause && pause)
       {
@@ -412,20 +412,20 @@ namespace t8x
           titles.emplace_back("You have unsaved changes!");
         titles.emplace_back("Are you sure you want to quit?");
         
-        auto special_key = t8::input::get_special_key(kpdp.transient);
+        auto special_key = t8::get_special_key(kpdp.transient);
         
         draw_confirm(sh, titles, quit_confirm_button,
                      m_params.quit_confirm_title_style,
                      m_params.quit_confirm_button_style,
                      m_params.quit_confirm_info_style);
-        if (special_key == t8::input::SpecialKey::Left)
-          quit_confirm_button = t8::screen::YesNoButtons::Yes;
-        else if (special_key == t8::input::SpecialKey::Right)
-          quit_confirm_button = t8::screen::YesNoButtons::No;
+        if (special_key == t8::SpecialKey::Left)
+          quit_confirm_button = t8::YesNoButtons::Yes;
+        else if (special_key == t8::SpecialKey::Right)
+          quit_confirm_button = t8::YesNoButtons::No;
         
-        if (special_key == t8::input::SpecialKey::Enter)
+        if (special_key == t8::SpecialKey::Enter)
         {
-          if (quit_confirm_button == t8::screen::YesNoButtons::Yes)
+          if (quit_confirm_button == t8::YesNoButtons::Yes)
           {
             pre_quit();
             return false;
@@ -461,7 +461,7 @@ namespace t8x
         }
         else if (show_game_over)
         {
-          if (t8::screen::game_over_timer == 0)
+          if (t8::game_over_timer == 0)
             draw_game_over(sh, 0.1f*(7.f/real_fps),
                            m_params.game_over_line_0_style,
                            m_params.game_over_line_1_style,
@@ -470,18 +470,18 @@ namespace t8x
                            m_params.game_over_line_4_style);
           else
           {
-            t8::screen::game_over_timer--;
-            if (t8::screen::game_over_timer == 0)
+            t8::game_over_timer--;
+            if (t8::game_over_timer == 0)
             {
               on_enter_game_over();
-              t8::screen::timestamp_game_over = real_time_s;
+              t8::timestamp_game_over = real_time_s;
             }
           }
           
           update();
           
           if (m_params.enable_hiscores && key == ' ' &&
-              (real_time_s - t8::screen::timestamp_game_over > t8::screen::c_min_time_game_over))
+              (real_time_s - t8::timestamp_game_over > t8::c_min_time_game_over))
           {
             on_exit_game_over();
             show_game_over = false;
@@ -493,24 +493,24 @@ namespace t8x
         }
         else if (show_you_won)
         {
-          if (t8::screen::you_won_timer == 0)
+          if (t8::you_won_timer == 0)
             draw_you_won(sh, 0.07f*(7.f/real_fps),
                          m_params.you_won_line_0_style,
                          m_params.you_won_line_1_style);
           else
           {
-            t8::screen::you_won_timer--;
-            if (t8::screen::you_won_timer == 0)
+            t8::you_won_timer--;
+            if (t8::you_won_timer == 0)
             {
               on_enter_you_won();
-              t8::screen::timestamp_you_won = real_time_s;
+              t8::timestamp_you_won = real_time_s;
             }
           }
           
           update();
           
           if (m_params.enable_hiscores && key == ' ' &&
-              (real_time_s - t8::screen::timestamp_you_won > t8::screen::c_min_time_you_won))
+              (real_time_s - t8::timestamp_you_won > t8::c_min_time_you_won))
           {
             on_exit_you_won();
             show_you_won = false;
@@ -599,7 +599,7 @@ namespace t8x
         }
       }
       
-      if (t8::log::log_finished)
+      if (t8x::log_finished)
         exit(EXIT_SUCCESS);
       
       return true;

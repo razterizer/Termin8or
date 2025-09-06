@@ -7,12 +7,12 @@
 
 #pragma once
 
-#include "Rectangle.h"
-#include "RC.h"
+#include "../geom/Rectangle.h"
+#include "../geom/RC.h"
 #include <Core/StringHelper.h>
 #include <optional>
 
-namespace t8::str
+namespace t8
 {
   
   std::string rectangle_to_str(const Rectangle& rec)

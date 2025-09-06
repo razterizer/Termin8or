@@ -1,20 +1,20 @@
 #pragma once
 #include <Core/Math.h>
 #include <Core/bool_vector.h>
-#include "Styles.h"
-#include "Texture.h"
+#include "../screen/Styles.h"
+#include "../drawing/Texture.h"
 
  
-namespace t8x::drawing
+namespace t8x
 {
   using RC = t8::RC;
   using Rectangle = t8::Rectangle;
   using Color = t8::Color;
-  using Style = t8::color::Style;
-  using ShadeType = t8::color::ShadeType;
-  using Texture = t8::drawing::Texture;
+  using Style = t8::Style;
+  using ShadeType = t8::ShadeType;
+  using Texture = t8::Texture;
   template<int NR, int NC>
-  using ScreenHandler = t8::screen::ScreenHandler<NR, NC>;
+  using ScreenHandler = t8::ScreenHandler<NR, NC>;
   
   
   // Bresenham Algorithm.

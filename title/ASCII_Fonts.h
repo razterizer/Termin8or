@@ -6,8 +6,8 @@
 //
 
 #pragma once
-#include "ScreenHandler.h"
-#include "Styles.h"
+#include "../screen/ScreenHandler.h"
+#include "../screen/Styles.h"
 
 #include <iostream>
 #include <sstream>
@@ -24,12 +24,12 @@
 //#define DEBUG_PRINT
 
 
-namespace t8x::fonts
+namespace t8x
 {
   using Color = t8::Color;
-  using Style = t8::color::Style;
+  using Style = t8::Style;
   template<int NR, int NC>
-  using ScreenHandler = t8::screen::ScreenHandler<NR, NC>;
+  using ScreenHandler = t8::ScreenHandler<NR, NC>;
   
 
   enum class Font
@@ -401,7 +401,7 @@ namespace t8x::fonts
     {
       for (const auto& piece : curr_char->font_pieces)
       {
-        t8::screen::OrderedText t;
+        t8::OrderedText t;
         t.str = piece.part;
         t.r = r + piece.r;
         t.c = c + piece.c;

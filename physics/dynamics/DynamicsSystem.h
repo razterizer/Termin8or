@@ -7,16 +7,16 @@
 
 #pragma once
 #include "RigidBody.h"
-#include "../SpriteHandler.h"
+#include "../../sprite/SpriteHandler.h"
 #include <vector>
 #include <memory>
 
 
-namespace t8x::physics
+namespace t8x
 {
   using Color = t8::Color;
   template<int NR, int NC>
-  using ScreenHandler = t8::screen::ScreenHandler<NR, NC>;
+  using ScreenHandler = t8::ScreenHandler<NR, NC>;
 
 
   class DynamicsSystem
@@ -25,7 +25,7 @@ namespace t8x::physics
   
   public:
   
-    RigidBody* add_rigid_body(sprite::Sprite* sprite, float rb_mass = 1.f,
+    RigidBody* add_rigid_body(Sprite* sprite, float rb_mass = 1.f,
       std::optional<Vec2> pos = std::nullopt, const Vec2& vel = {}, const Vec2& force = {},
       float ang_vel = 0.f, float torque = 0.f,
       float e = 0.8f, float dyn_friction = 0.f,
@@ -49,7 +49,7 @@ namespace t8x::physics
     }
     
     template<int NRB>
-    std::array<RigidBody*, NRB> add_rigid_bodies(const std::array<sprite::Sprite*, NRB>& sprites,
+    std::array<RigidBody*, NRB> add_rigid_bodies(const std::array<Sprite*, NRB>& sprites,
       std::function<float(int)> rb_mass = [](int){ return 1.f; },
       std::function<std::optional<Vec2>(int)> pos = [](int){ return std::nullopt; },
       std::function<Vec2(int)> vel = [](int){ return Vec2 {}; },

@@ -1,7 +1,7 @@
 #pragma once
 #include "Pixel.h"
 
-namespace t8x::drawing
+namespace t8x
 {
 
   struct LineData

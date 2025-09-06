@@ -6,10 +6,10 @@
 //
 
 #pragma once
-#include "Texture.h"
-#include "ScreenHandler.h"
-#include "Drawing.h"
-#include "AABB.h"
+#include "../screen/ScreenHandler.h"
+#include "../drawing/Texture.h"
+#include "../drawing/Drawing.h"
+#include "../geom/AABB.h"
 #include <Core/Vec2.h>
 #include <Core/bool_vector.h>
 #include <map>
@@ -17,12 +17,12 @@
 #include <memory>
 
 
-namespace t8x::sprite
+namespace t8x
 {
   using Color = t8::Color;
-  using Style = t8::color::Style;
+  using Style = t8::Style;
   template<int NR, int NC>
-  using ScreenHandler = t8::screen::ScreenHandler<NR, NC>;
+  using ScreenHandler = t8::ScreenHandler<NR, NC>;
   
   class Sprite
   {
@@ -139,12 +139,12 @@ namespace t8x::sprite
     
     RC size { 0, 0 };
     int area = 0;
-    std::vector<std::unique_ptr<drawing::Texture>> texture_frames;
+    std::vector<std::unique_ptr<Texture>> texture_frames;
     
-    drawing::Texture* fetch_frame(int anim_frame)
+    Texture* fetch_frame(int anim_frame)
     {
       while (stlutils::sizeI(texture_frames) <= anim_frame)
-        texture_frames.emplace_back(std::make_unique<drawing::Texture>());
+        texture_frames.emplace_back(std::make_unique<Texture>());
       return texture_frames[anim_frame].get();
     }
     
@@ -203,7 +203,7 @@ namespace t8x::sprite
         {
           auto* texture_from = fetch_frame(from_anim_frame);
           fetch_frame(anim_frame);
-          texture_frames[anim_frame] = std::make_unique<drawing::Texture>(*texture_from);
+          texture_frames[anim_frame] = std::make_unique<Texture>(*texture_from);
         }
         else
           std::cout << "ERROR in clone_frame() : anim_frame must be larger than or equal to the number of texture frames!" << std::endl;
@@ -212,14 +212,14 @@ namespace t8x::sprite
         std::cout << "ERROR in clone_frame() : from_anim_frame cannot be larger than or equal to the number of texture frames!" << std::endl;
     }
     
-    drawing::Texture* try_get_frame(int anim_frame)
+    Texture* try_get_frame(int anim_frame)
     {
       if (anim_frame < stlutils::sizeI(texture_frames))
         return texture_frames[anim_frame].get();
       return nullptr;
     }
     
-    void set_frame(int anim_frame, const drawing::Texture& texture)
+    void set_frame(int anim_frame, const Texture& texture)
     {
       auto* texture_dst = fetch_frame(anim_frame);
       *texture_dst = texture;
@@ -525,7 +525,7 @@ namespace t8x::sprite
       if (texture == nullptr)
         return false;
       std::vector<RC> points;
-      drawing::plot_line(p0, p1, points);
+      t8x::plot_line(p0, p1, points);
       auto f_set_attribute = [](auto& dst, const auto& src, const auto& src_replace)
       {
         if (src.has_value() && src_replace.has_value() && dst == src.value())
@@ -549,7 +549,7 @@ namespace t8x::sprite
     
     void flip_ud(int anim_frame)
     {
-      auto f_flip_char = [](t8::drawing::Textel& txt)
+      auto f_flip_char = [](t8::Textel& txt)
       {
         auto& ch = txt.ch;
         switch(ch)
@@ -599,7 +599,7 @@ namespace t8x::sprite
     
     void flip_lr(int anim_frame)
     {
-      auto f_flip_char = [](t8::drawing::Textel& txt)
+      auto f_flip_char = [](t8::Textel& txt)
       {
         auto& ch = txt.ch;
         switch(ch)
@@ -649,13 +649,13 @@ namespace t8x::sprite
         flip_lr(anim_frame);
     }
     
-    drawing::Texture* get_curr_sim_frame(int sim_frame) const
+    Texture* get_curr_sim_frame(int sim_frame) const
     {
       int frame_id = func_calc_anim_frame(sim_frame);
       return get_curr_local_frame(frame_id);
     }
     
-    drawing::Texture* get_curr_local_frame(int frame_id) const
+    Texture* get_curr_local_frame(int frame_id) const
     {
       if (frame_id >= stlutils::sizeI(texture_frames))
       {
@@ -677,10 +677,10 @@ namespace t8x::sprite
       if (texture == nullptr)
         return false;
       
-      drawing::draw_box_textured(sh,
+      draw_box_textured(sh,
                                  pos.r - 1, pos.c - 1,
                                  texture->size.r + 2, texture->size.c + 2,
-                                 drawing::SolarDirection::Zenith,
+                                 SolarDirection::Zenith,
                                  *texture);
       
       return true;
@@ -1163,7 +1163,7 @@ namespace t8x::sprite
         else
           ch = line_seg.ch;
         
-        t8x::drawing::plot_line(sh, p0, p1, std::string(1, ch), line_seg.style.fg_color, line_seg.style.bg_color);
+        t8x::plot_line(sh, p0, p1, std::string(1, ch), line_seg.style.fg_color, line_seg.style.bg_color);
       }
       
       if (vector_frame->fill_closed_polylines)
@@ -1175,7 +1175,7 @@ namespace t8x::sprite
           {
             auto [p0, p1] = calc_seg_world_pos_round(line_seg);
             raster_pts.clear();
-            drawing::plot_line(p0, p1, raster_pts);
+            plot_line(p0, p1, raster_pts);
             for (const auto& rc : raster_pts)
               stlutils::emplace_back_unique(map_row_to_occupied_cols[rc.r], rc.c);
           }
@@ -1255,7 +1255,7 @@ namespace t8x::sprite
           continue;
         points.clear();
         auto [p0, p1] = calc_seg_world_pos_round(line_seg);
-        drawing::plot_line(p0, p1, points);
+        plot_line(p0, p1, points);
         for (const auto& pt : points)
           mask[(pt.r - rmin) * aabb.width() + (pt.c - cmin)] = true;
       }
@@ -1279,7 +1279,7 @@ namespace t8x::sprite
       {
         points.clear();
         auto [p0, p1] = calc_seg_world_pos_round(line_seg);
-        drawing::plot_line(p0, p1, points);
+        plot_line(p0, p1, points);
         for (const auto& pt : points)
           if (pt == pos)
             return true;
@@ -1297,7 +1297,7 @@ namespace t8x::sprite
       for (const auto& line_seg : vector_frame->line_segments)
       {
         auto [p0, p1] = calc_seg_world_pos_round(line_seg);
-        drawing::plot_line(p0, p1, opaque_points);
+        plot_line(p0, p1, opaque_points);
       }
       
       return opaque_points;
@@ -1446,7 +1446,7 @@ namespace t8x::sprite
         auto aabb = sprite->calc_curr_AABB(sim_frame);
         
         auto rec = aabb.to_rectangle();
-        drawing::draw_box_outline(sh, rec, drawing::OutlineType::Line, { Color::LightGray, Color::Transparent2 });
+        draw_box_outline(sh, rec, OutlineType::Line, { Color::LightGray, Color::Transparent2 });
       });
     }
     

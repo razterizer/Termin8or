@@ -6,15 +6,15 @@
 //
 
 #pragma once
-#include "RC.h"
-#include "Color.h"
-#include "Styles.h"
-#include "Rectangle.h"
+#include "../geom/RC.h"
+#include "../geom/Rectangle.h"
+#include "../screen/Color.h"
+#include "../screen/Styles.h"
 #include <Core/TextIO.h>
 #include <sstream>
 
 
-namespace t8::drawing
+namespace t8
 {
 
   // size.r = 1, size.c = 1 yields a 1x1 texture.
@@ -25,8 +25,8 @@ namespace t8::drawing
     Color bg_color = Color::Transparent2;
     int mat = 0;
     
-    color::Style get_style() const { return { fg_color, bg_color }; }
-    void set_style(const color::Style& style)
+    Style get_style() const { return { fg_color, bg_color }; }
+    void set_style(const Style& style)
     {
       fg_color = style.fg_color;
       bg_color = style.bg_color;
