@@ -59,7 +59,7 @@ namespace t8x
     }
   }
   
-  void update_log_stream(LogMode log_mode, KeyPressDataPair& kpdp, StreamKeyboard* keyboard, const int frame_count)
+  void update_log_stream(LogMode log_mode, t8::KeyPressDataPair& kpdp, t8::StreamKeyboard* keyboard, const int frame_count)
   {
     if (log_mode == LogMode::Replay)
     {
@@ -82,14 +82,14 @@ namespace t8x
         else if (log_key_transient == "Space")
           kpdp.transient = ' ';
         else if (log_key_transient.size() > 1)
-          kpdp.transient = string_to_special_key(log_key_transient);
+          kpdp.transient = t8::string_to_special_key(log_key_transient);
           
         if (log_key_held.size() == 1)
           kpdp.held = log_key_held[0];
         else if (log_key_held == "Space")
           kpdp.held = ' ';
         else if (log_key_held.size() > 1)
-          kpdp.held = string_to_special_key(log_key_held);
+          kpdp.held = t8::string_to_special_key(log_key_held);
       }
       else
         log_finished = true;
@@ -102,7 +102,7 @@ namespace t8x
         rec_file << std::to_string(frame_count) << ' ';
         
         auto special_key_transient = get_special_key(kpdp.transient);
-        if (special_key_transient != SpecialKey::None)
+        if (special_key_transient != t8::SpecialKey::None)
           rec_file << special_key_to_string(special_key_transient);
         else
         {
@@ -118,7 +118,7 @@ namespace t8x
         rec_file << ' ';
         
         auto special_key_held = get_special_key(kpdp.held);
-        if (special_key_held != SpecialKey::None)
+        if (special_key_held != t8::SpecialKey::None)
           rec_file << special_key_to_string(special_key_held);
         else
         {
