@@ -9,8 +9,6 @@ namespace t8x
 {
   using RC = t8::RC;
   using Color = t8::Color;
-  template<typename T>
-  using Gradient = t8x::Gradient<T>;
   template<int NR, int NC>
   using ScreenHandler = t8::ScreenHandler<NR, NC>;
   
