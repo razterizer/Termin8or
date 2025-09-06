@@ -589,8 +589,8 @@ namespace t8x
     {
       auto pos = args.pos;
       const Style& box_style = args.base.box_style;
-      bool draw_box_outline = args.base.draw_box_outline;
-      bool draw_box_bkg = args.base.draw_box_bkg;
+      bool do_draw_box_outline = args.base.draw_box_outline;
+      bool do_draw_box_bkg = args.base.draw_box_bkg;
       int box_padding_ud = args.base.box_padding_ud;
       int box_padding_lr = args.base.box_padding_lr;
       std::optional<Style> box_outline_style = args.base.box_outline_style;
@@ -608,9 +608,9 @@ namespace t8x
       int c = pos.c - 1 - box_padding_lr;
       int r_len = static_cast<int>(N + 2 + 2*has_buttons() + 2*box_padding_ud);
       int c_len = static_cast<int>(len_max + 2 + 2*box_padding_lr);
-      if (draw_box_outline)
+      if (do_draw_box_outline)
         draw_box_outline(sh, r, c, r_len, c_len, outline_type, box_outline_style.value_or(box_style));
-      if (draw_box_bkg)
+      if (do_draw_box_bkg)
         draw_box(sh, r, c, r_len, c_len, box_style);
     }
     
