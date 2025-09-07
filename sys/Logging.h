@@ -19,8 +19,18 @@ namespace t8x
   std::ifstream rep_file;
   bool log_finished = false;
   
-  void setup_logging(LogMode log_mode, const std::string& xcode_log_filepath, const std::string& log_filename, unsigned int& curr_rnd_seed)
+  void setup_logging(LogMode log_mode, const std::string& log_path, const std::string& xcode_log_path, const std::string& log_filename, unsigned int& curr_rnd_seed)
   {
+    std::string log_filepath;
+    const char* xcode_env = nullptr;
+#ifndef _WIN32
+    xcode_env = std::getenv("RUNNING_FROM_XCODE");
+#endif
+    if (xcode_env != nullptr)
+      log_filepath = folder::join_file_path({ xcode_log_path, log_filename });
+    else
+      log_filepath = folder::join_file_path({ log_path, log_filename });
+  
     switch (log_mode)
     {
       case LogMode::None:
@@ -31,16 +41,6 @@ namespace t8x
         rec_file << curr_rnd_seed << '\n';
         break;
       case LogMode::Replay:
-        std::string log_filepath;
-#ifndef _WIN32
-        const char* xcode_env = std::getenv("RUNNING_FROM_XCODE");
-        if (xcode_env != nullptr)
-          log_filepath = xcode_log_filepath;
-#endif
-        if (log_filepath.empty())
-          log_filepath = log_filename;
-        else
-          log_filepath = folder::join_file_path({ log_filepath, log_filename });
         rep_file = std::ifstream { log_filepath, std::ios::in };
         if (!rep_file.is_open())
         {
