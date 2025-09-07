@@ -473,8 +473,10 @@ namespace t8x
     
       RC pos { 0, 0 };
       
-      auto mid_v = static_cast<int>(std::round((NR - N)*0.5f) - ((NR - N)%2 == 1)*0.5f);
-      auto mid_h = static_cast<int>(std::round((NC - len_max)*0.5f) - ((NC - len_max)%2 == 1)*0.5f);
+      auto r_diff = std::max(0, NR - static_cast<int>(N));
+      auto c_diff = std::max(0, NC - static_cast<int>(len_max));
+      auto mid_v = static_cast<int>(std::round(r_diff*0.5f) - (r_diff%2 == 1)*0.5f);
+      auto mid_h = static_cast<int>(std::round(c_diff*0.5f) - (c_diff%2 == 1)*0.5f);
       
       switch (args.v_align)
       {
