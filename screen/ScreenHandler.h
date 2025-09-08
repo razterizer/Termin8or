@@ -368,6 +368,21 @@ namespace t8
       return ret;
     }
     
+    Texture export_screen_buffers() const
+    {
+      Texture texture(NR, NC);
+      for (int r = 0; r < NR; ++r)
+      {
+        for (int c = 0; c < NC; ++c)
+        {
+          texture.set_textel_char(r, c, screen_buffer[r][c]);
+          texture.set_textel_fg_color(r, c, fg_color_buffer[r][c]);
+          texture.set_textel_bg_color(r, c, bg_color_buffer[r][c]);
+        }
+      }
+      return texture;
+    }
+    
     void print_screen_buffer_chars() const
     {
       for (int r = 0; r < NR; ++r)
