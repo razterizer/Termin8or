@@ -187,51 +187,6 @@ namespace t8
       }
     }
     
-    // Return copy of str but with spaces where tests failed.
-    std::string write_buffer_ret(const std::string& str, int r, int c, Color fg_color, Color bg_color = Color::Transparent)
-    {
-      if (str.empty())
-        return "";
-      std::string str_out = str;
-      //if (c >= 0 && str.size() + c <= NC)
-      {
-        if (r >= 0 && r < NR)
-        {
-          int n = static_cast<int>(str.size());
-          for (int ci = 0; ci < n; ++ci)
-          {
-            int c_tot = c + ci;
-            auto& scr_ch = screen_buffer[r][c_tot];
-            auto& scr_fg = fg_color_buffer[r][c_tot];
-            auto& scr_bg = bg_color_buffer[r][c_tot];
-            if (c_tot >= 0 && c_tot < NC
-              && scr_ch == ' '
-              && scr_bg == Color::Transparent)
-            {
-              scr_ch = str[ci];
-              scr_fg = fg_color;
-              scr_bg = bg_color;
-            }
-            else if (c_tot >= 0 && c_tot < NC
-                  && scr_bg == Color::Transparent2)
-            {
-              scr_bg = bg_color;
-              if (scr_ch == ' ')
-              {
-                scr_ch = str[ci];
-                scr_fg = fg_color;
-              }
-            }
-            else
-            {
-              str_out[ci] = ' ';
-            }
-          }
-        }
-      }
-      return str_out;
-    }
-    
     void replace_bg_color(Color from_bg_color, Color to_bg_color, Rectangle box)
     {
       for (int r = 0; r < NR; ++r)
