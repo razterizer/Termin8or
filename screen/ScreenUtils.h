@@ -2,26 +2,43 @@
 #include "ScreenHandler.h"
 #include "Styles.h"
 #include "../input/Keyboard.h"
-#include <Core/TextIO.h>
+//#include <Core/TextIO.h>
 #include <cmath>
-#ifdef _WIN32
-#define NOMINMAX // Should fix the std::min()/max() and std::numeric_limits<T>::min()/max() compilation problems.
-#include <windows.h>
-#else
-#include <sys/ioctl.h>
-#include <unistd.h>
-#endif
 #include <ranges>
 
 namespace t8
 {
+
+  template<int NR, int NC>
+  void draw_frame(ScreenHandler<NR, NC>& sh, Color fg_color)
+  {
+    const int nc_inset = sh.num_cols_inset();
+    const int nr_inset = sh.num_rows_inset();
+    sh.write_buffer("+" + str::rep_char('-', nc_inset) + "+", 0, 0, fg_color);
+    for (int r = 1; r <= nr_inset; ++r)
+    {
+      sh.write_buffer("|", r, 0, fg_color);
+      sh.write_buffer("|", r, nc_inset+1, fg_color);
+    }
+    sh.write_buffer("+" + str::rep_char('-', nc_inset) + "+", nr_inset+1, 0, fg_color);
+  }
   
-#ifdef _WIN32
-  static WORD savedAttributes;
-#endif
-  Style orig_style = { Color::White, Color::Black };
-  
-  
+}
+
+namespace t8x
+{
+
+  template<int NR, int NC>
+  using ScreenHandler = t8::ScreenHandler<NR, NC>;
+  using Color = t8::Color;
+  using Style = t8::Style;
+  using HiliteFGStyle = t8::HiliteFGStyle;
+  using ButtonStyle = t8::ButtonStyle;
+  using PromptStyle = t8::PromptStyle;
+  using KeyPressData = t8::KeyPressData;
+  using SpecialKey = t8::SpecialKey;
+
+
   // Game Over / You Won
   int game_over_timer = 10;
   int you_won_timer = 10;
@@ -38,232 +55,6 @@ namespace t8
   const float pix_ar_sq = pix_ar*pix_ar;
   const float pix_ar2 = 1.5f;
   const float pix_ar2_sq = pix_ar2*pix_ar;
-  
-  
-  // Clear screen and send cursor to home position.
-  void clear_screen()
-  {
-#ifdef _WIN32
-    // Too slow and not necessary.
-    //HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-    //COORD coord = { 0, 0 };
-    //DWORD count;
-    //CONSOLE_SCREEN_BUFFER_INFO csbi;
-    //
-    //GetConsoleScreenBufferInfo(hStdOut, &csbi);
-    //FillConsoleOutputCharacterA(hStdOut, ' ', csbi.dwSize.X * csbi.dwSize.Y, coord, &count);
-    //SetConsoleCursorPosition(hStdOut, coord);
-#else
-    printf("\x1b[2J");
-#endif
-  }
-  
-  // Send cursor to home position.
-  void return_cursor()
-  {
-#ifdef _WIN32
-    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD coord = { 0, 0 };
-    SetConsoleCursorPosition(hStdOut, coord);
-#else
-    //printf("\x1b[H");
-    std::cout << "\033[0;0H"; // Works on Ubuntu! #NOTE: must be std::cout instead of printf() here!
-#endif
-  }
-  
-  // Clear screen and send cursor to home position.
-  void restore_cursor()
-  {
-#ifndef _WIN32
-    printf("\x1b[2J");
-#endif
-  }
-  
-  void hide_cursor()
-  {
-#ifdef _WIN32
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_CURSOR_INFO cursorInfo;
-    
-    GetConsoleCursorInfo(hConsole, &cursorInfo);
-    cursorInfo.bVisible = FALSE; // Hide the cursor
-    SetConsoleCursorInfo(hConsole, &cursorInfo);
-#else
-    std::cout << "\x1B[?25l";
-#endif
-  }
-  
-  void show_cursor()
-  {
-#ifdef _WIN32
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_CURSOR_INFO cursorInfo;
-    
-    GetConsoleCursorInfo(hConsole, &cursorInfo);
-    cursorInfo.bVisible = TRUE; // Show the cursor
-    SetConsoleCursorInfo(hConsole, &cursorInfo);
-#else
-    std::cout << "\x1B[?25h";
-#endif
-  }
-  
-  void gotorc(int r, int c)
-  {
-#ifdef _WIN32
-    HANDLE hStdOut;
-    COORD coord;
-    hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-    coord.X = c;
-    coord.Y = r;
-    SetConsoleCursorPosition(hStdOut, coord);
-#else
-    printf("%c[%d;%df", 0x1B, r, c);
-#endif
-  }
-  
-  std::pair<int, int> get_terminal_window_size()
-  {
-    int rows = 0;
-    int cols = 0;
-#ifdef _WIN32
-    // Windows-specific code.
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
-    {
-      cols = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-      rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-    }
-    else
-      rows = cols = -1; // If we fail to get the size.
-#else
-    // POSIX (Linux/macOS) specific code.
-    struct winsize size;
-    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) == 0)
-    {
-      rows = size.ws_row;
-      cols = size.ws_col;
-    }
-    else
-      rows = cols = -1; // If we fail to get the size.
-#endif
-    return { rows, cols };
-  }
-  
-  void resize_terminal_window(int nr, int nc)
-  {
-#ifdef _WIN32
-    // Windows-specific code to resize the console window.
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    if (hConsole == INVALID_HANDLE_VALUE)
-    {
-      std::cerr << "Error: Unable to get console handle." << std::endl;
-      return;
-    }
-    
-    // Get current console buffer and window size.
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-    if (!GetConsoleScreenBufferInfo(hConsole, &csbi))
-    {
-      std::cerr << "Error: Unable to get console screen buffer info." << std::endl;
-      return;
-    }
-    
-    // Adjust window size to prevent shrinking the buffer before the window.
-    SMALL_RECT windowSize = { 0, 0, static_cast<SHORT>(nc - 1), static_cast<SHORT>(nr - 1) };
-    
-    // If new size is larger than buffer, set buffer size first.
-    COORD bufferSize = {
-      static_cast<SHORT>(std::max(static_cast<SHORT>(nc), csbi.dwSize.X)),
-      static_cast<SHORT>(std::max(static_cast<SHORT>(nr), csbi.dwSize.Y)) };
-    
-    if (!SetConsoleScreenBufferSize(hConsole, bufferSize))
-    {
-      std::cerr << "Error: Unable to set console screen buffer size." << std::endl;
-      return;
-    }
-    
-    // Now set the window size.
-    if (!SetConsoleWindowInfo(hConsole, TRUE, &windowSize))
-    {
-      std::cerr << "Error: Unable to resize console window." << std::endl;
-      return;
-    }
-    
-    system("cls"); // Clear the console screen (Windows specific).
-#else
-    // POSIX (Linux/macOS) code to resize terminal.
-    std::cout << "\033[8;" << nr << ";" << nc << "t"; // Resize terminal with ANSI escape sequence.
-#endif
-  }
-  
-  // Function to save current console fg and bg colors.
-  void save_terminal_colors()
-  {
-#if _WIN32
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    
-    CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
-    if (GetConsoleScreenBufferInfo(hConsole, &consoleInfo))
-    {
-      savedAttributes = consoleInfo.wAttributes;
-      int bg_color = static_cast<int>(savedAttributes & 0xF0) >> 4;
-      orig_style.bg_color = get_color_win(bg_color);
-      
-      int fg_color = static_cast<int>(savedAttributes & 0x0F);
-      orig_style.fg_color = get_color_win(fg_color);
-    }
-    else
-      std::cerr << "Error: Unable to get console screen buffer info." << std::endl;
-#endif
-  }
-  
-  // Function to restore the saved console colors.
-  Style restore_terminal_colors()
-  {
-#if _WIN32
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    
-    if (!SetConsoleTextAttribute(hConsole, savedAttributes))
-      std::cerr << "Error: Unable to restore console text attributes." << std::endl;
-#endif
-    return orig_style;
-  }
-  
-  void begin_screen()
-  {
-    save_terminal_colors();
-    clear_screen();
-    return_cursor();
-    hide_cursor();
-  }
-  
-  template<int NR, int NC>
-  void end_screen(ScreenHandler<NR, NC>& sh)
-  {
-    auto orig_colors [[maybe_unused]] = restore_terminal_colors();
-#ifndef __APPLE__
-    sh.clear();
-    sh.replace_fg_color(orig_colors.fg_color);
-    sh.replace_bg_color(orig_colors.bg_color);
-    sh.print_screen_buffer(orig_colors.bg_color);
-#endif
-    restore_cursor();
-    show_cursor();
-  }
-  
-  template<int NR, int NC>
-  void draw_frame(ScreenHandler<NR, NC>& sh, Color fg_color)
-  {
-    const int nc_inset = sh.num_cols_inset();
-    const int nr_inset = sh.num_rows_inset();
-    sh.write_buffer("+" + str::rep_char('-', nc_inset) + "+", 0, 0, fg_color);
-    for (int r = 1; r <= nr_inset; ++r)
-    {
-      sh.write_buffer("|", r, 0, fg_color);
-      sh.write_buffer("|", r, nc_inset+1, fg_color);
-    }
-    sh.write_buffer("+" + str::rep_char('-', nc_inset) + "+", nr_inset+1, 0, fg_color);
-  }
   
   // http://www.network-science.de/ascii/
   // http://patorjk.com/software/taag/#p=display&f=Graffiti&t=Game%20Over Graffiti

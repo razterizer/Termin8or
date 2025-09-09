@@ -41,7 +41,7 @@ namespace t8x
     void update(float dt)
     {
       pos_c += vel_c * dt;
-      pos_r += vel_r * dt / t8::pix_ar;
+      pos_r += vel_r * dt / pix_ar;
       pos_r += g * dt; // r is pointing down.
     }
     

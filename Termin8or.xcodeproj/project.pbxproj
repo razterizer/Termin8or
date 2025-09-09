@@ -35,6 +35,8 @@
 		075AC7A52E6C79BA00D0EE66 /* ASCII_Fonts.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AC79F2E6C79BA00D0EE66 /* ASCII_Fonts.h */; };
 		075AC7A92E6C79DD00D0EE66 /* MessageHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AC7A72E6C79DD00D0EE66 /* MessageHandler.h */; };
 		075AC7AA2E6C79DD00D0EE66 /* UI.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AC7A82E6C79DD00D0EE66 /* UI.h */; };
+		07608E3F2E70C4760077EA65 /* ScreenCommandsBasic.h in Headers */ = {isa = PBXBuildFile; fileRef = 07608E3E2E70C46A0077EA65 /* ScreenCommandsBasic.h */; };
+		07608E412E70C5F40077EA65 /* ScreenCommands.h in Headers */ = {isa = PBXBuildFile; fileRef = 07608E402E70C5E90077EA65 /* ScreenCommands.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,6 +76,8 @@
 		075AC7A32E6C79BA00D0EE66 /* LICENSE_FIGlet */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE_FIGlet; sourceTree = "<group>"; };
 		075AC7A72E6C79DD00D0EE66 /* MessageHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessageHandler.h; sourceTree = "<group>"; };
 		075AC7A82E6C79DD00D0EE66 /* UI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UI.h; sourceTree = "<group>"; };
+		07608E3E2E70C46A0077EA65 /* ScreenCommandsBasic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenCommandsBasic.h; sourceTree = "<group>"; };
+		07608E402E70C5E90077EA65 /* ScreenCommands.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenCommands.h; sourceTree = "<group>"; };
 		0760B6F02B9CEABC0032CACD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		07685DAB2CD510E200472204 /* Keyboard_examples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Keyboard_examples.h; sourceTree = "<group>"; };
 		07D007BF2CBF39BD00CCB5E7 /* SpriteHandler_examples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpriteHandler_examples.h; sourceTree = "<group>"; };
@@ -135,6 +139,8 @@
 				075AC74E2E6C492900D0EE66 /* Color.h */,
 				075AC74F2E6C492900D0EE66 /* ScreenHandler.h */,
 				075AC7502E6C492900D0EE66 /* ScreenScaling.h */,
+				07608E3E2E70C46A0077EA65 /* ScreenCommandsBasic.h */,
+				07608E402E70C5E90077EA65 /* ScreenCommands.h */,
 				075AC7512E6C492900D0EE66 /* ScreenUtils.h */,
 				075AC7522E6C492900D0EE66 /* Styles.h */,
 				075AC7532E6C492900D0EE66 /* Text.h */,
@@ -305,12 +311,14 @@
 				075AC7AA2E6C79DD00D0EE66 /* UI.h in Headers */,
 				075AC7682E6C499D00D0EE66 /* Pixel.h in Headers */,
 				075AC7692E6C499D00D0EE66 /* Texture.h in Headers */,
+				07608E3F2E70C4760077EA65 /* ScreenCommandsBasic.h in Headers */,
 				075AC76A2E6C499D00D0EE66 /* Drawing.h in Headers */,
 				075AC7952E6C793D00D0EE66 /* SpriteHandler.h in Headers */,
 				075AC78B2E6C788B00D0EE66 /* ParticleSystem.h in Headers */,
 				075AC76B2E6C499D00D0EE66 /* Gradient.h in Headers */,
 				075AC76C2E6C499D00D0EE66 /* Animation.h in Headers */,
 				075AC76D2E6C499D00D0EE66 /* LineData.h in Headers */,
+				07608E412E70C5F40077EA65 /* ScreenCommands.h in Headers */,
 				075AC75F2E6C496100D0EE66 /* Rectangle.h in Headers */,
 				075AC7602E6C496100D0EE66 /* RC.h in Headers */,
 				075AC7902E6C78EF00D0EE66 /* CollisionHandler.h in Headers */,

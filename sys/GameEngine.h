@@ -8,6 +8,7 @@
 #pragma once
 #include "Logging.h"
 #include "../input/Keyboard.h"
+#include "../screen/ScreenCommands.h"
 #include "../screen/ScreenUtils.h"
 #include <Core/Delay.h>
 #include <Core/Rand.h>
@@ -116,11 +117,11 @@ namespace t8x
     int frame_ctr = 0;
     int frame_ctr_measure = 0;
     
-    t8::YesNoButtons quit_confirm_button = t8::YesNoButtons::No;
+    YesNoButtons quit_confirm_button = YesNoButtons::No;
     
-    std::vector<t8::HiScoreItem> hiscore_list;
+    std::vector<HiScoreItem> hiscore_list;
     int score = 0;
-    t8::HiScoreItem curr_score_item;
+    HiScoreItem curr_score_item;
     int hiscore_caret_idx = 0;
     
     int term_win_rows = 0;
@@ -128,7 +129,7 @@ namespace t8x
     
     OneShot trg_update_halted, trg_update_resumed;
     
-    bool handle_hiscores(const t8::HiScoreItem& curr_hsi)
+    bool handle_hiscores(const HiScoreItem& curr_hsi)
     {
       const int c_max_num_hiscores = 20;
       const std::string c_file_path = folder::join_file_path({ exe_path, "hiscores.txt" });
@@ -146,7 +147,7 @@ namespace t8x
       for (const auto& hs_str : lines)
       {
         std::istringstream iss(hs_str);
-        t8::HiScoreItem hsi;
+        HiScoreItem hsi;
         iss >> hsi.name >> hsi.score;
         hiscore_list.emplace_back(hsi);
       }
@@ -387,7 +388,7 @@ namespace t8x
       if (quit)
       {
         math::toggle(show_quit_confirm);
-        quit_confirm_button = t8::YesNoButtons::No;
+        quit_confirm_button = YesNoButtons::No;
       }
       else if (m_params.enable_pause && pause)
       {
@@ -419,13 +420,13 @@ namespace t8x
                      m_params.quit_confirm_button_style,
                      m_params.quit_confirm_info_style);
         if (special_key == t8::SpecialKey::Left)
-          quit_confirm_button = t8::YesNoButtons::Yes;
+          quit_confirm_button = YesNoButtons::Yes;
         else if (special_key == t8::SpecialKey::Right)
-          quit_confirm_button = t8::YesNoButtons::No;
+          quit_confirm_button = YesNoButtons::No;
         
         if (special_key == t8::SpecialKey::Enter)
         {
-          if (quit_confirm_button == t8::YesNoButtons::Yes)
+          if (quit_confirm_button == YesNoButtons::Yes)
           {
             pre_quit();
             return false;
@@ -461,7 +462,7 @@ namespace t8x
         }
         else if (show_game_over)
         {
-          if (t8::game_over_timer == 0)
+          if (game_over_timer == 0)
             draw_game_over(sh, 0.1f*(7.f/real_fps),
                            m_params.game_over_line_0_style,
                            m_params.game_over_line_1_style,
@@ -470,18 +471,18 @@ namespace t8x
                            m_params.game_over_line_4_style);
           else
           {
-            t8::game_over_timer--;
-            if (t8::game_over_timer == 0)
+            game_over_timer--;
+            if (game_over_timer == 0)
             {
               on_enter_game_over();
-              t8::timestamp_game_over = real_time_s;
+              timestamp_game_over = real_time_s;
             }
           }
           
           update();
           
           if (m_params.enable_hiscores && key == ' ' &&
-              (real_time_s - t8::timestamp_game_over > t8::c_min_time_game_over))
+              (real_time_s - timestamp_game_over > c_min_time_game_over))
           {
             on_exit_game_over();
             show_game_over = false;
@@ -493,24 +494,24 @@ namespace t8x
         }
         else if (show_you_won)
         {
-          if (t8::you_won_timer == 0)
+          if (you_won_timer == 0)
             draw_you_won(sh, 0.07f*(7.f/real_fps),
                          m_params.you_won_line_0_style,
                          m_params.you_won_line_1_style);
           else
           {
-            t8::you_won_timer--;
-            if (t8::you_won_timer == 0)
+            you_won_timer--;
+            if (you_won_timer == 0)
             {
               on_enter_you_won();
-              t8::timestamp_you_won = real_time_s;
+              timestamp_you_won = real_time_s;
             }
           }
           
           update();
           
           if (m_params.enable_hiscores && key == ' ' &&
-              (real_time_s - t8::timestamp_you_won > t8::c_min_time_you_won))
+              (real_time_s - timestamp_you_won > c_min_time_you_won))
           {
             on_exit_you_won();
             show_you_won = false;
