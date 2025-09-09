@@ -83,12 +83,17 @@ There are now two namespaces: `t8` and `t8x`. `t8` contain the core features and
 * `geom/AABB` (`t8x`) : A templetized (int, float) AABB class that can return a `Rectangle` object if needed. Used in `CollisionHandler` for broad-phase detection.
 * `screen/Color.h` (`t8`) : Contains colour definitions for the 16 colors that Termin8or (and the terminal) supports. There are also two transparency colours / modes which allows you to overlay text using the same colours that are already present in a given location in the screen buffer (see `ScreenHandler.h`).
 * `screen/Styles.h` (`t8`) : `Style` and its derivatives are just fancy structs grouping a foreground colour with a background colour.
-* `screen/ScreenUtils.h` (`t8`) : A collection of functions for rendering dialogs and such:
+* `screen/ScreenCommandsBasic.h` (`t8`) : A collection of functions for controlling terminal screen output: 
   * Low-level functions: `clear_screen()`, `return_cursor()`, `restore_cursor()`, `hide_cursor()`, `show_cursor()`, `gotorc()`.
-  * Medium-level functions: `get_terminal_window_size()`, `resize_terminal_window()`, `save_terminal_colors()`, `restore_terminal_colors()`.
+  * Medium-level functions: `get_terminal_window_size()`, `resize_terminal_window()`.
+* `screen/ScreenCommands.h` (`t8`) : A collection of functions for controlling terminal screen output on a bit higher level (one of which involve `ScreenHandler`):
+  * Medium-level functions: `save_terminal_colors()`, `restore_terminal_colors()`.
   * High-level functions: `begin_screen()`, `end_screen()`. These take care of color restoration, clearing screen, hiding the cursor etc, except for the resizing of the terminal window.
-  * `draw_frame()` : Draws a simple frame around your frame buffer.
-  * `draw_game_over()`, `draw_you_won()` : Draws wavy banners in the FIGlet font Grafitti. Used by `GameEngine` if those features are enabled.
+* `screen/ScreenUtils.h` (`t8`, `t8x`) : A collection of functions for rendering dialogs and such:
+  * `draw_frame()` (`t8`) : Draws a simple frame around your frame buffer.
+  * `draw_game_over()`, `draw_you_won()` (`t8x`) : Draws wavy banners in the FIGlet font Grafitti. Used by `GameEngine` if those features are enabled.
+  * `draw_paused()` (`t8x`) : Draws an animated pause screen.
+  * `draw_confirm()`, `draw_input_hiscore()`, `draw_hiscores()` : These are the more UI-related functions of this header.
 * `screen/Text.h` (`t8`) : `Text` handles text output and translates Color enum items to corresponding color values depending on platform compiled. Is also responsible for creating the appropriate ANDI escape sequences for the TTY and such.
 * `screen/ScreenHandler.h` (`t8`) : Contains the screen buffers (char / fg-color / bg-color) and manages transparency etc. It outputs the contents to the terminal via a privatly owned `Text` object.
 * `screen/ScreenScaling.h` (`t8x`) : Friend with `ScreenHandler.h` which allows you to scale the screen buffer. Beware that any acutal text or ASCII banner will not be readable when scaled up or down!
