@@ -93,7 +93,7 @@ There are now two namespaces: `t8` and `t8x`. `t8` contain the core features and
   * `draw_frame()` (`t8`) : Draws a simple frame around your frame buffer.
   * `draw_game_over()`, `draw_you_won()` (`t8x`) : Draws wavy banners in the FIGlet font Grafitti. Used by `GameEngine` if those features are enabled.
   * `draw_paused()` (`t8x`) : Draws an animated pause screen.
-  * `draw_confirm()`, `draw_input_hiscore()`, `draw_hiscores()` : These are the more UI-related functions of this header.
+  * `draw_confirm()`, `draw_input_hiscore()`, `draw_hiscores()` (`t8x`) : These are the more UI-related functions of this header.
 * `screen/Text.h` (`t8`) : `Text` handles text output and translates Color enum items to corresponding color values depending on platform compiled. Is also responsible for creating the appropriate ANDI escape sequences for the TTY and such.
 * `screen/ScreenHandler.h` (`t8`) : Contains the screen buffers (char / fg-color / bg-color) and manages transparency etc. It outputs the contents to the terminal via a privatly owned `Text` object.
 * `screen/ScreenScaling.h` (`t8x`) : Friend with `ScreenHandler.h` which allows you to scale the screen buffer. Beware that any acutal text or ASCII banner will not be readable when scaled up or down!
