@@ -57,11 +57,13 @@ namespace t8
     std::unique_ptr<Text> m_text;
     
     // Draw from top to bottom.
-    std::array<std::array<char, NC>, NR> screen_buffer, prev_screen_buffer;
-    std::array<std::array<Color, NC>, NR> fg_color_buffer, prev_fg_color_buffer;
-    std::array<std::array<Color, NC>, NR> bg_color_buffer, prev_bg_color_buffer;
-    std::array<std::array<bool, NC>, NR> dirty_flag_buffer;
+    std::array<char, NC*NR> screen_buffer, prev_screen_buffer;
+    std::array<Color, NC*NR> fg_color_buffer, prev_fg_color_buffer;
+    std::array<Color, NC*NR> bg_color_buffer, prev_bg_color_buffer;
+    std::array<bool, NC*NR> dirty_flag_buffer;
     Color prev_clear_bg_color = Color::Default;
+    
+    inline int index(int r, int c) const noexcept { return NC*r + c; }
     
     std::string color2str(Color col) const
     {
@@ -100,23 +102,19 @@ namespace t8
     
     void clear()
     {
-      for (auto& row : screen_buffer)
-        for (auto& col : row)
-          col = ' ';
-      for (auto& row : fg_color_buffer)
-        for (auto& col : row)
-          col = Color::Default;
-      for (auto& row : bg_color_buffer)
-        for (auto& col : row)
-          col = Color::Transparent;
-      for (auto& row : dirty_flag_buffer)
-        for (auto& col : row)
-          col = false;
+      for (auto& ch : screen_buffer)
+        ch = ' ';
+      for (auto& col : fg_color_buffer)
+        col = Color::Default;
+      for (auto& col : bg_color_buffer)
+        col = Color::Transparent;
+      for (auto& df : dirty_flag_buffer)
+        df = false;
     }
     
     bool test_empty(int r, int c) const
     {
-      return screen_buffer[r][c] == ' ';
+      return screen_buffer[index(r, c)] == ' ';
     }
     
     // write_buffer using StringBox.
@@ -170,9 +168,10 @@ namespace t8
             int c_tot = c + ci;
             if (c_tot >= 0 && c_tot < NC)
             {
-              auto& scr_ch = screen_buffer[r][c_tot];
-              auto& scr_fg = fg_color_buffer[r][c_tot];
-              auto& scr_bg = bg_color_buffer[r][c_tot];
+              int idx = index(r, c_tot);
+              auto& scr_ch = screen_buffer[idx];
+              auto& scr_fg = fg_color_buffer[idx];
+              auto& scr_bg = bg_color_buffer[idx];
               if (scr_ch == ' '
                 && scr_bg == Color::Transparent)
               {
@@ -203,8 +202,9 @@ namespace t8
         {
           if (box.is_inside(r, c))
           {
-            if (bg_color_buffer[r][c] == from_bg_color)
-              bg_color_buffer[r][c] = to_bg_color;
+            auto& col = bg_color_buffer[index(r, c)];
+            if (col == from_bg_color)
+              col = to_bg_color;
           }
         }
       }
@@ -218,7 +218,7 @@ namespace t8
         {
           if (box.is_inside(r, c))
           {
-            bg_color_buffer[r][c] = to_bg_color;
+            bg_color_buffer[index(r, c)] = to_bg_color;
           }
         }
       }
@@ -230,7 +230,7 @@ namespace t8
       {
         for (int c = 0; c < NC; ++c)
         {
-          bg_color_buffer[r][c] = to_bg_color;
+          bg_color_buffer[index(r, c)] = to_bg_color;
         }
       }
     }
@@ -243,7 +243,7 @@ namespace t8
         {
           if (box.is_inside(r, c))
           {
-            fg_color_buffer[r][c] = to_fg_color;
+            fg_color_buffer[index(r, c)] = to_fg_color;
           }
         }
       }
@@ -255,7 +255,7 @@ namespace t8
       {
         for (int c = 0; c < NC; ++c)
         {
-          fg_color_buffer[r][c] = to_fg_color;
+          fg_color_buffer[index(r, c)] = to_fg_color;
         }
       }
     }
@@ -271,11 +271,12 @@ namespace t8
       {
         for (int c = 0; c < NC; ++c)
         {
-          auto bg_curr = resolve_bg_color(bg_color_buffer[r][c], clear_bg_color);
-          auto bg_prev = resolve_bg_color(prev_bg_color_buffer[r][c], prev_clear_bg_color);
-          dirty_flag_buffer[r][c] =
-               screen_buffer[r][c] != prev_screen_buffer[r][c]
-            || fg_color_buffer[r][c] != prev_fg_color_buffer[r][c]
+          int idx = index(r, c);
+          auto bg_curr = resolve_bg_color(bg_color_buffer[idx], clear_bg_color);
+          auto bg_prev = resolve_bg_color(prev_bg_color_buffer[idx], prev_clear_bg_color);
+          dirty_flag_buffer[idx] =
+               screen_buffer[idx] != prev_screen_buffer[idx]
+            || fg_color_buffer[idx] != prev_fg_color_buffer[idx]
             || bg_curr != bg_prev;
         }
       }
@@ -314,10 +315,11 @@ namespace t8
       {
         for (int c = 0; c < NC; ++c)
         {
-          Color bg_col_buf = bg_color_buffer[r][c];
+          int idx = index(r, c);
+          Color bg_col_buf = bg_color_buffer[idx];
           if (bg_col_buf == Color::Transparent || bg_col_buf == Color::Transparent2)
             bg_col_buf = clear_bg_color;
-          colored_str[i++] = { screen_buffer[r][c], fg_color_buffer[r][c], bg_col_buf };
+          colored_str[i++] = { screen_buffer[idx], fg_color_buffer[idx], bg_col_buf };
         }
         colored_str[i++] = { '\n', Color::Default, Color::Default };
       }
@@ -334,14 +336,15 @@ namespace t8
         chunk.text.reserve(16); // #FIXME: Magic number.
         for (int c = 0; c < NC; ++c)
         {
-          if (dirty_flag_buffer[r][c])
+          int idx = index(r, c);
+          if (dirty_flag_buffer[idx])
           {
             if (chunk.text.empty())
               chunk.pos = { r+1, c+1 };
-            Color bg_col_buf = bg_color_buffer[r][c];
+            Color bg_col_buf = bg_color_buffer[idx];
             if (bg_col_buf == Color::Transparent || bg_col_buf == Color::Transparent2)
               bg_col_buf = clear_bg_color;
-            chunk.text.emplace_back(screen_buffer[r][c], fg_color_buffer[r][c], bg_col_buf);
+            chunk.text.emplace_back(screen_buffer[idx], fg_color_buffer[idx], bg_col_buf);
           }
           else if (!chunk.text.empty())
           {
@@ -376,9 +379,10 @@ namespace t8
           if (!stlutils::contains(offscreen_buffer.dst_fill_bg_colors, textel.bg_color))
             continue;
           
-          textel.ch = screen_buffer[r][c];
-          textel.fg_color = fg_color_buffer[r][c];
-          textel.bg_color = bg_color_buffer[r][c];
+          int idx = index(r, c);
+          textel.ch = screen_buffer[idx];
+          textel.fg_color = fg_color_buffer[idx];
+          textel.bg_color = bg_color_buffer[idx];
           
           if (stlutils::contains(offscreen_buffer.exclude_src_chars, textel.ch))
             continue;
@@ -404,7 +408,7 @@ namespace t8
         auto& line = ret[r];
         line.resize(NC);
         for (int c = 0; c < NC; ++c)
-          line[c] = screen_buffer[r][c];
+          line[c] = screen_buffer[index(r, c)];
       }
       return ret;
     }
@@ -416,9 +420,10 @@ namespace t8
       {
         for (int c = 0; c < NC; ++c)
         {
-          texture.set_textel_char(r, c, screen_buffer[r][c]);
-          texture.set_textel_fg_color(r, c, fg_color_buffer[r][c]);
-          texture.set_textel_bg_color(r, c, bg_color_buffer[r][c]);
+          int idx = index(r, c);
+          texture.set_textel_char(r, c, screen_buffer[idx]);
+          texture.set_textel_fg_color(r, c, fg_color_buffer[idx]);
+          texture.set_textel_bg_color(r, c, bg_color_buffer[idx]);
         }
       }
       return texture;
@@ -429,7 +434,7 @@ namespace t8
       for (int r = 0; r < NR; ++r)
       {
         for (int c = 0; c < NC; ++c)
-          printf("%c", screen_buffer[r][c]);
+          printf("%c", screen_buffer[index(r, c)]);
         printf("\n");
       }
     }
@@ -439,7 +444,7 @@ namespace t8
       for (int r = 0; r < NR; ++r)
       {
         for (int c = 0; c < NC; ++c)
-          printf("%s", color2str(fg_color_buffer[r][c]).c_str());
+          printf("%s", color2str(fg_color_buffer[index(r, c)]).c_str());
         printf("\n");
       }
     }
@@ -449,7 +454,7 @@ namespace t8
       for (int r = 0; r < NR; ++r)
       {
         for (int c = 0; c < NC; ++c)
-          printf("%s", color2str(bg_color_buffer[r][c]).c_str());
+          printf("%s", color2str(bg_color_buffer[index(r, c)]).c_str());
         printf("\n");
       }
     }
