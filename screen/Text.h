@@ -1,5 +1,7 @@
 #pragma once
 #include "Color.h"
+#include "ScreenCommandsBasic.h"
+#include "../geom/RC.h"
 #include <string>
 #include <vector>
 #include <tuple>
@@ -125,7 +127,9 @@ namespace t8
 #endif
     }
     
-    void print_complex(const std::vector<std::tuple<char, Color, Color>>& text)
+    using ComplexString = std::vector<std::tuple<char, Color, Color>>;
+    
+    void print_complex(const ComplexString& text)
     {
       size_t n = text.size();
       std::string output;
@@ -163,6 +167,21 @@ namespace t8
       //printf("%s", output.c_str());
       std::cout << output;
 #endif
+    }
+    
+    struct ComplexStringChunk
+    {
+      RC pos;
+      ComplexString text;
+    };
+    
+    void print_complex(const std::vector<ComplexStringChunk>& chunk_vec)
+    {
+      for (const auto& chunk : chunk_vec)
+      {
+        gotorc(chunk.pos.r, chunk.pos.c);
+        print_complex(chunk.text);
+      }
     }
     
     void print_reset() const
