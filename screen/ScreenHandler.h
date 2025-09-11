@@ -268,7 +268,7 @@ namespace t8
         }
         colored_str[i++] = { '\n', Color::Default, Color::Default };
       }
-      m_text->print_complex(colored_str);
+      m_text->print_complex_sequential(colored_str);
     }
     
     void print_screen_buffer(Color bg_color, const OffscreenBuffer& offscreen_buffer)

@@ -129,7 +129,7 @@ namespace t8
     
     using ComplexString = std::vector<std::tuple<char, Color, Color>>;
     
-    void print_complex(const ComplexString& text)
+    void print_complex_sequential(const ComplexString& text)
     {
       size_t n = text.size();
       std::string output;
@@ -175,12 +175,12 @@ namespace t8
       ComplexString text;
     };
     
-    void print_complex(const std::vector<ComplexStringChunk>& chunk_vec)
+    void print_complex_chunks(const std::vector<ComplexStringChunk>& chunk_vec)
     {
       for (const auto& chunk : chunk_vec)
       {
         gotorc(chunk.pos.r, chunk.pos.c);
-        print_complex(chunk.text);
+        print_complex_sequential(chunk.text);
       }
     }
     
