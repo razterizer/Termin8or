@@ -7,6 +7,7 @@
 
 #pragma once
 #include "../sprite/SpriteHandler.h"
+#include "../screen/ScreenCommands.h"
 #include "../screen/ScreenUtils.h"
 #include "../physics/dynamics/CollisionHandler.h"
 #include "../physics/dynamics/DynamicsSystem.h"
@@ -241,7 +242,7 @@ namespace sprite_handler
     }
     
 quit:
-    end_screen(sh);
+    t8::end_screen(sh);
   }
   
   void example2()
@@ -336,7 +337,7 @@ quit:
     
 quit:
     auto dur_s = 1e-3f * benchmark::toc();
-    end_screen(sh);
+    t8::end_screen(sh);
     
     auto fps = i / dur_s;
     std::cout << "FPS = " << fps << std::endl;
