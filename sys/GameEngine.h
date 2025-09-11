@@ -15,6 +15,7 @@
 #include <Core/Math.h>
 #include <Core/FolderHelper.h>
 #include <Core/OneShot.h>
+#include <Core/Benchmark.h>
 #include <chrono>
 #include <sstream>
 
@@ -76,6 +77,8 @@ namespace t8x
     
     bool suppress_tty_output = false;
     bool suppress_tty_input = false;
+    
+    bool enable_benchmark = false;
   };
   
   template<int NR = 30, int NC = 80>
@@ -310,6 +313,9 @@ namespace t8x
       
       t8x::setup_logging(m_params.log_mode, get_exe_folder(), m_params.xcode_log_path, m_params.log_filename, curr_rnd_seed);
       
+      if (m_params.enable_benchmark)
+        benchmark::tic();
+      
       if (time_inited.once())
         real_start_time_s = std::chrono::steady_clock::now();
     }
@@ -355,7 +361,19 @@ namespace t8x
   private:
     void pre_quit()
     {
+      float dur_s = 0.f;
+      if (m_params.enable_benchmark)
+        dur_s = 1e-3f * benchmark::toc();
+    
       end_screen(sh);
+      
+      if (m_params.enable_benchmark && 0.f < dur_s)
+      {
+        auto avg_fps = frame_ctr / dur_s;
+        std::cout << "Goal FPS = " << real_fps << std::endl;
+        std::cout << "Average FPS = " << avg_fps << std::endl;
+      }
+      
       if (m_params.enable_terminal_window_resize)
         if (term_win_rows > 0 && term_win_cols > 0)
           t8::resize_terminal_window(term_win_rows, term_win_cols);
