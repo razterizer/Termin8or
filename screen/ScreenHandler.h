@@ -8,6 +8,7 @@
 #include <Core/StringBox.h>
 #include <Core/StlUtils.h>
 #include <Core/Math.h>
+#include <Core/Benchmark.h>
 #include <array>
 #include <map>
 #include <memory>
@@ -46,6 +47,8 @@ namespace t8
     std::vector<std::pair<Color, Color>> replace_src_dst_bg_colors;
   };
   
+  enum class DrawPolicy { FULL, SUGGEST_PARTIAL, FORCE_PARTIAL, THRESHOLD_SELECT, MEASURE_SELECT };
+  
   // //////////////////////////////////////////////////
   
   // Bad design.
@@ -62,6 +65,17 @@ namespace t8
     std::array<Color, NC*NR> bg_color_buffer, prev_bg_color_buffer;
     std::array<bool, NC*NR> dirty_flag_buffer;
     Color prev_clear_bg_color = Color::Default;
+    
+    float dirty_fraction_threshold = 0.5f;
+    
+    benchmark::TicTocTimer t8_ScreenHandler_redraw_timer;
+    double measured_delay_ms_full = 0;
+    double measured_delay_ms_partial = 0;
+    int num_frames_between_measurings = 1000;
+    int frame = 0;
+    int measure_mode = 0; // 0: full, 1: partial.
+    int num_full_redraws = 0;
+    int num_partial_redraws = 0;
     
     inline int index(int r, int c) const noexcept { return NC*r + c; }
     
@@ -290,20 +304,108 @@ namespace t8
       prev_clear_bg_color = clear_bg_color;
     }
     
-    // #FIXME: Implement modes for different heuristics e.g.:
-    //  FillMode { FULL, PARTIAL, THRESHOLD_SELECT, MEASURE_SELECT, THRESHOLD_AND_MEASURE_SELECT };
-    //  void print_screen_buffer(Color bg_color, FillMode win_fill_mode, FillMode posix_fill_mode).
-    void print_screen_buffer(Color clear_bg_color)
+    void set_dirty_fraction_threshold(float thres)
     {
+      dirty_fraction_threshold = thres;
+    }
+    
+    void set_num_frames_between_measurings(int num_frames)
+    {
+      num_frames_between_measurings = num_frames;
+    }
+    
+    int get_num_full_redraws() const { return num_full_redraws; }
+    int get_num_partial_redraws() const { return num_partial_redraws; }
+    
+    void print_screen_buffer(Color clear_bg_color, DrawPolicy policy = DrawPolicy::MEASURE_SELECT)
+    {
+      auto f_full_redraw = [this](Color clear_bg_color)
+      {
+        print_screen_buffer_full(clear_bg_color);
+        num_full_redraws++;
+      };
+    
+      auto f_partial_redraw = [this](Color clear_bg_color)
+      {
+        diff_buffers(clear_bg_color);
+        print_screen_buffer_partial(clear_bg_color);
+        update_prev_buffers(clear_bg_color);
+        return_cursor();
+        std::cout.flush();
+        num_partial_redraws++;
+      };
+    
 #ifdef _WIN32
-      print_screen_buffer_full(clear_bg_color);
+      switch (policy)
+      {
+        case DrawPolicy::FULL:
+        case DrawPolicy::SUGGEST_PARTIAL:
+          f_full_redraw(clear_bg_color);
+          break;
+        case DrawPolicy::FORCE_PARTIAL:
+          f_partial_redraw(clear_bg_color);
+          break;
+        default:
+          break;
+      }
 #else
-      diff_buffers(clear_bg_color);
-      print_screen_buffer_partial(clear_bg_color);
-      update_prev_buffers(clear_bg_color);
-      return_cursor();
-      std::cout.flush();
+      switch (policy)
+      {
+        case DrawPolicy::FULL:
+          f_full_redraw(clear_bg_color);
+          break;
+        case DrawPolicy::SUGGEST_PARTIAL:
+        case DrawPolicy::FORCE_PARTIAL:
+          f_partial_redraw(clear_bg_color);
+          break;
+        default:
+          break;
+      }
 #endif
+      switch (policy)
+      {
+        case DrawPolicy::THRESHOLD_SELECT:
+        {
+          auto dirty_fraction = stlutils::count(dirty_flag_buffer, true) / (NR*NC);
+          if (dirty_fraction > dirty_fraction_threshold)
+            f_full_redraw(clear_bg_color);
+          else
+            f_partial_redraw(clear_bg_color);
+          break;
+        }
+        case DrawPolicy::MEASURE_SELECT:
+        {
+          bool measured = false;
+          if (frame % num_frames_between_measurings == 0)
+          {
+            if (measure_mode == 0)
+            {
+              benchmark::tic(t8_ScreenHandler_redraw_timer);
+              f_full_redraw(clear_bg_color);
+              measured_delay_ms_full = benchmark::toc(t8_ScreenHandler_redraw_timer);
+            }
+            else if (measure_mode == 1)
+            {
+              benchmark::tic(t8_ScreenHandler_redraw_timer);
+              f_partial_redraw(clear_bg_color);
+              measured_delay_ms_partial = benchmark::toc(t8_ScreenHandler_redraw_timer);
+            }
+            measure_mode = 1 - measure_mode;
+            measured = true;
+          }
+          if (!measured)
+          {
+            if (measured_delay_ms_partial <= measured_delay_ms_full)
+              f_partial_redraw(clear_bg_color);
+            else
+              f_full_redraw(clear_bg_color);
+          }
+          break;
+        }
+        default:
+          break;
+      }
+      frame++;
     }
     
     void print_screen_buffer_full(Color clear_bg_color) const

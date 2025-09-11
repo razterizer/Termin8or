@@ -79,6 +79,7 @@ namespace t8x
     bool suppress_tty_input = false;
     
     bool enable_benchmark = false;
+    t8::DrawPolicy draw_policy = t8::DrawPolicy::MEASURE_SELECT;
   };
   
   template<int NR = 30, int NC = 80>
@@ -311,6 +312,8 @@ namespace t8x
       
       curr_rnd_seed = rnd::srand_time();
       
+      std::cout << folder::get_pwd() << std::endl;
+      std::cout << get_exe_folder() << std::endl;
       t8x::setup_logging(m_params.log_mode, get_exe_folder(), m_params.xcode_log_path, m_params.log_filename, curr_rnd_seed);
       
       if (m_params.enable_benchmark)
@@ -372,6 +375,8 @@ namespace t8x
         auto avg_fps = frame_ctr / dur_s;
         std::cout << "Goal FPS = " << real_fps << std::endl;
         std::cout << "Average FPS = " << avg_fps << std::endl;
+        std::cout << "# Full Redraws = " << sh.get_num_full_redraws() << std::endl;
+        std::cout << "# Partial Redraws = " << sh.get_num_partial_redraws() << std::endl;
       }
       
       if (m_params.enable_terminal_window_resize)
@@ -581,7 +586,7 @@ namespace t8x
       
       if (!m_params.suppress_tty_output)
       {
-        sh.print_screen_buffer(bg_color);
+        sh.print_screen_buffer(bg_color, m_params.draw_policy);
         //sh.print_screen_buffer_chars();
         //sh.print_screen_buffer_fg_colors();
         //sh.print_screen_buffer_bg_colors();
