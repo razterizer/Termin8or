@@ -37,7 +37,7 @@ namespace t8x
         break;
       case LogMode::Record:
         folder::delete_file(log_filename);
-        rec_file = std::ofstream { log_filename, std::ios::out | std::ios::trunc };
+        rec_file = std::ofstream { log_filepath, std::ios::out | std::ios::trunc };
         rec_file << curr_rnd_seed << '\n';
         break;
       case LogMode::Replay:
