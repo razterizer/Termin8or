@@ -48,15 +48,20 @@ namespace t8
   
   // //////////////////////////////////////////////////
   
+  // Bad design.
+  static int num_chunks_prev = 10; // #FIXME: Magic number.
+  
   template<int NR = 30, int NC = 80>
   class ScreenHandler
   {
     std::unique_ptr<Text> m_text;
     
     // Draw from top to bottom.
-    std::array<std::array<char, NC>, NR> screen_buffer;
-    std::array<std::array<Color, NC>, NR> fg_color_buffer;
-    std::array<std::array<Color, NC>, NR> bg_color_buffer;
+    std::array<std::array<char, NC>, NR> screen_buffer, prev_screen_buffer;
+    std::array<std::array<Color, NC>, NR> fg_color_buffer, prev_fg_color_buffer;
+    std::array<std::array<Color, NC>, NR> bg_color_buffer, prev_bg_color_buffer;
+    std::array<std::array<bool, NC>, NR> dirty_flag_buffer;
+    Color prev_clear_bg_color = Color::Default;
     
     std::string color2str(Color col) const
     {
@@ -104,6 +109,9 @@ namespace t8
       for (auto& row : bg_color_buffer)
         for (auto& col : row)
           col = Color::Transparent;
+      for (auto& row : dirty_flag_buffer)
+        for (auto& col : row)
+          col = false;
     }
     
     bool test_empty(int r, int c) const
@@ -252,7 +260,52 @@ namespace t8
       }
     }
     
-    void print_screen_buffer(Color bg_color) const
+    inline Color resolve_bg_color(Color bg_color, Color clear_bg_color)
+    {
+      return (bg_color == Color::Transparent || bg_color == Color::Transparent2) ? clear_bg_color : bg_color;
+    }
+    
+    void diff_buffers(Color clear_bg_color)
+    {
+      for (int r = 0; r < NR; ++r)
+      {
+        for (int c = 0; c < NC; ++c)
+        {
+          auto bg_curr = resolve_bg_color(bg_color_buffer[r][c], clear_bg_color);
+          auto bg_prev = resolve_bg_color(prev_bg_color_buffer[r][c], prev_clear_bg_color);
+          dirty_flag_buffer[r][c] =
+               screen_buffer[r][c] != prev_screen_buffer[r][c]
+            || fg_color_buffer[r][c] != prev_fg_color_buffer[r][c]
+            || bg_curr != bg_prev;
+        }
+      }
+    }
+    
+    void update_prev_buffers(Color clear_bg_color)
+    {
+      prev_screen_buffer = screen_buffer;
+      prev_fg_color_buffer = fg_color_buffer;
+      prev_bg_color_buffer = bg_color_buffer;
+      prev_clear_bg_color = clear_bg_color;
+    }
+    
+    // #FIXME: Implement modes for different heuristics e.g.:
+    //  FillMode { FULL, PARTIAL, THRESHOLD_SELECT, MEASURE_SELECT, THRESHOLD_AND_MEASURE_SELECT };
+    //  void print_screen_buffer(Color bg_color, FillMode win_fill_mode, FillMode posix_fill_mode).
+    void print_screen_buffer(Color clear_bg_color)
+    {
+#ifdef _WIN32
+      print_screen_buffer_full(clear_bg_color);
+#else
+      diff_buffers(clear_bg_color);
+      print_screen_buffer_partial(clear_bg_color);
+      update_prev_buffers(clear_bg_color);
+      return_cursor();
+      std::cout.flush();
+#endif
+    }
+    
+    void print_screen_buffer_full(Color clear_bg_color) const
     {
       std::vector<std::tuple<char, Color, Color>> colored_str;
       colored_str.resize(NR*(NC + 1));
@@ -263,12 +316,45 @@ namespace t8
         {
           Color bg_col_buf = bg_color_buffer[r][c];
           if (bg_col_buf == Color::Transparent || bg_col_buf == Color::Transparent2)
-            bg_col_buf = bg_color;
+            bg_col_buf = clear_bg_color;
           colored_str[i++] = { screen_buffer[r][c], fg_color_buffer[r][c], bg_col_buf };
         }
         colored_str[i++] = { '\n', Color::Default, Color::Default };
       }
       m_text->print_complex_sequential(colored_str);
+    }
+    
+    void print_screen_buffer_partial(Color clear_bg_color) const
+    {
+      std::vector<Text::ComplexStringChunk> colored_str_chunks;
+      colored_str_chunks.reserve(math::roundI(num_chunks_prev * 1.2f));
+      for (int r = 0; r < NR; ++r)
+      {
+        Text::ComplexStringChunk chunk;
+        chunk.text.reserve(16); // #FIXME: Magic number.
+        for (int c = 0; c < NC; ++c)
+        {
+          if (dirty_flag_buffer[r][c])
+          {
+            if (chunk.text.empty())
+              chunk.pos = { r+1, c+1 };
+            Color bg_col_buf = bg_color_buffer[r][c];
+            if (bg_col_buf == Color::Transparent || bg_col_buf == Color::Transparent2)
+              bg_col_buf = clear_bg_color;
+            chunk.text.emplace_back(screen_buffer[r][c], fg_color_buffer[r][c], bg_col_buf);
+          }
+          else if (!chunk.text.empty())
+          {
+            colored_str_chunks.emplace_back(chunk);
+            chunk.text.clear();
+          }
+        }
+        // Flush.
+        if (!chunk.text.empty())
+          colored_str_chunks.emplace_back(std::move(chunk));
+      }
+      m_text->print_complex_chunks(colored_str_chunks);
+      num_chunks_prev = stlutils::sizeI(colored_str_chunks);
     }
     
     void print_screen_buffer(Color bg_color, const OffscreenBuffer& offscreen_buffer)
