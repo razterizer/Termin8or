@@ -130,10 +130,10 @@ namespace t8x
     std::string font_data_path;
     const char* xcode_env = std::getenv("RUNNING_FROM_XCODE");
     if (xcode_env != nullptr)
-      font_data_path = "../../../../../../../../Documents/xcode/lib/Termin8or/fonts";
+      font_data_path = "../../../../../../../../Documents/xcode/lib/Termin8or/include/Termin8or/title/fonts";
     else
     {
-      //font_data_path = "../../lib/Termin8or/fonts";
+      //font_data_path = "../../lib/Termin8or/include/Termin8or/title/fonts";
       font_data_path = folder::join_path({ exe_folder, "fonts" });
     }
       
