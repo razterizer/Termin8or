@@ -313,8 +313,6 @@ namespace t8x
       
       curr_rnd_seed = rnd::srand_time();
       
-      std::cout << folder::get_pwd() << std::endl;
-      std::cout << get_exe_folder() << std::endl;
       t8x::setup_logging(m_params.log_mode, get_exe_folder(), m_params.xcode_log_path, m_params.log_filename, curr_rnd_seed);
       
       if (m_params.enable_benchmark)
