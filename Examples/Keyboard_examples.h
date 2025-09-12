@@ -6,7 +6,7 @@
 //
 
 #pragma once
-#include "../input/Keyboard.h"
+#include "input/Keyboard.h"
 #include <Core/Benchmark.h>
 #include <Core/Delay.h>
 

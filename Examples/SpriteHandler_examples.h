@@ -6,11 +6,11 @@
 //
 
 #pragma once
-#include "../sprite/SpriteHandler.h"
-#include "../screen/ScreenCommands.h"
-#include "../screen/ScreenUtils.h"
-#include "../physics/dynamics/CollisionHandler.h"
-#include "../physics/dynamics/DynamicsSystem.h"
+#include "sprite/SpriteHandler.h"
+#include "screen/ScreenCommands.h"
+#include "screen/ScreenUtils.h"
+#include "physics/dynamics/CollisionHandler.h"
+#include "physics/dynamics/DynamicsSystem.h"
 #include <Core/Benchmark.h>
 
 bool use_dynamics_system = true;

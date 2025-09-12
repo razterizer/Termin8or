@@ -6,7 +6,7 @@
 //
 
 #pragma once
-#include "../geom/Rectangle.h"
+#include "geom/Rectangle.h"
 #include <iostream>
 #include <cassert>
 

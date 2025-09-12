@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-additional_flags="-I../.."
+additional_flags="-I../.. -I../include/Termin8or"
 
 ../../Core/build.sh unit_tests "$1" "${additional_flags[@]}"
 
