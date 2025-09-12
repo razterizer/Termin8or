@@ -72,7 +72,7 @@ namespace t8x
     Style you_won_line_1_style { Color::DarkBlue, Color::DarkCyan };
     
     LogMode log_mode = LogMode::None;
-    std::string xcode_log_path; // e.g. "../../../../../../../../Documents/xcode/Asciiroids/Asciiroids/"
+    std::string xcode_log_path; // e.g. "../../../../../../../../Documents/xcode/Asciiroids/Asciiroids/bin/"
     std::string log_filename = "rec.txt";
     
     bool suppress_tty_output = false;
