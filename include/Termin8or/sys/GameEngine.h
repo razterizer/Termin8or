@@ -111,6 +111,7 @@ namespace t8x
     double real_time_s = 0.;
     double real_last_time_s = 0.;
     double real_dt_s = 0.;
+    benchmark::TicTocTimer tictoc_game_engine;
     
     struct AnimCtrData
     {
@@ -317,7 +318,7 @@ namespace t8x
       t8x::setup_logging(m_params.log_mode, get_exe_folder(), m_params.xcode_log_path, m_params.log_filename, curr_rnd_seed);
       
       if (m_params.enable_benchmark)
-        benchmark::tic();
+        benchmark::tic(tictoc_game_engine);
       
       if (time_inited.once())
         real_start_time_s = std::chrono::steady_clock::now();
@@ -366,7 +367,7 @@ namespace t8x
     {
       float dur_s = 0.f;
       if (m_params.enable_benchmark)
-        dur_s = 1e-3f * benchmark::toc();
+        dur_s = 1e-3f * benchmark::toc(tictoc_game_engine);
     
       end_screen(sh);
       
