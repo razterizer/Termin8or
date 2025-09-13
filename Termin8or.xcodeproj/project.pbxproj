@@ -533,7 +533,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/include/Termin8or";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/include/Termin8or",
+					"$(SRCROOT)/../Core/include",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -552,7 +555,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EXECUTABLE_PREFIX = lib;
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/include/Termin8or";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/include/Termin8or",
+					"$(SRCROOT)/../Core/include",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 6.0;
