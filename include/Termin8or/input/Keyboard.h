@@ -1,13 +1,15 @@
 #pragma once
 #include "KeyboardEnums.h"
 #ifdef _WIN32
+#ifndef NOMINMAX
 #define NOMINMAX // Should fix the std::min()/max() and std::numeric_limits<T>::min()/max() compilation problems
+#endif
 #include <windows.h>
 #include <conio.h>
-#else
+#else // POSIX
 #include <termios.h>
 #include <unistd.h>
-#endif
+#endif // COMMON
 #include <optional>
 #include <variant>
 #include <iostream>
