@@ -9,7 +9,9 @@
 #include <stdio.h>
 #include <iostream>
 #ifdef _WIN32
+#ifndef NOMINMAX
 #define NOMINMAX // Should fix the std::min()/max() and std::numeric_limits<T>::min()/max() compilation problems.
+#endif
 #include <windows.h>
 #else
 #include <sys/ioctl.h>
