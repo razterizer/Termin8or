@@ -317,7 +317,7 @@ namespace t8
     int get_num_full_redraws() const { return num_full_redraws; }
     int get_num_partial_redraws() const { return num_partial_redraws; }
     
-    void print_screen_buffer(Color clear_bg_color, DrawPolicy policy = DrawPolicy::MEASURE_SELECT)
+    void print_screen_buffer(Color clear_bg_color, DrawPolicy posix_draw_policy = DrawPolicy::MEASURE_SELECT)
     {
       auto f_full_redraw = [this](Color clear_bg_color)
       {
@@ -336,20 +336,11 @@ namespace t8
       };
     
 #ifdef _WIN32
-      switch (policy)
-      {
-        case DrawPolicy::FULL:
-        case DrawPolicy::SUGGEST_PARTIAL:
-          f_full_redraw(clear_bg_color);
-          break;
-        case DrawPolicy::FORCE_PARTIAL:
-          f_partial_redraw(clear_bg_color);
-          break;
-        default:
-          break;
-      }
+      // Partial redraw doesn't seem to work so well on Windows
+      //   so therefore we're always doing a full redraw.
+      f_full_redraw(clear_bg_color);
 #else
-      switch (policy)
+      switch (posix_draw_policy)
       {
         case DrawPolicy::FULL:
           f_full_redraw(clear_bg_color);
@@ -358,12 +349,6 @@ namespace t8
         case DrawPolicy::FORCE_PARTIAL:
           f_partial_redraw(clear_bg_color);
           break;
-        default:
-          break;
-      }
-#endif
-      switch (policy)
-      {
         case DrawPolicy::THRESHOLD_SELECT:
         {
           auto dirty_fraction = stlutils::count(dirty_flag_buffer, true) / (NR*NC);
@@ -402,9 +387,8 @@ namespace t8
           }
           break;
         }
-        default:
-          break;
       }
+#endif
       frame++;
     }
     
