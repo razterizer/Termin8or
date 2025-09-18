@@ -430,7 +430,7 @@ namespace t8
           if (dirty_flag_buffer[idx])
           {
             if (chunk.text.empty())
-              chunk.pos = { r+1, c+1 };
+              chunk.pos = { r, c };
             Color bg_col_buf = bg_color_buffer[idx];
             if (bg_col_buf == Color::Transparent || bg_col_buf == Color::Transparent2)
               bg_col_buf = clear_bg_color;

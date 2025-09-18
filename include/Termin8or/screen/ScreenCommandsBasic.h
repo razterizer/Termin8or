@@ -92,6 +92,7 @@ namespace t8
   void gotorc(int r, int c)
   {
 #ifdef _WIN32
+    // Windows uses 0-indexed rows and cols.
     HANDLE hStdOut;
     COORD coord;
     hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -99,7 +100,8 @@ namespace t8
     coord.Y = r;
     SetConsoleCursorPosition(hStdOut, coord);
 #else
-    printf("%c[%d;%df", 0x1B, r, c);
+    // ANSI uses 1-indexed rows and cols.
+    printf("%c[%d;%df", 0x1B, r + 1, c + 1);
 #endif
   }
   
