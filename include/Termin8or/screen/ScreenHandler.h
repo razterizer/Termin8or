@@ -334,61 +334,64 @@ namespace t8
         std::cout.flush();
         num_partial_redraws++;
       };
-    
-#ifdef _WIN32
-      // Partial redraw doesn't seem to work so well on Windows
-      //   so therefore we're always doing a full redraw.
-      f_full_redraw(clear_bg_color);
-#else
-      switch (posix_draw_policy)
+
+      if (sys::is_windows() || sys::is_wsl())
       {
-        case DrawPolicy::FULL:
-          f_full_redraw(clear_bg_color);
-          break;
-        case DrawPolicy::SUGGEST_PARTIAL:
-        case DrawPolicy::FORCE_PARTIAL:
-          f_partial_redraw(clear_bg_color);
-          break;
-        case DrawPolicy::THRESHOLD_SELECT:
+        // Partial redraw doesn't seem to work so well on Windows
+        //   so therefore we're always doing a full redraw.
+        f_full_redraw(clear_bg_color);
+      }
+      else
+      {
+        switch (posix_draw_policy)
         {
-          auto dirty_fraction = stlutils::count(dirty_flag_buffer, true) / (NR*NC);
-          if (dirty_fraction > dirty_fraction_threshold)
+          case DrawPolicy::FULL:
             f_full_redraw(clear_bg_color);
-          else
+            break;
+          case DrawPolicy::SUGGEST_PARTIAL:
+          case DrawPolicy::FORCE_PARTIAL:
             f_partial_redraw(clear_bg_color);
-          break;
-        }
-        case DrawPolicy::MEASURE_SELECT:
-        {
-          bool measured = false;
-          if (frame % num_frames_between_measurings == 0)
+            break;
+          case DrawPolicy::THRESHOLD_SELECT:
           {
-            if (measure_mode == 0)
-            {
-              benchmark::tic(t8_ScreenHandler_redraw_timer);
+            auto dirty_fraction = stlutils::count(dirty_flag_buffer, true) / (NR*NC);
+            if (dirty_fraction > dirty_fraction_threshold)
               f_full_redraw(clear_bg_color);
-              measured_delay_ms_full = benchmark::toc(t8_ScreenHandler_redraw_timer);
-            }
-            else if (measure_mode == 1)
-            {
-              benchmark::tic(t8_ScreenHandler_redraw_timer);
-              f_partial_redraw(clear_bg_color);
-              measured_delay_ms_partial = benchmark::toc(t8_ScreenHandler_redraw_timer);
-            }
-            measure_mode = 1 - measure_mode;
-            measured = true;
-          }
-          if (!measured)
-          {
-            if (measured_delay_ms_partial <= measured_delay_ms_full)
-              f_partial_redraw(clear_bg_color);
             else
-              f_full_redraw(clear_bg_color);
+              f_partial_redraw(clear_bg_color);
+            break;
           }
-          break;
+          case DrawPolicy::MEASURE_SELECT:
+          {
+            bool measured = false;
+            if (frame % num_frames_between_measurings == 0)
+            {
+              if (measure_mode == 0)
+              {
+                benchmark::tic(t8_ScreenHandler_redraw_timer);
+                f_full_redraw(clear_bg_color);
+                measured_delay_ms_full = benchmark::toc(t8_ScreenHandler_redraw_timer);
+              }
+              else if (measure_mode == 1)
+              {
+                benchmark::tic(t8_ScreenHandler_redraw_timer);
+                f_partial_redraw(clear_bg_color);
+                measured_delay_ms_partial = benchmark::toc(t8_ScreenHandler_redraw_timer);
+              }
+              measure_mode = 1 - measure_mode;
+              measured = true;
+            }
+            if (!measured)
+            {
+              if (measured_delay_ms_partial <= measured_delay_ms_full)
+                f_partial_redraw(clear_bg_color);
+              else
+                f_full_redraw(clear_bg_color);
+            }
+            break;
+          }
         }
       }
-#endif
       frame++;
     }
     
