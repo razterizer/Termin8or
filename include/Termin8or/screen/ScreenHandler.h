@@ -9,6 +9,7 @@
 #include <Core/StlUtils.h>
 #include <Core/Math.h>
 #include <Core/Benchmark.h>
+#include <Core/System.h>
 #include <array>
 #include <map>
 #include <memory>
