@@ -101,7 +101,7 @@ namespace t8
     SetConsoleCursorPosition(hStdOut, coord);
 #else
     // ANSI uses 1-indexed rows and cols.
-    printf("%c[%d;%df", 0x1B, r + 1, c + 1);
+    printf("%c[%d;%dH", 0x1B, r + 1, c + 1);
 #endif
   }
   
