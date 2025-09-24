@@ -336,7 +336,7 @@ namespace t8
         num_partial_redraws++;
       };
 
-      if (sys::is_windows() || sys::is_wsl())
+      if (sys::is_windows())
       {
         // Partial redraw doesn't seem to work so well on Windows
         //   so therefore we're always doing a full redraw.
