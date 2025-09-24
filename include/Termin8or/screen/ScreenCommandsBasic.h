@@ -105,6 +105,17 @@ namespace t8
 #endif
   }
   
+  std::string get_gotorc_str(int r, int c)
+  {
+#ifdef _WIN32
+    // Windows doesn't use ANSI escape codes for cursor movement.
+    return "";
+#else
+    // ANSI escape code for cursor positioning (1-indexed)
+    return "\033[" + std::to_string(r + 1) + ";" + std::to_string(c + 1) + "H";
+#endif
+  }
+  
   std::pair<int, int> get_terminal_window_size()
   {
     int rows = 0;
