@@ -179,11 +179,17 @@ namespace t8
     
     void print_complex_chunks(const std::vector<ComplexStringChunk>& chunk_vec)
     {
+      std::string output;
       for (const auto& chunk : chunk_vec)
       {
-        gotorc(chunk.pos.r, chunk.pos.c);
-        print_complex_sequential(chunk.text);
+        output += get_gotorc_str(chunk.pos.r, chunk.pos.c);
+        for (const auto& [ch, fg, bg] : chunk.text)
+          output += get_color_string(fg, bg) + ch;
       }
+      
+      // Reset color.
+      output += "\033[0m";
+      std::cout << output;
     }
     
     void print_reset() const
