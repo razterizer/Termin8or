@@ -165,3 +165,12 @@ e.g. you write your playable character first and then end with scenery such as m
 Later in your program - i.e. before the end of the current frame and after all `write_buffer()` calls have been made in that frame - then call `print_screen_buffer(Color clear_bg_color, DrawPolicy posix_redraw_policy)`.
 
  It will make a full redraw or a partial of the screen depending on which policy you've selected. Partial redraw means dirty region-tracking which is achieved by diffing the current screen buffers with the previous frame values. This is in very often faster than a full redraw. When a partial redraw is being made, chunks of contiguous cells/textels/tiles will be drawn using gotorc() and at the end of the frame the frame will be flushed.
+ 
+ I made a quick benchmark on my computer (MacBook Air M1) by running `Pilot_Episode` with `GameEngineParams::enable_benchmark = true` and using the default draw policy (`t8::DrawPolicy::MEASURE_SELECT`). This was the results:
+ ```sh
+Goal FPS = 1000
+Average FPS = 917.283
+# Full Redraws = 14
+# Partial Redraws = 27594
+```
+So I would say, it's fairly fast.
