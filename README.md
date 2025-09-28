@@ -168,9 +168,9 @@ Later in your program - i.e. before the end of the current frame and after all `
  
  I made a quick benchmark on my computer (MacBook Air M1) by running `Pilot_Episode` with `GameEngineParams::enable_benchmark = true` and using the default draw policy (`t8::DrawPolicy::MEASURE_SELECT`). This was the results:
  ```
-Goal FPS = 1000
-Average FPS = 917.283
-# Full Redraws = 14
-# Partial Redraws = 27594
+Goal FPS = 10000
+Average FPS = 1810.25
+# Full Redraws = 18
+# Partial Redraws = 35124
 ```
 So I would say, it's fairly fast.
