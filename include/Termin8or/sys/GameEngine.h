@@ -369,6 +369,10 @@ namespace t8x
     
       end_screen(sh);
       
+      if (m_params.enable_terminal_window_resize)
+        if (term_win_rows > 0 && term_win_cols > 0)
+          t8::resize_terminal_window(term_win_rows, term_win_cols);
+          
       if (m_params.enable_benchmark && 0.f < dur_s)
       {
         auto avg_fps = frame_ctr / dur_s;
@@ -378,9 +382,6 @@ namespace t8x
         std::cout << "# Partial Redraws = " << sh.get_num_partial_redraws() << std::endl;
       }
       
-      if (m_params.enable_terminal_window_resize)
-        if (term_win_rows > 0 && term_win_cols > 0)
-          t8::resize_terminal_window(term_win_rows, term_win_cols);
       on_quit();
     }
     
