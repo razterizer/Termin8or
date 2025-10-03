@@ -48,7 +48,7 @@ namespace t8
     std::vector<std::pair<Color, Color>> replace_src_dst_bg_colors;
   };
   
-  enum class DrawPolicy { FULL, SUGGEST_PARTIAL, FORCE_PARTIAL, THRESHOLD_SELECT, MEASURE_SELECT };
+  enum class DrawPolicy { FULL, PARTIAL, THRESHOLD_SELECT, MEASURE_SELECT };
   
   // //////////////////////////////////////////////////
   
@@ -318,7 +318,7 @@ namespace t8
     int get_num_full_redraws() const { return num_full_redraws; }
     int get_num_partial_redraws() const { return num_partial_redraws; }
     
-    void print_screen_buffer(Color clear_bg_color, DrawPolicy posix_draw_policy = DrawPolicy::MEASURE_SELECT)
+    void print_screen_buffer(Color clear_bg_color, DrawPolicy draw_policy = DrawPolicy::MEASURE_SELECT)
     {
       auto f_full_redraw = [this](Color clear_bg_color)
       {
@@ -336,61 +336,51 @@ namespace t8
         num_partial_redraws++;
       };
 
-      if (sys::is_windows())
+      switch (draw_policy)
       {
-        // Partial redraw doesn't seem to work so well on Windows
-        //   so therefore we're always doing a full redraw.
-        f_full_redraw(clear_bg_color);
-      }
-      else
-      {
-        switch (posix_draw_policy)
+        case DrawPolicy::FULL:
+          f_full_redraw(clear_bg_color);
+          break;
+        case DrawPolicy::PARTIAL:
+          f_partial_redraw(clear_bg_color);
+          break;
+        case DrawPolicy::THRESHOLD_SELECT:
         {
-          case DrawPolicy::FULL:
+          auto dirty_fraction = stlutils::count(dirty_flag_buffer, true) / (NR*NC);
+          if (dirty_fraction > dirty_fraction_threshold)
             f_full_redraw(clear_bg_color);
-            break;
-          case DrawPolicy::SUGGEST_PARTIAL:
-          case DrawPolicy::FORCE_PARTIAL:
+          else
             f_partial_redraw(clear_bg_color);
-            break;
-          case DrawPolicy::THRESHOLD_SELECT:
+          break;
+        }
+        case DrawPolicy::MEASURE_SELECT:
+        {
+          bool measured = false;
+          if (frame % num_frames_between_measurings == 0)
           {
-            auto dirty_fraction = stlutils::count(dirty_flag_buffer, true) / (NR*NC);
-            if (dirty_fraction > dirty_fraction_threshold)
+            if (measure_mode == 0)
+            {
+              benchmark::tic(t8_ScreenHandler_redraw_timer);
               f_full_redraw(clear_bg_color);
-            else
+              measured_delay_ms_full = benchmark::toc(t8_ScreenHandler_redraw_timer);
+            }
+            else if (measure_mode == 1)
+            {
+              benchmark::tic(t8_ScreenHandler_redraw_timer);
               f_partial_redraw(clear_bg_color);
-            break;
+              measured_delay_ms_partial = benchmark::toc(t8_ScreenHandler_redraw_timer);
+            }
+            measure_mode = 1 - measure_mode;
+            measured = true;
           }
-          case DrawPolicy::MEASURE_SELECT:
+          if (!measured)
           {
-            bool measured = false;
-            if (frame % num_frames_between_measurings == 0)
-            {
-              if (measure_mode == 0)
-              {
-                benchmark::tic(t8_ScreenHandler_redraw_timer);
-                f_full_redraw(clear_bg_color);
-                measured_delay_ms_full = benchmark::toc(t8_ScreenHandler_redraw_timer);
-              }
-              else if (measure_mode == 1)
-              {
-                benchmark::tic(t8_ScreenHandler_redraw_timer);
-                f_partial_redraw(clear_bg_color);
-                measured_delay_ms_partial = benchmark::toc(t8_ScreenHandler_redraw_timer);
-              }
-              measure_mode = 1 - measure_mode;
-              measured = true;
-            }
-            if (!measured)
-            {
-              if (measured_delay_ms_partial <= measured_delay_ms_full)
-                f_partial_redraw(clear_bg_color);
-              else
-                f_full_redraw(clear_bg_color);
-            }
-            break;
+            if (measured_delay_ms_partial <= measured_delay_ms_full)
+              f_partial_redraw(clear_bg_color);
+            else
+              f_full_redraw(clear_bg_color);
           }
+          break;
         }
       }
       frame++;
