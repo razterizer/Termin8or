@@ -179,6 +179,38 @@ namespace t8
     
     void print_complex_chunks(const std::vector<ComplexStringChunk>& chunk_vec)
     {
+#ifdef _WIN32
+      HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+      for (const auto& chunk : chunk_vec)
+      {
+        COORD coord;
+        coord.X = chunk.pos.c;
+        coord.Y = chunk.pos.r;
+
+        std::vector<CHAR_INFO> buffer(chunk.text.size());
+        for (size_t i = 0; i < chunk.text.size(); ++i)
+        {
+          CHAR_INFO ci {};
+          ci.Char.AsciiChar = std::get<0>(chunk.text[i]);
+          ci.Attributes =
+            get_color_value_win(std::get<1>(chunk.text[i])) |
+            (get_color_value_win(std::get<2>(chunk.text[i])) << 4);
+          buffer[i] = ci;
+        }
+
+        SMALL_RECT writeRegion;
+        writeRegion.Left = coord.X;
+        writeRegion.Top = coord.Y;
+        writeRegion.Right = coord.X + (SHORT)chunk.text.size() - 1;
+        writeRegion.Bottom = coord.Y;
+
+        COORD bufferSize = { (SHORT)chunk.text.size(), 1 };
+        COORD bufferCoord = { 0, 0 };
+
+        WriteConsoleOutput(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
+      }
+#else
       std::string output;
       for (const auto& chunk : chunk_vec)
       {
@@ -190,6 +222,7 @@ namespace t8
       // Reset color.
       output += "\033[0m";
       std::cout << output;
+#endif
     }
     
     void print_reset() const
