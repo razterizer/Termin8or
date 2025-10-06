@@ -399,7 +399,8 @@ namespace t8x
         real_dt_s = real_time_s - real_last_time_s;
       }
       
-      t8::return_cursor();
+      if (!m_params.suppress_tty_output)
+        t8::return_cursor();
       sh.clear();
       
       t8x::update_log_stream(m_params.log_mode, kpdp, keyboard.get(), get_frame_count());
