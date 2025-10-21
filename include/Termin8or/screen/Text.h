@@ -133,38 +133,45 @@ namespace t8
     
     void print_complex_sequential(const ComplexString& text)
     {
+#ifdef _WIN32
+      HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+      SHORT currentRow = 0;
+
+      std::vector<CHAR_INFO> lineBuffer;
+      for (size_t i = 0; i < text.size(); ++i)
+      {
+        auto [ch, fg, bg] = text[i];
+
+        if (ch == '\n')
+        {
+          if (!lineBuffer.empty())
+          {
+            COORD bufferSize = { (SHORT)lineBuffer.size(), 1 };
+            COORD bufferCoord = { 0, 0 };
+            SMALL_RECT writeRegion = { 0, currentRow, (SHORT)lineBuffer.size() - 1, currentRow };
+            WriteConsoleOutput(hConsole, lineBuffer.data(), bufferSize, bufferCoord, &writeRegion);
+            lineBuffer.clear();
+          }
+          currentRow++;
+          continue;
+        }
+
+        CHAR_INFO ci {};
+        ci.Char.AsciiChar = ch;
+        int fgAttr = get_color_value_win(fg); if (fgAttr == -1) fgAttr = 7;
+        int bgAttr = get_color_value_win(bg); if (bgAttr == -1) bgAttr = 0;
+        ci.Attributes = fgAttr | (bgAttr << 4);
+        lineBuffer.push_back(ci);
+      }
+#else
       size_t n = text.size();
       std::string output;
-#ifdef _WIN32
-      auto fg_color_prev = Color::Default;
-      auto bg_color_prev = Color::Default;
-      char c_prev = -1;
-#endif
       for (size_t i = 0; i < n; ++i)
       {
-        const auto& ti = text[i];
-        char c = std::get<0>(ti);
-        auto fg_color = std::get<1>(ti);
-        auto bg_color = std::get<2>(ti);
-#ifdef _WIN32
-        if (c_prev != -1)
-          output += c_prev;
-        if (fg_color != fg_color_prev || bg_color != bg_color_prev)
-        {
-          set_color_win(fg_color_prev, bg_color_prev);
-          std::cout << output;
-          output = "";
-        }
-        c_prev = c;
-        fg_color_prev = fg_color;
-        bg_color_prev = bg_color;
-#else
+        auto [c, fg_color, bg_color] = text[i];
         auto col_str = get_color_string(fg_color, c == '\n' ? Color::Default : bg_color);
-        std::string char_str(1, c);
-        output += col_str + char_str;
-#endif
+        output += col_str + c;
       }
-#ifndef _WIN32
       output += "\033[0m";
       //printf("%s", output.c_str());
       std::cout << output;
