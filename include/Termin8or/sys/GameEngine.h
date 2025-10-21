@@ -474,7 +474,7 @@ namespace t8x
               show_instructions = true;
           }
         }
-        else if (m_params.enable_instructions_screen & show_instructions)
+        else if (m_params.enable_instructions_screen && show_instructions)
         {
           bg_color = m_params.screen_bg_color_instructions;
           draw_instructions();
