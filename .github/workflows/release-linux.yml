@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: termin8or_examples-glibc2.38
-          path: examples/bin/
+          path: Examples/bin/
           retention-days: 1
 
   build-legacy-linux-release:
@@ -62,7 +62,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: termin8or_examples-glibc2.35
-          path: examples/bin/
+          path: Examples/bin/
           retention-days: 1
 
   create-linux-release:
