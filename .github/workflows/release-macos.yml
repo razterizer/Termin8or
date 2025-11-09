@@ -56,8 +56,8 @@ jobs:
           # Create a clean distribution folder
           mkdir -p termin8or_examples-${{ github.ref_name }}
           # Copy the executable and necessary files
-          chmod ugo+x demo
-          cp demo termin8or_examples-${{ github.ref_name }}/
+          chmod ugo+x examples
+          cp examples termin8or_examples-${{ github.ref_name }}/
           echo "Unblock instructions:" > termin8or_examples-${{ github.ref_name }}/README.txt
           echo "=====================" >> termin8or_examples-${{ github.ref_name }}/README.txt
           echo "To tell the gatekeeper that this executable is fine" >> termin8or_examples-${{ github.ref_name }}/README.txt
