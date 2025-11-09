@@ -44,6 +44,7 @@
 		0733A6422EC08B0A0045BCFD /* release-macos.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = "release-macos.yml"; path = ".github/workflows/release-macos.yml"; sourceTree = "<group>"; };
 		0733A6432EC08CDB0045BCFD /* release-linux.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = "release-linux.yml"; path = ".github/workflows/release-linux.yml"; sourceTree = "<group>"; };
 		0733A6452EC08FA30045BCFD /* release-windows.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = "release-windows.yml"; path = ".github/workflows/release-windows.yml"; sourceTree = "<group>"; };
+		0733A6462EC151020045BCFD /* tag_release.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = tag_release.sh; sourceTree = SOURCE_ROOT; };
 		0739D9BF2BA2229100964E96 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		075AC77B2E6C767800D0EE66 /* dependencies */ = {isa = PBXFileReference; lastKnownFileType = text; path = dependencies; sourceTree = SOURCE_ROOT; };
 		075AC77C2E6C767800D0EE66 /* fetch-dependencies.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = "fetch-dependencies.py"; sourceTree = SOURCE_ROOT; };
@@ -139,6 +140,7 @@
 		075AC7742E6C763200D0EE66 /* scripts */ = {
 			isa = PBXGroup;
 			children = (
+				0733A6462EC151020045BCFD /* tag_release.sh */,
 				075AC77B2E6C767800D0EE66 /* dependencies */,
 				075AC77C2E6C767800D0EE66 /* fetch-dependencies.py */,
 			);
