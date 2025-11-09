@@ -41,6 +41,9 @@
 
 /* Begin PBXFileReference section */
 		071CC3CA290465B3007B4B98 /* libTermin8or.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libTermin8or.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		0733A6422EC08B0A0045BCFD /* release-macos.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = "release-macos.yml"; path = ".github/workflows/release-macos.yml"; sourceTree = "<group>"; };
+		0733A6432EC08CDB0045BCFD /* release-linux.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = "release-linux.yml"; path = ".github/workflows/release-linux.yml"; sourceTree = "<group>"; };
+		0733A6452EC08FA30045BCFD /* release-windows.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = "release-windows.yml"; path = ".github/workflows/release-windows.yml"; sourceTree = "<group>"; };
 		0739D9BF2BA2229100964E96 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		075AC77B2E6C767800D0EE66 /* dependencies */ = {isa = PBXFileReference; lastKnownFileType = text; path = dependencies; sourceTree = SOURCE_ROOT; };
 		075AC77C2E6C767800D0EE66 /* fetch-dependencies.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = "fetch-dependencies.py"; sourceTree = SOURCE_ROOT; };
@@ -299,6 +302,9 @@
 			isa = PBXGroup;
 			children = (
 				07FDE9822CA0C75C00116BA7 /* build-and-test-ubuntu.yml */,
+				0733A6422EC08B0A0045BCFD /* release-macos.yml */,
+				0733A6432EC08CDB0045BCFD /* release-linux.yml */,
+				0733A6452EC08FA30045BCFD /* release-windows.yml */,
 			);
 			name = workflows;
 			sourceTree = "<group>";
