@@ -184,8 +184,8 @@ namespace sprite_handler
     sprite4->layer_id = 2;
     sprite4->init(sh.num_rows(), sh.num_cols());
     sprite4->create_frame(0);
-    // sprite4->save_frame(0, "background.tex");
-    sprite4->load_frame(0, "background.tex");
+    // sprite4->save_frame(0, "background.tx");
+    sprite4->load_frame(0, "background.tx");
     
     // ///////////////////////////////////////////////////////////
     //                        LET's GO !                        //
