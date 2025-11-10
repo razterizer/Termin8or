@@ -63,7 +63,7 @@ jobs:
           echo "To tell the gatekeeper that this executable is fine" >> termin8or_examples-${{ github.ref_name }}/README.txt
           echo " you can unblock the executable with" >> termin8or_examples-${{ github.ref_name }}/README.txt
           echo " the following command:" >> termin8or_examples-${{ github.ref_name }}/README.txt
-          echo "   xattr -dr com.apple.quarantine termin8or_examples" >> termin8or_examples-${{ github.ref_name }}/README.txt
+          echo "   xattr -dr com.apple.quarantine examples" >> termin8or_examples-${{ github.ref_name }}/README.txt
           # Create zip archive
           zip -r termin8or_examples-${{ github.ref_name }}-macos.zip termin8or_examples-${{ github.ref_name }}/
           
