@@ -25,7 +25,7 @@ jobs:
       - name: Run build.bat
         continue-on-error: false
         run: |
-          cd Examples
+          cd $env:GITHUB_WORKSPACE\Examples
           ./build_examples.bat
           
       - name: Debug - List ALL files after build
