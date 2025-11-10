@@ -58,6 +58,8 @@ jobs:
           # Copy the executable and necessary files
           chmod ugo+x examples
           cp examples termin8or_examples-${{ github.ref_name }}/
+          # Copy background.tx
+          cp -r background.tx termin8or_examples-${{ github.ref_name }}/
           echo "Unblock instructions:" > termin8or_examples-${{ github.ref_name }}/README.txt
           echo "=====================" >> termin8or_examples-${{ github.ref_name }}/README.txt
           echo "To tell the gatekeeper that this executable is fine" >> termin8or_examples-${{ github.ref_name }}/README.txt
