@@ -13,6 +13,8 @@
 ![Last Commit](https://img.shields.io/github/last-commit/razterizer/Termin8or?color=blue)
 ![Contributors](https://img.shields.io/github/contributors/razterizer/Termin8or?color=blue)
 
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/razterizer/Termin8or/total)
+
 This is a cross-platform header-only curses-like lib.
 
 Supported platforms (including but not limited to) are:
