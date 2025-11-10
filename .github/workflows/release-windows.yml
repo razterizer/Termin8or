@@ -18,7 +18,7 @@ jobs:
       # Step 2: Move to the parent directory and fetch dependencies
       - name: Fetch dependencies
         run: |
-          cd ../..
+          cd ..
           git clone https://github.com/razterizer/Core.git
 
       # Step 3: Build project
