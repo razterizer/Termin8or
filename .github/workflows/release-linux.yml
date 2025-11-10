@@ -90,7 +90,7 @@ jobs:
           cp glibc2.38/examples termin8or_examples-${{ github.ref_name }}/examples-glibc2.38
           cp glibc2.35/examples termin8or_examples-${{ github.ref_name }}/examples-glibc2.35
           # Copy background.tx
-          cp -r background.tx termin8or_examples-${{ github.ref_name }}/
+          cp -r glibc2.38/background.tx termin8or_examples-${{ github.ref_name }}/
           echo "This package contains two binaries:" > termin8or_examples-${{ github.ref_name }}/README.txt
           echo "- examples-glibc2.38: for modern systems (Ubuntu 24.04+, Arch Linux)" >> termin8or_examples-${{ github.ref_name }}/README.txt
           echo "- examples-glibc2.35: for legacy systems (WSL, Ubuntu 22.04)" >> termin8or_examples-${{ github.ref_name }}/README.txt
