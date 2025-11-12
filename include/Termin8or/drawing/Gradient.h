@@ -6,7 +6,7 @@
 //
 
 #pragma once
-#include <Core/Math.h>
+#include <Core/MathUtils.h>
 #include <assert.h>
 
 namespace t8x

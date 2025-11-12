@@ -1,5 +1,5 @@
 #pragma once
-#include <Core/Math.h>
+#include <Core/MathUtils.h>
 #include <Core/bool_vector.h>
 #include "../screen/Styles.h"
 #include "../drawing/Texture.h"

@@ -10,7 +10,7 @@
 #include "../../geom/RC.h"
 #include "../../sprite/SpriteHandler.h"
 #include <Core/bool_vector.h>
-#include <Core/Math.h>
+#include <Core/MathUtils.h>
 #include <Core/Mtx2.h>
 
 

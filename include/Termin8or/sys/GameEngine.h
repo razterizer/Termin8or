@@ -12,7 +12,7 @@
 #include "../screen/ScreenUtils.h"
 #include <Core/Delay.h>
 #include <Core/Rand.h>
-#include <Core/Math.h>
+#include <Core/MathUtils.h>
 #include <Core/FolderHelper.h>
 #include <Core/OneShot.h>
 #include <Core/Benchmark.h>

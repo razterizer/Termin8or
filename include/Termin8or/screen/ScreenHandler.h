@@ -7,7 +7,7 @@
 #include <Core/StringHelper.h>
 #include <Core/StringBox.h>
 #include <Core/StlUtils.h>
-#include <Core/Math.h>
+#include <Core/MathUtils.h>
 #include <Core/Benchmark.h>
 #include <Core/System.h>
 #include <array>

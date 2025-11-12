@@ -3,7 +3,7 @@
 #include "../geom/RC.h"
 #include "../drawing/Gradient.h"
 #include <Core/Rand.h>
-#include <Core/Math.h>
+#include <Core/MathUtils.h>
 
 namespace t8x
 {

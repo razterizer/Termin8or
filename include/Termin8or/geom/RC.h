@@ -1,5 +1,5 @@
 #pragma once
-#include <Core/Math.h>
+#include <Core/MathUtils.h>
 #include <Core/Vec2.h>
 #include <string>
 
