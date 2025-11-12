@@ -153,7 +153,7 @@
 				075AC77C2E6C767800D0EE66 /* fetch-dependencies.py */,
 			);
 			path = scripts;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		07BDBA6B2E741B05002ACC96 /* screen */ = {
 			isa = PBXGroup;
