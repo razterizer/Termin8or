@@ -37,6 +37,8 @@
 		07BDBAAE2E741CE6002ACC96 /* CollisionHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 07BDBAA72E741CE6002ACC96 /* CollisionHandler.h */; };
 		07BDBAAF2E741CE6002ACC96 /* RigidBody.h in Headers */ = {isa = PBXBuildFile; fileRef = 07BDBAA92E741CE6002ACC96 /* RigidBody.h */; };
 		07BDBAB02E741CE6002ACC96 /* DynamicsSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 07BDBAA82E741CE6002ACC96 /* DynamicsSystem.h */; };
+		07BDBAB12E741CE6002ACC96 /* version.h in Headers */ = {isa = PBXBuildFile; fileRef = 07BDBAA83E741CE6002ACC96 /* version.h */; };
+
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -96,6 +98,7 @@
 		07FDE97F2CA0C4E100116BA7 /* build_unit_tests.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_unit_tests.sh; sourceTree = "<group>"; };
 		07FDE9802CA0C4E100116BA7 /* unit_tests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = unit_tests.cpp; sourceTree = "<group>"; };
 		07FDE9822CA0C75C00116BA7 /* build-and-test-ubuntu.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; name = "build-and-test-ubuntu.yml"; path = ".github/workflows/build-and-test-ubuntu.yml"; sourceTree = "<group>"; };
+		07BDBAA83E741CE6002ACC96 /* version.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +130,7 @@
 				07BDBAA22E741C83002ACC96 /* str */,
 				07BDBAA52E741CB6002ACC96 /* sprite */,
 				07BDBAAC2E741CE6002ACC96 /* physics */,
+				07BDBAAC3E741CE6002ACC96 /* version */,
 				07D007C02CBF3A4800CCB5E7 /* Examples */,
 				07FDE97C2CA0B77A00116BA7 /* Tests */,
 				071CC3CB290465B3007B4B98 /* Products */,
@@ -279,6 +283,15 @@
 			);
 			name = physics;
 			path = include/Termin8or/physics;
+			sourceTree = SOURCE_ROOT;
+		};
+		07BDBAAC3E741CE6002ACC96 /* version */ = {
+			isa = PBXGroup;
+			children = (
+				07BDBAA83E741CE6002ACC96 /* version.h */,
+			);
+			name = version;
+			path = include/Termin8or/version;
 			sourceTree = SOURCE_ROOT;
 		};
 		07D007C02CBF3A4800CCB5E7 /* Examples */ = {
