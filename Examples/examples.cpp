@@ -9,6 +9,20 @@
 #include "Keyboard_examples.h"
 #include <iostream>
 
+void draw_info_screen()
+{
+  t8::ScreenHandler<20, 40> sh;
+  auto keyboard = std::make_unique<t8::StreamKeyboard>();
+  
+  t8::begin_screen();
+  sh.clear();
+  t8::draw_frame(sh, t8::Color::Yellow);
+  sh.write_buffer("q : next example / quit", 2, 2, t8::Color::Cyan);
+  sh.write_buffer("Press any key to continue...", 18, 6, t8::Color::Green);
+  sh.print_screen_buffer(t8::Color::Black);
+  keyboard->waitKey();
+  t8::end_screen(sh);
+}
 
 int main(int argc, char** argv)
 {
@@ -44,6 +58,8 @@ int main(int argc, char** argv)
   
     return 0;
   }
+  
+  draw_info_screen();
 
   std::cout << "### SpriteHandler Examples ###" << std::endl;
   sprite_handler::example1();
