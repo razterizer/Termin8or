@@ -48,14 +48,14 @@ namespace t8x
       auto rel_time_s = time_s - transition_start_time_s;
       
       float t_enter = math::value_to_param(rel_time_s, enter_rel_start_time_s, enter_rel_end_time_s);
-      if (math::in_range<float>(t_enter, {}, 0.f, Range::FreeOpen))
+      if (math::in_range(t_enter, {}, 0.f, Range::FreeOpen))
         return value_start;
-      if (math::in_range<float>(t_enter, 0.f, 1.f, Range::ClosedOpen))
+      if (math::in_range(t_enter, 0.f, 1.f, Range::ClosedOpen))
         return math::lerp(ease_enter_func(t_enter), value_start, value_stationary);
       float t_exit = math::value_to_param(rel_time_s, exit_rel_start_time_s, exit_rel_end_time_s);
-      if (math::in_range<float>(t_exit, 0.f, 1.f, Range::ClosedOpen))
+      if (math::in_range(t_exit, 0.f, 1.f, Range::ClosedOpen))
         return math::lerp(ease_exit_func(t_exit), value_stationary, value_end);
-      if (math::in_range<float>(t_exit, 1.f, {}, Range::ClosedFree))
+      if (math::in_range(t_exit, 1.f, {}, Range::ClosedFree))
         return value_end;
       return value_stationary;
     }
@@ -64,7 +64,7 @@ namespace t8x
     {
       auto rel_time_s = time_s - transition_start_time_s;
       float t = math::value_to_param(rel_time_s, enter_rel_start_time_s, exit_rel_end_time_s);
-      return math::in_range<float>(t, 0.f, 1.f, Range::ClosedOpen);
+      return math::in_range(t, 0.f, 1.f, Range::ClosedOpen);
     }
     
     bool begun(float time_s) const
@@ -92,9 +92,9 @@ namespace t8x
       auto rel_time_s = time_s - transition_start_time_s;
       
       float t = math::value_to_param(rel_time_s, enter_rel_start_time_s, exit_rel_end_time_s);
-      if (math::in_range<float>(t, {}, 0.f, Range::FreeOpen))
+      if (math::in_range(t, {}, 0.f, Range::FreeOpen))
         return value_start;
-      if (math::in_range<float>(t, 1.f, {}, Range::ClosedFree))
+      if (math::in_range(t, 1.f, {}, Range::ClosedFree))
         return value_end;
       return math::lerp(ease_func(t), value_start, value_end);
     }
@@ -103,7 +103,7 @@ namespace t8x
     {
       auto rel_time_s = time_s - transition_start_time_s;
       float t = math::value_to_param(rel_time_s, enter_rel_start_time_s, exit_rel_end_time_s);
-      return math::in_range<float>(t, 0.f, 1.f, Range::ClosedOpen);
+      return math::in_range(t, 0.f, 1.f, Range::ClosedOpen);
     }
     
     bool begun(float time_s) const

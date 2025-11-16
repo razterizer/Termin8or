@@ -478,9 +478,9 @@ namespace t8
   private:
     bool check_range(int r, int c) const
     {
-      if (!math::in_range<int>(r, 0, size.r, Range::ClosedOpen))
+      if (!math::in_range(r, 0, size.r, Range::ClosedOpen))
         return false;
-      if (!math::in_range<int>(c, 0, size.c, Range::ClosedOpen))
+      if (!math::in_range(c, 0, size.c, Range::ClosedOpen))
         return false;
       return true;
     }

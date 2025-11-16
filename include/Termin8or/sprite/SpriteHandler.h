@@ -1138,23 +1138,23 @@ namespace t8x
             auto dr = static_cast<float>(dir.r);
             auto dc = static_cast<float>(dir.c);
             auto lineseg_rot_deg = math::rad2deg(std::atan2(dr, dc));
-            if (math::in_range<float>(lineseg_rot_deg, -180.f, -158.f, Range::ClosedOpen))
+            if (math::in_range(lineseg_rot_deg, -180.f, -158.f, Range::ClosedOpen))
               ch = '-';
-            else if (math::in_range<float>(lineseg_rot_deg, -158.f, -112.f, Range::ClosedOpen))
+            else if (math::in_range(lineseg_rot_deg, -158.f, -112.f, Range::ClosedOpen))
               ch = '\\';
-            else if (math::in_range<float>(lineseg_rot_deg, -112.f, -68.f, Range::ClosedOpen))
+            else if (math::in_range(lineseg_rot_deg, -112.f, -68.f, Range::ClosedOpen))
               ch = '|';
-            else if (math::in_range<float>(lineseg_rot_deg, -68.f, -22.f, Range::ClosedOpen))
+            else if (math::in_range(lineseg_rot_deg, -68.f, -22.f, Range::ClosedOpen))
               ch = '/';
-            else if (math::in_range<float>(lineseg_rot_deg, -22.f, 22.f, Range::ClosedOpen))
+            else if (math::in_range(lineseg_rot_deg, -22.f, 22.f, Range::ClosedOpen))
               ch = '-';
-            else if (math::in_range<float>(lineseg_rot_deg, 22.f, 68.f, Range::ClosedOpen))
+            else if (math::in_range(lineseg_rot_deg, 22.f, 68.f, Range::ClosedOpen))
               ch = '\\';
-            else if (math::in_range<float>(lineseg_rot_deg, 68.f, 112.f, Range::ClosedOpen))
+            else if (math::in_range(lineseg_rot_deg, 68.f, 112.f, Range::ClosedOpen))
               ch = '|';
-            else if (math::in_range<float>(lineseg_rot_deg, 112.f, 158.f, Range::ClosedOpen))
+            else if (math::in_range(lineseg_rot_deg, 112.f, 158.f, Range::ClosedOpen))
               ch = '/';
-            else if (math::in_range<float>(lineseg_rot_deg, 158.f, 180.f, Range::Closed))
+            else if (math::in_range(lineseg_rot_deg, 158.f, 180.f, Range::Closed))
               ch = '-';
             else
               throw std::invalid_argument(std::to_string(lineseg_rot_deg));

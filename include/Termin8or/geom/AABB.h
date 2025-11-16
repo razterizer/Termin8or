@@ -140,8 +140,8 @@ namespace t8x
     
     bool contains(T r, T c) const
     {
-      return math::in_range<T>(r, rmin, rmax, Range::Closed)
-      && math::in_range<T>(c, cmin, cmax, Range::Closed);
+      return math::in_range(r, rmin, rmax, Range::Closed)
+      && math::in_range(c, cmin, cmax, Range::Closed);
     }
     
     bool contains(const RC& pt) const

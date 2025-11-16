@@ -802,8 +802,8 @@ namespace t8x
       for (const auto& ot : override_textels_pre)
       {
         const auto& tp = std::get<0>(ot);
-        if (math::in_range<int>(tp.r, 0, static_cast<int>(N), Range::ClosedOpen) &&
-            math::in_range<int>(tp.c, 0, static_cast<int>(len_max), Range::ClosedOpen))
+        if (math::in_range(tp.r, 0, static_cast<int>(N), Range::ClosedOpen) &&
+            math::in_range(tp.c, 0, static_cast<int>(len_max), Range::ClosedOpen))
         {
           sh.write_buffer(std::string(1, std::get<2>(ot)),
                           pos.r + tp.r, pos.c + tp.c,

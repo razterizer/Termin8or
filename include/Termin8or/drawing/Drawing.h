@@ -587,7 +587,7 @@ namespace t8x
           if (curr_angle_rad < lo_angle_rad)
             curr_angle_rad += math::c_2pi;
             
-          if (math::in_range<float>(curr_angle_rad, lo_angle_rad, hi_angle_rad, Range::Closed))
+          if (math::in_range(curr_angle_rad, lo_angle_rad, hi_angle_rad, Range::Closed))
             positions.emplace_back(center.r + r, center.c + c);
         }
       }

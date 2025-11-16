@@ -112,7 +112,7 @@ namespace t8x
   RGBA find_closest_shading_value(Color color) const
   {
     auto col_idx = static_cast<int>(color);
-    if (math::in_range<int>(col_idx, static_cast<int>(Color::Black), static_cast<int>(Color::White), Range::Closed))
+    if (math::in_range(col_idx, static_cast<int>(Color::Black), static_cast<int>(Color::White), Range::Closed))
     {
       auto it = color2rgba.find(color);
       if (it != color2rgba.end())
