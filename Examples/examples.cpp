@@ -16,10 +16,10 @@ void draw_info_screen()
   
   t8::begin_screen();
   sh.clear();
-  t8::draw_frame(sh, t8::Color::Yellow);
-  sh.write_buffer("q : next example / quit", 2, 2, t8::Color::Cyan);
-  sh.write_buffer("Press any key to continue...", 18, 6, t8::Color::Green);
-  sh.print_screen_buffer(t8::Color::Black);
+  t8::draw_frame(sh, t8::Color16::Yellow);
+  sh.write_buffer("q : next example / quit", 2, 2, t8::Color16::Cyan);
+  sh.write_buffer("Press any key to continue...", 18, 6, t8::Color16::Green);
+  sh.print_screen_buffer(t8::Color16::Black);
   keyboard->waitKey();
   t8::end_screen(sh);
 }

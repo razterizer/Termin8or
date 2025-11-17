@@ -10,7 +10,7 @@ namespace t8
 {
 
   template<int NR, int NC>
-  void draw_frame(ScreenHandler<NR, NC>& sh, Color fg_color)
+  void draw_frame(ScreenHandler<NR, NC>& sh, Color16 fg_color)
   {
     const int nc_inset = sh.num_cols_inset();
     const int nr_inset = sh.num_rows_inset();
@@ -30,7 +30,7 @@ namespace t8x
 
   template<int NR, int NC>
   using ScreenHandler = t8::ScreenHandler<NR, NC>;
-  using Color = t8::Color;
+  using Color16 = t8::Color16;
   using Style = t8::Style;
   using HiliteFGStyle = t8::HiliteFGStyle;
   using ButtonStyle = t8::ButtonStyle;
@@ -72,11 +72,11 @@ namespace t8x
   // #         \/                 \/         \/    #
   template<int NR, int NC>
   void draw_game_over(ScreenHandler<NR, NC>& sh, float wave_step = 0.1f,
-                      const Style& line_0_style = { Color::DarkRed, Color::White },
-                      const Style& line_1_style = { Color::DarkRed, Color::Yellow },
-                      const Style& line_2_style = { Color::DarkRed, Color::DarkYellow },
-                      const Style& line_3_style = { Color::DarkRed, Color::Yellow },
-                      const Style& line_4_style = { Color::DarkRed, Color::White })
+                      const Style& line_0_style = { Color16::DarkRed, Color16::White },
+                      const Style& line_1_style = { Color16::DarkRed, Color16::Yellow },
+                      const Style& line_2_style = { Color16::DarkRed, Color16::DarkYellow },
+                      const Style& line_3_style = { Color16::DarkRed, Color16::Yellow },
+                      const Style& line_4_style = { Color16::DarkRed, Color16::White })
   {
     auto wave_func = [](int c, int i)
     {
@@ -114,8 +114,8 @@ namespace t8x
   // #  \/                            \/             \/\/ #
   template<int NR, int NC>
   void draw_you_won(ScreenHandler<NR, NC>& sh, float wave_step = 0.07f,
-                    const Style& line_0_style = { Color::DarkBlue, Color::Cyan },
-                    const Style& line_1_style = { Color::DarkBlue, Color::DarkCyan })
+                    const Style& line_0_style = { Color16::DarkBlue, Color16::Cyan },
+                    const Style& line_1_style = { Color16::DarkBlue, Color16::DarkCyan })
   {
     wave_f = 1.5f;//0.4f;
     wave_a = 1.f;//5.f;
@@ -186,9 +186,9 @@ namespace t8x
     std::string no = "[No]";
     const auto yes_len = static_cast<int>(yes.length());
     const auto no_len = static_cast<int>(no.length());
-    Color bg_color_yes = (button == YesNoButtons::Yes) ?
+    Color16 bg_color_yes = (button == YesNoButtons::Yes) ?
     button_style.bg_color_selected : button_style.bg_color;
-    Color bg_color_no = (button == YesNoButtons::No) ?
+    Color16 bg_color_no = (button == YesNoButtons::No) ?
     button_style.bg_color_selected : button_style.bg_color;
     sh.write_buffer(yes, nr/2 + 1, (nc - 6)/2 - yes_len, button_style.fg_color, bg_color_yes);
     sh.write_buffer(no, nr/2 + 1, (nc - 6)/2 + no_len, button_style.fg_color, bg_color_no);

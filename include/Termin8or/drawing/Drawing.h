@@ -9,7 +9,7 @@ namespace t8x
 {
   using RC = t8::RC;
   using Rectangle = t8::Rectangle;
-  using Color = t8::Color;
+  using Color16 = t8::Color16;
   using Style = t8::Style;
   using ShadeType = t8::ShadeType;
   using Texture = t8::Texture;
@@ -100,7 +100,7 @@ namespace t8x
 
   template<int NR, int NC>
   void plot_line(ScreenHandler<NR, NC>& sh, float r0, float c0, float r1, float c1,
-                 const std::string& str, Color fg_color, Color bg_color)
+                 const std::string& str, Color16 fg_color, Color16 bg_color)
   {
     std::vector<RC> points;
     plot_line(r0, c0, r1, c1, points);
@@ -110,7 +110,7 @@ namespace t8x
   
   template<int NR, int NC>
   void plot_line(ScreenHandler<NR, NC>& sh, const RC& p0, const RC& p1,
-                 const std::string& str, Color fg_color, Color bg_color)
+                 const std::string& str, Color16 fg_color, Color16 bg_color)
   {
     std::vector<RC> points;
     plot_line(p0, p1, points);
@@ -133,7 +133,7 @@ namespace t8x
   void draw_box_outline(ScreenHandler<NR, NC>& sh,
                         int r, int c, int len_r, int len_c,
                         OutlineType outline_type,
-                        const Style& outline_style = { Color::Default, Color::Transparent2 },
+                        const Style& outline_style = { Color16::Default, Color16::Transparent2 },
                         const bool_vector& light_field = {})
   {
     // len_r = 4, len_c = 3
@@ -253,7 +253,7 @@ namespace t8x
   void draw_box_outline(ScreenHandler<NR, NC>& sh,
                         const Rectangle& bb,
                         OutlineType outline_type,
-                        const Style& outline_style = { Color::Default, Color::Transparent2 },
+                        const Style& outline_style = { Color16::Default, Color16::Transparent2 },
                         const bool_vector& light_field = {})
   {
     draw_box_outline(sh, bb.r, bb.c, bb.r_len, bb.c_len, outline_type, outline_style, light_field);
@@ -262,10 +262,10 @@ namespace t8x
   template<int NR, int NC>
   void draw_box(ScreenHandler<NR, NC>& sh,
                 int r, int c, int len_r, int len_c,
-                const Style& fill_style = { Color::Default, Color::Transparent2 },
+                const Style& fill_style = { Color16::Default, Color16::Transparent2 },
                 char fill_char = ' ',
                 SolarDirection shadow_type = SolarDirection::Zenith,
-                const Style& shadow_style = { Color::Default, Color::Transparent2 },
+                const Style& shadow_style = { Color16::Default, Color16::Transparent2 },
                 char shadow_char = ' ',
                 const bool_vector& light_field = {})
   {
@@ -338,10 +338,10 @@ namespace t8x
   template<int NR, int NC>
   void draw_box(ScreenHandler<NR, NC>& sh,
                 const Rectangle& bb,
-                const Style& fill_style = { Color::Default, Color::Transparent2 },
+                const Style& fill_style = { Color16::Default, Color16::Transparent2 },
                 char fill_char = ' ',
                 SolarDirection shadow_type = SolarDirection::Zenith,
-                const Style& shadow_style = { Color::Default, Color::Transparent2 },
+                const Style& shadow_style = { Color16::Default, Color16::Transparent2 },
                 char shadow_char = ' ',
                 const bool_vector& light_field = {})
   {

@@ -29,25 +29,25 @@ namespace t8x
   
 // ////////////////////////////////////////////////
 
-  std::map<Color, RGBA> color2rgba
+  std::map<Color16, RGBA> color2rgba
   {
-    { Color::White, RGBA { 1, 1, 1 } },
-    { Color::Cyan, RGBA { 0, 1, 1 } },
-    { Color::Magenta, RGBA { 1, 0, 1 } },
-    { Color::Blue, RGBA { 0, 0, 1 } },
-    { Color::Yellow, RGBA { 1, 1, 0 } },
-    { Color::Green, RGBA { 0, 1, 0 } },
-    { Color::Red, RGBA { 1, 0, 0 } },
-    { Color::LightGray, RGBA { 0.8, 0.8, 0.8 } },
-    { Color::DarkGray, RGBA { 0.4, 0.4, 0.4 } },
-    { Color::DarkCyan, RGBA { 0, 0.4, 0.4 } },
-    { Color::DarkMagenta, RGBA { 0.4, 0, 0.4 } },
-    { Color::DarkBlue, RGBA { 0, 0, 0.4 } },
-    { Color::DarkYellow, RGBA { 0.4, 0.4, 0 } },
-    { Color::DarkGreen, RGBA { 0, 0.4, 0 } },
-    { Color::DarkRed, RGBA { 0.4, 0, 0 } },
-    { Color::Black, RGBA { 0, 0, 0 } },
-    { Color::Transparent2, RGBA { 0, 0, 0, 0 } },
+    { Color16::White, RGBA { 1, 1, 1 } },
+    { Color16::Cyan, RGBA { 0, 1, 1 } },
+    { Color16::Magenta, RGBA { 1, 0, 1 } },
+    { Color16::Blue, RGBA { 0, 0, 1 } },
+    { Color16::Yellow, RGBA { 1, 1, 0 } },
+    { Color16::Green, RGBA { 0, 1, 0 } },
+    { Color16::Red, RGBA { 1, 0, 0 } },
+    { Color16::LightGray, RGBA { 0.8, 0.8, 0.8 } },
+    { Color16::DarkGray, RGBA { 0.4, 0.4, 0.4 } },
+    { Color16::DarkCyan, RGBA { 0, 0.4, 0.4 } },
+    { Color16::DarkMagenta, RGBA { 0.4, 0, 0.4 } },
+    { Color16::DarkBlue, RGBA { 0, 0, 0.4 } },
+    { Color16::DarkYellow, RGBA { 0.4, 0.4, 0 } },
+    { Color16::DarkGreen, RGBA { 0, 0.4, 0 } },
+    { Color16::DarkRed, RGBA { 0.4, 0, 0 } },
+    { Color16::Black, RGBA { 0, 0, 0 } },
+    { Color16::Transparent2, RGBA { 0, 0, 0, 0 } },
   };
 
   char find_closest_val(double shading_value) const
@@ -59,11 +59,11 @@ namespace t8x
     return shading_charset[index];
   }
 
-  Color find_closest_val(RGBA shading_value) const
+  Color16 find_closest_val(RGBA shading_value) const
   {
     // Character set representing different shades
     auto t = shading_value;
-    auto distance_squared = [&](Color color, const RGBA& rgba1)
+    auto distance_squared = [&](Color16 color, const RGBA& rgba1)
     {
       auto it = color2rgba.find(color);
       if (it != color2rgba.end())
@@ -74,10 +74,10 @@ namespace t8x
       }
       return math::get_max<double>();
     };
-    for (int color = static_cast<int>(Color::Black); color <= static_cast<int>(Color::White); ++color)
-      if (distance_squared(static_cast<Color>(color), t) < 0.5)
-        return static_cast<Color>(color);
-    return Color::Transparent2;
+    for (int color = static_cast<int>(Color16::Black); color <= static_cast<int>(Color16::White); ++color)
+      if (distance_squared(static_cast<Color16>(color), t) < 0.5)
+        return static_cast<Color16>(color);
+    return Color16::Transparent2;
   }
   
   double find_closest_shading_value(char c) const
@@ -109,10 +109,10 @@ namespace t8x
     }
   }
 
-  RGBA find_closest_shading_value(Color color) const
+  RGBA find_closest_shading_value(Color16 color) const
   {
     auto col_idx = static_cast<int>(color);
-    if (math::in_range(col_idx, static_cast<int>(Color::Black), static_cast<int>(Color::White), Range::Closed))
+    if (math::in_range(col_idx, static_cast<int>(Color16::Black), static_cast<int>(Color16::White), Range::Closed))
     {
       auto it = color2rgba.find(color);
       if (it != color2rgba.end())
@@ -199,8 +199,8 @@ namespace t8x
                                        ScreenHandler<NRo, NCo>& sh_dst)
   {
     auto new_screen_buffer = resample_data<char, double, NRo, NCo>(sh_src.screen_buffer, 0);
-    auto new_fg_color_buffer = resample_data<Color, RGBA, NRo, NCo>(sh_src.fg_color_buffer, 0);
-    auto new_bg_color_buffer = resample_data<Color, RGBA, NRo, NCo>(sh_src.bg_color_buffer, 0);
+    auto new_fg_color_buffer = resample_data<Color16, RGBA, NRo, NCo>(sh_src.fg_color_buffer, 0);
+    auto new_bg_color_buffer = resample_data<Color16, RGBA, NRo, NCo>(sh_src.bg_color_buffer, 0);
     sh_dst.overwrite_data(new_screen_buffer, new_fg_color_buffer, new_bg_color_buffer);
   }
   

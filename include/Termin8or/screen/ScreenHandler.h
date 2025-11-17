@@ -42,10 +42,10 @@ namespace t8
     Texture* buffer_texture = nullptr;
     RC buffer_screen_pos { 0, 0 }; //
     std::vector<char> exclude_src_chars;
-    std::vector<Color> exclude_src_fg_colors;
-    std::vector<Color> exclude_src_bg_colors;
-    std::vector<Color> dst_fill_bg_colors;
-    std::vector<std::pair<Color, Color>> replace_src_dst_bg_colors;
+    std::vector<Color16> exclude_src_fg_colors;
+    std::vector<Color16> exclude_src_bg_colors;
+    std::vector<Color16> dst_fill_bg_colors;
+    std::vector<std::pair<Color16, Color16>> replace_src_dst_bg_colors;
   };
   
   enum class DrawPolicy { FULL, PARTIAL, THRESHOLD_SELECT, MEASURE_SELECT };
@@ -62,10 +62,10 @@ namespace t8
     
     // Draw from top to bottom.
     std::array<char, NC*NR> screen_buffer, prev_screen_buffer;
-    std::array<Color, NC*NR> fg_color_buffer, prev_fg_color_buffer;
-    std::array<Color, NC*NR> bg_color_buffer, prev_bg_color_buffer;
+    std::array<Color16, NC*NR> fg_color_buffer, prev_fg_color_buffer;
+    std::array<Color16, NC*NR> bg_color_buffer, prev_bg_color_buffer;
     std::array<bool, NC*NR> dirty_flag_buffer;
-    Color prev_clear_bg_color = Color::Default;
+    Color16 prev_clear_bg_color = Color16::Default;
     
     float dirty_fraction_threshold = 0.5f;
     
@@ -80,29 +80,29 @@ namespace t8
     
     inline int index(int r, int c) const noexcept { return NC*r + c; }
     
-    std::string color2str(Color col) const
+    std::string color2str(Color16 col) const
     {
       switch (col)
       {
-        case Color::Transparent:  return "---:";
-        case Color::Transparent2: return "===:";
-        case Color::Default:      return "Def:";
-        case Color::Black:        return "Blk:";
-        case Color::DarkRed:      return "DRd:";
-        case Color::DarkGreen:    return "DGn:";
-        case Color::DarkYellow:   return "DYw:";
-        case Color::DarkBlue:     return "DBu:";
-        case Color::DarkMagenta:  return "DMa:";
-        case Color::DarkCyan:     return "DCn:";
-        case Color::LightGray:    return "LGy:";
-        case Color::DarkGray:     return "DGy:";
-        case Color::Red:          return "Red:";
-        case Color::Green:        return "Grn:";
-        case Color::Yellow:       return "Ylw:";
-        case Color::Blue:         return "Blu:";
-        case Color::Magenta:      return "Mga:";
-        case Color::Cyan:         return "Cyn:";
-        case Color::White:        return "Wht:";
+        case Color16::Transparent:  return "---:";
+        case Color16::Transparent2: return "===:";
+        case Color16::Default:      return "Def:";
+        case Color16::Black:        return "Blk:";
+        case Color16::DarkRed:      return "DRd:";
+        case Color16::DarkGreen:    return "DGn:";
+        case Color16::DarkYellow:   return "DYw:";
+        case Color16::DarkBlue:     return "DBu:";
+        case Color16::DarkMagenta:  return "DMa:";
+        case Color16::DarkCyan:     return "DCn:";
+        case Color16::LightGray:    return "LGy:";
+        case Color16::DarkGray:     return "DGy:";
+        case Color16::Red:          return "Red:";
+        case Color16::Green:        return "Grn:";
+        case Color16::Yellow:       return "Ylw:";
+        case Color16::Blue:         return "Blu:";
+        case Color16::Magenta:      return "Mga:";
+        case Color16::Cyan:         return "Cyn:";
+        case Color16::White:        return "Wht:";
         default: break;
       }
       return "";
@@ -120,9 +120,9 @@ namespace t8
       for (auto& ch : screen_buffer)
         ch = ' ';
       for (auto& col : fg_color_buffer)
-        col = Color::Default;
+        col = Color16::Default;
       for (auto& col : bg_color_buffer)
-        col = Color::Transparent;
+        col = Color16::Transparent;
       for (auto& df : dirty_flag_buffer)
         df = false;
     }
@@ -133,7 +133,7 @@ namespace t8
     }
     
     // write_buffer using StringBox.
-    void write_buffer(const str::StringBox& sb, int r, int c, Color fg_color, Color bg_color = Color::Transparent)
+    void write_buffer(const str::StringBox& sb, int r, int c, Color16 fg_color, Color16 bg_color = Color16::Transparent)
     {
       auto Nr = static_cast<int>(sb.text_lines.size());
       for (int r_idx = 0; r_idx < Nr; ++r_idx)
@@ -159,7 +159,7 @@ namespace t8
       write_buffer(str, pos.r, pos.c, style.fg_color, style.bg_color);
     }
     
-    void write_buffer(const std::string& str, const RC& pos, Color fg_color, Color bg_color = Color::Transparent)
+    void write_buffer(const std::string& str, const RC& pos, Color16 fg_color, Color16 bg_color = Color16::Transparent)
     {
       write_buffer(str, pos.r, pos.c, fg_color, bg_color);
     }
@@ -169,7 +169,7 @@ namespace t8
       write_buffer(str, r, c, style.fg_color, style.bg_color);
     }
     
-    void write_buffer(const std::string& str, int r, int c, Color fg_color, Color bg_color = Color::Transparent)
+    void write_buffer(const std::string& str, int r, int c, Color16 fg_color, Color16 bg_color = Color16::Transparent)
     {
       if (str.empty())
         return;
@@ -188,13 +188,13 @@ namespace t8
               auto& scr_fg = fg_color_buffer[idx];
               auto& scr_bg = bg_color_buffer[idx];
               if (scr_ch == ' '
-                && scr_bg == Color::Transparent)
+                && scr_bg == Color16::Transparent)
               {
                 scr_ch = str[ci];
                 scr_fg = fg_color;
                 scr_bg = bg_color;
               }
-              else if (scr_bg == Color::Transparent2)
+              else if (scr_bg == Color16::Transparent2)
               {
                 scr_bg = bg_color;
                 if (scr_ch == ' ')
@@ -209,7 +209,7 @@ namespace t8
       }
     }
     
-    void replace_bg_color(Color from_bg_color, Color to_bg_color, Rectangle box)
+    void replace_bg_color(Color16 from_bg_color, Color16 to_bg_color, Rectangle box)
     {
       for (int r = 0; r < NR; ++r)
       {
@@ -225,7 +225,7 @@ namespace t8
       }
     }
     
-    void replace_bg_color(Color to_bg_color, Rectangle box)
+    void replace_bg_color(Color16 to_bg_color, Rectangle box)
     {
       for (int r = 0; r < NR; ++r)
       {
@@ -239,7 +239,7 @@ namespace t8
       }
     }
     
-    void replace_bg_color(Color to_bg_color)
+    void replace_bg_color(Color16 to_bg_color)
     {
       for (int r = 0; r < NR; ++r)
       {
@@ -250,7 +250,7 @@ namespace t8
       }
     }
     
-    void replace_fg_color(Color to_fg_color, Rectangle box)
+    void replace_fg_color(Color16 to_fg_color, Rectangle box)
     {
       for (int r = 0; r < NR; ++r)
       {
@@ -264,7 +264,7 @@ namespace t8
       }
     }
     
-    void replace_fg_color(Color to_fg_color)
+    void replace_fg_color(Color16 to_fg_color)
     {
       for (int r = 0; r < NR; ++r)
       {
@@ -275,12 +275,12 @@ namespace t8
       }
     }
     
-    inline Color resolve_bg_color(Color bg_color, Color clear_bg_color)
+    inline Color16 resolve_bg_color(Color16 bg_color, Color16 clear_bg_color)
     {
-      return (bg_color == Color::Transparent || bg_color == Color::Transparent2) ? clear_bg_color : bg_color;
+      return (bg_color == Color16::Transparent || bg_color == Color16::Transparent2) ? clear_bg_color : bg_color;
     }
     
-    void diff_buffers(Color clear_bg_color)
+    void diff_buffers(Color16 clear_bg_color)
     {
       for (int r = 0; r < NR; ++r)
       {
@@ -297,7 +297,7 @@ namespace t8
       }
     }
     
-    void update_prev_buffers(Color clear_bg_color)
+    void update_prev_buffers(Color16 clear_bg_color)
     {
       prev_screen_buffer = screen_buffer;
       prev_fg_color_buffer = fg_color_buffer;
@@ -318,15 +318,15 @@ namespace t8
     int get_num_full_redraws() const { return num_full_redraws; }
     int get_num_partial_redraws() const { return num_partial_redraws; }
     
-    void print_screen_buffer(Color clear_bg_color, DrawPolicy draw_policy = DrawPolicy::MEASURE_SELECT)
+    void print_screen_buffer(Color16 clear_bg_color, DrawPolicy draw_policy = DrawPolicy::MEASURE_SELECT)
     {
-      auto f_full_redraw = [this](Color clear_bg_color)
+      auto f_full_redraw = [this](Color16 clear_bg_color)
       {
         print_screen_buffer_full(clear_bg_color);
         num_full_redraws++;
       };
     
-      auto f_partial_redraw = [this](Color clear_bg_color)
+      auto f_partial_redraw = [this](Color16 clear_bg_color)
       {
         diff_buffers(clear_bg_color);
         print_screen_buffer_partial(clear_bg_color);
@@ -386,9 +386,9 @@ namespace t8
       frame++;
     }
     
-    void print_screen_buffer_full(Color clear_bg_color) const
+    void print_screen_buffer_full(Color16 clear_bg_color) const
     {
-      std::vector<std::tuple<char, Color, Color>> colored_str;
+      std::vector<std::tuple<char, Color16, Color16>> colored_str;
       colored_str.resize(NR*(NC + 1));
       int i = 0;
       for (int r = 0; r < NR; ++r)
@@ -396,17 +396,17 @@ namespace t8
         for (int c = 0; c < NC; ++c)
         {
           int idx = index(r, c);
-          Color bg_col_buf = bg_color_buffer[idx];
-          if (bg_col_buf == Color::Transparent || bg_col_buf == Color::Transparent2)
+          Color16 bg_col_buf = bg_color_buffer[idx];
+          if (bg_col_buf == Color16::Transparent || bg_col_buf == Color16::Transparent2)
             bg_col_buf = clear_bg_color;
           colored_str[i++] = { screen_buffer[idx], fg_color_buffer[idx], bg_col_buf };
         }
-        colored_str[i++] = { '\n', Color::Default, Color::Default };
+        colored_str[i++] = { '\n', Color16::Default, Color16::Default };
       }
       m_text->print_complex_sequential(colored_str);
     }
     
-    void print_screen_buffer_partial(Color clear_bg_color) const
+    void print_screen_buffer_partial(Color16 clear_bg_color) const
     {
       std::vector<Text::ComplexStringChunk> colored_str_chunks;
       colored_str_chunks.reserve(math::roundI(num_chunks_prev * 1.2f));
@@ -421,8 +421,8 @@ namespace t8
           {
             if (chunk.text.empty())
               chunk.pos = { r, c };
-            Color bg_col_buf = bg_color_buffer[idx];
-            if (bg_col_buf == Color::Transparent || bg_col_buf == Color::Transparent2)
+            Color16 bg_col_buf = bg_color_buffer[idx];
+            if (bg_col_buf == Color16::Transparent || bg_col_buf == Color16::Transparent2)
               bg_col_buf = clear_bg_color;
             chunk.text.emplace_back(screen_buffer[idx], fg_color_buffer[idx], bg_col_buf);
           }
@@ -440,7 +440,7 @@ namespace t8
       num_chunks_prev = stlutils::sizeI(colored_str_chunks);
     }
     
-    void print_screen_buffer(Color bg_color, const OffscreenBuffer& offscreen_buffer)
+    void print_screen_buffer(Color16 bg_color, const OffscreenBuffer& offscreen_buffer)
     {
       auto* texture = offscreen_buffer.buffer_texture;
       if (texture == nullptr)
@@ -554,8 +554,8 @@ namespace t8
     }
     
     void overwrite_data(const std::array<std::array<char, NC>, NR>& new_screen_buffer,
-                        const std::array<std::array<Color, NC>, NR>& new_fg_color_buffer,
-                        const std::array<std::array<Color, NC>, NR>& new_bg_color_buffer)
+                        const std::array<std::array<Color16, NC>, NR>& new_fg_color_buffer,
+                        const std::array<std::array<Color16, NC>, NR>& new_bg_color_buffer)
     {
       screen_buffer = new_screen_buffer;
       fg_color_buffer = new_fg_color_buffer;

@@ -357,8 +357,8 @@ namespace t8x
   
   class ColorPicker : public Widget
   {
-    Color fg_color_sel;
-    Color fg_color_sel_hilite;
+    Color16 fg_color_sel;
+    Color16 fg_color_sel_hilite;
     ColorPickerCursorColoring fg_cursor_coloring;
     char select_char;
     char unselect_char = ' ';
@@ -368,15 +368,15 @@ namespace t8x
     // #FIXME: Add transparency (T2) support.
     bool wrapping = false;
     
-    Color get_color(int idx) const
+    Color16 get_color(int idx) const
     {
       if (0 <= idx && idx < 16)
-        return static_cast<Color>(idx + 1);
-      return Color::Default;
+        return static_cast<Color16>(idx + 1);
+      return Color16::Default;
     }
     
   public:
-    ColorPicker(Color fg_sel, Color fg_sel_hilite, ColorPickerCursorColoring fg_cursor_coloring_scheme, int tab = 0, bool cursor_wrapping = false, char sel_char = '*', char unsel_char = ' ', bool sel = false)
+    ColorPicker(Color16 fg_sel, Color16 fg_sel_hilite, ColorPickerCursorColoring fg_cursor_coloring_scheme, int tab = 0, bool cursor_wrapping = false, char sel_char = '*', char unsel_char = ' ', bool sel = false)
       : Widget(tab, sel)
       , fg_color_sel(fg_sel)
       , fg_color_sel_hilite(fg_sel_hilite)
@@ -417,7 +417,7 @@ namespace t8x
         switch (fg_cursor_coloring)
         {
           case ColorPickerCursorColoring::BlackWhite:
-            caret_fg_color = t8::is_dark(caret_bg_color, true).value_or(false) ? Color::White : Color::Black;
+            caret_fg_color = t8::is_dark(caret_bg_color, true).value_or(false) ? Color16::White : Color16::Black;
             break;
           case ColorPickerCursorColoring::Contrast:
             caret_fg_color = t8::get_contrast_color(caret_bg_color);
@@ -427,15 +427,15 @@ namespace t8x
       sh.write_buffer(std::string(1, select_char), pos.r, pos.c + caret, caret_fg_color, caret_bg_color);
     
       for (int col = 0; col < c_num_colors; ++col)
-        sh.write_buffer(std::string(1, unselect_char), pos.r, pos.c + col, Color::Transparent2, get_color(col));
+        sh.write_buffer(std::string(1, unselect_char), pos.r, pos.c + col, Color16::Transparent2, get_color(col));
     }
     
-    Color get_color() const
+    Color16 get_color() const
     {
       return get_color(caret);
     }
     
-    void set_color(Color color)
+    void set_color(Color16 color)
     {
       int idx = static_cast<int>(color) - 1;
       if (idx < 0)
@@ -668,7 +668,7 @@ namespace t8x
           return;
     }
     
-    void set_textel_pre(const RC& local_pos, char ch, Color fg_color, Color bg_color)
+    void set_textel_pre(const RC& local_pos, char ch, Color16 fg_color, Color16 bg_color)
     {
       //stlutils::emplace_back_if_not(override_textels_pre,
       //  std::tuple<RC, Style, char> { local_pos, { fg_color, bg_color }, ch},
@@ -754,15 +754,15 @@ namespace t8x
       math::maximize(max_tab_idx, cp.get_tab_order());
     }
     
-    const Color get_color_picker_color(int tab) const
+    const Color16 get_color_picker_color(int tab) const
     {
       auto it = stlutils::find_if(color_pickers, [tab](const auto& cpp) { return cpp.second.get_tab_order() == tab; });
       if (it != color_pickers.end())
         return it->second.get_color();
-      return Color::Default;
+      return Color16::Default;
     }
     
-    void set_color_picker_color(int tab, Color color)
+    void set_color_picker_color(int tab, Color16 color)
     {
       auto it = stlutils::find_if(color_pickers, [tab](const auto& cpp) { return cpp.second.get_tab_order() == tab; });
       if (it != color_pickers.end())

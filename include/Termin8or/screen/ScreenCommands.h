@@ -16,7 +16,7 @@ namespace t8
 #ifdef _WIN32
   static WORD savedAttributes;
 #endif
-  Style orig_style = { Color::White, Color::Black };
+  Style orig_style = { Color16::White, Color16::Black };
   
   
   // Function to save current console fg and bg colors.

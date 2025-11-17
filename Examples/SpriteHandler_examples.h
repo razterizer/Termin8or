@@ -31,7 +31,7 @@ namespace sprite_handler
   using StreamKeyboard = t8::StreamKeyboard;
   using KeyPressDataPair = t8::KeyPressDataPair;
   using Rectangle = t8::Rectangle;
-  using Color = t8::Color;
+  using Color16 = t8::Color16;
 
   void example1()
   {
@@ -78,12 +78,12 @@ namespace sprite_handler
     Rectangle bb0 { 3, 2, 1, 1 };
     sprite0->clone_frame(1, 0);
     sprite0->set_sprite_chars(1, bb0, '#');
-    sprite0->set_sprite_fg_colors(1, bb0, Color::Yellow);
-    sprite0->set_sprite_bg_colors(1, bb0, Color::DarkYellow);
+    sprite0->set_sprite_fg_colors(1, bb0, Color16::Yellow);
+    sprite0->set_sprite_bg_colors(1, bb0, Color16::DarkYellow);
     sprite0->clone_frame(2, 0);
     sprite0->set_sprite_chars(2, bb0, '^');
-    sprite0->set_sprite_fg_colors(2, bb0, Color::White);
-    sprite0->set_sprite_bg_colors(2, bb0, Color::Transparent2);
+    sprite0->set_sprite_fg_colors(2, bb0, Color16::White);
+    sprite0->set_sprite_bg_colors(2, bb0, Color16::Transparent2);
     sprite0->func_calc_anim_frame = [](int sim_frame)
     {
       auto anim = sim_frame % 14;
@@ -106,12 +106,12 @@ namespace sprite_handler
       '%', 'U', '%'
     );
     sprite1->set_sprite_fg_colors(0,
-      Color::Default, Color::Green, Color::Default,
-      Color::Yellow, Color::DarkYellow, Color::Yellow
+      Color16::Default, Color16::Green, Color16::Default,
+      Color16::Yellow, Color16::DarkYellow, Color16::Yellow
     );
     sprite1->set_sprite_bg_colors(0,
-      Color::Transparent2, Color::Transparent2, Color::Transparent2,
-      Color::Transparent2, Color::DarkYellow, Color::Transparent2
+      Color16::Transparent2, Color16::Transparent2, Color16::Transparent2,
+      Color16::Transparent2, Color16::DarkYellow, Color16::Transparent2
     );
     sprite1->set_sprite_materials(0,
       0, 1, 0,
@@ -121,8 +121,8 @@ namespace sprite_handler
     sprite1->clone_frame(1, 0);
     sprite1->set_sprite_chars(1, bbL, '#');
     sprite1->set_sprite_chars(1, bbR, '#');
-    sprite1->set_sprite_fg_colors(1, bbL, Color::DarkYellow);
-    sprite1->set_sprite_fg_colors(1, bbR, Color::DarkYellow);
+    sprite1->set_sprite_fg_colors(1, bbL, Color16::DarkYellow);
+    sprite1->set_sprite_fg_colors(1, bbR, Color16::DarkYellow);
     sprite1->func_calc_anim_frame = [](int sim_frame)
     {
       auto anim = sim_frame % 40;
@@ -143,8 +143,8 @@ namespace sprite_handler
       sprite2->init(1, 1);
       sprite2->create_frame(0);
       sprite2->set_sprite_chars(0, '@');
-      sprite2->set_sprite_fg_colors(0, Color::DarkGray);
-      sprite2->set_sprite_bg_colors(0, Color::Transparent2);
+      sprite2->set_sprite_fg_colors(0, Color16::DarkGray);
+      sprite2->set_sprite_bg_colors(0, Color16::Transparent2);
       // sprite, r_pos, r_vel.
       asteroids[a_idx] =
       {
@@ -164,12 +164,12 @@ namespace sprite_handler
       sprite3->create_frame(0);
       char star_ch = rnd::rand_select<char>({ '.', '+' });
       sprite3->set_sprite_chars(0, star_ch);
-      sprite3->set_sprite_fg_colors(0, rnd::rand_select<Color>({ Color::White, Color::White, Color::White, Color::White, Color::White, Color::Yellow, Color::Yellow, Color::Yellow, Color::Red, Color::Blue, Color::Blue, Color::Blue }));
-      sprite3->set_sprite_bg_colors(0, Color::Transparent2);
+      sprite3->set_sprite_fg_colors(0, rnd::rand_select<Color16>({ Color16::White, Color16::White, Color16::White, Color16::White, Color16::White, Color16::Yellow, Color16::Yellow, Color16::Yellow, Color16::Red, Color16::Blue, Color16::Blue, Color16::Blue }));
+      sprite3->set_sprite_bg_colors(0, Color16::Transparent2);
       sprite3->create_frame(1);
       sprite3->set_sprite_chars(1, star_ch);
-      sprite3->set_sprite_fg_colors(1, Color::Black);
-      sprite3->set_sprite_bg_colors(1, Color::Transparent2);
+      sprite3->set_sprite_fg_colors(1, Color16::Black);
+      sprite3->set_sprite_bg_colors(1, Color16::Transparent2);
       const int max_twinkle = 100;
       int twinkle_offs = rnd::rand_int(0, max_twinkle);
       sprite3->func_calc_anim_frame = [twinkle_offs](int sim_frame)
@@ -230,7 +230,7 @@ namespace sprite_handler
           sprh.draw(sh, anim_frame);
         if (dbg_draw_sprites)
           sprh.draw_dbg_bb(sh, anim_frame);
-        sh.print_screen_buffer(Color::Black);
+        sh.print_screen_buffer(Color16::Black);
         Delay::sleep(0'400'000);
         
         kpdp = keyboard->readKey();
@@ -262,22 +262,22 @@ quit:
     auto* sprite0 = sprh.create_vector_sprite("spaceship");
     sprite0->layer_id = 1;
     sprite0->pos = { sh.num_rows()/2, sh.num_cols()/2 };
-    sprite0->add_line_segment(0, { 2, 2 }, { -2, 0 }, 'o', { Color::Yellow, Color::Transparent2 }, 1);
-    sprite0->add_line_segment(0, { -2, 0 }, { 2, -2 }, 'o', { Color::Yellow, Color::Transparent2 }, 1);
-    sprite0->add_line_segment(0, { 2, -2 }, { 2, 2 }, 'o', { Color::Yellow, Color::Transparent2 }, 1);
+    sprite0->add_line_segment(0, { 2, 2 }, { -2, 0 }, 'o', { Color16::Yellow, Color16::Transparent2 }, 1);
+    sprite0->add_line_segment(0, { -2, 0 }, { 2, -2 }, 'o', { Color16::Yellow, Color16::Transparent2 }, 1);
+    sprite0->add_line_segment(0, { 2, -2 }, { 2, 2 }, 'o', { Color16::Yellow, Color16::Transparent2 }, 1);
     sprite0->set_rotation(0.f);
     sprite0->finalize_topology(0);
     auto* frame = sprite0->get_curr_local_frame(0);
     frame->fill_closed_polylines = true;
     frame->fill_char = '#';
-    frame->fill_style = { Color::LightGray, Color::DarkGray };
+    frame->fill_style = { Color16::LightGray, Color16::DarkGray };
     dyn_sys.add_rigid_body(sprite0, 4.f, std::nullopt, { 1.f, -3.f }, {}, 2.f);
     
     auto* sprite1 = sprh.create_vector_sprite("alien");
     sprite1->layer_id = 2;
     sprite1->pos = { math::roundI(sh.num_rows()*0.75f), math::roundI(sh.num_cols()*0.25f) };
-    sprite1->add_line_segment(0, { 1, -0.8f }, { 1, 0.8f }, '"', { Color::Green, Color::Transparent2 }, 1);
-    sprite1->add_line_segment(0, { 0, 0, }, { 0, 0 }, 'O', { Color::Cyan, Color::Transparent2 }, 1);
+    sprite1->add_line_segment(0, { 1, -0.8f }, { 1, 0.8f }, '"', { Color16::Green, Color16::Transparent2 }, 1);
+    sprite1->add_line_segment(0, { 0, 0, }, { 0, 0 }, 'O', { Color16::Cyan, Color16::Transparent2 }, 1);
     dyn_sys.add_rigid_body(sprite1, 1.f, std::nullopt, { -5.5f, 8.5f }, {}, -1.f);
     
     coll_handler.rebuild_BVH(sh.num_rows(), sh.num_cols(), &dyn_sys);
@@ -325,7 +325,7 @@ quit:
         sprh.draw_dbg_bb(sh, anim_frame);
       if (dbg_draw_broad_phase)
         coll_handler.draw_dbg_broad_phase(sh, 0);
-      sh.print_screen_buffer(Color::Black);
+      sh.print_screen_buffer(Color16::Black);
       Delay::sleep(delay);
       
       kpdp = keyboard->readKey();

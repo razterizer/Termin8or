@@ -46,25 +46,25 @@ namespace t8x
     TextBox tb;
     int str_len = 0;
     
-    Color get_fg_color() const
+    Color16 get_fg_color() const
     {
       switch (curr_level)
       {
-        case Level::Guide:   return Color::White;
-        case Level::Warning: return Color::White;
-        case Level::Fatal:   return Color::White;
-        default:             return Color::Default;
+        case Level::Guide:   return Color16::White;
+        case Level::Warning: return Color16::White;
+        case Level::Fatal:   return Color16::White;
+        default:             return Color16::Default;
       }
     }
     
-    Color get_bg_color() const
+    Color16 get_bg_color() const
     {
       switch (curr_level)
       {
-        case Level::Guide:   return Color::DarkBlue;
-        case Level::Warning: return Color::DarkYellow;
-        case Level::Fatal:   return Color::DarkRed;
-        default:             return Color::Default;
+        case Level::Guide:   return Color16::DarkBlue;
+        case Level::Warning: return Color16::DarkYellow;
+        case Level::Fatal:   return Color16::DarkRed;
+        default:             return Color16::Default;
       }
     }
     

@@ -19,7 +19,7 @@
 
 namespace t8x
 {
-  using Color = t8::Color;
+  using Color16 = t8::Color16;
   using Style = t8::Style;
   template<int NR, int NC>
   using ScreenHandler = t8::ScreenHandler<NR, NC>;
@@ -349,26 +349,26 @@ namespace t8x
       set_sprite_fg_colors(anim_frame, bb, fg_color...);
     }
     
-    void set_sprite_fg_color(int anim_frame, int r, int c, Color fg_color)
+    void set_sprite_fg_color(int anim_frame, int r, int c, Color16 fg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture != nullptr)
         texture->set_textel_fg_color(r, c, fg_color);
     }
     
-    void fill_sprite_fg_colors(int anim_frame, Color fg_color)
+    void fill_sprite_fg_colors(int anim_frame, Color16 fg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       texture->fg_colors.assign(area, fg_color);
     }
     
-    void fill_sprite_fg_colors(int anim_frame, const Rectangle& bb, Color fg_color)
+    void fill_sprite_fg_colors(int anim_frame, const Rectangle& bb, Color16 fg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       fill_sprite_data(texture->fg_colors, bb, fg_color);
     }
     
-    void fill_sprite_fg_colors_vert(int anim_frame, int r0, int r1, int c, Color fg_color)
+    void fill_sprite_fg_colors_vert(int anim_frame, int r0, int r1, int c, Color16 fg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture != nullptr)
@@ -376,7 +376,7 @@ namespace t8x
           texture->set_textel_fg_color(r, c, fg_color);
     }
     
-    void fill_sprite_fg_colors_horiz(int anim_frame, int r, int c0, int c1, Color fg_color)
+    void fill_sprite_fg_colors_horiz(int anim_frame, int r, int c0, int c1, Color16 fg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture != nullptr)
@@ -412,26 +412,26 @@ namespace t8x
       set_sprite_bg_colors(anim_frame, bb, bg_color...);
     }
     
-    void set_sprite_bg_color(int anim_frame, int r, int c, Color bg_color)
+    void set_sprite_bg_color(int anim_frame, int r, int c, Color16 bg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture != nullptr)
         texture->set_textel_bg_color(r, c, bg_color);
     }
     
-    void fill_sprite_bg_colors(int anim_frame, Color bg_color)
+    void fill_sprite_bg_colors(int anim_frame, Color16 bg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       texture->bg_colors.assign(area, bg_color);
     }
     
-    void fill_sprite_bg_colors(int anim_frame, const Rectangle& bb, Color bg_color)
+    void fill_sprite_bg_colors(int anim_frame, const Rectangle& bb, Color16 bg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       fill_sprite_data(texture->bg_colors, bb, bg_color);
     }
     
-    void fill_sprite_bg_colors_vert(int anim_frame, int r0, int r1, int c, Color bg_color)
+    void fill_sprite_bg_colors_vert(int anim_frame, int r0, int r1, int c, Color16 bg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture != nullptr)
@@ -439,7 +439,7 @@ namespace t8x
           texture->set_textel_bg_color(r, c, bg_color);
     }
     
-    void fill_sprite_bg_colors_horiz(int anim_frame, int r, int c0, int c1, Color bg_color)
+    void fill_sprite_bg_colors_horiz(int anim_frame, int r, int c0, int c1, Color16 bg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture != nullptr)
@@ -517,8 +517,8 @@ namespace t8x
     // This mechanism allows you to do penumbra / umbra shading techniques and stuff like that.
     bool plot_line(int sim_frame, const RC& p0, const RC& p1,
                    std::optional<char> ch, std::optional<char> ch_replace,
-                   std::optional<Color> fg_color, std::optional<Color> fg_color_replace,
-                   std::optional<Color> bg_color, std::optional<Color> bg_color_replace,
+                   std::optional<Color16> fg_color, std::optional<Color16> fg_color_replace,
+                   std::optional<Color16> bg_color, std::optional<Color16> bg_color_replace,
                    std::optional<int> mat, std::optional<int> mat_replace)
     {
       auto* texture = get_curr_sim_frame(sim_frame);
@@ -719,7 +719,7 @@ namespace t8x
       int r = pt.r - pos.r;
       int c = pt.c - pos.c;
       auto textel = (*texture)(r, c);
-      return !(textel.bg_color == Color::Transparent || textel.bg_color == Color::Transparent2);
+      return !(textel.bg_color == Color16::Transparent || textel.bg_color == Color16::Transparent2);
     }
     
     virtual std::vector<RC> get_opaque_points(int sim_frame) const override
@@ -735,7 +735,7 @@ namespace t8x
         for (int c = aabb.c_min(); c <= aabb.c_max(); ++c)
         {
           auto textel = (*texture)(r - pos.r, c - pos.c);
-          if (!(textel.bg_color == Color::Transparent || textel.bg_color == Color::Transparent2))
+          if (!(textel.bg_color == Color16::Transparent || textel.bg_color == Color16::Transparent2))
             opaque_points.emplace_back(RC {r, c});
         }
       }
@@ -764,7 +764,7 @@ namespace t8x
       
       bool fill_closed_polylines = false;
       char fill_char = 'S';
-      Style fill_style { Color::White, Color::Transparent2 };
+      Style fill_style { Color16::White, Color16::Transparent2 };
       std::vector<std::vector<LineSeg>> closed_polylines;
       std::vector<LineSeg> open_polylines;
     };
@@ -1446,7 +1446,7 @@ namespace t8x
         auto aabb = sprite->calc_curr_AABB(sim_frame);
         
         auto rec = aabb.to_rectangle();
-        draw_box_outline(sh, rec, OutlineType::Line, { Color::LightGray, Color::Transparent2 });
+        draw_box_outline(sh, rec, OutlineType::Line, { Color16::LightGray, Color16::Transparent2 });
       });
     }
     
@@ -1456,10 +1456,10 @@ namespace t8x
       render(sim_frame, [&sh](Sprite* sprite, int sim_frame)
       {
         auto pos = sprite->pos;
-        sh.write_buffer("O", pos.r, pos.c, Color::DarkGray);
+        sh.write_buffer("O", pos.r, pos.c, Color16::DarkGray);
         
         auto centroid = t8::to_RC_floor(sprite->calc_curr_centroid(sim_frame));
-        sh.write_buffer("x", centroid.r, centroid.c, Color::DarkYellow);
+        sh.write_buffer("x", centroid.r, centroid.c, Color16::DarkYellow);
       });
     }
   };

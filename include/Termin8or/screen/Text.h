@@ -56,22 +56,22 @@ namespace t8
       std::ios_base::sync_with_stdio(false);
     }
     
-    std::string get_color_string(Color text_color, Color bg_color = Color::Default) const
+    std::string get_color_string(Color16 text_color, Color16 bg_color = Color16::Default) const
     {
-      if (bg_color == Color::Transparent || bg_color == Color::Transparent2)
-        bg_color = Color::Default;
+      if (bg_color == Color16::Transparent || bg_color == Color16::Transparent2)
+        bg_color = Color16::Default;
       std::string fg = "\033[";
       std::string bg = "\033[";
-      if (text_color == Color::Default)
+      if (text_color == Color16::Default)
         fg += "39";
-      else if (Color::Default < text_color && text_color <= Color::LightGray)
+      else if (Color16::Default < text_color && text_color <= Color16::LightGray)
         fg += std::to_string(to_int(text_color) + 29);
       else
         fg += std::to_string(to_int(text_color) + 81);
       
-      if (bg_color == Color::Default)
+      if (bg_color == Color16::Default)
         bg += "49";
-      else if (Color::Default < bg_color && bg_color <= Color::LightGray)
+      else if (Color16::Default < bg_color && bg_color <= Color16::LightGray)
         bg += std::to_string(to_int(bg_color) + 39);
       else
         bg += std::to_string(to_int(bg_color) + 91);
@@ -82,15 +82,15 @@ namespace t8
     }
     
     
-    void set_color_win(Color text_color, Color bg_color = Color::Default) const
+    void set_color_win(Color16 text_color, Color16 bg_color = Color16::Default) const
     {
 #ifdef _WIN32
       int foreground = get_color_value_win(text_color);
       if (foreground == -1)
-        foreground = get_color_value_win(Color::White);
+        foreground = get_color_value_win(Color16::White);
       int background = 16 * get_color_value_win(bg_color);
       if (background == -1)
-        background = 16 * get_color_value_win(Color::Black);
+        background = 16 * get_color_value_win(Color16::Black);
       
       int color = static_cast<int>(foreground) + static_cast<int>(background);
       
@@ -98,7 +98,7 @@ namespace t8
 #endif
     }
     
-    void print(const std::string& text, Color text_color, Color bg_color = Color::Default) const
+    void print(const std::string& text, Color16 text_color, Color16 bg_color = Color16::Default) const
     {
 #ifdef _WIN32
       set_color_win(text_color, bg_color);
@@ -110,14 +110,14 @@ namespace t8
 #endif
     }
     
-    void print_line(const std::string& text, Color text_color, Color bg_color = Color::Default) const
+    void print_line(const std::string& text, Color16 text_color, Color16 bg_color = Color16::Default) const
     {
       print(text, text_color, bg_color);
       //printf("\n");
       std::cout << "\n";
     }
     
-    void print_char(char c, Color text_color, Color bg_color = Color::Default) const
+    void print_char(char c, Color16 text_color, Color16 bg_color = Color16::Default) const
     {
 #ifdef _WIN32
       set_color_win(text_color, bg_color);
@@ -129,7 +129,7 @@ namespace t8
 #endif
     }
     
-    using ComplexString = std::vector<std::tuple<char, Color, Color>>;
+    using ComplexString = std::vector<std::tuple<char, Color16, Color16>>;
     
     void print_complex_sequential(const ComplexString& text)
     {
@@ -169,7 +169,7 @@ namespace t8
       for (size_t i = 0; i < n; ++i)
       {
         auto [c, fg_color, bg_color] = text[i];
-        auto col_str = get_color_string(fg_color, c == '\n' ? Color::Default : bg_color);
+        auto col_str = get_color_string(fg_color, c == '\n' ? Color16::Default : bg_color);
         output += col_str + c;
       }
       output += "\033[0m";
@@ -235,7 +235,7 @@ namespace t8
     void print_reset() const
     {
 #ifdef _WIN32
-      set_color_win(Color::White, Color::Black);
+      set_color_win(Color16::White, Color16::Black);
 #else
       //printf("%s", "\033[0m");
       std::cout << "\033[0m";

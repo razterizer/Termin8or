@@ -21,7 +21,7 @@
 
 namespace t8x
 {
-  using Color = t8::Color;
+  using Color16 = t8::Color16;
   using Style = t8::Style;
   using ButtonStyle = t8::ButtonStyle;
   using PromptStyle = t8::PromptStyle;
@@ -38,38 +38,38 @@ namespace t8x
     bool enable_pause = true;
     bool enable_terminal_window_resize = true; // If true it will resize the terminal window if too small for the game screen.
     
-    Color screen_bg_color_default = Color::Default;
-    Color screen_bg_color_title = Color::Default;
-    Color screen_bg_color_instructions = Color::Default;
+    Color16 screen_bg_color_default = Color16::Default;
+    Color16 screen_bg_color_title = Color16::Default;
+    Color16 screen_bg_color_instructions = Color16::Default;
     
-    std::optional<t8::Color> screen_bg_color_paused = std::nullopt;
-    t8::Style pause_info_style { t8::Color::White, t8::Color::DarkCyan };
+    std::optional<t8::Color16> screen_bg_color_paused = std::nullopt;
+    t8::Style pause_info_style { t8::Color16::White, t8::Color16::DarkCyan };
     
-    std::optional<t8::Color> screen_bg_color_quit_confirm = t8::Color::DarkCyan;
-    Style quit_confirm_title_style { Color::Black, Color::DarkCyan };
-    ButtonStyle quit_confirm_button_style { Color::Black, Color::DarkCyan, Color::Cyan };
-    Style quit_confirm_info_style { Color::White, Color::DarkCyan };
+    std::optional<t8::Color16> screen_bg_color_quit_confirm = t8::Color16::DarkCyan;
+    Style quit_confirm_title_style { Color16::Black, Color16::DarkCyan };
+    ButtonStyle quit_confirm_button_style { Color16::Black, Color16::DarkCyan, Color16::Cyan };
+    Style quit_confirm_info_style { Color16::White, Color16::DarkCyan };
     
-    std::optional<Color> screen_bg_color_input_hiscore = Color::DarkGray;
-    Style input_hiscore_title_style { Color::Green, Color::Black };
-    PromptStyle input_hiscore_prompt_style { Color::Green, Color::Black, Color::DarkGreen };
-    Style input_hiscore_info_style { Color::DarkGreen, Color::Black };
+    std::optional<Color16> screen_bg_color_input_hiscore = Color16::DarkGray;
+    Style input_hiscore_title_style { Color16::Green, Color16::Black };
+    PromptStyle input_hiscore_prompt_style { Color16::Green, Color16::Black, Color16::DarkGreen };
+    Style input_hiscore_info_style { Color16::DarkGreen, Color16::Black };
     
-    std::optional<Color> screen_bg_color_hiscores = Color::DarkGray;
-    Style hiscores_title_style { Color::Green, Color::Black };
-    HiliteFGStyle hiscores_nr_style { Color::Green, Color::Black, Color::Cyan };
-    HiliteFGStyle hiscores_score_style { Color::Green, Color::Black, Color::Cyan };
-    HiliteFGStyle hiscores_name_style { Color::Green, Color::Black, Color::Cyan };
-    Style hiscores_info_style { Color::DarkGreen, Color::Black };
+    std::optional<Color16> screen_bg_color_hiscores = Color16::DarkGray;
+    Style hiscores_title_style { Color16::Green, Color16::Black };
+    HiliteFGStyle hiscores_nr_style { Color16::Green, Color16::Black, Color16::Cyan };
+    HiliteFGStyle hiscores_score_style { Color16::Green, Color16::Black, Color16::Cyan };
+    HiliteFGStyle hiscores_name_style { Color16::Green, Color16::Black, Color16::Cyan };
+    Style hiscores_info_style { Color16::DarkGreen, Color16::Black };
     
-    Style game_over_line_0_style { Color::DarkRed, Color::White };
-    Style game_over_line_1_style { Color::DarkRed, Color::Yellow };
-    Style game_over_line_2_style { Color::DarkRed, Color::DarkYellow };
-    Style game_over_line_3_style { Color::DarkRed, Color::Yellow };
-    Style game_over_line_4_style { Color::DarkRed, Color::White };
+    Style game_over_line_0_style { Color16::DarkRed, Color16::White };
+    Style game_over_line_1_style { Color16::DarkRed, Color16::Yellow };
+    Style game_over_line_2_style { Color16::DarkRed, Color16::DarkYellow };
+    Style game_over_line_3_style { Color16::DarkRed, Color16::Yellow };
+    Style game_over_line_4_style { Color16::DarkRed, Color16::White };
     
-    Style you_won_line_0_style { Color::DarkBlue, Color::Cyan };
-    Style you_won_line_1_style { Color::DarkBlue, Color::DarkCyan };
+    Style you_won_line_0_style { Color16::DarkBlue, Color16::Cyan };
+    Style you_won_line_1_style { Color16::DarkBlue, Color16::DarkCyan };
     
     LogMode log_mode = LogMode::None;
     std::string xcode_log_path; // e.g. "../../../../../../../../Documents/xcode/Asciiroids/Asciiroids/bin/"
@@ -194,7 +194,7 @@ namespace t8x
     
     t8::ScreenHandler<NR, NC> sh;
     
-    Color bg_color = Color::Default;
+    Color16 bg_color = Color16::Default;
     
     t8::KeyPressDataPair kpdp;
     std::unique_ptr<t8::StreamKeyboard> keyboard;
@@ -358,7 +358,7 @@ namespace t8x
     
     void request_exit() { exit_requested = true; }
     
-    void set_screen_bg_color_default(Color bg_color) { m_params.screen_bg_color_default = bg_color; }
+    void set_screen_bg_color_default(Color16 bg_color) { m_params.screen_bg_color_default = bg_color; }
     
   private:
     void pre_quit()

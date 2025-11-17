@@ -136,7 +136,7 @@ namespace t8x
         auto color = t8::colors_hue_light[static_cast<size_t>(level) % t8::colors_hue_light.size()];
         if (order == 1)
           color = t8::shade_color(color, t8::ShadeType::Dark);
-        draw_box_outline(sh, rec, OutlineType::Line, { color, Color::Transparent2 });
+        draw_box_outline(sh, rec, OutlineType::Line, { color, Color16::Transparent2 });
       }
       for (const auto& ch : children)
         ch->draw(sh);
@@ -407,7 +407,7 @@ namespace t8x
     }
     
     template<int NR, int NC>
-    void draw_dbg_narrow_phase(ScreenHandler<NR, NC>& sh, Color coll_fg_color = Color::Magenta) const
+    void draw_dbg_narrow_phase(ScreenHandler<NR, NC>& sh, Color16 coll_fg_color = Color16::Magenta) const
     {
       for (const auto& pt : isect_world_positions)
       {

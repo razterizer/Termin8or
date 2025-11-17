@@ -14,34 +14,34 @@ namespace t8
   struct Style
   {
     Style() = default;
-    Style(Color fg, Color bg) : fg_color(fg), bg_color(bg) {}
-    Color fg_color = Color::Default;
-    Color bg_color = Color::Transparent;
+    Style(Color16 fg, Color16 bg) : fg_color(fg), bg_color(bg) {}
+    Color16 fg_color = Color16::Default;
+    Color16 bg_color = Color16::Transparent;
     void swap() { std::swap(fg_color, bg_color); }
   };
   
   struct ButtonStyle : Style
   {
     ButtonStyle() = default;
-    ButtonStyle(Color fg, Color bg, Color bg_sel)
+    ButtonStyle(Color16 fg, Color16 bg, Color16 bg_sel)
       : Style(fg, bg), bg_color_selected(bg_sel) {}
-    Color bg_color_selected = Color::Transparent;
+    Color16 bg_color_selected = Color16::Transparent;
   };
   
   struct PromptStyle : Style
   {
     PromptStyle() = default;
-    PromptStyle(Color fg, Color bg, Color bg_cursor)
+    PromptStyle(Color16 fg, Color16 bg, Color16 bg_cursor)
       : Style(fg, bg), bg_color_cursor(bg_cursor) {}
-    Color bg_color_cursor = Color::Transparent;
+    Color16 bg_color_cursor = Color16::Transparent;
   };
   
   struct HiliteFGStyle : Style
   {
     HiliteFGStyle() = default;
-    HiliteFGStyle(Color fg, Color bg, Color fg_hilite)
+    HiliteFGStyle(Color16 fg, Color16 bg, Color16 fg_hilite)
       : Style(fg, bg), fg_color_hilite(fg_hilite) {}
-    Color fg_color_hilite = Color::Default;
+    Color16 fg_color_hilite = Color16::Default;
     Style get_style(bool hilited) const
     {
       return { hilited ? fg_color_hilite : fg_color, bg_color };
@@ -50,13 +50,13 @@ namespace t8
   
   struct HiliteSelectFGStyle : HiliteFGStyle
   {
-    HiliteSelectFGStyle(Color fg, Color bg, Color fg_hilite, Color fg_select, Color fg_select_hilite)
+    HiliteSelectFGStyle(Color16 fg, Color16 bg, Color16 fg_hilite, Color16 fg_select, Color16 fg_select_hilite)
       : HiliteFGStyle(fg, bg, fg_hilite)
       , fg_color_select(fg_select)
       , fg_color_select_hilite(fg_select_hilite)
       {}
-    Color fg_color_select = Color::Default;
-    Color fg_color_select_hilite = Color::Default;
+    Color16 fg_color_select = Color16::Default;
+    Color16 fg_color_select_hilite = Color16::Default;
     Style get_style(bool hilited, bool selected) const
     {
       if (selected)
@@ -67,7 +67,7 @@ namespace t8
   
   // ////
   
-  Style make_shaded_style(Color base_color, ShadeType shade)
+  Style make_shaded_style(Color16 base_color, ShadeType shade)
   {
     Style ret;
     switch (shade)

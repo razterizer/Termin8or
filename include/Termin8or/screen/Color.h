@@ -12,7 +12,7 @@
 namespace t8
 {
 
-  enum class Color
+  enum class Color16
   {
     Transparent = -1,
     Transparent2 = -2,
@@ -35,168 +35,168 @@ namespace t8
     White          // 16
   };
 
-  Color string2color(const std::string& str)
+  Color16 string2color(const std::string& str)
   {
     if (str == "Transparent")
-      return Color::Transparent;
+      return Color16::Transparent;
     if (str == "Transparent2")
-      return Color::Transparent2;
+      return Color16::Transparent2;
     if (str == "Default")
-      return Color::Default;
+      return Color16::Default;
     if (str == "Black")
-      return Color::Black;
+      return Color16::Black;
     if (str == "DarkRed")
-      return Color::DarkRed;
+      return Color16::DarkRed;
     if (str == "DarkGreen")
-      return Color::DarkGreen;
+      return Color16::DarkGreen;
     if (str == "DarkYellow")
-      return Color::DarkYellow;
+      return Color16::DarkYellow;
     if (str == "DarkBlue")
-      return Color::DarkBlue;
+      return Color16::DarkBlue;
     if (str == "DarkMagenta")
-      return Color::DarkMagenta;
+      return Color16::DarkMagenta;
     if (str == "DarkCyan")
-      return Color::DarkCyan;
+      return Color16::DarkCyan;
     if (str == "LightGray")
-      return Color::LightGray;
+      return Color16::LightGray;
     if (str == "DarkGray")
-      return Color::DarkGray;
+      return Color16::DarkGray;
     if (str == "Red")
-      return Color::Red;
+      return Color16::Red;
     if (str == "Green")
-      return Color::Green;
+      return Color16::Green;
     if (str == "Yellow")
-      return Color::Yellow;
+      return Color16::Yellow;
     if (str == "Blue")
-      return Color::Blue;
+      return Color16::Blue;
     if (str == "Magenta")
-      return Color::Magenta;
+      return Color16::Magenta;
     if (str == "Cyan")
-      return Color::Cyan;
+      return Color16::Cyan;
     if (str == "White")
-      return Color::White;
+      return Color16::White;
       
-    return Color::Default;
+    return Color16::Default;
   }
   
-  std::string color2string(Color color)
+  std::string color2string(Color16 color)
   {
     switch (color)
     {
-      case Color::Transparent:
+      case Color16::Transparent:
         return "Transparent";
-      case Color::Transparent2:
+      case Color16::Transparent2:
         return "Transparent2";
-      case Color::Default:
+      case Color16::Default:
         return "Default";
-      case Color::Black:
+      case Color16::Black:
         return "Black";
-      case Color::DarkRed:
+      case Color16::DarkRed:
         return "DarkRed";
-      case Color::DarkGreen:
+      case Color16::DarkGreen:
         return "DarkGreen";
-      case Color::DarkYellow:
+      case Color16::DarkYellow:
         return "DarkYellow";
-      case Color::DarkBlue:
+      case Color16::DarkBlue:
         return "DarkBlue";
-      case Color::DarkMagenta:
+      case Color16::DarkMagenta:
         return "DarkMagenta";
-      case Color::DarkCyan:
+      case Color16::DarkCyan:
         return "DarkCyan";
-      case Color::LightGray:
+      case Color16::LightGray:
         return "LightGray";
-      case Color::DarkGray:
+      case Color16::DarkGray:
         return "DarkGray";
-      case Color::Red:
+      case Color16::Red:
         return "Red";
-      case Color::Green:
+      case Color16::Green:
         return "Green";
-      case Color::Yellow:
+      case Color16::Yellow:
         return "Yellow";
-      case Color::Blue:
+      case Color16::Blue:
         return "Blue";
-      case Color::Magenta:
+      case Color16::Magenta:
         return "Magenta";
-      case Color::Cyan:
+      case Color16::Cyan:
         return "Cyan";
-      case Color::White:
+      case Color16::White:
         return "White";
       default:
         return "";
     }
   }
   
-  Color get_random_color(const std::vector<Color>& palette)
+  Color16 get_random_color(const std::vector<Color16>& palette)
   {
     auto num = static_cast<int>(palette.size());
     if (num == 0)
-      return Color::Default;
+      return Color16::Default;
     auto idx = rnd::rand_int(0, num - 1);
     return palette[idx];
   }
   
-  std::vector<Color> colors_hue_light
+  std::vector<Color16> colors_hue_light
   {
-    Color::Red,
-    Color::Yellow,
-    Color::Green,
-    Color::Cyan,
-    Color::Blue,
+    Color16::Red,
+    Color16::Yellow,
+    Color16::Green,
+    Color16::Cyan,
+    Color16::Blue,
   };
   
-  std::vector<Color> colors_hue_light_dark
+  std::vector<Color16> colors_hue_light_dark
   {
-    Color::Red,
-    Color::Yellow,
-    Color::Green,
-    Color::Cyan,
-    Color::Blue,
-    Color::Magenta,
-    Color::DarkRed,
-    Color::DarkYellow,
-    Color::DarkGreen,
-    Color::DarkCyan,
-    Color::DarkBlue,
-    Color::DarkMagenta,
+    Color16::Red,
+    Color16::Yellow,
+    Color16::Green,
+    Color16::Cyan,
+    Color16::Blue,
+    Color16::Magenta,
+    Color16::DarkRed,
+    Color16::DarkYellow,
+    Color16::DarkGreen,
+    Color16::DarkCyan,
+    Color16::DarkBlue,
+    Color16::DarkMagenta,
   };
   
   // #NOTE: these color vectors are to be compared with each other, line by line.
   // These are not absolute categories! E.g. In colors_dark there is LightGray,
   //   but it is only there because it is darker than the corresponding White color
   //   in the colors_bright vector.
-  std::vector<Color> colors_bright
+  std::vector<Color16> colors_bright
   {
-    Color::White,
-    Color::LightGray,
-    Color::DarkGray,
-    Color::Cyan,
-    Color::Magenta,
-    Color::Yellow,
-    Color::Red,
-    Color::Green,
-    Color::Blue,
+    Color16::White,
+    Color16::LightGray,
+    Color16::DarkGray,
+    Color16::Cyan,
+    Color16::Magenta,
+    Color16::Yellow,
+    Color16::Red,
+    Color16::Green,
+    Color16::Blue,
   };
-  std::vector<Color> colors_dark
+  std::vector<Color16> colors_dark
   {
-    Color::LightGray,
-    Color::DarkGray,
-    Color::Black,
-    Color::DarkCyan,
-    Color::DarkMagenta,
-    Color::DarkYellow,
-    Color::DarkRed,
-    Color::DarkGreen,
-    Color::DarkBlue,
+    Color16::LightGray,
+    Color16::DarkGray,
+    Color16::Black,
+    Color16::DarkCyan,
+    Color16::DarkMagenta,
+    Color16::DarkYellow,
+    Color16::DarkRed,
+    Color16::DarkGreen,
+    Color16::DarkBlue,
   };
   
   enum class ShadeType { Unchanged, Bright, Dark };
-  // #NOTE: Returns Color::Default if no matching color was found.
+  // #NOTE: Returns Color16::Default if no matching color was found.
   //   If shade = ShadeType::Unchanged, then it will return the same color as the argument.
   // If inputting a bright color and ShadeType is Bright, then you will get the same color.
   // If inputting a dark color and ShadeType is Bright, then you will get the corresponding bright color.
   // If inputting a bright color and ShadeType is Dark, then you will get the corresponding dark color.
   // If inputting a dark color and ShadeType is Dark, then you will get the same color.
-  Color shade_color(Color color, ShadeType shade)
+  Color16 shade_color(Color16 color, ShadeType shade)
   {
     int idx = -1;
     switch (shade)
@@ -218,21 +218,21 @@ namespace t8
           return color;
         break;
     }
-    return Color::Default;
+    return Color16::Default;
   }
   
-  std::optional<bool> is_bright(Color color, bool perceived = false)
+  std::optional<bool> is_bright(Color16 color, bool perceived = false)
   {
     if (perceived)
     {
 #ifndef _WIN32
       switch (color)
       {
-        case Color::DarkGreen: return true;
-        case Color::DarkYellow: return true;
-        case Color::DarkCyan: return true;
-        case Color::Red: return false;
-        case Color::Blue: return false;
+        case Color16::DarkGreen: return true;
+        case Color16::DarkYellow: return true;
+        case Color16::DarkCyan: return true;
+        case Color16::Red: return false;
+        case Color16::Blue: return false;
         default:
           break;
       }
@@ -240,45 +240,45 @@ namespace t8
     }
     switch (color)
     {
-      case Color::Transparent:
-      case Color::Transparent2:
-      case Color::Default:
+      case Color16::Transparent:
+      case Color16::Transparent2:
+      case Color16::Default:
         return std::nullopt;
-      case Color::Black:
-      case Color::DarkRed:
-      case Color::DarkGreen:
-      case Color::DarkYellow:
-      case Color::DarkBlue:
-      case Color::DarkMagenta:
-      case Color::DarkCyan:
+      case Color16::Black:
+      case Color16::DarkRed:
+      case Color16::DarkGreen:
+      case Color16::DarkYellow:
+      case Color16::DarkBlue:
+      case Color16::DarkMagenta:
+      case Color16::DarkCyan:
         return false;
-      case Color::LightGray: return true;
-      case Color::DarkGray: return false;
-      case Color::Red:
-      case Color::Green:
-      case Color::Yellow:
-      case Color::Blue:
-      case Color::Magenta:
-      case Color::Cyan:
-      case Color::White:
+      case Color16::LightGray: return true;
+      case Color16::DarkGray: return false;
+      case Color16::Red:
+      case Color16::Green:
+      case Color16::Yellow:
+      case Color16::Blue:
+      case Color16::Magenta:
+      case Color16::Cyan:
+      case Color16::White:
         return true;
     }
-    assert(false && "Unhandled Color in is_bright()");
+    assert(false && "Unhandled Color16 in is_bright()");
     return std::nullopt;
   }
   
-  std::optional<bool> is_dark(Color color, bool perceived = false)
+  std::optional<bool> is_dark(Color16 color, bool perceived = false)
   {
     if (perceived)
     {
 #ifndef _WIN32
       switch (color)
       {
-        case Color::DarkGreen: return false;
-        case Color::DarkYellow: return false;
-        case Color::DarkCyan: return false;
-        case Color::Red: return true;
-        case Color::Blue: return true;
+        case Color16::DarkGreen: return false;
+        case Color16::DarkYellow: return false;
+        case Color16::DarkCyan: return false;
+        case Color16::Red: return true;
+        case Color16::Blue: return true;
         default:
           break;
       }
@@ -286,139 +286,139 @@ namespace t8
     }
     switch (color)
     {
-      case Color::Transparent:
-      case Color::Transparent2:
-      case Color::Default:
+      case Color16::Transparent:
+      case Color16::Transparent2:
+      case Color16::Default:
         return std::nullopt;
-      case Color::Black:
-      case Color::DarkRed:
-      case Color::DarkGreen:
-      case Color::DarkYellow:
-      case Color::DarkBlue:
-      case Color::DarkMagenta:
-      case Color::DarkCyan:
+      case Color16::Black:
+      case Color16::DarkRed:
+      case Color16::DarkGreen:
+      case Color16::DarkYellow:
+      case Color16::DarkBlue:
+      case Color16::DarkMagenta:
+      case Color16::DarkCyan:
         return true;
-      case Color::LightGray: return false;
-      case Color::DarkGray: return true;
-      case Color::Red:
-      case Color::Green:
-      case Color::Yellow:
-      case Color::Blue:
-      case Color::Magenta:
-      case Color::Cyan:
-      case Color::White:
+      case Color16::LightGray: return false;
+      case Color16::DarkGray: return true;
+      case Color16::Red:
+      case Color16::Green:
+      case Color16::Yellow:
+      case Color16::Blue:
+      case Color16::Magenta:
+      case Color16::Cyan:
+      case Color16::White:
         return false;
     }
-    assert(false && "Unhandled Color in is_dark()");
+    assert(false && "Unhandled Color16 in is_dark()");
     return std::nullopt;
   }
   
-  Color get_contrast_color(Color color)
+  Color16 get_contrast_color(Color16 color)
   {
     switch (color)
     {
-      case Color::Transparent: return Color::Transparent;
-      case Color::Transparent2: return Color::Transparent2;
-      case Color::Default: return Color::Default;
-      case Color::Black: return Color::White;
-      case Color::DarkRed: return Color::Cyan;
-      case Color::DarkGreen: return Color::Magenta;
-      case Color::DarkYellow: return Color::Blue;
-      case Color::DarkBlue: return Color::Yellow;
-      case Color::DarkMagenta: return Color::Green;
-      case Color::DarkCyan: return Color::Red;
-      case Color::LightGray: return Color::Black;
-      case Color::DarkGray: return Color::White;
-      case Color::Red: return Color::DarkCyan;
-      case Color::Green: return Color::DarkMagenta;
-      case Color::Yellow: return Color::DarkBlue;
-      case Color::Blue: return Color::DarkYellow;
-      case Color::Magenta: return Color::DarkGreen;
-      case Color::Cyan: return Color::DarkRed;
-      case Color::White: return Color::Black;
+      case Color16::Transparent: return Color16::Transparent;
+      case Color16::Transparent2: return Color16::Transparent2;
+      case Color16::Default: return Color16::Default;
+      case Color16::Black: return Color16::White;
+      case Color16::DarkRed: return Color16::Cyan;
+      case Color16::DarkGreen: return Color16::Magenta;
+      case Color16::DarkYellow: return Color16::Blue;
+      case Color16::DarkBlue: return Color16::Yellow;
+      case Color16::DarkMagenta: return Color16::Green;
+      case Color16::DarkCyan: return Color16::Red;
+      case Color16::LightGray: return Color16::Black;
+      case Color16::DarkGray: return Color16::White;
+      case Color16::Red: return Color16::DarkCyan;
+      case Color16::Green: return Color16::DarkMagenta;
+      case Color16::Yellow: return Color16::DarkBlue;
+      case Color16::Blue: return Color16::DarkYellow;
+      case Color16::Magenta: return Color16::DarkGreen;
+      case Color16::Cyan: return Color16::DarkRed;
+      case Color16::White: return Color16::Black;
     }
-    assert(false && "Unhandled Color in get_contrast_color()");
-    return Color::Default;
+    assert(false && "Unhandled Color16 in get_contrast_color()");
+    return Color16::Default;
   }
   
-  int get_color_value_win(Color color)
+  int get_color_value_win(Color16 color)
   {
     switch (color)
     {
-      case Color::DarkRed:
+      case Color16::DarkRed:
         return 4;
-      case Color::DarkGreen:
+      case Color16::DarkGreen:
         return 2;
-      case Color::DarkYellow:
+      case Color16::DarkYellow:
         return 6;
-      case Color::DarkBlue:
+      case Color16::DarkBlue:
         return 1;
-      case Color::DarkMagenta:
+      case Color16::DarkMagenta:
         return 5;
-      case Color::DarkCyan:
+      case Color16::DarkCyan:
         return 3;
-      case Color::LightGray:
+      case Color16::LightGray:
         return 7;
-      case Color::DarkGray:
+      case Color16::DarkGray:
         return 8;
-      case Color::Red:
+      case Color16::Red:
         return 12;
-      case Color::Green:
+      case Color16::Green:
         return 10;
-      case Color::Yellow:
+      case Color16::Yellow:
         return 14;
-      case Color::Blue:
+      case Color16::Blue:
         return 9;
-      case Color::Magenta:
+      case Color16::Magenta:
         return 13;
-      case Color::Cyan:
+      case Color16::Cyan:
         return 11;
-      case Color::White:
+      case Color16::White:
         return 15;
-      case Color::Black:
+      case Color16::Black:
       default:
         return 0;
     }
   }
   
-  Color get_color_win(int color_val)
+  Color16 get_color_win(int color_val)
   {
     switch (color_val)
     {
       case 0:
-        return Color::Black;
+        return Color16::Black;
       case 1:
-        return Color::DarkBlue;
+        return Color16::DarkBlue;
       case 2:
-        return Color::DarkGreen;
+        return Color16::DarkGreen;
       case 3:
-        return Color::DarkCyan;
+        return Color16::DarkCyan;
       case 4:
-        return Color::DarkRed;
+        return Color16::DarkRed;
       case 5:
-        return Color::DarkMagenta;
+        return Color16::DarkMagenta;
       case 6:
-        return Color::DarkYellow;
+        return Color16::DarkYellow;
       case 7:
-        return Color::LightGray;
+        return Color16::LightGray;
       case 8:
-        return Color::DarkGray;
+        return Color16::DarkGray;
       case 9:
-        return Color::Blue;
+        return Color16::Blue;
       case 10:
-        return Color::Green;
+        return Color16::Green;
       case 11:
-        return Color::Cyan;
+        return Color16::Cyan;
       case 12:
-        return Color::Red;
+        return Color16::Red;
       case 13:
-        return Color::Magenta;
+        return Color16::Magenta;
       case 14:
-        return Color::Yellow;
+        return Color16::Yellow;
       case 15:
-        return Color::White;
+        return Color16::White;
       default:
-        return Color::Default;
+        return Color16::Default;
     }
   }
 

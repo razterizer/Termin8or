@@ -47,7 +47,7 @@ namespace t8x
     {
       assert(0.f <= t && t <= 1.f);
       float t_dist_min = 2.f;
-      T closest_obj = default_value; //Color::Default;
+      T closest_obj = default_value; //Color16::Default;
       for (const auto& obj_pair : gradient)
       {
         auto t_dist = std::abs(t - obj_pair.first);

@@ -26,7 +26,7 @@
 
 namespace t8x
 {
-  using Color = t8::Color;
+  using Color16 = t8::Color16;
   using Style = t8::Style;
   template<int NR, int NC>
   using ScreenHandler = t8::ScreenHandler<NR, NC>;
@@ -41,12 +41,12 @@ namespace t8x
 
   struct ColorScheme
   {
-    Style internal { Color::White, Color::DarkGray };
-    Style side_h { Color::White, Color::Black };
-    Style side_v { Color::LightGray, Color::White };
-    Style dot_internal { Color::White, Color::Red };
-    Style dot_side_h { Color::White, Color::DarkRed };
-    Style dot_side_v { Color::LightGray, Color::White };
+    Style internal { Color16::White, Color16::DarkGray };
+    Style side_h { Color16::White, Color16::Black };
+    Style side_v { Color16::LightGray, Color16::White };
+    Style dot_internal { Color16::White, Color16::Red };
+    Style dot_side_h { Color16::White, Color16::DarkRed };
+    Style dot_side_v { Color16::LightGray, Color16::White };
   };
 
   struct FontPiece
@@ -75,12 +75,12 @@ namespace t8x
 
   using FontDataColl = std::map<Font, FontData>;
 
-  Color get_fg_color(const std::string& col_type, const ColorScheme& colors)
+  Color16 get_fg_color(const std::string& col_type, const ColorScheme& colors)
   {
     if (col_type == "T")
-      return Color::Transparent;
+      return Color16::Transparent;
     if (col_type == "T2")
-      return Color::Transparent2;
+      return Color16::Transparent2;
     if (col_type == "I")
       return colors.internal.fg_color;
     if (col_type == "SH")
@@ -93,15 +93,15 @@ namespace t8x
       return colors.dot_side_h.fg_color;
     if (col_type == "DSV")
       return colors.dot_side_v.fg_color;
-    return Color::Transparent;
+    return Color16::Transparent;
   }
 
-  Color get_bg_color(const std::string& col_type, const ColorScheme& colors)
+  Color16 get_bg_color(const std::string& col_type, const ColorScheme& colors)
   {
     if (col_type == "T")
-      return Color::Transparent;
+      return Color16::Transparent;
     if (col_type == "T2")
-      return Color::Transparent2;
+      return Color16::Transparent2;
     if (col_type == "I")
       return colors.internal.bg_color;
     if (col_type == "SH")
@@ -114,7 +114,7 @@ namespace t8x
       return colors.dot_side_h.bg_color;
     if (col_type == "DSV")
       return colors.dot_side_v.bg_color;
-    return Color::Transparent;
+    return Color16::Transparent;
   }
   
   // Add the env variable RUNNING_FROM_XCODE to the Run section of the current scheme:

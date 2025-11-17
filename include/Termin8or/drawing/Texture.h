@@ -21,8 +21,8 @@ namespace t8
   struct Textel
   {
     char ch = ' ';
-    Color fg_color = Color::Default;
-    Color bg_color = Color::Transparent2;
+    Color16 fg_color = Color16::Default;
+    Color16 bg_color = Color16::Transparent2;
     int mat = 0;
     
     Style get_style() const { return { fg_color, bg_color }; }
@@ -58,8 +58,8 @@ namespace t8
     RC size;
     int area = 0;
     std::vector<char> characters;
-    std::vector<Color> fg_colors;
-    std::vector<Color> bg_colors;
+    std::vector<Color16> fg_colors;
+    std::vector<Color16> bg_colors;
     std::vector<int> materials;
     
     Texture() = default;
@@ -67,16 +67,16 @@ namespace t8
       : size(tex_size)
       , area(tex_size.r*tex_size.c)
       , characters(area, ' ')
-      , fg_colors(area, Color::Default)
-      , bg_colors(area, Color::Transparent2)
+      , fg_colors(area, Color16::Default)
+      , bg_colors(area, Color16::Transparent2)
       , materials(area, 0)
     {}
     Texture(int tex_rows, int tex_cols)
       : size({ tex_rows, tex_cols })
       , area(tex_rows*tex_cols)
       , characters(area, ' ')
-      , fg_colors(area, Color::Default)
-      , bg_colors(area, Color::Transparent2)
+      , fg_colors(area, Color16::Default)
+      , bg_colors(area, Color16::Transparent2)
       , materials(area, 0)
     {}
     Texture(const Texture& other)
@@ -140,7 +140,7 @@ namespace t8
       set_textel_char(pos.r, pos.c, ch);
     }
     
-    void set_textel_fg_color(int r, int c, Color fg_color)
+    void set_textel_fg_color(int r, int c, Color16 fg_color)
     {
       if (!check_range(r, c))
         return;
@@ -148,12 +148,12 @@ namespace t8
       fg_colors[idx] = fg_color;
     }
     
-    void set_textel_fg_color(const RC& pos, Color fg_color)
+    void set_textel_fg_color(const RC& pos, Color16 fg_color)
     {
       set_textel_fg_color(pos.r, pos.c, fg_color);
     }
     
-    void set_textel_bg_color(int r, int c, Color bg_color)
+    void set_textel_bg_color(int r, int c, Color16 bg_color)
     {
       if (!check_range(r, c))
         return;
@@ -161,7 +161,7 @@ namespace t8
       bg_colors[idx] = bg_color;
     }
     
-    void set_textel_bg_color(const RC& pos, Color bg_color)
+    void set_textel_bg_color(const RC& pos, Color16 bg_color)
     {
       set_textel_bg_color(pos.r, pos.c, bg_color);
     }
@@ -208,26 +208,26 @@ namespace t8
       {
         switch (ch)
         {
-          case 't': return Color::Transparent;
-          case 'T': return Color::Transparent2;
-          case '*': return Color::Default;
-          case '0': return Color::Black;
-          case '1': return Color::DarkRed;
-          case '2': return Color::DarkGreen;
-          case '3': return Color::DarkYellow;
-          case '4': return Color::DarkBlue;
-          case '5': return Color::DarkMagenta;
-          case '6': return Color::DarkCyan;
-          case '7': return Color::LightGray;
-          case '8': return Color::DarkGray;
-          case '9': return Color::Red;
-          case 'A': return Color::Green;
-          case 'B': return Color::Yellow;
-          case 'C': return Color::Blue;
-          case 'D': return Color::Magenta;
-          case 'E': return Color::Cyan;
-          case 'F': return Color::White;
-          default: return Color::Default;
+          case 't': return Color16::Transparent;
+          case 'T': return Color16::Transparent2;
+          case '*': return Color16::Default;
+          case '0': return Color16::Black;
+          case '1': return Color16::DarkRed;
+          case '2': return Color16::DarkGreen;
+          case '3': return Color16::DarkYellow;
+          case '4': return Color16::DarkBlue;
+          case '5': return Color16::DarkMagenta;
+          case '6': return Color16::DarkCyan;
+          case '7': return Color16::LightGray;
+          case '8': return Color16::DarkGray;
+          case '9': return Color16::Red;
+          case 'A': return Color16::Green;
+          case 'B': return Color16::Yellow;
+          case 'C': return Color16::Blue;
+          case 'D': return Color16::Magenta;
+          case 'E': return Color16::Cyan;
+          case 'F': return Color16::White;
+          default: return Color16::Default;
         }
       };
       
@@ -255,8 +255,8 @@ namespace t8
           iss >> size.r >> size.c;
           area = size.r * size.c;
           characters.resize(area, ' ');
-          fg_colors.resize(area, Color::Default);
-          bg_colors.resize(area, Color::Transparent2);
+          fg_colors.resize(area, Color16::Default);
+          bg_colors.resize(area, Color16::Transparent2);
           materials.resize(area, -1);
           section = 1;
           r = 0;
@@ -337,29 +337,29 @@ namespace t8
     {
       std::vector<std::string> lines;
       
-      auto f_color_to_char = [](Color color)
+      auto f_color_to_char = [](Color16 color)
       {
         switch (color)
         {
-          case Color::Transparent:  return 't';
-          case Color::Transparent2: return 'T';
-          case Color::Default:      return '*';
-          case Color::Black:        return '0';
-          case Color::DarkRed:      return '1';
-          case Color::DarkGreen:    return '2';
-          case Color::DarkYellow:   return '3';
-          case Color::DarkBlue:     return '4';
-          case Color::DarkMagenta:  return '5';
-          case Color::DarkCyan:     return '6';
-          case Color::LightGray:    return '7';
-          case Color::DarkGray:     return '8';
-          case Color::Red:          return '9';
-          case Color::Green:        return 'A';
-          case Color::Yellow:       return 'B';
-          case Color::Blue:         return 'C';
-          case Color::Magenta:      return 'D';
-          case Color::Cyan:         return 'E';
-          case Color::White:        return 'F';
+          case Color16::Transparent:  return 't';
+          case Color16::Transparent2: return 'T';
+          case Color16::Default:      return '*';
+          case Color16::Black:        return '0';
+          case Color16::DarkRed:      return '1';
+          case Color16::DarkGreen:    return '2';
+          case Color16::DarkYellow:   return '3';
+          case Color16::DarkBlue:     return '4';
+          case Color16::DarkMagenta:  return '5';
+          case Color16::DarkCyan:     return '6';
+          case Color16::LightGray:    return '7';
+          case Color16::DarkGray:     return '8';
+          case Color16::Red:          return '9';
+          case Color16::Green:        return 'A';
+          case Color16::Yellow:       return 'B';
+          case Color16::Blue:         return 'C';
+          case Color16::Magenta:      return 'D';
+          case Color16::Cyan:         return 'E';
+          case Color16::White:        return 'F';
           default: return '*';
         }
       };

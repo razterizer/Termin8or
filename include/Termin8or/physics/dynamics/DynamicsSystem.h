@@ -14,7 +14,7 @@
 
 namespace t8x
 {
-  using Color = t8::Color;
+  using Color16 = t8::Color16;
   template<int NR, int NC>
   using ScreenHandler = t8::ScreenHandler<NR, NC>;
 
@@ -97,7 +97,7 @@ namespace t8x
       for (auto& rb : m_rigid_bodies)
       {
         const auto& cm = rb->get_curr_cm();
-        sh.write_buffer("+", math::roundI(cm.r), math::roundI(cm.c), Color::Cyan);
+        sh.write_buffer("+", math::roundI(cm.r), math::roundI(cm.c), Color16::Cyan);
       }
     }
   };

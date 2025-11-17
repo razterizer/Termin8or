@@ -8,7 +8,7 @@
 namespace t8x
 {
   using RC = t8::RC;
-  using Color = t8::Color;
+  using Color16 = t8::Color16;
   template<int NR, int NC>
   using ScreenHandler = t8::ScreenHandler<NR, NC>;
   
@@ -51,7 +51,7 @@ namespace t8x
     }
     
     template<int NR, int NC>
-    void draw(ScreenHandler<NR, NC>& sh, const std::string& str, Color fg_color, Color bg_color, float time) const
+    void draw(ScreenHandler<NR, NC>& sh, const std::string& str, Color16 fg_color, Color16 bg_color, float time) const
     {
       if (alive(time))
         sh.write_buffer(str, math::roundI(pos_r), math::roundI(pos_c), fg_color, bg_color);
@@ -60,8 +60,8 @@ namespace t8x
   
   struct ParticleGradientGroup
   {
-    Gradient<Color> fg_color_gradient;
-    Gradient<Color> bg_color_gradient;
+    Gradient<Color16> fg_color_gradient;
+    Gradient<Color16> bg_color_gradient;
     Gradient<std::string> string_gradient;
   };
   
@@ -91,7 +91,7 @@ namespace t8x
     }
     
     template<int NR, int NC>
-    void draw(ScreenHandler<NR, NC>& sh, const std::string& str, Color fg_color, Color bg_color, float time) const
+    void draw(ScreenHandler<NR, NC>& sh, const std::string& str, Color16 fg_color, Color16 bg_color, float time) const
     {
       for (const auto& particle : particle_stream)
         if (!particle.dead)
@@ -100,7 +100,7 @@ namespace t8x
     
     template<int NR, int NC>
     void draw(ScreenHandler<NR, NC>& sh, const std::vector<std::string>& str,
-              const Gradient<Color>& fg_color, const Gradient<Color>& bg_color, float time) const
+              const Gradient<Color16>& fg_color, const Gradient<Color16>& bg_color, float time) const
     {
       for (const auto& particle : particle_stream)
         if (!particle.dead && particle.alive(time))
@@ -114,7 +114,7 @@ namespace t8x
     
     template<int NR, int NC>
     void draw(ScreenHandler<NR, NC>& sh, const std::vector<std::string>& str,
-              const std::vector<std::pair<float, std::pair<Gradient<Color>, Gradient<Color>>>>& color_fg_bg_vec,
+              const std::vector<std::pair<float, std::pair<Gradient<Color16>, Gradient<Color16>>>>& color_fg_bg_vec,
               float time) const
     {
       for (const auto& particle : particle_stream)
@@ -124,8 +124,8 @@ namespace t8x
           int str_idx = static_cast<int>(std::round(t*str.size())) - 1;
           str_idx = math::clamp(str_idx, 0, static_cast<int>(str.size()) - 1);
           const auto& col_fg_bg = rnd::rand_select(color_fg_bg_vec);
-          const Gradient<Color>& fg_color = col_fg_bg.first;
-          const Gradient<Color>& bg_color = col_fg_bg.second;
+          const Gradient<Color16>& fg_color = col_fg_bg.first;
+          const Gradient<Color16>& bg_color = col_fg_bg.second;
           particle.draw(sh, str[str_idx], fg_color(t), bg_color(t), time);
         }
     }
@@ -140,8 +140,8 @@ namespace t8x
         {
           auto t = (time - particle.time_stamp)/particle.life_time;
           const auto& grads = rnd::rand_select(gradient_groups);
-          const Gradient<Color>& fg_grad = grads.fg_color_gradient;
-          const Gradient<Color>& bg_grad = grads.bg_color_gradient;
+          const Gradient<Color16>& fg_grad = grads.fg_color_gradient;
+          const Gradient<Color16>& bg_grad = grads.bg_color_gradient;
           const Gradient<std::string>& str_grad = grads.string_gradient;
           particle.draw(sh, str_grad(t), fg_grad(t), bg_grad(t), time);
         }
