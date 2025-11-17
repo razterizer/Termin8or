@@ -421,5 +421,15 @@ namespace t8
         return Color16::Default;
     }
   }
+  
+  struct Color
+  {
+    Color(Color16 col16)
+      : idx(static_cast<int>(col16))
+    {}
+  
+  private:
+    int idx = 0;
+  };
 
 }
