@@ -427,6 +427,8 @@ namespace t8
     Color(Color16 col16)
       : idx(static_cast<int>(col16))
     {}
+    
+    int get_index() const { return idx; }
   
   private:
     int idx = 0;
