@@ -428,7 +428,8 @@ namespace t8
   
   struct Color
   {
-    Color(Color16 col16)
+    Color() = default;
+    explicit Color(Color16 col16)
       : idx(static_cast<int>(col16))
     {}
     
