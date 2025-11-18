@@ -449,6 +449,25 @@ namespace t8
         return static_cast<Color16>(idx);
       return std::nullopt;
     }
+
+    // Try reverse-decoding cube representation
+    std::optional<std::tuple<R_t, G_t, B_t>> try_get_cube6() const
+    {
+      if (16 <= idx && idx <= 231)
+      {
+        int v = idx - 16;
+        int r = v / 36;
+        int g = (v % 36) / 6;
+        int b = v % 6;
+        return std::tuple
+        {
+          static_cast<R_t>(r),
+          static_cast<G_t>(g),
+          static_cast<B_t>(b)
+        };
+      }
+      return std::nullopt;
+    }
   
   private:
     int idx = 0;
