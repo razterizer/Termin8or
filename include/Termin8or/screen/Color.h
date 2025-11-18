@@ -422,6 +422,10 @@ namespace t8
     }
   }
   
+  enum class R_t { R0, R1, R2, R3, R4, R5 };
+  enum class G_t { G0, G1, G2, G3, G4, G5 };
+  enum class B_t { B0, B1, B2, B3, B4, B5 };
+  
   struct Color
   {
     Color(Color16 col16)
