@@ -422,9 +422,9 @@ namespace t8
     }
   }
   
-  enum class R_t { R0, R1, R2, R3, R4, R5 };
-  enum class G_t { G0, G1, G2, G3, G4, G5 };
-  enum class B_t { B0, B1, B2, B3, B4, B5 };
+  enum class R_t { R_0, R_1, R_2, R_3, R_4, R_5 };
+  enum class G_t { G_0, G_1, G_2, G_3, G_4, G_5 };
+  enum class B_t { B_0, B_1, B_2, B_3, B_4, B_5 };
   
   struct Color
   {
