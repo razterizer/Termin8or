@@ -441,6 +441,14 @@ namespace t8
     }
     
     int get_index() const { return idx; }
+    
+    // Try reverse-decoding 16-color representation
+    std::optional<Color16> try_get_color16() const
+    {
+      if (-2 <= idx && idx <= 16)
+        return static_cast<Color16>(idx);
+      return std::nullopt;
+    }
   
   private:
     int idx = 0;
