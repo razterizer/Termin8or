@@ -9,6 +9,7 @@ namespace t8x
 {
   using RC = t8::RC;
   using Rectangle = t8::Rectangle;
+  using Color = t8::Color;
   using Color16 = t8::Color16;
   using Style = t8::Style;
   using ShadeType = t8::ShadeType;
