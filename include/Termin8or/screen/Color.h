@@ -443,6 +443,16 @@ namespace t8
       b = std::clamp(b, 0, 5);
       set_rgb(r, g, b);
     }
+    Color(float r, float g, float b)
+    {
+      assert(0.f <= r && r <= 1.f);
+      assert(0.f <= g && g <= 1.f);
+      assert(0.f <= b && b <= 1.f);
+      r = std::clamp(r, 0.f, 1.f);
+      g = std::clamp(g, 0.f, 1.f);
+      b = std::clamp(b, 0.f, 1.f);
+      set_rgb(math::roundI(5.f*r), math::roundI(5.f*g), math::roundI(5.f*b));
+    }
     
     int get_index() const { return idx; }
     
