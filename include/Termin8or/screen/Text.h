@@ -137,7 +137,7 @@ namespace t8
 #endif
     }
     
-    using ComplexString = std::vector<std::tuple<char, Color16, Color16>>;
+    using ComplexString = std::vector<std::tuple<char, Color, Color>>;
     
     void print_complex_sequential(const ComplexString& text)
     {
