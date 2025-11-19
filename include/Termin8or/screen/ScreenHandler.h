@@ -133,7 +133,7 @@ namespace t8
     }
     
     // write_buffer using StringBox.
-    void write_buffer(const str::StringBox& sb, int r, int c, Color16 fg_color, Color16 bg_color = Color16::Transparent)
+    void write_buffer(const str::StringBox& sb, int r, int c, Color fg_color, Color bg_color = Color16::Transparent)
     {
       auto Nr = static_cast<int>(sb.text_lines.size());
       for (int r_idx = 0; r_idx < Nr; ++r_idx)
@@ -169,7 +169,7 @@ namespace t8
       write_buffer(str, r, c, style.fg_color, style.bg_color);
     }
     
-    void write_buffer(const std::string& str, int r, int c, Color16 fg_color, Color16 bg_color = Color16::Transparent)
+    void write_buffer(const std::string& str, int r, int c, Color fg_color, Color bg_color = Color16::Transparent)
     {
       if (str.empty())
         return;
@@ -275,12 +275,12 @@ namespace t8
       }
     }
     
-    inline Color16 resolve_bg_color(Color16 bg_color, Color16 clear_bg_color)
+    inline Color resolve_bg_color(Color bg_color, Color clear_bg_color)
     {
       return (bg_color == Color16::Transparent || bg_color == Color16::Transparent2) ? clear_bg_color : bg_color;
     }
     
-    void diff_buffers(Color16 clear_bg_color)
+    void diff_buffers(Color clear_bg_color)
     {
       for (int r = 0; r < NR; ++r)
       {
@@ -388,7 +388,7 @@ namespace t8
     
     void print_screen_buffer_full(Color16 clear_bg_color) const
     {
-      std::vector<std::tuple<char, Color16, Color16>> colored_str;
+      std::vector<std::tuple<char, Color, Color>> colored_str;
       colored_str.resize(NR*(NC + 1));
       int i = 0;
       for (int r = 0; r < NR; ++r)
@@ -396,7 +396,7 @@ namespace t8
         for (int c = 0; c < NC; ++c)
         {
           int idx = index(r, c);
-          Color16 bg_col_buf = bg_color_buffer[idx];
+          Color bg_col_buf = bg_color_buffer[idx];
           if (bg_col_buf == Color16::Transparent || bg_col_buf == Color16::Transparent2)
             bg_col_buf = clear_bg_color;
           colored_str[i++] = { screen_buffer[idx], fg_color_buffer[idx], bg_col_buf };
@@ -421,7 +421,7 @@ namespace t8
           {
             if (chunk.text.empty())
               chunk.pos = { r, c };
-            Color16 bg_col_buf = bg_color_buffer[idx];
+            Color bg_col_buf = bg_color_buffer[idx];
             if (bg_col_buf == Color16::Transparent || bg_col_buf == Color16::Transparent2)
               bg_col_buf = clear_bg_color;
             chunk.text.emplace_back(screen_buffer[idx], fg_color_buffer[idx], bg_col_buf);
@@ -440,7 +440,7 @@ namespace t8
       num_chunks_prev = stlutils::sizeI(colored_str_chunks);
     }
     
-    void print_screen_buffer(Color16 bg_color, const OffscreenBuffer& offscreen_buffer)
+    void print_screen_buffer(Color bg_color, const OffscreenBuffer& offscreen_buffer)
     {
       auto* texture = offscreen_buffer.buffer_texture;
       if (texture == nullptr)
