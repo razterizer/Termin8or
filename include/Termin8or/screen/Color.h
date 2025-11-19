@@ -435,6 +435,12 @@ namespace t8
     }
     Color(int r, int g, int b)
     {
+      assert(0 <= r && r < 6);
+      assert(0 <= g && g < 6);
+      assert(0 <= b && b < 6);
+      r = std::clamp(r, 0, 5);
+      g = std::clamp(g, 0, 5);
+      b = std::clamp(b, 0, 5);
       set_rgb(r, g, b);
     }
     
