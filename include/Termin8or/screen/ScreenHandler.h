@@ -62,8 +62,8 @@ namespace t8
     
     // Draw from top to bottom.
     std::array<char, NC*NR> screen_buffer, prev_screen_buffer;
-    std::array<Color16, NC*NR> fg_color_buffer, prev_fg_color_buffer;
-    std::array<Color16, NC*NR> bg_color_buffer, prev_bg_color_buffer;
+    std::array<Color, NC*NR> fg_color_buffer, prev_fg_color_buffer;
+    std::array<Color, NC*NR> bg_color_buffer, prev_bg_color_buffer;
     std::array<bool, NC*NR> dirty_flag_buffer;
     Color16 prev_clear_bg_color = Color16::Default;
     
