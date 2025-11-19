@@ -126,15 +126,6 @@ namespace t8
     }
   }
   
-  Color16 get_random_color(const std::vector<Color16>& palette)
-  {
-    auto num = static_cast<int>(palette.size());
-    if (num == 0)
-      return Color16::Default;
-    auto idx = rnd::rand_int(0, num - 1);
-    return palette[idx];
-  }
-  
   std::vector<Color16> colors_hue_light
   {
     Color16::Red,
@@ -486,5 +477,14 @@ namespace t8
   };
   
   inline bool operator==(Color16 col16, const Color& col) { return static_cast<int>(col16) == col.get_index(); }
+  
+  Color get_random_color(const std::vector<Color>& palette)
+  {
+    auto num = static_cast<int>(palette.size());
+    if (num == 0)
+      return Color16::Default;
+    auto idx = rnd::rand_int(0, num - 1);
+    return palette[idx];
+  }
 
 }
