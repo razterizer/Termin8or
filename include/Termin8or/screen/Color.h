@@ -423,6 +423,9 @@ namespace t8
     Color(const Color& col)
       : idx(col.idx)
     {}
+    explicit Color(int index)
+      : idx(index)
+    {}
     Color(Color16 col16)
       : idx(static_cast<int>(col16))
     {}
