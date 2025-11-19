@@ -15,8 +15,9 @@ namespace t8
   {
     Style() = default;
     Style(Color16 fg, Color16 bg) : fg_color(fg), bg_color(bg) {}
-    Color16 fg_color = Color16::Default;
-    Color16 bg_color = Color16::Transparent;
+    Style(Color fg, Color bg) : fg_color(fg), bg_color(bg) {}
+    Color fg_color = Color16::Default;
+    Color bg_color = Color16::Transparent;
     void swap() { std::swap(fg_color, bg_color); }
   };
   
@@ -41,7 +42,7 @@ namespace t8
     HiliteFGStyle() = default;
     HiliteFGStyle(Color16 fg, Color16 bg, Color16 fg_hilite)
       : Style(fg, bg), fg_color_hilite(fg_hilite) {}
-    Color16 fg_color_hilite = Color16::Default;
+    Color fg_color_hilite = Color16::Default;
     Style get_style(bool hilited) const
     {
       return { hilited ? fg_color_hilite : fg_color, bg_color };
@@ -90,20 +91,32 @@ namespace t8
   
   Style shade_style(const Style& style, ShadeType shade, bool only_swap_if_fg_bg_same = false)
   {
-    Style ret;
+    Style ret = style;
     switch (shade)
     {
       case ShadeType::Unchanged:
-        ret = style;
+        //ret = style;
         break;
       case ShadeType::Bright:
-        ret.fg_color = shade_color(style.fg_color, ShadeType::Dark);
-        ret.bg_color = shade_color(style.bg_color, ShadeType::Bright);
+      {
+        auto fg_color16 = style.fg_color.try_get_color16();
+        auto bg_color16 = style.bg_color.try_get_color16();
+        if (fg_color16.has_value())
+          ret.fg_color = shade_color(fg_color16.value(), ShadeType::Dark);
+        if (bg_color16.has_value())
+          ret.bg_color = shade_color(bg_color16.value(), ShadeType::Bright);
         break;
+      }
       case ShadeType::Dark:
-        ret.fg_color = shade_color(style.fg_color, ShadeType::Bright);
-        ret.bg_color = shade_color(style.bg_color, ShadeType::Dark);
+      {
+        auto fg_color16 = style.fg_color.try_get_color16();
+        auto bg_color16 = style.bg_color.try_get_color16();
+        if (fg_color16.has_value())
+          ret.fg_color = shade_color(fg_color16.value(), ShadeType::Bright);
+        if (bg_color16.has_value())
+          ret.bg_color = shade_color(bg_color16.value(), ShadeType::Dark);
         break;
+      }
     }
     if (only_swap_if_fg_bg_same && ret.fg_color == ret.bg_color)
     {
