@@ -44,40 +44,48 @@ namespace t8
   class Text
   {
     
-    template<typename EnumType>
-    constexpr int to_int(EnumType e) const noexcept
-    {
-      return static_cast<int>(e);
-    }
-    
   public:
     Text()
     {
       std::ios_base::sync_with_stdio(false);
     }
     
-    std::string get_color_string(Color16 text_color, Color16 bg_color = Color16::Default) const
+    std::string get_color_string(Color text_color, Color bg_color = Color16::Default) const
     {
-      if (bg_color == Color16::Transparent || bg_color == Color16::Transparent2)
-        bg_color = Color16::Default;
-      std::string fg = "\033[";
-      std::string bg = "\033[";
-      if (text_color == Color16::Default)
-        fg += "39";
-      else if (Color16::Default < text_color && text_color <= Color16::LightGray)
-        fg += std::to_string(to_int(text_color) + 29);
-      else
-        fg += std::to_string(to_int(text_color) + 81);
+      std::string fg, bg;
+    
+      int text_color_idx = text_color.get_index();
+      if (0 <= text_color_idx)
+      {
+        fg = "\033[";
+        if (text_color == Color16::Default)
+          fg += "39";
+        else if (static_cast<int>(Color16::Default) < text_color_idx && text_color_idx <= static_cast<int>(Color16::LightGray))
+          fg += std::to_string(text_color_idx + 29);
+        else if (text_color_idx <= 16)
+          fg += std::to_string(text_color_idx + 81);
+        else
+          fg += "38;5;" + std::to_string(text_color_idx); // 256-color extended mode
+          
+        fg += "m";
+      }
       
-      if (bg_color == Color16::Default)
-        bg += "49";
-      else if (Color16::Default < bg_color && bg_color <= Color16::LightGray)
-        bg += std::to_string(to_int(bg_color) + 39);
-      else
-        bg += std::to_string(to_int(bg_color) + 91);
+      int bg_color_idx = bg_color.get_index();
+      if (0 <= bg_color_idx)
+      {
+        bg = "\033[";
+        if (bg_color == Color16::Default)
+          bg += "49";
+        else if (static_cast<int>(Color16::Default) < bg_color_idx && bg_color_idx <= static_cast<int>(Color16::LightGray))
+          bg += std::to_string(bg_color_idx + 39);
+        else if (bg_color_idx <= 16)
+          bg += std::to_string(bg_color_idx + 91);
+        else
+          bg += "48;5;" + std::to_string(bg_color_idx); // 256-color extended mode
+        
+        bg += "m";
+      }
       
-      fg += "m";
-      bg += "m";
       return fg + bg;
     }
     
