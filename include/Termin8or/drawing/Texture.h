@@ -58,8 +58,8 @@ namespace t8
     RC size;
     int area = 0;
     std::vector<char> characters;
-    std::vector<Color16> fg_colors;
-    std::vector<Color16> bg_colors;
+    std::vector<Color> fg_colors;
+    std::vector<Color> bg_colors;
     std::vector<int> materials;
     
     Texture() = default;
