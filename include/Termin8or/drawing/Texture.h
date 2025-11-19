@@ -11,6 +11,7 @@
 #include "../screen/Color.h"
 #include "../screen/Styles.h"
 #include <Core/TextIO.h>
+#include <Core/StringHelper.h>
 #include <sstream>
 
 
