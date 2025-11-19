@@ -42,10 +42,10 @@ namespace t8
     Texture* buffer_texture = nullptr;
     RC buffer_screen_pos { 0, 0 }; //
     std::vector<char> exclude_src_chars;
-    std::vector<Color16> exclude_src_fg_colors;
-    std::vector<Color16> exclude_src_bg_colors;
-    std::vector<Color16> dst_fill_bg_colors;
-    std::vector<std::pair<Color16, Color16>> replace_src_dst_bg_colors;
+    std::vector<Color> exclude_src_fg_colors;
+    std::vector<Color> exclude_src_bg_colors;
+    std::vector<Color> dst_fill_bg_colors;
+    std::vector<std::pair<Color, Color>> replace_src_dst_bg_colors;
   };
   
   enum class DrawPolicy { FULL, PARTIAL, THRESHOLD_SELECT, MEASURE_SELECT };
