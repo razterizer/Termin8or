@@ -26,6 +26,7 @@
 
 namespace t8x
 {
+  using Color = t8::Color;
   using Color16 = t8::Color16;
   using Style = t8::Style;
   template<int NR, int NC>
