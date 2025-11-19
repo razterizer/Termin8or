@@ -100,7 +100,7 @@ namespace t8x
 
   template<int NR, int NC>
   void plot_line(ScreenHandler<NR, NC>& sh, float r0, float c0, float r1, float c1,
-                 const std::string& str, Color16 fg_color, Color16 bg_color)
+                 const std::string& str, Color fg_color, Color bg_color)
   {
     std::vector<RC> points;
     plot_line(r0, c0, r1, c1, points);
@@ -110,7 +110,7 @@ namespace t8x
   
   template<int NR, int NC>
   void plot_line(ScreenHandler<NR, NC>& sh, const RC& p0, const RC& p1,
-                 const std::string& str, Color16 fg_color, Color16 bg_color)
+                 const std::string& str, Color fg_color, Color bg_color)
   {
     std::vector<RC> points;
     plot_line(p0, p1, points);
