@@ -140,7 +140,7 @@ namespace t8
       set_textel_char(pos.r, pos.c, ch);
     }
     
-    void set_textel_fg_color(int r, int c, Color16 fg_color)
+    void set_textel_fg_color(int r, int c, Color fg_color)
     {
       if (!check_range(r, c))
         return;
@@ -148,12 +148,12 @@ namespace t8
       fg_colors[idx] = fg_color;
     }
     
-    void set_textel_fg_color(const RC& pos, Color16 fg_color)
+    void set_textel_fg_color(const RC& pos, Color fg_color)
     {
       set_textel_fg_color(pos.r, pos.c, fg_color);
     }
     
-    void set_textel_bg_color(int r, int c, Color16 bg_color)
+    void set_textel_bg_color(int r, int c, Color bg_color)
     {
       if (!check_range(r, c))
         return;
@@ -161,7 +161,7 @@ namespace t8
       bg_colors[idx] = bg_color;
     }
     
-    void set_textel_bg_color(const RC& pos, Color16 bg_color)
+    void set_textel_bg_color(const RC& pos, Color bg_color)
     {
       set_textel_bg_color(pos.r, pos.c, bg_color);
     }
