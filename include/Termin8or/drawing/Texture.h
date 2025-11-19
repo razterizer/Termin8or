@@ -204,31 +204,48 @@ namespace t8
     {
       std::vector<std::string> lines;
       
-      auto f_char_to_color = [](char ch)
+      auto f_str_to_color = [](const std::string& str, int& start_idx) -> Color
       {
-        switch (ch)
+        if (str.starts_with('['))
         {
-          case 't': return Color16::Transparent;
-          case 'T': return Color16::Transparent2;
-          case '*': return Color16::Default;
-          case '0': return Color16::Black;
-          case '1': return Color16::DarkRed;
-          case '2': return Color16::DarkGreen;
-          case '3': return Color16::DarkYellow;
-          case '4': return Color16::DarkBlue;
-          case '5': return Color16::DarkMagenta;
-          case '6': return Color16::DarkCyan;
-          case '7': return Color16::LightGray;
-          case '8': return Color16::DarkGray;
-          case '9': return Color16::Red;
-          case 'A': return Color16::Green;
-          case 'B': return Color16::Yellow;
-          case 'C': return Color16::Blue;
-          case 'D': return Color16::Magenta;
-          case 'E': return Color16::Cyan;
-          case 'F': return Color16::White;
-          default: return Color16::Default;
+          auto rgb_tokens = str::tokenize(str, { '[', ']', ',' });
+          if (rgb_tokens.size() == 3)
+          {
+            int r = std::atoi(rgb_tokens[0].c_str());
+            int g = std::atoi(rgb_tokens[1].c_str());
+            int b = std::atoi(rgb_tokens[2].c_str());
+            start_idx = str.substr(start_idx).find(']');
+            return Color(r, g, b);
+          }
         }
+        else if (!str.empty())
+        {
+          char ch = str[start_idx++];
+          switch (ch)
+          {
+            case 't': return Color16::Transparent;
+            case 'T': return Color16::Transparent2;
+            case '*': return Color16::Default;
+            case '0': return Color16::Black;
+            case '1': return Color16::DarkRed;
+            case '2': return Color16::DarkGreen;
+            case '3': return Color16::DarkYellow;
+            case '4': return Color16::DarkBlue;
+            case '5': return Color16::DarkMagenta;
+            case '6': return Color16::DarkCyan;
+            case '7': return Color16::LightGray;
+            case '8': return Color16::DarkGray;
+            case '9': return Color16::Red;
+            case 'A': return Color16::Green;
+            case 'B': return Color16::Yellow;
+            case 'C': return Color16::Blue;
+            case 'D': return Color16::Magenta;
+            case 'E': return Color16::Cyan;
+            case 'F': return Color16::White;
+            default: return Color16::Default;
+          }
+        }
+        return Color16::Default;
       };
       
       // 0 to 15 is hexadecimal, then just continue down the alphabet.
@@ -282,10 +299,11 @@ namespace t8
         {
           if (!l.empty())
           {
+            int l_idx = 0;
             for (int c = 0; c < size.c; ++c)
             {
               int idx = r * size.c + c;
-              fg_colors[idx] = f_char_to_color(l[c]);
+              fg_colors[idx] = f_str_to_color(l, l_idx);
             }
             r++;
           }
@@ -299,10 +317,11 @@ namespace t8
         {
           if (!l.empty())
           {
+            int l_idx = 0;
             for (int c = 0; c < size.c; ++c)
             {
               int idx = r * size.c + c;
-              bg_colors[idx] = f_char_to_color(l[c]);
+              bg_colors[idx] = f_str_to_color(l, l_idx);
             }
             r++;
           }
