@@ -76,7 +76,7 @@ namespace t8x
 
   using FontDataColl = std::map<Font, FontData>;
 
-  Color16 get_fg_color(const std::string& col_type, const ColorScheme& colors)
+  Color get_fg_color(const std::string& col_type, const ColorScheme& colors)
   {
     if (col_type == "T")
       return Color16::Transparent;
@@ -97,7 +97,7 @@ namespace t8x
     return Color16::Transparent;
   }
 
-  Color16 get_bg_color(const std::string& col_type, const ColorScheme& colors)
+  Color get_bg_color(const std::string& col_type, const ColorScheme& colors)
   {
     if (col_type == "T")
       return Color16::Transparent;
