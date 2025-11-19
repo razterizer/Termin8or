@@ -350,26 +350,26 @@ namespace t8x
       set_sprite_fg_colors(anim_frame, bb, fg_color...);
     }
     
-    void set_sprite_fg_color(int anim_frame, int r, int c, Color16 fg_color)
+    void set_sprite_fg_color(int anim_frame, int r, int c, Color fg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture != nullptr)
         texture->set_textel_fg_color(r, c, fg_color);
     }
     
-    void fill_sprite_fg_colors(int anim_frame, Color16 fg_color)
+    void fill_sprite_fg_colors(int anim_frame, Color fg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       texture->fg_colors.assign(area, fg_color);
     }
     
-    void fill_sprite_fg_colors(int anim_frame, const Rectangle& bb, Color16 fg_color)
+    void fill_sprite_fg_colors(int anim_frame, const Rectangle& bb, Color fg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       fill_sprite_data(texture->fg_colors, bb, fg_color);
     }
     
-    void fill_sprite_fg_colors_vert(int anim_frame, int r0, int r1, int c, Color16 fg_color)
+    void fill_sprite_fg_colors_vert(int anim_frame, int r0, int r1, int c, Color fg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture != nullptr)
@@ -377,7 +377,7 @@ namespace t8x
           texture->set_textel_fg_color(r, c, fg_color);
     }
     
-    void fill_sprite_fg_colors_horiz(int anim_frame, int r, int c0, int c1, Color16 fg_color)
+    void fill_sprite_fg_colors_horiz(int anim_frame, int r, int c0, int c1, Color fg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture != nullptr)
@@ -413,26 +413,26 @@ namespace t8x
       set_sprite_bg_colors(anim_frame, bb, bg_color...);
     }
     
-    void set_sprite_bg_color(int anim_frame, int r, int c, Color16 bg_color)
+    void set_sprite_bg_color(int anim_frame, int r, int c, Color bg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture != nullptr)
         texture->set_textel_bg_color(r, c, bg_color);
     }
     
-    void fill_sprite_bg_colors(int anim_frame, Color16 bg_color)
+    void fill_sprite_bg_colors(int anim_frame, Color bg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       texture->bg_colors.assign(area, bg_color);
     }
     
-    void fill_sprite_bg_colors(int anim_frame, const Rectangle& bb, Color16 bg_color)
+    void fill_sprite_bg_colors(int anim_frame, const Rectangle& bb, Color bg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       fill_sprite_data(texture->bg_colors, bb, bg_color);
     }
     
-    void fill_sprite_bg_colors_vert(int anim_frame, int r0, int r1, int c, Color16 bg_color)
+    void fill_sprite_bg_colors_vert(int anim_frame, int r0, int r1, int c, Color bg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture != nullptr)
@@ -440,7 +440,7 @@ namespace t8x
           texture->set_textel_bg_color(r, c, bg_color);
     }
     
-    void fill_sprite_bg_colors_horiz(int anim_frame, int r, int c0, int c1, Color16 bg_color)
+    void fill_sprite_bg_colors_horiz(int anim_frame, int r, int c0, int c1, Color bg_color)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture != nullptr)
@@ -518,8 +518,8 @@ namespace t8x
     // This mechanism allows you to do penumbra / umbra shading techniques and stuff like that.
     bool plot_line(int sim_frame, const RC& p0, const RC& p1,
                    std::optional<char> ch, std::optional<char> ch_replace,
-                   std::optional<Color16> fg_color, std::optional<Color16> fg_color_replace,
-                   std::optional<Color16> bg_color, std::optional<Color16> bg_color_replace,
+                   std::optional<Color> fg_color, std::optional<Color> fg_color_replace,
+                   std::optional<Color> bg_color, std::optional<Color> bg_color_replace,
                    std::optional<int> mat, std::optional<int> mat_replace)
     {
       auto* texture = get_curr_sim_frame(sim_frame);
