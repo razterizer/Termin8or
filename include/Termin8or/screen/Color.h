@@ -472,6 +472,9 @@ namespace t8
       }
       return std::nullopt;
     }
+    
+  bool operator==(const Color& other) const { return this->idx == other.idx; }
+  bool operator==(Color16 col16) const { return this->idx == static_cast<int>(col16); }
   
   private:
     int idx = 0;
@@ -481,5 +484,7 @@ namespace t8
       idx = 16 + 36*r + 6*g + b;
     }
   };
+  
+  inline bool operator==(Color16 col16, const Color& col) { return static_cast<int>(col16) == col.get_index(); }
 
 }
