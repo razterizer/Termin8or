@@ -337,31 +337,51 @@ namespace t8
     {
       std::vector<std::string> lines;
       
-      auto f_color_to_char = [](Color16 color)
+      auto f_color_to_str = [](Color color) -> std::string
       {
-        switch (color)
+        auto color16 = color.try_get_color16();
+        if (color16.has_value())
         {
-          case Color16::Transparent:  return 't';
-          case Color16::Transparent2: return 'T';
-          case Color16::Default:      return '*';
-          case Color16::Black:        return '0';
-          case Color16::DarkRed:      return '1';
-          case Color16::DarkGreen:    return '2';
-          case Color16::DarkYellow:   return '3';
-          case Color16::DarkBlue:     return '4';
-          case Color16::DarkMagenta:  return '5';
-          case Color16::DarkCyan:     return '6';
-          case Color16::LightGray:    return '7';
-          case Color16::DarkGray:     return '8';
-          case Color16::Red:          return '9';
-          case Color16::Green:        return 'A';
-          case Color16::Yellow:       return 'B';
-          case Color16::Blue:         return 'C';
-          case Color16::Magenta:      return 'D';
-          case Color16::Cyan:         return 'E';
-          case Color16::White:        return 'F';
-          default: return '*';
+          switch (color16.value())
+          {
+            case Color16::Transparent:  return "t";
+            case Color16::Transparent2: return "T";
+            case Color16::Default:      return "*";
+            case Color16::Black:        return "0";
+            case Color16::DarkRed:      return "1";
+            case Color16::DarkGreen:    return "2";
+            case Color16::DarkYellow:   return "3";
+            case Color16::DarkBlue:     return "4";
+            case Color16::DarkMagenta:  return "5";
+            case Color16::DarkCyan:     return "6";
+            case Color16::LightGray:    return "7";
+            case Color16::DarkGray:     return "8";
+            case Color16::Red:          return "9";
+            case Color16::Green:        return "A";
+            case Color16::Yellow:       return "B";
+            case Color16::Blue:         return "C";
+            case Color16::Magenta:      return "D";
+            case Color16::Cyan:         return "E";
+            case Color16::White:        return "F";
+            default: return "*";
+          }
         }
+        else
+        {
+          auto cube6 = color.try_get_cube6();
+          if (cube6.has_value())
+          {
+            auto r = std::get<0>(cube6.value());
+            auto g = std::get<1>(cube6.value());
+            auto b = std::get<2>(cube6.value());
+            std::string str = "[" +
+              std::to_string(static_cast<int>(r)) + "," +
+              std::to_string(static_cast<int>(g)) + "," +
+              std::to_string(static_cast<int>(b)) + "]";
+            return str;
+          }
+        }
+        return "*";
       };
       
       // 0 to 15 is hexadecimal, then just continue down the alphabet.
@@ -395,7 +415,7 @@ namespace t8
         for (int c = 0; c < size.c; ++c)
         {
           int idx = r * size.c + c;
-          curr_line += f_color_to_char(fg_colors[idx]);
+          curr_line += f_color_to_str(fg_colors[idx]);
         }
         lines.emplace_back(curr_line);
       }
@@ -406,7 +426,7 @@ namespace t8
         for (int c = 0; c < size.c; ++c)
         {
           int idx = r * size.c + c;
-          curr_line += f_color_to_char(bg_colors[idx]);
+          curr_line += f_color_to_str(bg_colors[idx]);
         }
         lines.emplace_back(curr_line);
       }
