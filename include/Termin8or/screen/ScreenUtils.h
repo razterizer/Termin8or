@@ -186,10 +186,10 @@ namespace t8x
     std::string no = "[No]";
     const auto yes_len = static_cast<int>(yes.length());
     const auto no_len = static_cast<int>(no.length());
-    Color16 bg_color_yes = (button == YesNoButtons::Yes) ?
-    button_style.bg_color_selected : button_style.bg_color;
-    Color16 bg_color_no = (button == YesNoButtons::No) ?
-    button_style.bg_color_selected : button_style.bg_color;
+    Color bg_color_yes = (button == YesNoButtons::Yes) ?
+      button_style.bg_color_selected : button_style.bg_color;
+    Color bg_color_no = (button == YesNoButtons::No) ?
+      button_style.bg_color_selected : button_style.bg_color;
     sh.write_buffer(yes, nr/2 + 1, (nc - 6)/2 - yes_len, button_style.fg_color, bg_color_yes);
     sh.write_buffer(no, nr/2 + 1, (nc - 6)/2 + no_len, button_style.fg_color, bg_color_no);
     std::string msg = "Press arrow keys to select choice and then [Enter] key to confirm.";
