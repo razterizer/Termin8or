@@ -106,7 +106,7 @@ namespace t8
 #endif
     }
     
-    void print(const std::string& text, Color16 text_color, Color16 bg_color = Color16::Default) const
+    void print(const std::string& text, Color text_color, Color bg_color = Color16::Default) const
     {
 #ifdef _WIN32
       set_color_win(text_color, bg_color);
@@ -118,14 +118,14 @@ namespace t8
 #endif
     }
     
-    void print_line(const std::string& text, Color16 text_color, Color16 bg_color = Color16::Default) const
+    void print_line(const std::string& text, Color text_color, Color bg_color = Color16::Default) const
     {
       print(text, text_color, bg_color);
       //printf("\n");
       std::cout << "\n";
     }
     
-    void print_char(char c, Color16 text_color, Color16 bg_color = Color16::Default) const
+    void print_char(char c, Color text_color, Color bg_color = Color16::Default) const
     {
 #ifdef _WIN32
       set_color_win(text_color, bg_color);
