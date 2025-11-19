@@ -429,15 +429,19 @@ namespace t8
   struct Color
   {
     Color() = default;
-    explicit Color(Color16 col16)
+    Color(const Color& col)
+      : idx(col.idx)
+    {}
+    Color(Color16 col16)
       : idx(static_cast<int>(col16))
     {}
-    explicit Color(R_t r, G_t g, B_t b)
+    Color(R_t r, G_t g, B_t b)
     {
-      idx = 16 +
-        36*static_cast<int>(r) +
-        6*static_cast<int>(g) +
-        static_cast<int>(b);
+      set_rgb(static_cast<int>(r), static_cast<int>(g), static_cast<int>(b));
+    }
+    Color(int r, int g, int b)
+    {
+      set_rgb(r, g, b);
     }
     
     int get_index() const { return idx; }
@@ -471,6 +475,11 @@ namespace t8
   
   private:
     int idx = 0;
+    
+    void set_rgb(int r, int g, int b)
+    {
+      idx = 16 + 36*r + 6*g + b;
+    }
   };
 
 }
