@@ -21,8 +21,8 @@ namespace t8
   struct Textel
   {
     char ch = ' ';
-    Color16 fg_color = Color16::Default;
-    Color16 bg_color = Color16::Transparent2;
+    Color fg_color = Color16::Default;
+    Color bg_color = Color16::Transparent2;
     int mat = 0;
     
     Style get_style() const { return { fg_color, bg_color }; }
