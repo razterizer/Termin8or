@@ -65,7 +65,7 @@ namespace t8
     std::array<Color, NC*NR> fg_color_buffer, prev_fg_color_buffer;
     std::array<Color, NC*NR> bg_color_buffer, prev_bg_color_buffer;
     std::array<bool, NC*NR> dirty_flag_buffer;
-    Color16 prev_clear_bg_color = Color16::Default;
+    Color prev_clear_bg_color = Color16::Default;
     
     float dirty_fraction_threshold = 0.5f;
     
