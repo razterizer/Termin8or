@@ -90,7 +90,7 @@ namespace t8
     }
     
     
-    void set_color_win(Color text_color, Color bg_color = Color16::Default) const
+    void set_color_win_cmd(Color text_color, Color bg_color = Color16::Default) const
     {
 #ifdef _WIN32
       auto text_color16 = to_nearest_color16(text_color);
@@ -112,7 +112,7 @@ namespace t8
     void print(const std::string& text, Color text_color, Color bg_color = Color16::Default) const
     {
 #ifdef _WIN32
-      set_color_win(text_color, bg_color);
+      set_color_win_cmd(text_color, bg_color);
       std::cout << text;
 #else
       std::string output = get_color_string(text_color, bg_color) + text + "\033[0m";
@@ -131,7 +131,7 @@ namespace t8
     void print_char(char c, Color text_color, Color bg_color = Color16::Default) const
     {
 #ifdef _WIN32
-      set_color_win(text_color, bg_color);
+      set_color_win_cmd(text_color, bg_color);
       std::cout << c;
 #else
       std::string output = get_color_string(text_color, bg_color) + c;
@@ -246,7 +246,7 @@ namespace t8
     void print_reset() const
     {
 #ifdef _WIN32
-      set_color_win(Color16::White, Color16::Black);
+      set_color_win_cmd(Color16::White, Color16::Black);
 #else
       //printf("%s", "\033[0m");
       std::cout << "\033[0m";
