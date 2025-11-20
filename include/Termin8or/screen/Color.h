@@ -423,6 +423,7 @@ namespace t8
     G_t g = G_t::G_0;
     B_t b = B_t::B_0;
     
+    constexpr RGB6() = default;
     constexpr RGB6(R_t r6, G_t g6, B_t b6)
       : r(r6), g(g6), b(b6)
     {}
