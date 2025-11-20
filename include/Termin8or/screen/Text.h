@@ -90,13 +90,16 @@ namespace t8
     }
     
     
-    void set_color_win(Color16 text_color, Color16 bg_color = Color16::Default) const
+    void set_color_win(Color text_color, Color bg_color = Color16::Default) const
     {
 #ifdef _WIN32
-      int foreground = get_color_value_win(text_color);
+      auto text_color16 = to_nearest_color16(text_color);
+      auto bg_color16 = to_nearest_color16(bg_color);
+
+      int foreground = get_color_value_win(text_color16);
       if (foreground == -1)
         foreground = get_color_value_win(Color16::White);
-      int background = 16 * get_color_value_win(bg_color);
+      int background = 16 * get_color_value_win(bg_color16);
       if (background == -1)
         background = 16 * get_color_value_win(Color16::Black);
       
