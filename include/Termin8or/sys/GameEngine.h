@@ -38,24 +38,24 @@ namespace t8x
     bool enable_pause = true;
     bool enable_terminal_window_resize = true; // If true it will resize the terminal window if too small for the game screen.
     
-    Color16 screen_bg_color_default = Color16::Default;
-    Color16 screen_bg_color_title = Color16::Default;
-    Color16 screen_bg_color_instructions = Color16::Default;
+    Color screen_bg_color_default = Color16::Default;
+    Color screen_bg_color_title = Color16::Default;
+    Color screen_bg_color_instructions = Color16::Default;
     
-    std::optional<t8::Color16> screen_bg_color_paused = std::nullopt;
+    std::optional<t8::Color> screen_bg_color_paused = std::nullopt;
     t8::Style pause_info_style { t8::Color16::White, t8::Color16::DarkCyan };
     
-    std::optional<t8::Color16> screen_bg_color_quit_confirm = t8::Color16::DarkCyan;
+    std::optional<t8::Color> screen_bg_color_quit_confirm = t8::Color16::DarkCyan;
     Style quit_confirm_title_style { Color16::Black, Color16::DarkCyan };
     ButtonStyle quit_confirm_button_style { Color16::Black, Color16::DarkCyan, Color16::Cyan };
     Style quit_confirm_info_style { Color16::White, Color16::DarkCyan };
     
-    std::optional<Color16> screen_bg_color_input_hiscore = Color16::DarkGray;
+    std::optional<Color> screen_bg_color_input_hiscore = Color16::DarkGray;
     Style input_hiscore_title_style { Color16::Green, Color16::Black };
     PromptStyle input_hiscore_prompt_style { Color16::Green, Color16::Black, Color16::DarkGreen };
     Style input_hiscore_info_style { Color16::DarkGreen, Color16::Black };
     
-    std::optional<Color16> screen_bg_color_hiscores = Color16::DarkGray;
+    std::optional<Color> screen_bg_color_hiscores = Color16::DarkGray;
     Style hiscores_title_style { Color16::Green, Color16::Black };
     HiliteFGStyle hiscores_nr_style { Color16::Green, Color16::Black, Color16::Cyan };
     HiliteFGStyle hiscores_score_style { Color16::Green, Color16::Black, Color16::Cyan };
