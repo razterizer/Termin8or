@@ -416,6 +416,16 @@ namespace t8
   enum class R_t { R_0, R_1, R_2, R_3, R_4, R_5 };
   enum class G_t { G_0, G_1, G_2, G_3, G_4, G_5 };
   enum class B_t { B_0, B_1, B_2, B_3, B_4, B_5 };
+  struct RGB6
+  {
+    R_t r = R_t::R_0;
+    G_t g = G_t::G_0;
+    B_t b = B_t::B_0;
+    
+    constexpr RGB6(R_t r6, G_t g6, B_t b6)
+      : r(r6), g(g6), b(b6)
+    {}
+  };
   
   struct Color
   {
