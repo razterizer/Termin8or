@@ -89,7 +89,7 @@ namespace t8
       return fg + bg;
     }
     
-    
+    // For classic cmd.exe.
     void set_color_win_cmd(Color text_color, Color bg_color = Color16::Default) const
     {
 #ifdef _WIN32
