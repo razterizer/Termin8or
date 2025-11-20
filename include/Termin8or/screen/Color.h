@@ -443,6 +443,10 @@ namespace t8
     {
       set_rgb(static_cast<int>(r), static_cast<int>(g), static_cast<int>(b));
     }
+    Color(const RGB6& rgb6)
+    {
+      set_rgb(static_cast<int>(rgb6.r), static_cast<int>(rgb6.g), static_cast<int>(rgb6.b));
+    }
     Color(int r, int g, int b)
     {
       assert(0 <= r && r < 6);
