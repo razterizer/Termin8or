@@ -388,12 +388,12 @@ namespace t8
         }
         else
         {
-          auto cube6 = color.try_get_cube6();
-          if (cube6.has_value())
+          auto rgb6 = color.try_get_rgb6();
+          if (rgb6.has_value())
           {
-            auto r = std::get<0>(cube6.value());
-            auto g = std::get<1>(cube6.value());
-            auto b = std::get<2>(cube6.value());
+            auto r = rgb6.value().r;
+            auto g = rgb6.value().g;
+            auto b = rgb6.value().b;
             std::string str = "[" +
               std::to_string(static_cast<int>(r)) + "," +
               std::to_string(static_cast<int>(g)) + "," +
