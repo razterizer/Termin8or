@@ -9,46 +9,53 @@
 #include "ScreenCommandsBasic.h"
 #include "Styles.h"
 #include "ScreenHandler.h"
+#include <Core/System.h>
 
 namespace t8
 {
   
 #ifdef _WIN32
-  static WORD savedAttributes;
+  inline WORD savedAttributes = 0;
 #endif
-  Style orig_style = { Color16::White, Color16::Black };
+  inline Style orig_style = { Color16::White, Color16::Black };
   
   
   // Function to save current console fg and bg colors.
   void save_terminal_colors()
   {
-#if _WIN32
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    
-    CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
-    if (GetConsoleScreenBufferInfo(hConsole, &consoleInfo))
+    if (sys::is_windows_cmd())
     {
-      savedAttributes = consoleInfo.wAttributes;
-      int bg_color = static_cast<int>(savedAttributes & 0xF0) >> 4;
-      orig_style.bg_color = get_color_win(bg_color);
+#ifdef _WIN32
+      HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
       
-      int fg_color = static_cast<int>(savedAttributes & 0x0F);
-      orig_style.fg_color = get_color_win(fg_color);
-    }
-    else
-      std::cerr << "Error: Unable to get console screen buffer info." << std::endl;
+      CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+      if (GetConsoleScreenBufferInfo(hConsole, &consoleInfo))
+      {
+        savedAttributes = consoleInfo.wAttributes;
+        int bg_color = static_cast<int>(savedAttributes & 0xF0) >> 4;
+        orig_style.bg_color = get_color_win(bg_color);
+        
+        int fg_color = static_cast<int>(savedAttributes & 0x0F);
+        orig_style.fg_color = get_color_win(fg_color);
+      }
+      else
+        std::cerr << "Error: Unable to get console screen buffer info." << std::endl;
 #endif
+    }
   }
   
   // Function to restore the saved console colors.
   Style restore_terminal_colors()
   {
-#if _WIN32
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    
-    if (!SetConsoleTextAttribute(hConsole, savedAttributes))
-      std::cerr << "Error: Unable to restore console text attributes." << std::endl;
+    if (sys::is_windows_cmd())
+    {
+#ifdef _WIN32
+      HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+      
+      if (!SetConsoleTextAttribute(hConsole, savedAttributes))
+        std::cerr << "Error: Unable to restore console text attributes." << std::endl;
 #endif
+    }
     return orig_style;
   }
   

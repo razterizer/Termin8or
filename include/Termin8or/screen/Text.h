@@ -2,6 +2,7 @@
 #include "Color.h"
 #include "ScreenCommandsBasic.h"
 #include "../geom/RC.h"
+#include <Core/System.h>
 #include <string>
 #include <vector>
 #include <tuple>
@@ -111,14 +112,17 @@ namespace t8
     
     void print(const std::string& text, Color text_color, Color bg_color = Color16::Default) const
     {
-#ifdef _WIN32
-      set_color_win_cmd(text_color, bg_color);
-      std::cout << text;
-#else
-      std::string output = get_color_string(text_color, bg_color) + text + "\033[0m";
-      //printf("%s", output.c_str());
-      std::cout << output;
-#endif
+      if (sys::is_windows_cmd())
+      {
+        set_color_win_cmd(text_color, bg_color);
+        std::cout << text;
+      }
+      else
+      {
+        std::string output = get_color_string(text_color, bg_color) + text + "\033[0m";
+        //printf("%s", output.c_str());
+        std::cout << output;
+      }
     }
     
     void print_line(const std::string& text, Color text_color, Color bg_color = Color16::Default) const
@@ -130,63 +134,71 @@ namespace t8
     
     void print_char(char c, Color text_color, Color bg_color = Color16::Default) const
     {
-#ifdef _WIN32
-      set_color_win_cmd(text_color, bg_color);
-      std::cout << c;
-#else
-      std::string output = get_color_string(text_color, bg_color) + c;
-      //printf("%s", output.c_str());
-      std::cout << output;
-#endif
+      if (sys::is_windows_cmd())
+      {
+        set_color_win_cmd(text_color, bg_color);
+        std::cout << c;
+      }
+      else
+      {
+        std::string output = get_color_string(text_color, bg_color) + c;
+        //printf("%s", output.c_str());
+        std::cout << output;
+      }
     }
     
     using ComplexString = std::vector<std::tuple<char, Color, Color>>;
     
     void print_complex_sequential(const ComplexString& text)
     {
+      if (sys::is_windows_cmd())
+      {
 #ifdef _WIN32
-      HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-      SHORT currentRow = 0;
-
-      std::vector<CHAR_INFO> lineBuffer;
-      for (size_t i = 0; i < text.size(); ++i)
-      {
-        auto [ch, fg, bg] = text[i];
-
-        if (ch == '\n')
+        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+        SHORT currentRow = 0;
+        
+        std::vector<CHAR_INFO> lineBuffer;
+        for (size_t i = 0; i < text.size(); ++i)
         {
-          if (!lineBuffer.empty())
+          auto [ch, fg, bg] = text[i];
+          
+          if (ch == '\n')
           {
-            COORD bufferSize = { (SHORT)lineBuffer.size(), 1 };
-            COORD bufferCoord = { 0, 0 };
-            SMALL_RECT writeRegion = { 0, currentRow, (SHORT)lineBuffer.size() - 1, currentRow };
-            WriteConsoleOutput(hConsole, lineBuffer.data(), bufferSize, bufferCoord, &writeRegion);
-            lineBuffer.clear();
+            if (!lineBuffer.empty())
+            {
+              COORD bufferSize = { (SHORT)lineBuffer.size(), 1 };
+              COORD bufferCoord = { 0, 0 };
+              SMALL_RECT writeRegion = { 0, currentRow, (SHORT)lineBuffer.size() - 1, currentRow };
+              WriteConsoleOutput(hConsole, lineBuffer.data(), bufferSize, bufferCoord, &writeRegion);
+              lineBuffer.clear();
+            }
+            currentRow++;
+            continue;
           }
-          currentRow++;
-          continue;
+          
+          CHAR_INFO ci {};
+          ci.Char.AsciiChar = ch;
+          int fgAttr = get_color_value_win(fg); if (fgAttr == -1) fgAttr = 7;
+          int bgAttr = get_color_value_win(bg); if (bgAttr == -1) bgAttr = 0;
+          ci.Attributes = fgAttr | (bgAttr << 4);
+          lineBuffer.push_back(ci);
         }
-
-        CHAR_INFO ci {};
-        ci.Char.AsciiChar = ch;
-        int fgAttr = get_color_value_win(fg); if (fgAttr == -1) fgAttr = 7;
-        int bgAttr = get_color_value_win(bg); if (bgAttr == -1) bgAttr = 0;
-        ci.Attributes = fgAttr | (bgAttr << 4);
-        lineBuffer.push_back(ci);
-      }
-#else
-      size_t n = text.size();
-      std::string output;
-      for (size_t i = 0; i < n; ++i)
-      {
-        auto [c, fg_color, bg_color] = text[i];
-        auto col_str = get_color_string(fg_color, c == '\n' ? Color16::Default : bg_color);
-        output += col_str + c;
-      }
-      output += "\033[0m";
-      //printf("%s", output.c_str());
-      std::cout << output;
 #endif
+      }
+      else
+      {
+        size_t n = text.size();
+        std::string output;
+        for (size_t i = 0; i < n; ++i)
+        {
+          auto [c, fg_color, bg_color] = text[i];
+          auto col_str = get_color_string(fg_color, c == '\n' ? Color16::Default : bg_color);
+          output += col_str + c;
+        }
+        output += "\033[0m";
+        //printf("%s", output.c_str());
+        std::cout << output;
+      }
     }
     
     struct ComplexStringChunk
@@ -197,60 +209,66 @@ namespace t8
     
     void print_complex_chunks(const std::vector<ComplexStringChunk>& chunk_vec)
     {
-#ifdef _WIN32
-      HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
-      for (const auto& chunk : chunk_vec)
+      if (sys::is_windows_cmd())
       {
-        COORD coord;
-        coord.X = chunk.pos.c;
-        coord.Y = chunk.pos.r;
-
-        std::vector<CHAR_INFO> buffer(chunk.text.size());
-        for (size_t i = 0; i < chunk.text.size(); ++i)
+#ifdef _WIN32
+        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+        
+        for (const auto& chunk : chunk_vec)
         {
-          CHAR_INFO ci {};
-          ci.Char.AsciiChar = std::get<0>(chunk.text[i]);
-          ci.Attributes =
+          COORD coord;
+          coord.X = chunk.pos.c;
+          coord.Y = chunk.pos.r;
+          
+          std::vector<CHAR_INFO> buffer(chunk.text.size());
+          for (size_t i = 0; i < chunk.text.size(); ++i)
+          {
+            CHAR_INFO ci {};
+            ci.Char.AsciiChar = std::get<0>(chunk.text[i]);
+            ci.Attributes =
             get_color_value_win(std::get<1>(chunk.text[i])) |
             (get_color_value_win(std::get<2>(chunk.text[i])) << 4);
-          buffer[i] = ci;
+            buffer[i] = ci;
+          }
+          
+          SMALL_RECT writeRegion;
+          writeRegion.Left = coord.X;
+          writeRegion.Top = coord.Y;
+          writeRegion.Right = coord.X + (SHORT)chunk.text.size() - 1;
+          writeRegion.Bottom = coord.Y;
+          
+          COORD bufferSize = { (SHORT)chunk.text.size(), 1 };
+          COORD bufferCoord = { 0, 0 };
+          
+          WriteConsoleOutput(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
         }
-
-        SMALL_RECT writeRegion;
-        writeRegion.Left = coord.X;
-        writeRegion.Top = coord.Y;
-        writeRegion.Right = coord.X + (SHORT)chunk.text.size() - 1;
-        writeRegion.Bottom = coord.Y;
-
-        COORD bufferSize = { (SHORT)chunk.text.size(), 1 };
-        COORD bufferCoord = { 0, 0 };
-
-        WriteConsoleOutput(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
-      }
-#else
-      std::string output;
-      for (const auto& chunk : chunk_vec)
-      {
-        output += get_gotorc_str(chunk.pos.r, chunk.pos.c);
-        for (const auto& [ch, fg, bg] : chunk.text)
-          output += get_color_string(fg, bg) + ch;
-      }
-      
-      // Reset color.
-      output += "\033[0m";
-      std::cout << output;
 #endif
+      }
+      else
+      {
+        std::string output;
+        for (const auto& chunk : chunk_vec)
+        {
+          output += get_gotorc_str(chunk.pos.r, chunk.pos.c);
+          for (const auto& [ch, fg, bg] : chunk.text)
+            output += get_color_string(fg, bg) + ch;
+        }
+        
+        // Reset color.
+        output += "\033[0m";
+        std::cout << output;
+      }
     }
     
     void print_reset() const
     {
-#ifdef _WIN32
-      set_color_win_cmd(Color16::White, Color16::Black);
-#else
-      //printf("%s", "\033[0m");
-      std::cout << "\033[0m";
-#endif
+      if (sys::is_windows_cmd())
+        set_color_win_cmd(Color16::White, Color16::Black);
+      else
+      {
+        //printf("%s", "\033[0m");
+        std::cout << "\033[0m";
+      }
     }
   };
   
