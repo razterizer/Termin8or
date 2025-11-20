@@ -562,5 +562,64 @@ namespace t8
     auto idx = rnd::rand_int(0, num - 1);
     return palette[idx];
   }
+  
+  Color16 to_nearest_color16(Color col)
+  {
+    if (auto col16 = col.try_get_color16(); col16.has_value())
+      return col16.value();
+    
+    if (auto rgb6 = col.try_get_rgb6(); rgb6.has_value())
+    {
+      auto [r, g, b] = rgb6.value().to_xterm_float();
+      
+      struct rgb_t { float r, g, b; };
+      
+      static constexpr rgb_t ansi16_table[16] =
+      {
+        { 0.0f, 0.0f, 0.0f },   // Black
+        { 0.4f, 0.0f, 0.0f },   // DarkRed
+        { 0.0f, 0.4f, 0.0f },   // DarkGreen
+        { 0.4f, 0.4f, 0.0f },   // DarkYellow
+        { 0.0f, 0.0f, 0.4f },   // DarkBlue
+        { 0.4f, 0.0f, 0.4f },   // DarkMagenta
+        { 0.0f, 0.4f, 0.4f },   // DarkCyan
+        { 0.8f, 0.8f, 0.8f },   // LightGray
+        { 0.4f, 0.4f, 0.4f },   // DarkGray
+        { 1.0f, 0.0f, 0.0f },   // Red
+        { 0.0f, 1.0f, 0.0f },   // Green
+        { 1.0f, 1.0f, 0.0f },   // Yellow
+        { 0.0f, 0.0f, 1.0f },   // Blue
+        { 1.0f, 0.0f, 1.0f },   // Magenta
+        { 0.0f, 1.0f, 1.0f },   // Cyan
+        { 1.0f, 1.0f, 1.0f },   // White
+      };
+      
+      auto min_dist_sq = math::get_max<float>();
+      int best_color = 0;
+      for (int color = 0; color < 16; ++color)
+      {
+        auto rgb2 = ansi16_table[color];
+        auto dist_sq = math::distance_squared(r, g, b, rgb2.r, rgb2.g, rgb2.b);
+        if (math::minimize(min_dist_sq, dist_sq))
+          best_color = color;
+      }
+      return static_cast<Color16>(best_color + 1);
+    }
+    
+    // 24 shades of gray.
+    int idx = col.get_index();
+    if (232 <= idx && idx <= 255)
+    {
+      int gray = idx - 232; // 0..23
+      if (gray < 6)  return Color16::Black;
+      if (gray < 12) return Color16::DarkGray;
+      if (gray < 18) return Color16::LightGray;
+      return Color16::White;
+    }
+    
+    // Safety fallback
+    return Color16::Default;
+  }
+
 
 }
