@@ -32,6 +32,7 @@ namespace sprite_handler
   using KeyPressDataPair = t8::KeyPressDataPair;
   using Rectangle = t8::Rectangle;
   using Color16 = t8::Color16;
+  using Color = t8::Color;
 
   void example1()
   {
@@ -164,7 +165,7 @@ namespace sprite_handler
       sprite3->create_frame(0);
       char star_ch = rnd::rand_select<char>({ '.', '+' });
       sprite3->set_sprite_chars(0, star_ch);
-      sprite3->set_sprite_fg_colors(0, rnd::rand_select<Color16>({ Color16::White, Color16::White, Color16::White, Color16::White, Color16::White, Color16::Yellow, Color16::Yellow, Color16::Yellow, Color16::Red, Color16::Blue, Color16::Blue, Color16::Blue }));
+      sprite3->set_sprite_fg_colors(0, rnd::rand_select<Color>({ Color16::White, Color16::White, Color16::White, Color16::White, Color16::White, Color16::Yellow, Color16::Yellow, Color16::Yellow, Color16::Red, Color16::Blue, Color16::Blue, Color16::Blue }));
       sprite3->set_sprite_bg_colors(0, Color16::Transparent2);
       sprite3->create_frame(1);
       sprite3->set_sprite_chars(1, star_ch);
