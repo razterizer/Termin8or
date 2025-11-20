@@ -80,32 +80,43 @@ namespace t8
     
     inline int index(int r, int c) const noexcept { return NC*r + c; }
     
-    std::string color2str(Color16 col) const
+    std::string color2str(Color col) const
     {
-      switch (col)
+      auto col16 = col.try_get_color16();
+      if (col16.has_value())
       {
-        case Color16::Transparent:  return "---:";
-        case Color16::Transparent2: return "===:";
-        case Color16::Default:      return "Def:";
-        case Color16::Black:        return "Blk:";
-        case Color16::DarkRed:      return "DRd:";
-        case Color16::DarkGreen:    return "DGn:";
-        case Color16::DarkYellow:   return "DYw:";
-        case Color16::DarkBlue:     return "DBu:";
-        case Color16::DarkMagenta:  return "DMa:";
-        case Color16::DarkCyan:     return "DCn:";
-        case Color16::LightGray:    return "LGy:";
-        case Color16::DarkGray:     return "DGy:";
-        case Color16::Red:          return "Red:";
-        case Color16::Green:        return "Grn:";
-        case Color16::Yellow:       return "Ylw:";
-        case Color16::Blue:         return "Blu:";
-        case Color16::Magenta:      return "Mga:";
-        case Color16::Cyan:         return "Cyn:";
-        case Color16::White:        return "Wht:";
-        default: break;
+        switch (col16.value())
+        {
+          case Color16::Transparent:  return "---:";
+          case Color16::Transparent2: return "===:";
+          case Color16::Default:      return "Def:";
+          case Color16::Black:        return "Blk:";
+          case Color16::DarkRed:      return "DRd:";
+          case Color16::DarkGreen:    return "DGn:";
+          case Color16::DarkYellow:   return "DYw:";
+          case Color16::DarkBlue:     return "DBu:";
+          case Color16::DarkMagenta:  return "DMa:";
+          case Color16::DarkCyan:     return "DCn:";
+          case Color16::LightGray:    return "LGy:";
+          case Color16::DarkGray:     return "DGy:";
+          case Color16::Red:          return "Red:";
+          case Color16::Green:        return "Grn:";
+          case Color16::Yellow:       return "Ylw:";
+          case Color16::Blue:         return "Blu:";
+          case Color16::Magenta:      return "Mga:";
+          case Color16::Cyan:         return "Cyn:";
+          case Color16::White:        return "Wht:";
+          default:                    return "???:";
+        }
       }
-      return "";
+      auto rgb6 = col.try_get_rgb6();
+      if (rgb6.has_value())
+      {
+        return std::to_string(static_cast<int>(rgb6.value().r)) +
+          std::to_string(static_cast<int>(rgb6.value().g)) +
+          std::to_string(static_cast<int>(rgb6.value().b)) + ":";
+      }
+      return "Err:";
     }
     
     std::vector<OrderedText> ordered_texts;
