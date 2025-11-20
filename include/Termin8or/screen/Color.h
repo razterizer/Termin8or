@@ -511,6 +511,7 @@ namespace t8
   
   inline bool operator==(Color16 col16, const Color& col) { return static_cast<int>(col16) == col.get_index(); }
   
+  // Returns Color16::Default if palette is empty. Otherwise identical to rnd::rand_select().
   Color get_random_color(const std::vector<Color>& palette)
   {
     auto num = static_cast<int>(palette.size());
