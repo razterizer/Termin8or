@@ -318,15 +318,15 @@ namespace t8
     int get_num_full_redraws() const { return num_full_redraws; }
     int get_num_partial_redraws() const { return num_partial_redraws; }
     
-    void print_screen_buffer(Color16 clear_bg_color, DrawPolicy draw_policy = DrawPolicy::MEASURE_SELECT)
+    void print_screen_buffer(Color clear_bg_color, DrawPolicy draw_policy = DrawPolicy::MEASURE_SELECT)
     {
-      auto f_full_redraw = [this](Color16 clear_bg_color)
+      auto f_full_redraw = [this](Color clear_bg_color)
       {
         print_screen_buffer_full(clear_bg_color);
         num_full_redraws++;
       };
     
-      auto f_partial_redraw = [this](Color16 clear_bg_color)
+      auto f_partial_redraw = [this](Color clear_bg_color)
       {
         diff_buffers(clear_bg_color);
         print_screen_buffer_partial(clear_bg_color);
@@ -386,7 +386,7 @@ namespace t8
       frame++;
     }
     
-    void print_screen_buffer_full(Color16 clear_bg_color) const
+    void print_screen_buffer_full(Color clear_bg_color) const
     {
       std::vector<std::tuple<char, Color, Color>> colored_str;
       colored_str.resize(NR*(NC + 1));
@@ -406,7 +406,7 @@ namespace t8
       m_text->print_complex_sequential(colored_str);
     }
     
-    void print_screen_buffer_partial(Color16 clear_bg_color) const
+    void print_screen_buffer_partial(Color clear_bg_color) const
     {
       std::vector<Text::ComplexStringChunk> colored_str_chunks;
       colored_str_chunks.reserve(math::roundI(num_chunks_prev * 1.2f));
