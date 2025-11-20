@@ -479,7 +479,7 @@ namespace t8
     }
 
     // Try reverse-decoding cube representation
-    std::optional<std::tuple<R_t, G_t, B_t>> try_get_cube6() const
+    std::optional<RGB6> try_get_rgb6() const
     {
       if (16 <= idx && idx <= 231)
       {
@@ -487,7 +487,7 @@ namespace t8
         int r = v / 36;
         int g = (v % 36) / 6;
         int b = v % 6;
-        return std::tuple
+        return RGB6
         {
           static_cast<R_t>(r),
           static_cast<G_t>(g),
