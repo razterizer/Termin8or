@@ -427,6 +427,46 @@ namespace t8
     constexpr RGB6(R_t r6, G_t g6, B_t b6)
       : r(r6), g(g6), b(b6)
     {}
+    
+    std::tuple<int, int, int> to_int() const
+    {
+      return
+      {
+        static_cast<int>(r),
+        static_cast<int>(g),
+        static_cast<int>(b)
+      };
+    }
+    
+    std::tuple<float, float, float> to_float() const
+    {
+      return
+      {
+        static_cast<int>(r) / 5.f,
+        static_cast<int>(g) / 5.f,
+        static_cast<int>(b) / 5.f
+      };
+    }
+    
+    std::tuple<float, float, float> to_xterm_float() const
+    {
+      static constexpr float L[6] =
+      {
+        0.0f,
+        95.0f / 255.0f,
+        135.0f / 255.0f,
+        175.0f / 255.0f,
+        215.0f / 255.0f,
+        1.0f
+      };
+      
+      return
+      {
+        L[(int)r],
+        L[(int)g],
+        L[(int)b]
+      };
+    }
   };
   
   struct Color
