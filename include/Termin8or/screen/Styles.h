@@ -14,7 +14,6 @@ namespace t8
   struct Style
   {
     Style() = default;
-    Style(Color16 fg, Color16 bg) : fg_color(fg), bg_color(bg) {}
     Style(Color fg, Color bg) : fg_color(fg), bg_color(bg) {}
     Color fg_color = Color16::Default;
     Color bg_color = Color16::Transparent;
@@ -24,23 +23,23 @@ namespace t8
   struct ButtonStyle : Style
   {
     ButtonStyle() = default;
-    ButtonStyle(Color16 fg, Color16 bg, Color16 bg_sel)
+    ButtonStyle(Color fg, Color bg, Color bg_sel)
       : Style(fg, bg), bg_color_selected(bg_sel) {}
-    Color16 bg_color_selected = Color16::Transparent;
+    Color bg_color_selected = Color16::Transparent;
   };
   
   struct PromptStyle : Style
   {
     PromptStyle() = default;
-    PromptStyle(Color16 fg, Color16 bg, Color16 bg_cursor)
+    PromptStyle(Color fg, Color bg, Color bg_cursor)
       : Style(fg, bg), bg_color_cursor(bg_cursor) {}
-    Color16 bg_color_cursor = Color16::Transparent;
+    Color bg_color_cursor = Color16::Transparent;
   };
   
   struct HiliteFGStyle : Style
   {
     HiliteFGStyle() = default;
-    HiliteFGStyle(Color16 fg, Color16 bg, Color16 fg_hilite)
+    HiliteFGStyle(Color fg, Color bg, Color fg_hilite)
       : Style(fg, bg), fg_color_hilite(fg_hilite) {}
     Color fg_color_hilite = Color16::Default;
     Style get_style(bool hilited) const
@@ -51,13 +50,13 @@ namespace t8
   
   struct HiliteSelectFGStyle : HiliteFGStyle
   {
-    HiliteSelectFGStyle(Color16 fg, Color16 bg, Color16 fg_hilite, Color16 fg_select, Color16 fg_select_hilite)
+    HiliteSelectFGStyle(Color fg, Color bg, Color fg_hilite, Color fg_select, Color fg_select_hilite)
       : HiliteFGStyle(fg, bg, fg_hilite)
       , fg_color_select(fg_select)
       , fg_color_select_hilite(fg_select_hilite)
       {}
-    Color16 fg_color_select = Color16::Default;
-    Color16 fg_color_select_hilite = Color16::Default;
+    Color fg_color_select = Color16::Default;
+    Color fg_color_select_hilite = Color16::Default;
     Style get_style(bool hilited, bool selected) const
     {
       if (selected)
