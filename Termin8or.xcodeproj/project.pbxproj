@@ -37,8 +37,6 @@
 		07BDBAAE2E741CE6002ACC96 /* CollisionHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 07BDBAA72E741CE6002ACC96 /* CollisionHandler.h */; };
 		07BDBAAF2E741CE6002ACC96 /* RigidBody.h in Headers */ = {isa = PBXBuildFile; fileRef = 07BDBAA92E741CE6002ACC96 /* RigidBody.h */; };
 		07BDBAB02E741CE6002ACC96 /* DynamicsSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 07BDBAA82E741CE6002ACC96 /* DynamicsSystem.h */; };
-		07BDBAB12E741CE6002ACC96 /* version.h in Headers */ = {isa = PBXBuildFile; fileRef = 07BDBAA83E741CE6002ACC96 /* version.h */; };
-
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,18 +85,18 @@
 		07BDBAA42E741CB6002ACC96 /* SpriteHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpriteHandler.h; sourceTree = "<group>"; };
 		07BDBAA72E741CE6002ACC96 /* CollisionHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CollisionHandler.h; sourceTree = "<group>"; };
 		07BDBAA82E741CE6002ACC96 /* DynamicsSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DynamicsSystem.h; sourceTree = "<group>"; };
+		07BDBAA83E741CE6002ACC96 /* version.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
 		07BDBAA92E741CE6002ACC96 /* RigidBody.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RigidBody.h; sourceTree = "<group>"; };
 		07BDBAAB2E741CE6002ACC96 /* ParticleSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
 		07D007BF2CBF39BD00CCB5E7 /* SpriteHandler_examples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpriteHandler_examples.h; sourceTree = "<group>"; };
 		07D007C12CBF3AD100CCB5E7 /* examples.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = examples.cpp; sourceTree = "<group>"; };
 		07D007C32CBF3B4000CCB5E7 /* build_examples.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_examples.sh; sourceTree = "<group>"; };
 		07D007C42CC2B8A300CCB5E7 /* build_examples.bat */ = {isa = PBXFileReference; lastKnownFileType = text; path = build_examples.bat; sourceTree = "<group>"; };
-		07D007C52CC3B96600CCB5E7 /* background.tex */ = {isa = PBXFileReference; lastKnownFileType = text; path = background.tex; sourceTree = "<group>"; };
+		07D007C52CC3B96600CCB5E7 /* background.tx */ = {isa = PBXFileReference; lastKnownFileType = text; path = background.tx; sourceTree = "<group>"; };
 		07FDE97E2CA0C0F700116BA7 /* Rectangle_tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rectangle_tests.h; sourceTree = "<group>"; };
 		07FDE97F2CA0C4E100116BA7 /* build_unit_tests.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_unit_tests.sh; sourceTree = "<group>"; };
 		07FDE9802CA0C4E100116BA7 /* unit_tests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = unit_tests.cpp; sourceTree = "<group>"; };
 		07FDE9822CA0C75C00116BA7 /* build-and-test-ubuntu.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; name = "build-and-test-ubuntu.yml"; path = ".github/workflows/build-and-test-ubuntu.yml"; sourceTree = "<group>"; };
-		07BDBAA83E741CE6002ACC96 /* version.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = version.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -297,7 +295,7 @@
 		07D007C02CBF3A4800CCB5E7 /* Examples */ = {
 			isa = PBXGroup;
 			children = (
-				07D007C52CC3B96600CCB5E7 /* background.tex */,
+				07D007C52CC3B96600CCB5E7 /* background.tx */,
 				07D007C42CC2B8A300CCB5E7 /* build_examples.bat */,
 				07D007C32CBF3B4000CCB5E7 /* build_examples.sh */,
 				07685DAB2CD510E200472204 /* Keyboard_examples.h */,
