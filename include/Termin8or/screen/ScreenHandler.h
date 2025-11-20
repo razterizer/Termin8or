@@ -297,7 +297,7 @@ namespace t8
       }
     }
     
-    void update_prev_buffers(Color16 clear_bg_color)
+    void update_prev_buffers(Color clear_bg_color)
     {
       prev_screen_buffer = screen_buffer;
       prev_fg_color_buffer = fg_color_buffer;
