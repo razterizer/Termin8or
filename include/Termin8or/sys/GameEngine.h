@@ -194,7 +194,7 @@ namespace t8x
     
     t8::ScreenHandler<NR, NC> sh;
     
-    Color16 bg_color = Color16::Default;
+    Color bg_color = Color16::Default;
     
     t8::KeyPressDataPair kpdp;
     std::unique_ptr<t8::StreamKeyboard> keyboard;
