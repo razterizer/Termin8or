@@ -413,6 +413,8 @@ namespace t8
     }
   }
   
+  // ////////////////////////////////////////////////////////
+  
   struct RGB6
   {
     uint8_t r = 0;
@@ -467,6 +469,8 @@ namespace t8
     }
   };
   
+  // ////////////////////////////////////////////////////////
+  
   struct Gray24
   {
     uint8_t gray = 0;
@@ -480,6 +484,8 @@ namespace t8
       return gray / 23.f;
     }
   };
+  
+  // ////////////////////////////////////////////////////////
   
   struct Color
   {
@@ -574,6 +580,8 @@ namespace t8
   };
   
   inline bool operator==(Color16 col16, const Color& col) { return static_cast<int>(col16) == col.get_index() + 1; }
+  
+  // ////////////////////////////////////////////////////////
   
   // Returns Color16::Default if palette is empty. Otherwise identical to rnd::rand_select().
   Color get_random_color(const std::vector<Color>& palette)
