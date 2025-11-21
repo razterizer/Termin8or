@@ -467,6 +467,11 @@ namespace t8
         L[b]
       };
     }
+    
+    bool operator==(const RGB6& rgb6) const
+    {
+      return rgb6.r == r && rgb6.g == g && rgb6.b == b;
+    }
   };
   
   // ////////////////////////////////////////////////////////
@@ -482,6 +487,11 @@ namespace t8
     constexpr float to_float() const
     {
       return gray / 23.f;
+    }
+    
+    bool operator==(Gray24 g) const
+    {
+      return g.gray == gray;
     }
   };
   
@@ -567,8 +577,22 @@ namespace t8
       return std::nullopt;
     }
     
-  bool operator==(const Color& other) const { return this->idx == other.idx + 1; }
+  bool operator==(Color other) const { return this->idx == other.idx + 1; }
   bool operator==(Color16 col16) const { return this->idx + 1 == static_cast<int>(col16); }
+  bool operator==(const RGB6& rgb6) const
+  {
+    auto val = try_get_rgb6();
+    if (val.has_value())
+      return val.value() == rgb6;
+    return false;
+  }
+  bool operator==(Gray24 g24) const
+  {
+    auto val = try_get_gray24();
+    if (val.has_value())
+      return val.value() == g24;
+    return false;
+  }
   
   private:
     int idx = 0;
@@ -579,7 +603,9 @@ namespace t8
     }
   };
   
-  inline bool operator==(Color16 col16, const Color& col) { return static_cast<int>(col16) == col.get_index() + 1; }
+  inline bool operator==(Color16 col16, Color col) { return col == col16; }
+  inline bool operator==(const RGB6& rgb6, Color col) { return col == rgb6; }
+  inline bool operator==(Gray24 g24, Color col) { return col == g24; }
   
   // ////////////////////////////////////////////////////////
   
