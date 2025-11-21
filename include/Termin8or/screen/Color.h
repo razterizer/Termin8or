@@ -517,6 +517,10 @@ namespace t8
       b = std::clamp(b, 0.f, 1.f);
       set_rgb(math::roundI(5.f*r), math::roundI(5.f*g), math::roundI(5.f*b));
     }
+    Color(Gray24 gray24)
+    {
+      idx = 232 + gray24.gray;
+    }
     
     int get_index() const { return idx; }
     
