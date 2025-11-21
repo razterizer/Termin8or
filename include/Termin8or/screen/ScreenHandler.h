@@ -170,7 +170,7 @@ namespace t8
       write_buffer(str, pos.r, pos.c, style.fg_color, style.bg_color);
     }
     
-    void write_buffer(const std::string& str, const RC& pos, Color16 fg_color, Color16 bg_color = Color16::Transparent)
+    void write_buffer(const std::string& str, const RC& pos, Color fg_color, Color bg_color = Color16::Transparent)
     {
       write_buffer(str, pos.r, pos.c, fg_color, bg_color);
     }
@@ -220,7 +220,7 @@ namespace t8
       }
     }
     
-    void replace_bg_color(Color16 from_bg_color, Color16 to_bg_color, Rectangle box)
+    void replace_bg_color(Color from_bg_color, Color to_bg_color, Rectangle box)
     {
       for (int r = 0; r < NR; ++r)
       {
@@ -236,7 +236,7 @@ namespace t8
       }
     }
     
-    void replace_bg_color(Color16 to_bg_color, Rectangle box)
+    void replace_bg_color(Color to_bg_color, Rectangle box)
     {
       for (int r = 0; r < NR; ++r)
       {
@@ -250,7 +250,7 @@ namespace t8
       }
     }
     
-    void replace_bg_color(Color16 to_bg_color)
+    void replace_bg_color(Color to_bg_color)
     {
       for (int r = 0; r < NR; ++r)
       {
@@ -261,7 +261,7 @@ namespace t8
       }
     }
     
-    void replace_fg_color(Color16 to_fg_color, Rectangle box)
+    void replace_fg_color(Color to_fg_color, Rectangle box)
     {
       for (int r = 0; r < NR; ++r)
       {
@@ -275,7 +275,7 @@ namespace t8
       }
     }
     
-    void replace_fg_color(Color16 to_fg_color)
+    void replace_fg_color(Color to_fg_color)
     {
       for (int r = 0; r < NR; ++r)
       {

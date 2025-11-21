@@ -91,22 +91,24 @@ namespace t8
       
       return fg + bg;
     }
-    
-    // For classic cmd.exe.
-    void set_color_win_cmd(Color text_color, Color bg_color = Color16::Default) const
+
+    static int get_color_win_cmd(Color color)
     {
 #ifdef _WIN32
-      auto text_color16 = to_nearest_color16(text_color);
-      auto bg_color16 = to_nearest_color16(bg_color);
-
-      int foreground = get_color_value_win(text_color16);
-      if (foreground == -1)
-        foreground = get_color_value_win(Color16::White);
-      int background = 16 * get_color_value_win(bg_color16);
-      if (background == -1)
-        background = 16 * get_color_value_win(Color16::Black);
+      auto color16 = to_nearest_color16(color);
+      int win_idx = get_color16_value_win(color16);
+      return win_idx;
+#endif
+    }
+    
+    // For classic cmd.exe.
+    static void set_color_win_cmd(Color text_color, Color bg_color = Color16::Default)
+    {
+#ifdef _WIN32
+      int foreground = get_color_win_cmd(text_color);
+      int background = 16 * get_color_win_cmd(bg_color);
       
-      int color = static_cast<int>(foreground) + static_cast<int>(background);
+      int color = foreground + background;
       
       SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 #endif
@@ -180,8 +182,8 @@ namespace t8
           
           CHAR_INFO ci {};
           ci.Char.AsciiChar = ch;
-          int fgAttr = get_color_value_win(fg); if (fgAttr == -1) fgAttr = 7;
-          int bgAttr = get_color_value_win(bg); if (bgAttr == -1) bgAttr = 0;
+          int fgAttr = get_color_win_cmd(fg); if (fgAttr == -1) fgAttr = 7;
+          int bgAttr = get_color_win_cmd(bg); if (bgAttr == -1) bgAttr = 0;
           ci.Attributes = fgAttr | (bgAttr << 4);
           lineBuffer.push_back(ci);
         }
@@ -228,8 +230,8 @@ namespace t8
             CHAR_INFO ci {};
             ci.Char.AsciiChar = std::get<0>(chunk.text[i]);
             ci.Attributes =
-            get_color_value_win(std::get<1>(chunk.text[i])) |
-            (get_color_value_win(std::get<2>(chunk.text[i])) << 4);
+              get_color_win_cmd(std::get<1>(chunk.text[i])) |
+             (get_color_win_cmd(std::get<2>(chunk.text[i])) << 4);
             buffer[i] = ci;
           }
           

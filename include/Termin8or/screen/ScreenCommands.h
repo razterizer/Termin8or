@@ -33,10 +33,10 @@ namespace t8
       {
         savedAttributes = consoleInfo.wAttributes;
         int bg_color = static_cast<int>(savedAttributes & 0xF0) >> 4;
-        orig_style.bg_color = get_color_win(bg_color);
+        orig_style.bg_color = get_color16_win(bg_color);
         
         int fg_color = static_cast<int>(savedAttributes & 0x0F);
-        orig_style.fg_color = get_color_win(fg_color);
+        orig_style.fg_color = get_color16_win(fg_color);
       }
       else
         std::cerr << "Error: Unable to get console screen buffer info." << std::endl;

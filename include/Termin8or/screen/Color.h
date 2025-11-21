@@ -332,7 +332,7 @@ namespace t8
     return Color16::Default;
   }
   
-  int get_color_value_win(Color16 color)
+  int get_color16_value_win(Color16 color)
   {
     switch (color)
     {
@@ -372,7 +372,7 @@ namespace t8
     }
   }
   
-  Color16 get_color_win(int color_val)
+  Color16 get_color16_win(int color_val)
   {
     switch (color_val)
     {

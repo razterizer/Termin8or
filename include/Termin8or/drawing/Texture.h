@@ -215,7 +215,10 @@ namespace t8
             int r = std::atoi(rgb_tokens[0].c_str());
             int g = std::atoi(rgb_tokens[1].c_str());
             int b = std::atoi(rgb_tokens[2].c_str());
-            start_idx = str.substr(start_idx).find(']');
+            if (auto i = str.substr(start_idx).find(']'); i != std::string::npos)
+              start_idx = static_cast<int>(i);
+            else
+              std::cerr << "ERROR in Texture::load() : Unable to parse ']' token after rgb6 triplet!\n";
             return Color(r, g, b);
           }
         }
