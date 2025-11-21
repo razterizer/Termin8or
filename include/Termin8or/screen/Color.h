@@ -515,6 +515,8 @@ namespace t8
 
     std::optional<RGB6> try_get_rgb6() const
     {
+      // Do not confuse with Color16::White = 16!
+      // For idx = 0 .. 15, this corresponds to Color16::Black to Color16::White.
       if (16 <= idx && idx <= 231)
       {
         int v = idx - 16;
