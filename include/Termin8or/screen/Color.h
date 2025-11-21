@@ -479,7 +479,7 @@ namespace t8
       : idx(index)
     {}
     Color(Color16 col16)
-      : idx(static_cast<int>(col16))
+      : idx(static_cast<int>(col16) - 1)
     {}
     Color(R_t r, G_t g, B_t b)
     {
@@ -515,8 +515,8 @@ namespace t8
     // Try reverse-decoding 16-color representation
     std::optional<Color16> try_get_color16() const
     {
-      if (-2 <= idx && idx <= 16)
-        return static_cast<Color16>(idx);
+      if (-3 <= idx && idx <= 15)
+        return static_cast<Color16>(idx + 1);
       return std::nullopt;
     }
 
@@ -539,8 +539,8 @@ namespace t8
       return std::nullopt;
     }
     
-  bool operator==(const Color& other) const { return this->idx == other.idx; }
-  bool operator==(Color16 col16) const { return this->idx == static_cast<int>(col16); }
+  bool operator==(const Color& other) const { return this->idx == other.idx + 1; }
+  bool operator==(Color16 col16) const { return this->idx + 1 == static_cast<int>(col16); }
   
   private:
     int idx = 0;
@@ -551,7 +551,7 @@ namespace t8
     }
   };
   
-  inline bool operator==(Color16 col16, const Color& col) { return static_cast<int>(col16) == col.get_index(); }
+  inline bool operator==(Color16 col16, const Color& col) { return static_cast<int>(col16) == col.get_index() + 1; }
   
   // Returns Color16::Default if palette is empty. Otherwise identical to rnd::rand_select().
   Color get_random_color(const std::vector<Color>& palette)

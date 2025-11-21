@@ -56,15 +56,16 @@ namespace t8
       std::string fg, bg;
     
       int text_color_idx = text_color.get_index();
-      if (0 <= text_color_idx)
+      int text_color16_idx = text_color_idx + 1;
+      if (0 <= text_color16_idx)
       {
         fg = "\033[";
         if (text_color == Color16::Default)
           fg += "39";
-        else if (static_cast<int>(Color16::Default) < text_color_idx && text_color_idx <= static_cast<int>(Color16::LightGray))
-          fg += std::to_string(text_color_idx + 29);
-        else if (text_color_idx <= 16)
-          fg += std::to_string(text_color_idx + 81);
+        else if (static_cast<int>(Color16::Default) < text_color16_idx && text_color16_idx <= static_cast<int>(Color16::LightGray))
+          fg += std::to_string(text_color_idx + 30);
+        else if (text_color16_idx <= 16)
+          fg += std::to_string(text_color_idx + 82);
         else
           fg += "38;5;" + std::to_string(text_color_idx); // 256-color extended mode
           
@@ -72,15 +73,16 @@ namespace t8
       }
       
       int bg_color_idx = bg_color.get_index();
-      if (0 <= bg_color_idx)
+      int bg_color16_idx = bg_color_idx + 1;
+      if (0 <= bg_color16_idx)
       {
         bg = "\033[";
         if (bg_color == Color16::Default)
           bg += "49";
-        else if (static_cast<int>(Color16::Default) < bg_color_idx && bg_color_idx <= static_cast<int>(Color16::LightGray))
-          bg += std::to_string(bg_color_idx + 39);
-        else if (bg_color_idx <= 16)
-          bg += std::to_string(bg_color_idx + 91);
+        else if (static_cast<int>(Color16::Default) < bg_color16_idx && bg_color16_idx <= static_cast<int>(Color16::LightGray))
+          bg += std::to_string(bg_color_idx + 40);
+        else if (bg_color16_idx <= 16)
+          bg += std::to_string(bg_color_idx + 92);
         else
           bg += "48;5;" + std::to_string(bg_color_idx); // 256-color extended mode
         
