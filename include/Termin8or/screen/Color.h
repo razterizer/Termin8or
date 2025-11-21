@@ -413,19 +413,17 @@ namespace t8
     }
   }
   
-  enum class R_t { R_0, R_1, R_2, R_3, R_4, R_5 };
-  enum class G_t { G_0, G_1, G_2, G_3, G_4, G_5 };
-  enum class B_t { B_0, B_1, B_2, B_3, B_4, B_5 };
-  
   struct RGB6
   {
-    R_t r = R_t::R_0;
-    G_t g = G_t::G_0;
-    B_t b = B_t::B_0;
+    uint8_t r = 0;
+    uint8_t g = 0;
+    uint8_t b = 0;
     
     constexpr RGB6() = default;
-    constexpr RGB6(R_t r6, G_t g6, B_t b6)
-      : r(r6), g(g6), b(b6)
+    constexpr RGB6(uint8_t r6, uint8_t g6, uint8_t b6)
+      : r(std::min(r6, static_cast<uint8_t>(5)))
+      , g(std::min(g6, static_cast<uint8_t>(5)))
+      , b(std::min(b6, static_cast<uint8_t>(5)))
     {}
     
     std::tuple<int, int, int> to_int() const
@@ -442,9 +440,9 @@ namespace t8
     {
       return
       {
-        static_cast<int>(r) / 5.f,
-        static_cast<int>(g) / 5.f,
-        static_cast<int>(b) / 5.f
+        r / 5.f,
+        g / 5.f,
+        b / 5.f
       };
     }
     
@@ -462,9 +460,9 @@ namespace t8
       
       return
       {
-        L[(int)r],
-        L[(int)g],
-        L[(int)b]
+        L[r],
+        L[g],
+        L[b]
       };
     }
   };
@@ -481,10 +479,6 @@ namespace t8
     Color(Color16 col16)
       : idx(static_cast<int>(col16) - 1)
     {}
-    Color(R_t r, G_t g, B_t b)
-    {
-      set_rgb(static_cast<int>(r), static_cast<int>(g), static_cast<int>(b));
-    }
     Color(const RGB6& rgb6)
     {
       set_rgb(static_cast<int>(rgb6.r), static_cast<int>(rgb6.g), static_cast<int>(rgb6.b));
@@ -531,9 +525,9 @@ namespace t8
         int b = v % 6;
         return RGB6
         {
-          static_cast<R_t>(r),
-          static_cast<G_t>(g),
-          static_cast<B_t>(b)
+          static_cast<uint8_t>(r),
+          static_cast<uint8_t>(g),
+          static_cast<uint8_t>(b)
         };
       }
       return std::nullopt;
