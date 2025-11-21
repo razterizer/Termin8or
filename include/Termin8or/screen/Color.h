@@ -467,6 +467,20 @@ namespace t8
     }
   };
   
+  struct Gray24
+  {
+    uint8_t gray = 0;
+    
+    Gray24(uint8_t g)
+      : gray(std::min(g, static_cast<uint8_t>(23)))
+    {}
+    
+    constexpr float to_float() const
+    {
+      return gray / 23.f;
+    }
+  };
+  
   struct Color
   {
     Color() = default;
