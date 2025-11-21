@@ -500,7 +500,7 @@ namespace t8
   struct Color
   {
     Color() = default;
-    Color(Color col)
+    Color(const Color& col)
       : idx(col.idx)
     {}
     explicit Color(int index)
