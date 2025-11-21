@@ -8,7 +8,6 @@
 namespace t8x
 {
   using RC = t8::RC;
-  using Color16 = t8::Color16;
   using Color = t8::Color;
   template<int NR, int NC>
   using ScreenHandler = t8::ScreenHandler<NR, NC>;
