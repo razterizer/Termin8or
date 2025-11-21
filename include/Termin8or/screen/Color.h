@@ -551,6 +551,16 @@ namespace t8
       return std::nullopt;
     }
     
+    std::optional<Gray24> try_get_gray24() const
+    {
+      if (232 <= idx && idx <= 255)
+      {
+        int v = idx - 232;
+        return static_cast<uint8_t>(v);
+      }
+      return std::nullopt;
+    }
+    
   bool operator==(const Color& other) const { return this->idx == other.idx + 1; }
   bool operator==(Color16 col16) const { return this->idx + 1 == static_cast<int>(col16); }
   
