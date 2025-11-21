@@ -506,7 +506,6 @@ namespace t8
     
     int get_index() const { return idx; }
     
-    // Try reverse-decoding 16-color representation
     std::optional<Color16> try_get_color16() const
     {
       if (-3 <= idx && idx <= 15)
@@ -514,7 +513,6 @@ namespace t8
       return std::nullopt;
     }
 
-    // Try reverse-decoding cube representation
     std::optional<RGB6> try_get_rgb6() const
     {
       if (16 <= idx && idx <= 231)
