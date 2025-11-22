@@ -99,6 +99,7 @@ namespace t8
       int win_idx = get_color16_value_win(color16);
       return win_idx;
 #endif
+      return -1;
     }
     
     // For classic cmd.exe.
