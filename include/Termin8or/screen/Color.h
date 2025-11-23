@@ -35,7 +35,7 @@ namespace t8
     White          // 16
   };
 
-  Color16 string_to_color(const std::string& str)
+  Color16 string_to_color16(const std::string& str)
   {
     if (str == "Transparent")
       return Color16::Transparent;
@@ -79,7 +79,7 @@ namespace t8
     return Color16::Default;
   }
   
-  std::string color_to_string(Color16 color)
+  std::string color16_to_string(Color16 color)
   {
     switch (color)
     {
