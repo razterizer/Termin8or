@@ -594,6 +594,23 @@ namespace t8
     return false;
   }
   
+  std::string str() const
+  {
+    if (auto col16 = try_get_color16(); col16.has_value())
+      return color16_to_string(col16.value());
+    
+    if (auto rgb6 = try_get_rgb6(); rgb6.has_value())
+      return "[" +
+        std::to_string(rgb6.value().r) + ", " +
+        std::to_string(rgb6.value().g) + ", " +
+        std::to_string(rgb6.value().b) + "]";
+    
+    if (auto g24 = try_get_gray24(); g24.has_value())
+      return "[gr24:" + std::to_string(g24.value().gray) + "]";
+      
+    return "n/a";
+  }
+  
   private:
     int idx = 0;
     
