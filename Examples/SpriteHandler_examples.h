@@ -59,16 +59,16 @@ namespace sprite_handler
       R"(  #  )"
     );
     sprite0->set_sprite_fg_colors(0,
-      0, 0, 16, 0, 0,
-      0, 16, 16, 13, 0,
-      11, 15, 15, 15, 11,
-      0, 12, 14, 12, 0
+     -1, -1, 15, -1, -1,
+     -1, 15, 15, 12, -1,
+     10, 14, 14, 14, 10,
+     -1, 11, 13, 11, -1
     );
     sprite0->set_sprite_bg_colors(0,
-      -2, -2, -2, -2, -2,
-      -2, -2, 13, -2, -2,
-      1, 7, 7, 7, 1,
-      -2, -2, 14, -2, -2
+      -3, -3, -3, -3, -3,
+      -3, -3, 12, -3, -3,
+       0,  6,  6,  6,  0,
+      -3, -3, 13, -3, -3
     );
     sprite0->set_sprite_materials(0,
       0, 0, 0, 0, 0,
@@ -243,6 +243,7 @@ namespace sprite_handler
     }
     
 quit:
+    sh.print_screen_buffer_bg_colors();
     t8::end_screen(sh);
   }
   
