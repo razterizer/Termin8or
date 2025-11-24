@@ -14,25 +14,25 @@ namespace t8
 
   enum class Color16
   {
-    Transparent = -1,
-    Transparent2 = -2,
-    Default = 0,
-    Black,         //  1
-    DarkRed,       //  2
-    DarkGreen,     //  3
-    DarkYellow,    //  4
-    DarkBlue,      //  5
-    DarkMagenta,   //  6
-    DarkCyan,      //  7
-    LightGray,     //  8
-    DarkGray,      //  9
-    Red,           // 10
-    Green,         // 11
-    Yellow,        // 12
-    Blue,          // 13
-    Magenta,       // 14
-    Cyan,          // 15
-    White          // 16
+    Transparent2 = -3,
+    Transparent = -2,
+    Default = -1,
+    Black,         //  0
+    DarkRed,       //  1
+    DarkGreen,     //  2
+    DarkYellow,    //  3
+    DarkBlue,      //  4
+    DarkMagenta,   //  5
+    DarkCyan,      //  6
+    LightGray,     //  7
+    DarkGray,      //  8
+    Red,           //  9
+    Green,         // 10
+    Yellow,        // 11
+    Blue,          // 12
+    Magenta,       // 13
+    Cyan,          // 14
+    White          // 15
   };
 
   Color16 string_to_color16(const std::string& str)
@@ -507,7 +507,7 @@ namespace t8
       : idx(index)
     {}
     Color(Color16 col16)
-      : idx(static_cast<int>(col16) - 1)
+      : idx(static_cast<int>(col16))
     {}
     Color(const RGB6& rgb6)
     {
@@ -543,7 +543,7 @@ namespace t8
     std::optional<Color16> try_get_color16() const
     {
       if (-3 <= idx && idx <= 15)
-        return static_cast<Color16>(idx + 1);
+        return static_cast<Color16>(idx);
       return std::nullopt;
     }
 
@@ -577,8 +577,8 @@ namespace t8
       return std::nullopt;
     }
     
-  bool operator==(Color other) const { return this->idx == other.idx + 1; }
-  bool operator==(Color16 col16) const { return this->idx + 1 == static_cast<int>(col16); }
+  bool operator==(Color other) const { return this->idx == other.idx; }
+  bool operator==(Color16 col16) const { return this->idx == static_cast<int>(col16); }
   bool operator==(const RGB6& rgb6) const
   {
     auto val = try_get_rgb6();
@@ -651,7 +651,7 @@ namespace t8
       };
       
       auto min_dist_sq = math::get_max<float>();
-      int best_color = 0;
+      int best_color = 0; // Black.
       for (int color = 0; color < 16; ++color)
       {
         auto rgb2 = ansi16_table[color];
@@ -659,7 +659,7 @@ namespace t8
         if (math::minimize(min_dist_sq, dist_sq))
           best_color = color;
       }
-      return static_cast<Color16>(best_color + 1);
+      return static_cast<Color16>(best_color);
     }
     
     // 24 shades of gray.
