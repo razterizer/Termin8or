@@ -243,7 +243,6 @@ namespace sprite_handler
     }
     
 quit:
-    sh.print_screen_buffer_bg_colors();
     t8::end_screen(sh);
   }
   
