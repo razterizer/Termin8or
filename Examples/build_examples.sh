@@ -17,3 +17,4 @@ fi
 ### Post-Build Actions ###
 
 cp background.tx bin/
+cp colors.tx bin/
