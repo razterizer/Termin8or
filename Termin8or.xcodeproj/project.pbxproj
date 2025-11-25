@@ -41,6 +41,8 @@
 
 /* Begin PBXFileReference section */
 		071CC3CA290465B3007B4B98 /* libTermin8or.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libTermin8or.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		07331D4F2ED4EAB40010AFC9 /* Texture_examples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Texture_examples.h; sourceTree = "<group>"; };
+		07331D502ED4EDEF0010AFC9 /* colors.tx */ = {isa = PBXFileReference; lastKnownFileType = text; path = colors.tx; sourceTree = "<group>"; };
 		0733A6422EC08B0A0045BCFD /* release-macos.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = "release-macos.yml"; path = ".github/workflows/release-macos.yml"; sourceTree = "<group>"; };
 		0733A6432EC08CDB0045BCFD /* release-linux.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = "release-linux.yml"; path = ".github/workflows/release-linux.yml"; sourceTree = "<group>"; };
 		0733A6452EC08FA30045BCFD /* release-windows.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = "release-windows.yml"; path = ".github/workflows/release-windows.yml"; sourceTree = "<group>"; };
@@ -295,11 +297,13 @@
 		07D007C02CBF3A4800CCB5E7 /* Examples */ = {
 			isa = PBXGroup;
 			children = (
+				07331D502ED4EDEF0010AFC9 /* colors.tx */,
 				07D007C52CC3B96600CCB5E7 /* background.tx */,
 				07D007C42CC2B8A300CCB5E7 /* build_examples.bat */,
 				07D007C32CBF3B4000CCB5E7 /* build_examples.sh */,
-				07685DAB2CD510E200472204 /* Keyboard_examples.h */,
+				07331D4F2ED4EAB40010AFC9 /* Texture_examples.h */,
 				07D007BF2CBF39BD00CCB5E7 /* SpriteHandler_examples.h */,
+				07685DAB2CD510E200472204 /* Keyboard_examples.h */,
 				07D007C12CBF3AD100CCB5E7 /* examples.cpp */,
 			);
 			path = Examples;
