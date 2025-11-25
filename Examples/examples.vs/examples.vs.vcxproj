@@ -90,7 +90,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)\..\background.tx" "$(TargetDir)\" /Y</Command>
+      <Command>xcopy "$(SolutionDir)\..\background.tx" "$(TargetDir)\" /Y;xcopy "$(SolutionDir)\..\colors.tx" "$(TargetDir)\" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -110,7 +110,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)\..\background.tx" "$(TargetDir)\" /Y</Command>
+      <Command>xcopy "$(SolutionDir)\..\background.tx" "$(TargetDir)\" /Y;xcopy "$(SolutionDir)\..\colors.tx" "$(TargetDir)\" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -127,7 +127,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)\..\background.tx" "$(TargetDir)\" /Y</Command>
+      <Command>xcopy "$(SolutionDir)\..\background.tx" "$(TargetDir)\" /Y;xcopy "$(SolutionDir)\..\colors.tx" "$(TargetDir)\" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -148,7 +148,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)\..\background.tx" "$(TargetDir)\" /Y</Command>
+      <Command>xcopy "$(SolutionDir)\..\background.tx" "$(TargetDir)\" /Y;xcopy "$(SolutionDir)\..\colors.tx" "$(TargetDir)\" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
