@@ -600,13 +600,13 @@ namespace t8
       return color16_to_string(col16.value());
     
     if (auto rgb6 = try_get_rgb6(); rgb6.has_value())
-      return "[" +
+      return "rgb6:[" +
         std::to_string(rgb6.value().r) + ", " +
         std::to_string(rgb6.value().g) + ", " +
         std::to_string(rgb6.value().b) + "]";
     
     if (auto g24 = try_get_gray24(); g24.has_value())
-      return "[gr24:" + std::to_string(g24.value().gray) + "]";
+      return "gray24:{" + std::to_string(g24.value().gray) + "}";
       
     return "n/a";
   }
