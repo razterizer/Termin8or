@@ -207,20 +207,56 @@ namespace t8
       
       auto f_str_to_color = [](const std::string& str, int& start_idx) -> Color
       {
-        if (str.starts_with('['))
+        if (str[start_idx] == '[')
         {
-          auto rgb_tokens = str::tokenize(str, { '[', ']', ',' });
-          if (rgb_tokens.size() == 3)
+          auto remaining = str.substr(start_idx);
+                  
+          if (auto i = remaining.find(']'); i == std::string::npos)
           {
-            int r = std::atoi(rgb_tokens[0].c_str());
-            int g = std::atoi(rgb_tokens[1].c_str());
-            int b = std::atoi(rgb_tokens[2].c_str());
-            if (auto i = str.substr(start_idx).find(']'); i != std::string::npos)
-              start_idx = static_cast<int>(i);
-            else
-              std::cerr << "ERROR in Texture::load() : Unable to parse ']' token after rgb6 triplet!\n";
-            return Color(r, g, b);
+            std::cerr << "ERROR in Texture::load() : Unable to parse ']' token after rgb6 triplet!\n";
+            return Color16::Default;
           }
+          else
+          {
+            int end_idx = start_idx + static_cast<int>(i);
+            auto substr = str.substr(start_idx, end_idx - start_idx + 1);
+            auto rgb6_tokens = str::tokenize(substr, { '[', ']' });
+            if (rgb6_tokens.size() == 1 && rgb6_tokens[0].size() == 3)
+            {
+              int r = str::to_digit(rgb6_tokens[0][0]);
+              int g = str::to_digit(rgb6_tokens[0][1]);
+              int b = str::to_digit(rgb6_tokens[0][2]);
+              start_idx = end_idx + 1;
+              return Color(r, g, b);
+            }
+          }
+          std::cout << "ERROR in Texture::load() : Unable to parse rgb6 color in [%i%i%i] substring!\n";
+          return Color16::Default;
+        }
+        if (str[start_idx] == '{')
+        {
+          auto remaining = str.substr(start_idx);
+        
+          if (auto i = remaining.find('}'); i == std::string::npos)
+          {
+            std::cerr << "ERROR in Texture::load() : Unable to parse ']' token after rgb6 triplet!\n";
+            return Color16::Default;
+          }
+          else
+          {
+            int end_idx = start_idx + static_cast<int>(i);
+            auto substr = str.substr(start_idx, end_idx - start_idx + 1);
+            auto gr24_tokens = str::tokenize(substr, { '{', '}' });
+            if (gr24_tokens.size() == 1)
+            {
+              auto token = gr24_tokens[0];
+              int gr24 = str::hex2int(token);
+              start_idx = end_idx + 1;
+              return Color(Gray24(gr24));
+            }
+          }
+          std::cout << "ERROR in Texture::load() : Unable to parse gray24 color in {%i} substring!\n";
+          return Color16::Default;
         }
         else if (!str.empty())
         {
@@ -389,21 +425,29 @@ namespace t8
             default: return "*";
           }
         }
-        else
+        
+        auto rgb6 = color.try_get_rgb6();
+        if (rgb6.has_value())
         {
-          auto rgb6 = color.try_get_rgb6();
-          if (rgb6.has_value())
-          {
-            auto r = rgb6.value().r;
-            auto g = rgb6.value().g;
-            auto b = rgb6.value().b;
-            std::string str = "[" +
-              std::to_string(static_cast<int>(r)) + "," +
-              std::to_string(static_cast<int>(g)) + "," +
-              std::to_string(static_cast<int>(b)) + "]";
-            return str;
-          }
+          auto r = rgb6.value().r;
+          auto g = rgb6.value().g;
+          auto b = rgb6.value().b;
+          std::string str = "[" +
+          std::to_string(static_cast<int>(r)) +
+          std::to_string(static_cast<int>(g)) +
+          std::to_string(static_cast<int>(b)) + "]";
+          return str;
         }
+        
+        auto gray24 = color.try_get_gray24();
+        if (gray24.has_value())
+        {
+          int gray = gray24.value().gray;
+          std::string gray_hex = str::int2hex(gray);
+          std::string str = "{" + gray_hex + "}";
+          return str;
+        }
+        
         return "*";
       };
       
