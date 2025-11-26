@@ -17,9 +17,7 @@ namespace texture
   using ScreenHandler = t8::ScreenHandler<NR, NC>;
   using StreamKeyboard = t8::StreamKeyboard;
   using KeyPressDataPair = t8::KeyPressDataPair;
-  using Rectangle = t8::Rectangle;
   using Color16 = t8::Color16;
-  using Color = t8::Color;
 
   void example1()
   {
