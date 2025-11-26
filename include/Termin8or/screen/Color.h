@@ -579,8 +579,8 @@ namespace t8
       return std::nullopt;
     }
     
-    bool operator==(Color other) const { return this->idx == other.idx; }
-    bool operator==(Color16 col16) const { return this->idx == static_cast<int>(col16); }
+    inline bool operator==(Color other) const { return this->idx == other.idx; }
+    inline bool operator==(Color16 col16) const { return this->idx == static_cast<int>(col16); }
     bool operator==(const RGB6& rgb6) const
     {
       auto val = try_get_rgb6();
