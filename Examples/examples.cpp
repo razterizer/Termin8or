@@ -7,6 +7,7 @@
 
 #include "Texture_examples.h"
 #include "SpriteHandler_examples.h"
+#include "ScreenScaling_examples.h"
 #include "Keyboard_examples.h"
 #include <iostream>
 
@@ -67,6 +68,8 @@ int main(int argc, char** argv)
   std::cout << "### SpriteHandler Examples ###" << std::endl;
   sprite_handler::example1();
   sprite_handler::example2();
+  std::cout << "### ScreenScaling Examples ###" << std::endl;
+  screen_scaling::example1();
   std::cout << "### Keyboard Examples ###" << std::endl;
   keyboard::example1();
   
