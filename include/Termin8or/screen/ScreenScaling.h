@@ -78,7 +78,7 @@ namespace t8x
     return colmap;
   }();
 
-  char find_closest_val(double shading_value) const
+  char find_closest_val(double shading_value)
   {
     // Character set representing different shades
     const std::string shading_charset = "$#@&%*+=)(\\/\":^_-,. ";
@@ -87,28 +87,30 @@ namespace t8x
     return shading_charset[index];
   }
 
-  Color16 find_closest_val(RGBA shading_value) const
+  Color find_closest_val(RGBA shading_value)
   {
     // Character set representing different shades
     auto t = shading_value;
-    auto distance_squared = [&](Color16 color, const RGBA& rgba1)
+    auto distance_squared = [&](Color color, const RGBA& rgba1)
     {
       auto it = color2rgba.find(color);
       if (it != color2rgba.end())
       {
         auto rgba0 = it->second;
-        return math::distance<double>(rgba0.r, rgba0.g, rgba0.b, rgba0.a,
-                                      rgba1.r, rgba1.g, rgba1.b, rgba1.a);
+        return math::distance_squared<double>(rgba0.r, rgba0.g, rgba0.b, rgba0.a,
+                                              rgba1.r, rgba1.g, rgba1.b, rgba1.a);
       }
       return math::get_max<double>();
     };
-    for (int color = static_cast<int>(Color16::Black); color <= static_cast<int>(Color16::White); ++color)
-      if (distance_squared(static_cast<Color16>(color), t) < 0.5)
-        return static_cast<Color16>(color);
-    return Color16::Transparent2;
+    Color best_color = Color16::Default;
+    auto min_dist_sq = math::get_max<double>();
+    for (int col_idx = t8::c_min_color_idx; col_idx <= t8::c_max_color_idx; ++col_idx)
+      if (math::minimize(min_dist_sq, distance_squared(Color(col_idx), t)))
+        best_color = Color(col_idx);
+    return best_color;
   }
   
-  double find_closest_shading_value(char c) const
+  double find_closest_shading_value(char c)
   {
     switch (c)
     {
@@ -137,10 +139,10 @@ namespace t8x
     }
   }
 
-  RGBA find_closest_shading_value(Color16 color) const
+  RGBA find_closest_shading_value(Color color)
   {
-    auto col_idx = static_cast<int>(color);
-    if (math::in_range(col_idx, static_cast<int>(Color16::Black), static_cast<int>(Color16::White), Range::Closed))
+    auto col_idx = color.get_index();
+    if (math::in_range(col_idx, t8::c_min_color_idx, t8::c_max_color_idx, Range::Closed))
     {
       auto it = color2rgba.find(color);
       if (it != color2rgba.end())
@@ -149,9 +151,9 @@ namespace t8x
     return { 0, 0, 0, 0 }; // Transparent2
   }
   
-  template<typename T, typename P>
-  T bilinear_interpolate(std::array<std::array<T, NC>, NR>& buffer,
-                         double row, double col) const
+  template<typename T, typename P, int NR, int NC>
+  T bilinear_interpolate(const std::array<T, NR*NC>& buffer,
+                         double row, double col)
   {
     int top = static_cast<int>(row);
     int bottom = top + 1;
@@ -172,10 +174,10 @@ namespace t8x
     auto btm_valid = 0 <= bottom && bottom < NR;
     auto lft_valid = 0 <= left && left < NC;
     auto rgt_valid = 0 <= right && right < NC;
-    auto val_top_lft = top_valid && lft_valid ? buffer[top][left] : find_closest_val(zero_shading_value);
-    auto val_top_rgt = top_valid && rgt_valid ? buffer[top][right] : find_closest_val(zero_shading_value);
-    auto val_btm_lft = btm_valid && lft_valid ? buffer[bottom][left] : find_closest_val(zero_shading_value);
-    auto val_btm_rgt = btm_valid && rgt_valid ? buffer[bottom][right] : find_closest_val(zero_shading_value);
+    auto val_top_lft = top_valid && lft_valid ? buffer[top*NC + left] : find_closest_val(zero_shading_value);
+    auto val_top_rgt = top_valid && rgt_valid ? buffer[top*NC + right] : find_closest_val(zero_shading_value);
+    auto val_btm_lft = btm_valid && lft_valid ? buffer[bottom*NC + left] : find_closest_val(zero_shading_value);
+    auto val_btm_rgt = btm_valid && rgt_valid ? buffer[bottom*NC + right] : find_closest_val(zero_shading_value);
     auto sh_top_lft = find_closest_shading_value(val_top_lft);
     auto sh_top_rgt = find_closest_shading_value(val_top_rgt);
     auto sh_btm_lft = find_closest_shading_value(val_btm_lft);
@@ -194,13 +196,13 @@ namespace t8x
   }
   
   // Function to downsample graphics using bilinear interpolation
-  template<typename T, typename P, int NRo, int NCo>
-  std::array<std::array<T, NCo>, NRo> resample_data(std::array<std::array<T, NC>, NR>& buffer, double offs) const
+  template<typename T, typename P, int NRi, int NCi, int NRo, int NCo>
+  std::array<T, NRo*NCo> resample_data(const std::array<T, NRi*NCi>& buffer, double offs)
   {
-    double row_ratio = static_cast<double>(NR) / NRo;
-    double col_ratio = static_cast<double>(NC) / NCo;
+    double row_ratio = static_cast<double>(NRi) / NRo;
+    double col_ratio = static_cast<double>(NCi) / NCo;
     
-    std::array<std::array<T, NCo>, NRo> buffer_new;
+    std::array<T, NCo*NRo> buffer_new;
     
     for (int i = 0; i < NRo; ++i)
     {
@@ -209,11 +211,11 @@ namespace t8x
         double original_row = i * row_ratio;
         double original_col = j * col_ratio;
         
-        T interpolated_val = bilinear_interpolate<T, P>(buffer,
+        T interpolated_val = bilinear_interpolate<T, P, NRi, NCi>(buffer,
                                                         original_row + offs,
                                                         original_col + offs);
         
-        buffer_new[i][j] = interpolated_val;
+        buffer_new[i*NCo + j] = interpolated_val;
       }
     }
     return buffer_new;
@@ -223,12 +225,12 @@ namespace t8x
 // ////////////////////////////////////////////////
 
   template<int NRo, int NCo, int NRi, int NCi>
-  friend void screen_scaling::resample(const ScreenHandler<NRi, NCi>& sh_src,
-                                       ScreenHandler<NRo, NCo>& sh_dst)
+  void screen_scaling::resample(const t8::ScreenHandler<NRi, NCi>& sh_src,
+                                       t8::ScreenHandler<NRo, NCo>& sh_dst)
   {
-    auto new_screen_buffer = resample_data<char, double, NRo, NCo>(sh_src.screen_buffer, 0);
-    auto new_fg_color_buffer = resample_data<Color16, RGBA, NRo, NCo>(sh_src.fg_color_buffer, 0);
-    auto new_bg_color_buffer = resample_data<Color16, RGBA, NRo, NCo>(sh_src.bg_color_buffer, 0);
+    auto new_screen_buffer = resample_data<char, double, NRi, NCi, NRo, NCo>(sh_src.screen_buffer, 0);
+    auto new_fg_color_buffer = resample_data<Color, RGBA, NRi, NCi, NRo, NCo>(sh_src.fg_color_buffer, 0);
+    auto new_bg_color_buffer = resample_data<Color, RGBA, NRi, NCi, NRo, NCo>(sh_src.bg_color_buffer, 0);
     sh_dst.overwrite_data(new_screen_buffer, new_fg_color_buffer, new_bg_color_buffer);
   }
   
