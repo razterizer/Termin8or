@@ -596,6 +596,11 @@ namespace t8
       return false;
     }
     
+    inline bool operator<(Color other) const
+    {
+      return this->idx < other.idx;
+    }
+    
     std::string str() const
     {
       if (auto col16 = try_get_color16(); col16.has_value())
