@@ -14,19 +14,21 @@
 #include <map>
 #include <memory>
 
+namespace t8
+{
+  template<int NR, int NC>
+  class ScreenHandler;
+}
+
+namespace t8x::screen_scaling
+{
+  template<int NRo, int NCo, int NRi, int NCi>
+  void resample(const t8::ScreenHandler<NRi, NCi>& sh_src,
+                t8::ScreenHandler<NRo, NCo>& sh_dst);
+}
 
 namespace t8
 {
-  
-  template<int NR, int NC>
-  class ScreenHandler;
-  
-  namespace screen_scaling
-  {
-    template<int NRo, int NCo, int NRi, int NCi>
-    void resample(const ScreenHandler<NRi, NCi>& sh_src,
-                  ScreenHandler<NRo, NCo>& sh_dst);
-  }
   
   struct OrderedText
   {
@@ -564,9 +566,9 @@ namespace t8
       return nci < 0 ? 0 : nci;
     }
     
-    void overwrite_data(const std::array<std::array<char, NC>, NR>& new_screen_buffer,
-                        const std::array<std::array<Color16, NC>, NR>& new_fg_color_buffer,
-                        const std::array<std::array<Color16, NC>, NR>& new_bg_color_buffer)
+    void overwrite_data(const std::array<char, NR*NC>& new_screen_buffer,
+                        const std::array<Color, NR*NC>& new_fg_color_buffer,
+                        const std::array<Color, NR*NC>& new_bg_color_buffer)
     {
       screen_buffer = new_screen_buffer;
       fg_color_buffer = new_fg_color_buffer;
@@ -574,8 +576,8 @@ namespace t8
     }
     
     template<int NRo, int NCo, int NRi, int NCi>
-    friend void screen_scaling::resample(const ScreenHandler<NRi, NCi>& sh_src,
-                                         ScreenHandler<NRo, NCo>& sh_dst);
+    friend void t8x::screen_scaling::resample(const ScreenHandler<NRi, NCi>& sh_src,
+                                              ScreenHandler<NRo, NCo>& sh_dst);
   };
   
 }
