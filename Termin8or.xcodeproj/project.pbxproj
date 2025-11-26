@@ -41,6 +41,7 @@
 
 /* Begin PBXFileReference section */
 		071CC3CA290465B3007B4B98 /* libTermin8or.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libTermin8or.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		07233B4D2ED6A56F0022B60B /* ScreenScaling_examples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenScaling_examples.h; sourceTree = "<group>"; };
 		07331D4F2ED4EAB40010AFC9 /* Texture_examples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Texture_examples.h; sourceTree = "<group>"; };
 		07331D502ED4EDEF0010AFC9 /* colors.tx */ = {isa = PBXFileReference; lastKnownFileType = text; path = colors.tx; sourceTree = "<group>"; };
 		0733A6422EC08B0A0045BCFD /* release-macos.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = "release-macos.yml"; path = ".github/workflows/release-macos.yml"; sourceTree = "<group>"; };
@@ -303,6 +304,7 @@
 				07D007C32CBF3B4000CCB5E7 /* build_examples.sh */,
 				07331D4F2ED4EAB40010AFC9 /* Texture_examples.h */,
 				07D007BF2CBF39BD00CCB5E7 /* SpriteHandler_examples.h */,
+				07233B4D2ED6A56F0022B60B /* ScreenScaling_examples.h */,
 				07685DAB2CD510E200472204 /* Keyboard_examples.h */,
 				07D007C12CBF3AD100CCB5E7 /* examples.cpp */,
 			);
