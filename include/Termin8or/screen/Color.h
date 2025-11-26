@@ -11,6 +11,8 @@
 
 namespace t8
 {
+  static constexpr int c_min_color_idx = -3;
+  static constexpr int c_max_color_idx = 255;
 
   enum class Color16
   {
