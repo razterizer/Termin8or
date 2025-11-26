@@ -577,40 +577,40 @@ namespace t8
       return std::nullopt;
     }
     
-  bool operator==(Color other) const { return this->idx == other.idx; }
-  bool operator==(Color16 col16) const { return this->idx == static_cast<int>(col16); }
-  bool operator==(const RGB6& rgb6) const
-  {
-    auto val = try_get_rgb6();
-    if (val.has_value())
-      return val.value() == rgb6;
-    return false;
-  }
-  bool operator==(Gray24 g24) const
-  {
-    auto val = try_get_gray24();
-    if (val.has_value())
-      return val.value() == g24;
-    return false;
-  }
-  
-  std::string str() const
-  {
-    if (auto col16 = try_get_color16(); col16.has_value())
-      return color16_to_string(col16.value());
+    bool operator==(Color other) const { return this->idx == other.idx; }
+    bool operator==(Color16 col16) const { return this->idx == static_cast<int>(col16); }
+    bool operator==(const RGB6& rgb6) const
+    {
+      auto val = try_get_rgb6();
+      if (val.has_value())
+        return val.value() == rgb6;
+      return false;
+    }
+    bool operator==(Gray24 g24) const
+    {
+      auto val = try_get_gray24();
+      if (val.has_value())
+        return val.value() == g24;
+      return false;
+    }
     
-    if (auto rgb6 = try_get_rgb6(); rgb6.has_value())
-      return "rgb6:[" +
-        std::to_string(rgb6.value().r) + ", " +
-        std::to_string(rgb6.value().g) + ", " +
-        std::to_string(rgb6.value().b) + "]";
-    
-    if (auto g24 = try_get_gray24(); g24.has_value())
-      return "gray24:{" + std::to_string(g24.value().gray) + "}";
+    std::string str() const
+    {
+      if (auto col16 = try_get_color16(); col16.has_value())
+        return color16_to_string(col16.value());
       
-    return "n/a";
-  }
-  
+      if (auto rgb6 = try_get_rgb6(); rgb6.has_value())
+        return "rgb6:[" +
+          std::to_string(rgb6.value().r) + ", " +
+          std::to_string(rgb6.value().g) + ", " +
+          std::to_string(rgb6.value().b) + "]";
+      
+      if (auto g24 = try_get_gray24(); g24.has_value())
+        return "gray24:{" + std::to_string(g24.value().gray) + "}";
+      
+      return "n/a";
+    }
+    
   private:
     int idx = 0;
     
