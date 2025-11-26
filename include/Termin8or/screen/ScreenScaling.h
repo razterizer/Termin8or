@@ -14,6 +14,7 @@ namespace t8x
 
   struct RGBA
   {
+    RGBA() : r(0), g(0), b(0), a(1) {}
     RGBA(double v) : r(v), g(v), b(v), a(v) {}
     RGBA(double rv, double gv, double bv) : r(rv), g(gv), b(bv), a(1) {}
     RGBA(double rv, double gv, double bv, double av) : r(rv), g(gv), b(bv), a(av) {}
