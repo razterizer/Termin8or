@@ -359,7 +359,7 @@ namespace t8x
     
     void request_exit() { exit_requested = true; }
     
-    void set_screen_bg_color_default(Color16 bg_color) { m_params.screen_bg_color_default = bg_color; }
+    void set_screen_bg_color_default(Color bg_color) { m_params.screen_bg_color_default = bg_color; }
     
   private:
     void pre_quit()
