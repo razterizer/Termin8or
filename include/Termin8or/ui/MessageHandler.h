@@ -46,7 +46,7 @@ namespace t8x
     TextBox tb;
     int str_len = 0;
     
-    Color16 get_fg_color() const
+    Color get_fg_color() const
     {
       switch (curr_level)
       {
@@ -57,7 +57,7 @@ namespace t8x
       }
     }
     
-    Color16 get_bg_color() const
+    Color get_bg_color() const
     {
       switch (curr_level)
       {
