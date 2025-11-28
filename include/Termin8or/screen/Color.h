@@ -880,7 +880,7 @@ namespace t8
       return Color16::White;
     }
     
-    // Safety fallback
+    // Safety fallback.
     return Color16::Default;
   }
 
