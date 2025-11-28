@@ -227,7 +227,7 @@ namespace t8x
     
     auto f_shade_style = [&](const Style& style, int r0, int c0)
     {
-      return shade_style(style, f_has_light(r0, c0) ?
+      return shade_style16(style, f_has_light(r0, c0) ?
           ShadeType::Bright : ShadeType::Unchanged, true);
     };
     
@@ -280,7 +280,7 @@ namespace t8x
     
     auto f_shade_style = [&](const Style& style, int r0, int c0)
     {
-      return shade_style(style, f_has_light(r0, c0) ?
+      return shade_style16(style, f_has_light(r0, c0) ?
           ShadeType::Bright : ShadeType::Unchanged, true);
     };
     
