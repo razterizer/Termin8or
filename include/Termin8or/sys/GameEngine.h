@@ -22,6 +22,7 @@
 namespace t8x
 {
   using Color16 = t8::Color16;
+  using Color = t8::Color;
   using Style = t8::Style;
   using ButtonStyle = t8::ButtonStyle;
   using PromptStyle = t8::PromptStyle;
