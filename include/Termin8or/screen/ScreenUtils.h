@@ -10,7 +10,7 @@ namespace t8
 {
 
   template<int NR, int NC>
-  void draw_frame(ScreenHandler<NR, NC>& sh, Color16 fg_color)
+  void draw_frame(ScreenHandler<NR, NC>& sh, Color fg_color)
   {
     const int nc_inset = sh.num_cols_inset();
     const int nr_inset = sh.num_rows_inset();
