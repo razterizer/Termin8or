@@ -668,7 +668,7 @@ namespace t8x
           return;
     }
     
-    void set_textel_pre(const RC& local_pos, char ch, Color16 fg_color, Color16 bg_color)
+    void set_textel_pre(const RC& local_pos, char ch, Color fg_color, Color bg_color)
     {
       //stlutils::emplace_back_if_not(override_textels_pre,
       //  std::tuple<RC, Style, char> { local_pos, { fg_color, bg_color }, ch},
