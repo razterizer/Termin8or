@@ -549,7 +549,7 @@ namespace t8
     }
     Color(Gray24 gray24)
     {
-      idx = 232 + gray24.gray;
+      set_gray(gray24.gray);
     }
     
     int get_index() const { return idx; }
@@ -636,6 +636,11 @@ namespace t8
     void set_rgb(int r, int g, int b)
     {
       idx = 16 + 36*r + 6*g + b;
+    }
+    
+    void set_gray(int gray)
+    {
+      idx = 232 + gray;
     }
   };
   
