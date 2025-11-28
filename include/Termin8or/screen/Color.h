@@ -37,45 +37,57 @@ namespace t8
     White          // 15
   };
 
-  Color16 string_to_color16(const std::string& str)
+  Color16 string_to_color16(std::string_view str, int* start_idx = nullptr)
   {
-    if (str == "Transparent")
+    auto f_match_str = [&str, start_idx](std::string_view needle)
+    {
+      if (start_idx == nullptr)
+        return str == needle;
+      if (str.compare(*start_idx, needle.size(), needle) == 0)
+      {
+        *start_idx += static_cast<int>(needle.size());
+        return true;
+      }
+      return false;
+    };
+    
+    if (f_match_str("Transparent"))
       return Color16::Transparent;
-    if (str == "Transparent2")
+    if (f_match_str("Transparent2"))
       return Color16::Transparent2;
-    if (str == "Default")
+    if (f_match_str("Default"))
       return Color16::Default;
-    if (str == "Black")
+    if (f_match_str("Black"))
       return Color16::Black;
-    if (str == "DarkRed")
+    if (f_match_str("DarkRed"))
       return Color16::DarkRed;
-    if (str == "DarkGreen")
+    if (f_match_str("DarkGreen"))
       return Color16::DarkGreen;
-    if (str == "DarkYellow")
+    if (f_match_str("DarkYellow"))
       return Color16::DarkYellow;
-    if (str == "DarkBlue")
+    if (f_match_str("DarkBlue"))
       return Color16::DarkBlue;
-    if (str == "DarkMagenta")
+    if (f_match_str("DarkMagenta"))
       return Color16::DarkMagenta;
-    if (str == "DarkCyan")
+    if (f_match_str("DarkCyan"))
       return Color16::DarkCyan;
-    if (str == "LightGray")
+    if (f_match_str("LightGray"))
       return Color16::LightGray;
-    if (str == "DarkGray")
+    if (f_match_str("DarkGray"))
       return Color16::DarkGray;
-    if (str == "Red")
+    if (f_match_str("Red"))
       return Color16::Red;
-    if (str == "Green")
+    if (f_match_str("Green"))
       return Color16::Green;
-    if (str == "Yellow")
+    if (f_match_str("Yellow"))
       return Color16::Yellow;
-    if (str == "Blue")
+    if (f_match_str("Blue"))
       return Color16::Blue;
-    if (str == "Magenta")
+    if (f_match_str("Magenta"))
       return Color16::Magenta;
-    if (str == "Cyan")
+    if (f_match_str("Cyan"))
       return Color16::Cyan;
-    if (str == "White")
+    if (f_match_str("White"))
       return Color16::White;
       
     return Color16::Default;
