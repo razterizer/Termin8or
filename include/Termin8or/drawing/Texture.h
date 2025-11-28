@@ -205,89 +205,6 @@ namespace t8
     {
       std::vector<std::string> lines;
       
-      auto f_str_to_color = [](const std::string& str, int& start_idx) -> Color
-      {
-        if (str[start_idx] == '[')
-        {
-          auto remaining = str.substr(start_idx);
-                  
-          if (auto i = remaining.find(']'); i == std::string::npos)
-          {
-            std::cerr << "ERROR in Texture::load() : Unable to parse ']' token after rgb6 triplet!\n";
-            return Color16::Default;
-          }
-          else
-          {
-            int end_idx = start_idx + static_cast<int>(i);
-            auto substr = str.substr(start_idx, end_idx - start_idx + 1);
-            auto rgb6_tokens = str::tokenize(substr, { '[', ']' });
-            if (rgb6_tokens.size() == 1 && rgb6_tokens[0].size() == 3)
-            {
-              int r = str::to_digit(rgb6_tokens[0][0]);
-              int g = str::to_digit(rgb6_tokens[0][1]);
-              int b = str::to_digit(rgb6_tokens[0][2]);
-              start_idx = end_idx + 1;
-              return Color(r, g, b);
-            }
-          }
-          std::cout << "ERROR in Texture::load() : Unable to parse rgb6 color in [%i%i%i] substring!\n";
-          return Color16::Default;
-        }
-        if (str[start_idx] == '{')
-        {
-          auto remaining = str.substr(start_idx);
-        
-          if (auto i = remaining.find('}'); i == std::string::npos)
-          {
-            std::cerr << "ERROR in Texture::load() : Unable to parse ']' token after rgb6 triplet!\n";
-            return Color16::Default;
-          }
-          else
-          {
-            int end_idx = start_idx + static_cast<int>(i);
-            auto substr = str.substr(start_idx, end_idx - start_idx + 1);
-            auto gr24_tokens = str::tokenize(substr, { '{', '}' });
-            if (gr24_tokens.size() == 1)
-            {
-              auto token = gr24_tokens[0];
-              int gr24 = str::hex2int(token);
-              start_idx = end_idx + 1;
-              return Color(Gray24(gr24));
-            }
-          }
-          std::cout << "ERROR in Texture::load() : Unable to parse gray24 color in {%i} substring!\n";
-          return Color16::Default;
-        }
-        else if (!str.empty())
-        {
-          char ch = str[start_idx++];
-          switch (ch)
-          {
-            case 't': return Color16::Transparent;
-            case 'T': return Color16::Transparent2;
-            case '*': return Color16::Default;
-            case '0': return Color16::Black;
-            case '1': return Color16::DarkRed;
-            case '2': return Color16::DarkGreen;
-            case '3': return Color16::DarkYellow;
-            case '4': return Color16::DarkBlue;
-            case '5': return Color16::DarkMagenta;
-            case '6': return Color16::DarkCyan;
-            case '7': return Color16::LightGray;
-            case '8': return Color16::DarkGray;
-            case '9': return Color16::Red;
-            case 'A': return Color16::Green;
-            case 'B': return Color16::Yellow;
-            case 'C': return Color16::Blue;
-            case 'D': return Color16::Magenta;
-            case 'E': return Color16::Cyan;
-            case 'F': return Color16::White;
-            default: return Color16::Default;
-          }
-        }
-        return Color16::Default;
-      };
-      
       // 0 to 15 is hexadecimal, then just continue down the alphabet.
       auto f_char_to_mat = [](int ch) -> int
       {
@@ -343,7 +260,7 @@ namespace t8
             for (int c = 0; c < size.c; ++c)
             {
               int idx = r * size.c + c;
-              fg_colors[idx] = f_str_to_color(l, l_idx);
+              fg_colors[idx].parse(l, l_idx);
             }
             r++;
           }
@@ -361,7 +278,7 @@ namespace t8
             for (int c = 0; c < size.c; ++c)
             {
               int idx = r * size.c + c;
-              bg_colors[idx] = f_str_to_color(l, l_idx);
+              bg_colors[idx].parse(l, l_idx);
             }
             r++;
           }
@@ -396,61 +313,6 @@ namespace t8
     {
       std::vector<std::string> lines;
       
-      auto f_color_to_str = [](Color color) -> std::string
-      {
-        auto color16 = color.try_get_color16();
-        if (color16.has_value())
-        {
-          switch (color16.value())
-          {
-            case Color16::Transparent:  return "t";
-            case Color16::Transparent2: return "T";
-            case Color16::Default:      return "*";
-            case Color16::Black:        return "0";
-            case Color16::DarkRed:      return "1";
-            case Color16::DarkGreen:    return "2";
-            case Color16::DarkYellow:   return "3";
-            case Color16::DarkBlue:     return "4";
-            case Color16::DarkMagenta:  return "5";
-            case Color16::DarkCyan:     return "6";
-            case Color16::LightGray:    return "7";
-            case Color16::DarkGray:     return "8";
-            case Color16::Red:          return "9";
-            case Color16::Green:        return "A";
-            case Color16::Yellow:       return "B";
-            case Color16::Blue:         return "C";
-            case Color16::Magenta:      return "D";
-            case Color16::Cyan:         return "E";
-            case Color16::White:        return "F";
-            default: return "*";
-          }
-        }
-        
-        auto rgb6 = color.try_get_rgb6();
-        if (rgb6.has_value())
-        {
-          auto r = rgb6.value().r;
-          auto g = rgb6.value().g;
-          auto b = rgb6.value().b;
-          std::string str = "[" +
-          std::to_string(static_cast<int>(r)) +
-          std::to_string(static_cast<int>(g)) +
-          std::to_string(static_cast<int>(b)) + "]";
-          return str;
-        }
-        
-        auto gray24 = color.try_get_gray24();
-        if (gray24.has_value())
-        {
-          int gray = gray24.value().gray;
-          std::string gray_hex = str::int2hex(gray);
-          std::string str = "{" + gray_hex + "}";
-          return str;
-        }
-        
-        return "*";
-      };
-      
       // 0 to 15 is hexadecimal, then just continue down the alphabet.
       auto f_mat_to_char = [](int mat) -> char
       {
@@ -482,7 +344,7 @@ namespace t8
         for (int c = 0; c < size.c; ++c)
         {
           int idx = r * size.c + c;
-          curr_line += f_color_to_str(fg_colors[idx]);
+          curr_line += fg_colors[idx].str();
         }
         lines.emplace_back(curr_line);
       }
@@ -493,7 +355,7 @@ namespace t8
         for (int c = 0; c < size.c; ++c)
         {
           int idx = r * size.c + c;
-          curr_line += f_color_to_str(bg_colors[idx]);
+          curr_line += bg_colors[idx].str();
         }
         lines.emplace_back(curr_line);
       }
