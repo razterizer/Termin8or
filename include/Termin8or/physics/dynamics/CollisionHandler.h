@@ -407,7 +407,7 @@ namespace t8x
     }
     
     template<int NR, int NC>
-    void draw_dbg_narrow_phase(ScreenHandler<NR, NC>& sh, Color16 coll_fg_color = Color16::Magenta) const
+    void draw_dbg_narrow_phase(ScreenHandler<NR, NC>& sh, Color coll_fg_color = Color16::Magenta) const
     {
       for (const auto& pt : isect_world_positions)
       {
