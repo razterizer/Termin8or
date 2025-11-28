@@ -613,21 +613,182 @@ namespace t8
       return this->idx < other.idx;
     }
     
-    std::string str() const
+    std::string str(bool compact = false) const
     {
       if (auto col16 = try_get_color16(); col16.has_value())
-        return color16_to_string(col16.value());
+      {
+        if (compact)
+          return color16_to_string(col16.value());
+        
+        switch (col16.value())
+        {
+          case Color16::Transparent:  return "t";
+          case Color16::Transparent2: return "T";
+          case Color16::Default:      return "*";
+          case Color16::Black:        return "0";
+          case Color16::DarkRed:      return "1";
+          case Color16::DarkGreen:    return "2";
+          case Color16::DarkYellow:   return "3";
+          case Color16::DarkBlue:     return "4";
+          case Color16::DarkMagenta:  return "5";
+          case Color16::DarkCyan:     return "6";
+          case Color16::LightGray:    return "7";
+          case Color16::DarkGray:     return "8";
+          case Color16::Red:          return "9";
+          case Color16::Green:        return "A";
+          case Color16::Yellow:       return "B";
+          case Color16::Blue:         return "C";
+          case Color16::Magenta:      return "D";
+          case Color16::Cyan:         return "E";
+          case Color16::White:        return "F";
+          default: return "*";
+        }
+      }
       
       if (auto rgb6 = try_get_rgb6(); rgb6.has_value())
-        return "rgb6:[" +
-          std::to_string(rgb6.value().r) + ", " +
-          std::to_string(rgb6.value().g) + ", " +
-          std::to_string(rgb6.value().b) + "]";
+      {
+        std::string ret = compact ? "[" : "rgb6:[";
+        ret += std::to_string(rgb6.value().r) + (compact ? "" : ", ");
+        ret += std::to_string(rgb6.value().g) + (compact ? "" : ", ");
+        ret += std::to_string(rgb6.value().b) + "]";
+        return ret;
+      }
       
       if (auto g24 = try_get_gray24(); g24.has_value())
-        return "gray24:{" + std::to_string(g24.value().gray) + "}";
+      {
+        int gray = g24.value().gray;
+        std::string gray_str = compact ? str::int2hex(gray) : std::to_string(gray);
+        std::string ret = compact ? "{" : "gray24:{";
+        ret += gray_str + "}";
+        return ret;
+      }
       
-      return "n/a";
+      return compact ? "*" : "n/a";
+    }
+    
+    bool parse(const std::string& str, int& start_idx, bool compact = false)
+    {
+      if (start_idx >= str.size())
+        return false;
+    
+      std::string_view remaining(str);
+      remaining.remove_prefix(start_idx);
+    
+      if (!remaining.empty() && remaining[0] == '[')
+      {
+        if (auto i = remaining.find(']'); i == std::string::npos)
+        {
+          std::cerr << "ERROR in Color::parse() : Unable to parse ']' token after rgb6 triplet!\n";
+          return false;
+        }
+        else
+        {
+          int end_idx = start_idx + static_cast<int>(i);
+          auto substr = str.substr(start_idx, end_idx - start_idx + 1);
+          auto rgb6_tokens = str::tokenize(substr, { '[', ']', ',', ' ' });
+          if (rgb6_tokens.size() == 1 && rgb6_tokens[0].size() == 3)
+          {
+            int r = str::to_digit(rgb6_tokens[0][0]);
+            int g = str::to_digit(rgb6_tokens[0][1]);
+            int b = str::to_digit(rgb6_tokens[0][2]);
+            if (r < 0 || g < 0 || b < 0)
+            {
+              std::cerr << "ERROR in Color::parse() : Unable to parse compact rgb triplet!\n";
+              return false;
+            }
+            start_idx = end_idx + 1;
+            set_rgb(r, g, b);
+            return true;
+          }
+          if (rgb6_tokens.size() == 3 && rgb6_tokens[0].size() == 1)
+          {
+            int r = str::to_digit(rgb6_tokens[0][0]);
+            int g = str::to_digit(rgb6_tokens[1][0]);
+            int b = str::to_digit(rgb6_tokens[2][0]);
+            if (r < 0 || g < 0 || b < 0)
+            {
+              std::cerr << "ERROR in Color::parse() : Unable to parse non-compact rgb triplet!\n";
+              return false;
+            }
+            start_idx = end_idx + 1;
+            set_rgb(r, g, b);
+            return true;
+          }
+        }
+        std::cout << "ERROR in Color::parse() : Unable to parse rgb6 color in [%i%i%i] substring!\n";
+        return false;
+      }
+      
+      static const char* gray24_prefix = "gray24:";
+      if (!remaining.empty() && (remaining[0] == '{' || remaining.starts_with(gray24_prefix)))
+      {
+        bool compact = !remaining.starts_with(gray24_prefix);
+        if (auto i = remaining.find('}'); i == std::string::npos)
+        {
+          std::cerr << "ERROR in Color::parse() : Unable to parse ']' token after rgb6 triplet!\n";
+          return false;
+        }
+        else
+        {
+          if (!compact)
+            start_idx += std::strlen(gray24_prefix);
+          int end_idx = start_idx + static_cast<int>(i);
+          auto substr = str.substr(start_idx, end_idx - start_idx + 1);
+          auto gr24_tokens = str::tokenize(substr, { '{', '}' });
+          if (gr24_tokens.size() == 1)
+          {
+            auto token = gr24_tokens[0];
+            int gr24 = compact ? str::hex2int(token) : std::stoi(token);
+            start_idx = end_idx + 1;
+            set_gray(gr24);
+            return true;
+          }
+        }
+        std::cout << "ERROR in Color::parse() : Unable to parse gray24 color in {%i} substring!\n";
+        return false;
+      }
+      
+      if (remaining.starts_with("Color16::"))
+      {
+        auto col16 = string_to_color16(remaining, &start_idx);
+        set_color16(col16);
+        return true;
+      }
+      if (!str.empty())
+      {
+        char ch = str[start_idx++];
+        switch (ch)
+        {
+          case 't': set_color16(Color16::Transparent); break;
+          case 'T': set_color16(Color16::Transparent2); break;
+          case '*': set_color16(Color16::Default); break;
+          case '0': set_color16(Color16::Black); break;
+          case '1': set_color16(Color16::DarkRed); break;
+          case '2': set_color16(Color16::DarkGreen); break;
+          case '3': set_color16(Color16::DarkYellow); break;
+          case '4': set_color16(Color16::DarkBlue); break;
+          case '5': set_color16(Color16::DarkMagenta); break;
+          case '6': set_color16(Color16::DarkCyan); break;
+          case '7': set_color16(Color16::LightGray); break;
+          case '8': set_color16(Color16::DarkGray); break;
+          case '9': set_color16(Color16::Red); break;
+          case 'A': set_color16(Color16::Green); break;
+          case 'B': set_color16(Color16::Yellow); break;
+          case 'C': set_color16(Color16::Blue); break;
+          case 'D': set_color16(Color16::Magenta); break;
+          case 'E': set_color16(Color16::Cyan); break;
+          case 'F': set_color16(Color16::White); break;
+          default: set_color16(Color16::Default); return false;
+        }
+        return true;
+      }
+      return false;
+    }
+    
+    bool parse(const std::string& str, bool compact = false)
+    {
+      int start_idx = 0;
+      return parse(str, start_idx, compact);
     }
     
   private:
