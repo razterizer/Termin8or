@@ -633,6 +633,11 @@ namespace t8
   private:
     int idx = 0;
     
+    void set_color16(Color16 col16)
+    {
+      idx = static_cast<int>(col16);
+    }
+    
     void set_rgb(int r, int g, int b)
     {
       idx = 16 + 36*r + 6*g + b;
