@@ -67,7 +67,7 @@ namespace t8
   
   // ////
   
-  Style make_shaded_style(Color16 base_color, ShadeType shade)
+  Style make_shaded_style16(Color16 base_color, ShadeType shade)
   {
     Style ret;
     switch (shade)
@@ -88,7 +88,7 @@ namespace t8
     return ret;
   }
   
-  Style shade_style(const Style& style, ShadeType shade, bool only_swap_if_fg_bg_same = false)
+  Style shade_style16(const Style& style, ShadeType shade, bool only_swap_if_fg_bg_same = false)
   {
     Style ret = style;
     switch (shade)
