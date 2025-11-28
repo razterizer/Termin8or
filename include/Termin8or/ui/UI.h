@@ -371,7 +371,7 @@ namespace t8x
     Color16 get_color(int idx) const
     {
       if (0 <= idx && idx < 16)
-        return static_cast<Color16>(idx + 1);
+        return static_cast<Color16>(idx);
       return Color16::Default;
     }
     
