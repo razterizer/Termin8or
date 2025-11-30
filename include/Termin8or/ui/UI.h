@@ -357,8 +357,8 @@ namespace t8x
   
   class ColorPicker : public Widget
   {
-    Color16 fg_color_sel;
-    Color16 fg_color_sel_hilite;
+    Color fg_color_sel;
+    Color fg_color_sel_hilite;
     ColorPickerCursorColoring fg_cursor_coloring;
     char select_char;
     char unselect_char = ' ';
@@ -368,15 +368,13 @@ namespace t8x
     // #FIXME: Add transparency (T2) support.
     bool wrapping = false;
     
-    Color16 get_color(int idx) const
+    Color get_color(int idx) const
     {
-      if (0 <= idx && idx < 16)
-        return static_cast<Color16>(idx);
-      return Color16::Default;
+      return Color(idx);
     }
     
   public:
-    ColorPicker(Color16 fg_sel, Color16 fg_sel_hilite, ColorPickerCursorColoring fg_cursor_coloring_scheme, int tab = 0, bool cursor_wrapping = false, char sel_char = '*', char unsel_char = ' ', bool sel = false)
+    ColorPicker(Color fg_sel, Color fg_sel_hilite, ColorPickerCursorColoring fg_cursor_coloring_scheme, int tab = 0, bool cursor_wrapping = false, char sel_char = '*', char unsel_char = ' ', bool sel = false)
       : Widget(tab, sel)
       , fg_color_sel(fg_sel)
       , fg_color_sel_hilite(fg_sel_hilite)
@@ -410,8 +408,8 @@ namespace t8x
     template<int NR, int NC>
     void draw(ScreenHandler<NR, NC>& sh, const RC& pos, int anim_ctr) const
     {
-      auto caret_fg_color = anim_ctr == 0 ? fg_color_sel : fg_color_sel_hilite;
-      auto caret_bg_color = get_color(caret);
+      Color caret_fg_color = anim_ctr == 0 ? fg_color_sel : fg_color_sel_hilite;
+      Color caret_bg_color = get_color(caret);
       if (!is_selected())
       {
         switch (fg_cursor_coloring)
@@ -430,14 +428,14 @@ namespace t8x
         sh.write_buffer(std::string(1, unselect_char), pos.r, pos.c + col, Color16::Transparent2, get_color(col));
     }
     
-    Color16 get_color() const
+    Color get_color() const
     {
       return get_color(caret);
     }
     
-    void set_color(Color16 color)
+    void set_color(Color color)
     {
-      int idx = static_cast<int>(color) - 1;
+      int idx = color.get_index();
       if (idx < 0)
         return;
       caret = idx;
@@ -754,7 +752,7 @@ namespace t8x
       math::maximize(max_tab_idx, cp.get_tab_order());
     }
     
-    const Color16 get_color_picker_color(int tab) const
+    const Color get_color_picker_color(int tab) const
     {
       auto it = stlutils::find_if(color_pickers, [tab](const auto& cpp) { return cpp.second.get_tab_order() == tab; });
       if (it != color_pickers.end())
@@ -762,7 +760,7 @@ namespace t8x
       return Color16::Default;
     }
     
-    void set_color_picker_color(int tab, Color16 color)
+    void set_color_picker_color(int tab, Color color)
     {
       auto it = stlutils::find_if(color_pickers, [tab](const auto& cpp) { return cpp.second.get_tab_order() == tab; });
       if (it != color_pickers.end())
