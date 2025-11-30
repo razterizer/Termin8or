@@ -554,6 +554,21 @@ namespace t8
     
     int get_index() const { return idx; }
     
+    constexpr bool is_color16() const noexcept
+    {
+      return -3 <= idx && idx <= 15;
+    }
+    
+    constexpr bool is_rgb6() const noexcept
+    {
+      return 16 <= idx && idx <= 231;
+    }
+    
+    constexpr bool is_gray24() const noexcept
+    {
+      return 232 <= idx && idx <= 255;
+    }
+    
     std::optional<Color16> try_get_color16() const
     {
       if (-3 <= idx && idx <= 15)
