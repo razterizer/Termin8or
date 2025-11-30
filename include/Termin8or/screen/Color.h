@@ -228,126 +228,6 @@ namespace t8
     return Color16::Default;
   }
   
-  std::optional<bool> is_bright(Color16 color, bool perceived = false)
-  {
-    if (perceived)
-    {
-#ifndef _WIN32
-      switch (color)
-      {
-        case Color16::DarkGreen: return true;
-        case Color16::DarkYellow: return true;
-        case Color16::DarkCyan: return true;
-        case Color16::Red: return false;
-        case Color16::Blue: return false;
-        default:
-          break;
-      }
-#endif
-    }
-    switch (color)
-    {
-      case Color16::Transparent:
-      case Color16::Transparent2:
-      case Color16::Default:
-        return std::nullopt;
-      case Color16::Black:
-      case Color16::DarkRed:
-      case Color16::DarkGreen:
-      case Color16::DarkYellow:
-      case Color16::DarkBlue:
-      case Color16::DarkMagenta:
-      case Color16::DarkCyan:
-        return false;
-      case Color16::LightGray: return true;
-      case Color16::DarkGray: return false;
-      case Color16::Red:
-      case Color16::Green:
-      case Color16::Yellow:
-      case Color16::Blue:
-      case Color16::Magenta:
-      case Color16::Cyan:
-      case Color16::White:
-        return true;
-    }
-    assert(false && "Unhandled Color16 in is_bright()");
-    return std::nullopt;
-  }
-  
-  std::optional<bool> is_dark(Color16 color, bool perceived = false)
-  {
-    if (perceived)
-    {
-#ifndef _WIN32
-      switch (color)
-      {
-        case Color16::DarkGreen: return false;
-        case Color16::DarkYellow: return false;
-        case Color16::DarkCyan: return false;
-        case Color16::Red: return true;
-        case Color16::Blue: return true;
-        default:
-          break;
-      }
-#endif
-    }
-    switch (color)
-    {
-      case Color16::Transparent:
-      case Color16::Transparent2:
-      case Color16::Default:
-        return std::nullopt;
-      case Color16::Black:
-      case Color16::DarkRed:
-      case Color16::DarkGreen:
-      case Color16::DarkYellow:
-      case Color16::DarkBlue:
-      case Color16::DarkMagenta:
-      case Color16::DarkCyan:
-        return true;
-      case Color16::LightGray: return false;
-      case Color16::DarkGray: return true;
-      case Color16::Red:
-      case Color16::Green:
-      case Color16::Yellow:
-      case Color16::Blue:
-      case Color16::Magenta:
-      case Color16::Cyan:
-      case Color16::White:
-        return false;
-    }
-    assert(false && "Unhandled Color16 in is_dark()");
-    return std::nullopt;
-  }
-  
-  Color16 get_contrast_color(Color16 color)
-  {
-    switch (color)
-    {
-      case Color16::Transparent: return Color16::Transparent;
-      case Color16::Transparent2: return Color16::Transparent2;
-      case Color16::Default: return Color16::Default;
-      case Color16::Black: return Color16::White;
-      case Color16::DarkRed: return Color16::Cyan;
-      case Color16::DarkGreen: return Color16::Magenta;
-      case Color16::DarkYellow: return Color16::Blue;
-      case Color16::DarkBlue: return Color16::Yellow;
-      case Color16::DarkMagenta: return Color16::Green;
-      case Color16::DarkCyan: return Color16::Red;
-      case Color16::LightGray: return Color16::Black;
-      case Color16::DarkGray: return Color16::White;
-      case Color16::Red: return Color16::DarkCyan;
-      case Color16::Green: return Color16::DarkMagenta;
-      case Color16::Yellow: return Color16::DarkBlue;
-      case Color16::Blue: return Color16::DarkYellow;
-      case Color16::Magenta: return Color16::DarkGreen;
-      case Color16::Cyan: return Color16::DarkRed;
-      case Color16::White: return Color16::Black;
-    }
-    assert(false && "Unhandled Color16 in get_contrast_color()");
-    return Color16::Default;
-  }
-  
   int get_color16_value_win(Color16 color)
   {
     switch (color)
@@ -948,5 +828,181 @@ namespace t8
     
     return colmap;
   }();
+  
+  std::optional<bool> is_bright(Color color, bool perceived_color16 = false)
+  {
+    if (perceived_color16)
+    {
+#ifndef _WIN32
+      if (color.is_color16())
+      {
+        switch (color.try_get_color16().value())
+        {
+          case Color16::DarkGreen: return true;
+          case Color16::DarkYellow: return true;
+          case Color16::DarkCyan: return true;
+          case Color16::Red: return false;
+          case Color16::Blue: return false;
+          default:
+            break;
+        }
+      }
+#endif
+    }
+    if (color.is_color16())
+    {
+      switch (color.try_get_color16().value())
+      {
+        case Color16::Transparent:
+        case Color16::Transparent2:
+        case Color16::Default:
+          return std::nullopt;
+        case Color16::Black:
+        case Color16::DarkRed:
+        case Color16::DarkGreen:
+        case Color16::DarkYellow:
+        case Color16::DarkBlue:
+        case Color16::DarkMagenta:
+        case Color16::DarkCyan:
+          return false;
+        case Color16::LightGray: return true;
+        case Color16::DarkGray: return false;
+        case Color16::Red:
+        case Color16::Green:
+        case Color16::Yellow:
+        case Color16::Blue:
+        case Color16::Magenta:
+        case Color16::Cyan:
+        case Color16::White:
+          return true;
+      }
+    }
+    
+    if (auto it = color2rgba.find(color); it != color2rgba.end())
+    {
+      const auto& rgba = it->second;
+      
+      // Transparent shading: treat alpha=0 as undefined.
+      if (rgba.a == 0)
+        return std::nullopt;
+      
+      double L = luminance(rgba);
+      
+      // Choose threshold. Typical UI threshold ≈ 0.5.
+      return L >= 0.5;
+    }
+    
+    assert(false && "Unhandled Color in is_bright()");
+    return std::nullopt;
+  }
+  
+  std::optional<bool> is_dark(Color color, bool perceived_color16 = false)
+  {
+    if (perceived_color16)
+    {
+#ifndef _WIN32
+      if (color.is_color16())
+      {
+        switch (color.try_get_color16().value())
+        {
+          case Color16::DarkGreen: return false;
+          case Color16::DarkYellow: return false;
+          case Color16::DarkCyan: return false;
+          case Color16::Red: return true;
+          case Color16::Blue: return true;
+          default:
+            break;
+        }
+      }
+#endif
+    }
+    if (color.is_color16())
+    {
+      switch (color.try_get_color16().value())
+      {
+        case Color16::Transparent:
+        case Color16::Transparent2:
+        case Color16::Default:
+          return std::nullopt;
+        case Color16::Black:
+        case Color16::DarkRed:
+        case Color16::DarkGreen:
+        case Color16::DarkYellow:
+        case Color16::DarkBlue:
+        case Color16::DarkMagenta:
+        case Color16::DarkCyan:
+          return true;
+        case Color16::LightGray: return false;
+        case Color16::DarkGray: return true;
+        case Color16::Red:
+        case Color16::Green:
+        case Color16::Yellow:
+        case Color16::Blue:
+        case Color16::Magenta:
+        case Color16::Cyan:
+        case Color16::White:
+          return false;
+      }
+    }
+    
+    if (auto it = color2rgba.find(color); it != color2rgba.end())
+    {
+      const auto& rgba = it->second;
+      
+      // Transparent shading: treat alpha=0 as undefined.
+      if (rgba.a == 0)
+        return std::nullopt;
+      
+      double L = luminance(rgba);
+      
+      // Choose threshold. Typical UI threshold ≈ 0.5.
+      return L < 0.5;
+    }
+    
+    assert(false && "Unhandled Color in is_dark()");
+    return std::nullopt;
+  }
+  
+  Color get_contrast_color(Color color)
+  {
+    if (color.is_color16())
+    {
+      switch (color.try_get_color16().value())
+      {
+        case Color16::Transparent: return Color16::Transparent;
+        case Color16::Transparent2: return Color16::Transparent2;
+        case Color16::Default: return Color16::Default;
+        case Color16::Black: return Color16::White;
+        case Color16::DarkRed: return Color16::Cyan;
+        case Color16::DarkGreen: return Color16::Magenta;
+        case Color16::DarkYellow: return Color16::Blue;
+        case Color16::DarkBlue: return Color16::Yellow;
+        case Color16::DarkMagenta: return Color16::Green;
+        case Color16::DarkCyan: return Color16::Red;
+        case Color16::LightGray: return Color16::Black;
+        case Color16::DarkGray: return Color16::White;
+        case Color16::Red: return Color16::DarkCyan;
+        case Color16::Green: return Color16::DarkMagenta;
+        case Color16::Yellow: return Color16::DarkBlue;
+        case Color16::Blue: return Color16::DarkYellow;
+        case Color16::Magenta: return Color16::DarkGreen;
+        case Color16::Cyan: return Color16::DarkRed;
+        case Color16::White: return Color16::Black;
+      }
+    }
+    
+    if (auto rgb6 = color.try_get_rgb6(); rgb6.has_value())
+    {
+      auto [r, g, b] = rgb6.value();
+      return RGB6(5 - r, 5 - g, 5 - b);
+    }
+    
+    if (auto gray24 = color.try_get_gray24(); gray24.has_value())
+      return Gray24(23 - gray24.value().gray);
+    
+    assert(false && "Unhandled Color in get_contrast_color()");
+    return Color16::Default;
+  }
+
 
 }
