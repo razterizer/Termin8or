@@ -571,7 +571,7 @@ namespace t8
     
     std::optional<Color16> try_get_color16() const
     {
-      if (-3 <= idx && idx <= 15)
+      if (is_color16())
         return static_cast<Color16>(idx);
       return std::nullopt;
     }
@@ -580,7 +580,7 @@ namespace t8
     {
       // Do not confuse with Color16::White = 16!
       // For idx = 0 .. 15, this corresponds to Color16::Black to Color16::White.
-      if (16 <= idx && idx <= 231)
+      if (is_rgb6())
       {
         int v = idx - 16;
         int r = v / 36;
@@ -598,7 +598,7 @@ namespace t8
     
     std::optional<Gray24> try_get_gray24() const
     {
-      if (232 <= idx && idx <= 255)
+      if (is_gray24())
       {
         int v = idx - 232;
         return static_cast<uint8_t>(v);
