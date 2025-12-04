@@ -581,7 +581,8 @@ namespace t8
       std::string_view remaining(str);
       remaining.remove_prefix(start_idx);
     
-      if (!remaining.empty() && remaining[0] == '[')
+      static const char* rgb6_prefix = "rgb6:";
+      if (!remaining.empty() && (remaining[0] == '[' || remaining.starts_with(rgb6_prefix)))
       {
         if (auto i = remaining.find(']'); i == std::string::npos)
         {
