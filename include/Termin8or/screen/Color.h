@@ -436,6 +436,16 @@ namespace t8
     
     int get_index() const { return idx; }
     
+    constexpr bool is_color16_special() const noexcept
+    {
+      return -3 <= idx && idx <= -1;
+    }
+    
+    constexpr bool is_color16_regular() const noexcept
+    {
+      return 0 <= idx && idx <= 15;
+    }
+    
     constexpr bool is_color16() const noexcept
     {
       return -3 <= idx && idx <= 15;
