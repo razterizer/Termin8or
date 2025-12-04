@@ -57,10 +57,10 @@ namespace t8
       return false;
     };
     
+    if (f_match_str("Transparent2")) // Must come before Transparent because of suffix.
+      return Color16::Transparent2;
     if (f_match_str("Transparent"))
       return Color16::Transparent;
-    if (f_match_str("Transparent2"))
-      return Color16::Transparent2;
     if (f_match_str("Default"))
       return Color16::Default;
     if (f_match_str("Black"))
