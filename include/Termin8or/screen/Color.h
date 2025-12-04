@@ -668,6 +668,15 @@ namespace t8
         set_color16(col16);
         return true;
       }
+      {
+        auto start_idx_old = start_idx;
+        auto col16 = string_to_color16(remaining, &start_idx);
+        if (start_idx > start_idx_old)
+        {
+          set_color16(col16);
+          return true;
+        }
+      }
       if (!str.empty())
       {
         char ch = str[start_idx++];
