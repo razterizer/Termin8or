@@ -44,6 +44,7 @@
 		071CC3CA290465B3007B4B98 /* libTermin8or.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libTermin8or.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		07233B4D2ED6A56F0022B60B /* ScreenScaling_examples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenScaling_examples.h; sourceTree = "<group>"; };
 		07233B4E2EDBA71C0022B60B /* RGBA.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGBA.h; sourceTree = "<group>"; };
+		07233B502EE23EAB0022B60B /* Color_tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Color_tests.h; sourceTree = "<group>"; };
 		07331D4F2ED4EAB40010AFC9 /* Texture_examples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Texture_examples.h; sourceTree = "<group>"; };
 		07331D502ED4EDEF0010AFC9 /* colors.tx */ = {isa = PBXFileReference; lastKnownFileType = text; path = colors.tx; sourceTree = "<group>"; };
 		0733A6422EC08B0A0045BCFD /* release-macos.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = "release-macos.yml"; path = ".github/workflows/release-macos.yml"; sourceTree = "<group>"; };
@@ -318,8 +319,9 @@
 			isa = PBXGroup;
 			children = (
 				07FDE97F2CA0C4E100116BA7 /* build_unit_tests.sh */,
-				07FDE9802CA0C4E100116BA7 /* unit_tests.cpp */,
 				07FDE97E2CA0C0F700116BA7 /* Rectangle_tests.h */,
+				07233B502EE23EAB0022B60B /* Color_tests.h */,
+				07FDE9802CA0C4E100116BA7 /* unit_tests.cpp */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
