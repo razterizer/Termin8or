@@ -639,7 +639,8 @@ namespace t8
         }
         else
         {
-          if (remaining.starts_with(gray24_prefix))
+          auto compact = !remaining.starts_with(gray24_prefix);
+          if (!compact)
             start_idx += std::strlen(gray24_prefix);
           int end_idx = start_idx + static_cast<int>(i);
           auto substr = str.substr(start_idx, end_idx - start_idx + 1);
