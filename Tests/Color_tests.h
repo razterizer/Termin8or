@@ -86,5 +86,15 @@ namespace color
       col.parse("gray24:{23}");
       assert(col.str(true) == "{17}");
     }
+    {
+      Color col;
+      for (int i = 0; i < 40; ++i)
+      {
+        int l_idx = i;
+        col.parse("****************************************", l_idx);
+        assert(col.str(true) == "*");
+        assert(l_idx == i + 1);
+      }
+    }
   }
 }
