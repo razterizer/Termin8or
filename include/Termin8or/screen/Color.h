@@ -44,11 +44,14 @@ namespace t8
   {
     auto f_match_str = [&str, start_idx](std::string_view needle)
     {
+      auto needle_size = needle.size();
       if (start_idx == nullptr)
         return str == needle;
-      if (str.compare(*start_idx, needle.size(), needle) == 0)
+      if (str.size() < needle_size + *start_idx)
+        return false;
+      if (str.compare(*start_idx, needle_size, needle) == 0)
       {
-        *start_idx += static_cast<int>(needle.size());
+        *start_idx += static_cast<int>(needle_size);
         return true;
       }
       return false;
