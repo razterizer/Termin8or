@@ -8,6 +8,7 @@
 #pragma once
 #include "RGBA.h"
 #include <Core/Rand.h>
+#include <Core/StringHelper.h>
 #include <string>
 #include <map>
 
