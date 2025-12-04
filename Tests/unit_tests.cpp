@@ -6,6 +6,7 @@
 //
 
 #include "Rectangle_tests.h"
+#include "Color_tests.h"
 #include <iostream>
 
 
@@ -13,6 +14,8 @@ int main(int argc, char** argv)
 {
   std::cout << "### Rectangle Tests ###" << std::endl;
   rectangle::unit_tests();
+  std::cout << "### Color Tests ###" << std::endl;
+  color::unit_tests();
   
   return 0;
 }
