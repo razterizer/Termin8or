@@ -528,7 +528,7 @@ namespace t8
     {
       if (auto col16 = try_get_color16(); col16.has_value())
       {
-        if (compact)
+        if (!compact)
           return color16_to_string(col16.value());
         
         switch (col16.value())
