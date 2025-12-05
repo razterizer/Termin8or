@@ -10,6 +10,18 @@ usage() {
   exit 1
 }
 
+extract_latest_version_header() {
+  grep -m1 -oE '^[[:space:]]*##[[:space:]]*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' "$1" \
+    | sed 's/[^0-9.]*//g'
+}
+
+verify_version_exists_in_notes() {
+  local version="$1"
+  local file="$2"
+  grep -qE "^[[:space:]]*##[[:space:]]*$version([[:space:]]|$)" "$file" \
+    || { echo "❌ Error: version $version not found in $file"; exit 1; }
+}
+
 get_latest_tag() {
   git fetch --tags >/dev/null 2>&1
   git tag | grep '^release-' | sed 's/release-//' | sort -V | tail -n 1
@@ -45,7 +57,7 @@ extract_notes_for_version() {
   local version_pattern="^##[[:space:]]*$version([[:space:]]|$)"
   awk -v pattern="$version_pattern" '
     $0 ~ pattern { in_section=1; next }
-    in_section && /^##[[:space:]]*[0-9]+\.[0-9]+\.[0-9]+/ { exit }
+    in_section && /^##[[:space:]]*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+[[:space:]]*$/ { exit }
     in_section { print }
   ' "$file"
 }
@@ -53,8 +65,8 @@ extract_notes_for_version() {
 extract_latest_notes() {
   local file="$1"
   awk '
-    /^##[[:space:]]*[0-9]+\./ && ++section > 1 { exit }
-    /^##[[:space:]]*[0-9]+\./ { in_section=1; next }
+    /^##[[:space:]]*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+[[:space:]]*$/ && ++section > 1 { exit }
+    /^##[[:space:]]*[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+[[:space:]]*$/ { in_section=1; next }
     in_section { print }
   ' "$file"
 }
@@ -81,9 +93,11 @@ case "$1" in
   -f)
     [ $# -lt 2 ] && usage
     FILE="$2"
-    LATEST=$(get_latest_tag)
-    [ -z "$LATEST" ] && LATEST="0.0.0.0"
-    VERSION=$(bump_version "$LATEST" "patch")
+    VERSION=$(extract_latest_version_header "$FILE")
+    if [ -z "$VERSION" ]; then
+      echo "❌ Error: No version header found in $FILE"
+      exit 1
+    fi
     shift 2
     ;;
   *)
@@ -91,6 +105,7 @@ case "$1" in
     shift 1
     if [ "${1:-}" = "-f" ]; then
       FILE="$2"
+      verify_version_exists_in_notes "$VERSION" "$FILE"
       shift 2
     else
       MESSAGE="$*"
