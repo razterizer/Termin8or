@@ -11,6 +11,7 @@
 #include "../screen/Color.h"
 #include "../screen/Styles.h"
 #include <Core/TextIO.h>
+#include <Core/StringHelper.h>
 #include <sstream>
 
 
@@ -55,6 +56,7 @@ namespace t8
   
   struct Texture
   {
+    int ver = 0;
     RC size;
     int area = 0;
     std::vector<char> characters;
@@ -251,15 +253,49 @@ namespace t8
       {
         if (section == 0)
         {
-          std::istringstream iss(l);
-          iss >> size.r >> size.c;
-          area = size.r * size.c;
-          characters.resize(area, ' ');
-          fg_colors.resize(area, Color::Default);
-          bg_colors.resize(area, Color::Transparent2);
-          materials.resize(area, -1);
-          section = 1;
-          r = 0;
+          if (!l.empty())
+          {
+            if (l.starts_with("VER"))
+            {
+              auto tokens = str::tokenize(l, { ' ' });
+              if (tokens.size() == 2)
+              {
+                // Absence of VER line means it is version 1.
+                int ver_parsed = std::stoi(tokens[1]);
+                // Change from 1 to current version for making sure it is future-incompatible.
+                static const int compatible_version_until_and_including = 1;
+                if (ver_parsed <= compatible_version_until_and_including)
+                  ver = ver_parsed;
+                else
+                {
+                  std::cerr << "ERROR in Texture::load() : Incompatible texture version: version = " + tokens[1] << '\n';
+                  return false;
+                }
+              }
+              else
+                ver = 1; // Absence of VER line means it is version 1.
+            }
+            else
+            {
+              std::istringstream iss(l);
+              iss >> size.r >> size.c;
+              area = size.r * size.c;
+              characters.resize(area, ' ');
+              fg_colors.resize(area, Color::Default);
+              bg_colors.resize(area, Color::Transparent2);
+              materials.resize(area, -1);
+            }
+            r++;
+          }
+          else if (r == 1 || r == 2) // 2 if there is a VER line.
+          {
+            section = 1;
+            r = 0;
+          }
+          else if (r > 2)
+          {
+            std::cerr << "ERROR in Texture::parse() : Incorrect number of header lines.\n";
+          }
         }
         else if (section == 1)
         {
