@@ -236,7 +236,7 @@ namespace t8
                 // Absence of VER line means it is version 1.
                 int ver_parsed = std::stoi(tokens[1]);
                 // Change from 1 to current version for making sure it is future-incompatible.
-                static const int compatible_version_until_and_including = 1;
+                static const int compatible_version_until_and_including = 2;
                 if (ver_parsed <= compatible_version_until_and_including)
                   ver = ver_parsed;
                 else
