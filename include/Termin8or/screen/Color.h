@@ -579,7 +579,7 @@ namespace t8
     
     bool parse(const std::string& str, int& start_idx, bool compact = false)
     {
-      if (start_idx >= str.size())
+      if (start_idx >= str::lenI(str))
         return false;
     
       std::string_view remaining(str);
