@@ -596,7 +596,7 @@ namespace t8
         else
         {
           if (remaining.starts_with(rgb6_prefix))
-            start_idx += std::strlen(rgb6_prefix);
+            start_idx += str::lenI(rgb6_prefix);
           int end_idx = start_idx + static_cast<int>(i);
           auto substr = str.substr(start_idx, end_idx - start_idx + 1);
           auto rgb6_tokens = str::tokenize(substr, { '[', ']', ',', ' ' });
@@ -645,7 +645,7 @@ namespace t8
         {
           auto compact = !remaining.starts_with(gray24_prefix);
           if (!compact)
-            start_idx += std::strlen(gray24_prefix);
+            start_idx += str::lenI(gray24_prefix);
           int end_idx = start_idx + static_cast<int>(i);
           auto substr = str.substr(start_idx, end_idx - start_idx + 1);
           auto gr24_tokens = str::tokenize(substr, { '{', '}' });
