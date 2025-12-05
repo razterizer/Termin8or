@@ -85,7 +85,7 @@ There are now two namespaces: `t8` and `t8x`. `t8` contain the core features and
 * `geom/RC.h` (`t8`) : A struct representing the row and column position on the screen or in a texture or bounding box to mention a few.
 * `geom/Rectangle.h` (`t8`) : A rectangle struct that can be used for bounding boxes etc.
 * `geom/AABB` (`t8x`) : A templetized (int, float) AABB class that can return a `Rectangle` object if needed. Used in `CollisionHandler` for broad-phase detection.
-* `screen/Color.h` (`t8`) : Contains colour definitions for the 16 colors that Termin8or (and the terminal) supports. There are also two transparency colours / modes which allows you to overlay text using the same colours that are already present in a given location in the screen buffer (see `ScreenHandler.h`).
+* `screen/Color.h` (`t8`) : Contains colour definitions for the full 256 ANSI colors that most terminals (except cmd.exe) supports. On top of that, there are three special colors: `Transparent2` (-3), `Transparent` (-2) and `Default` (-1). The 256 colors are divided into: 16 4-bit colors, 6^3 rgb color cube (rgb6) and 24 gray scale shades (gray24). The two transparency colours / modes allows you to overlay text using the same colours that are already present in a given location in the screen buffer (see `ScreenHandler.h`).
 * `screen/Styles.h` (`t8`) : `Style` and its derivatives are just fancy structs grouping a foreground colour with a background colour.
 * `screen/ScreenCommandsBasic.h` (`t8`) : A collection of functions for controlling terminal screen output: 
   * Low-level functions: `clear_screen()`, `return_cursor()`, `restore_cursor()`, `hide_cursor()`, `show_cursor()`, `gotorc()`.
