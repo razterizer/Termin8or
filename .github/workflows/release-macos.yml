@@ -78,6 +78,12 @@ jobs:
           echo "Release notes extracted from tag annotation:"
           cat RELEASE_NOTES.txt
           
+      - name: Debug: Show ref info
+        run: |
+          echo "github.ref:       ${{ github.ref }}"
+          echo "github.ref_name:  ${{ github.ref_name }}"
+          echo "github.event_name: ${{ github.event_name }}"
+          
       - name: Upload package to release
         uses: ncipollo/release-action@v1
         with:
