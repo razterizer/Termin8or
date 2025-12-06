@@ -11,6 +11,7 @@
 #include <Core/StringHelper.h>
 #include <string>
 #include <map>
+#include <iostream>
 
 namespace t8
 {
