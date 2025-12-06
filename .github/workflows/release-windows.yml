@@ -39,6 +39,7 @@ jobs:
           New-Item -ItemType Directory -Force -Path "upload-temp"
           Copy-Item "Examples/examples.vs/x64/Release/examples.vs.exe" "upload-temp/"
           Copy-Item "Examples/background.tx" "upload-temp/"
+          Copy-Item "Examples/colors.tx" "upload-temp/"
 
       # Step 4: Upload build artifact
       - name: Upload Windows build artifact
@@ -75,8 +76,9 @@ jobs:
           New-Item -ItemType Directory -Force -Path "termin8or_examples-${{ github.ref_name }}"
           # Copy the executable and necessary files
           Copy-Item "examples.vs.exe" "termin8or_examples-${{ github.ref_name }}/"
-          # Copy background.tx
+          # Copy background.tx and colors.tx
           Copy-Item "background.tx" "termin8or_examples-${{ github.ref_name }}/"
+          Copy-Item "colors.tx" "termin8or_examples-${{ github.ref_name }}/"
           echo "Unblock instructions:" > termin8or_examples-${{ github.ref_name }}/README.txt
           echo "=====================" >> termin8or_examples-${{ github.ref_name }}/README.txt
           echo "To tell Windows that this executable is fine" >> termin8or_examples-${{ github.ref_name }}/README.txt
