@@ -796,10 +796,14 @@ namespace t8x
       bool do_draw_box_bkg = args.base.draw_box_bkg;
       int box_padding_ud = args.base.box_padding_ud;
       int box_padding_lr = args.base.box_padding_lr;
+#ifdef __linux__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
       std::optional<Style> box_outline_style = args.base.box_outline_style;
+#ifdef __linux__
 #pragma GCC diagnostic pop
+#endif
       OutlineType outline_type = args.base.outline_type;
             
       for (const auto& rc_style : override_textel_styles)
