@@ -78,7 +78,7 @@ jobs:
           echo "Release notes extracted from tag annotation:"
           cat RELEASE_NOTES.txt
           
-      - name: Debug: Show ref info
+      - name: Debug Show ref info
         run: |
           echo "github.ref:       ${{ github.ref }}"
           echo "github.ref_name:  ${{ github.ref_name }}"
