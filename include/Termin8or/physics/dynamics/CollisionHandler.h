@@ -135,7 +135,7 @@ namespace t8x
         auto rec = aabb.to_rectangle();
         auto color = t8::colors_hue_light[static_cast<size_t>(level) % t8::colors_hue_light.size()];
         if (order == 1)
-          color = t8::shade_color(color, t8::ShadeType::Dark);
+          color = t8::shade_color16(color, t8::ShadeType::Dark);
         draw_box_outline(sh, rec, OutlineType::Line, { color, Color16::Transparent2 });
       }
       for (const auto& ch : children)

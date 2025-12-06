@@ -77,12 +77,12 @@ namespace t8
         ret.bg_color = base_color;
         break;
       case ShadeType::Bright:
-        ret.fg_color = shade_color(base_color, ShadeType::Dark);
-        ret.bg_color = shade_color(base_color, ShadeType::Bright);
+        ret.fg_color = shade_color16(base_color, ShadeType::Dark);
+        ret.bg_color = shade_color16(base_color, ShadeType::Bright);
         break;
       case ShadeType::Dark:
-        ret.fg_color = shade_color(base_color, ShadeType::Bright);
-        ret.bg_color = shade_color(base_color, ShadeType::Dark);
+        ret.fg_color = shade_color16(base_color, ShadeType::Bright);
+        ret.bg_color = shade_color16(base_color, ShadeType::Dark);
         break;
     }
     return ret;
@@ -101,9 +101,9 @@ namespace t8
         auto fg_color16 = style.fg_color.try_get_color16();
         auto bg_color16 = style.bg_color.try_get_color16();
         if (fg_color16.has_value())
-          ret.fg_color = shade_color(fg_color16.value(), ShadeType::Dark);
+          ret.fg_color = shade_color16(fg_color16.value(), ShadeType::Dark);
         if (bg_color16.has_value())
-          ret.bg_color = shade_color(bg_color16.value(), ShadeType::Bright);
+          ret.bg_color = shade_color16(bg_color16.value(), ShadeType::Bright);
         break;
       }
       case ShadeType::Dark:
@@ -111,9 +111,9 @@ namespace t8
         auto fg_color16 = style.fg_color.try_get_color16();
         auto bg_color16 = style.bg_color.try_get_color16();
         if (fg_color16.has_value())
-          ret.fg_color = shade_color(fg_color16.value(), ShadeType::Bright);
+          ret.fg_color = shade_color16(fg_color16.value(), ShadeType::Bright);
         if (bg_color16.has_value())
-          ret.bg_color = shade_color(bg_color16.value(), ShadeType::Dark);
+          ret.bg_color = shade_color16(bg_color16.value(), ShadeType::Dark);
         break;
       }
     }

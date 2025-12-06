@@ -208,7 +208,7 @@ namespace t8
   // If inputting a dark color and ShadeType is Bright, then you will get the corresponding bright color.
   // If inputting a bright color and ShadeType is Dark, then you will get the corresponding dark color.
   // If inputting a dark color and ShadeType is Dark, then you will get the same color.
-  Color16 shade_color(Color16 color, ShadeType shade)
+  Color16 shade_color16(Color16 color, ShadeType shade)
   {
     int idx = -1;
     switch (shade)
