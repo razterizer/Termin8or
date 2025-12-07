@@ -67,7 +67,7 @@ namespace t8
   
   // ////
   
-  Style make_shaded_style16(Color16 base_color, ShadeType shade)
+  Style make_shaded_style(Color base_color, ShadeType shade, int rgb6_step = 1, int gray24_step = 3)
   {
     Style ret;
     switch (shade)
@@ -77,12 +77,12 @@ namespace t8
         ret.bg_color = base_color;
         break;
       case ShadeType::Bright:
-        ret.fg_color = shade_color16(base_color, ShadeType::Dark);
-        ret.bg_color = shade_color16(base_color, ShadeType::Bright);
+        ret.fg_color = shade_color(base_color, ShadeType::Dark, rgb6_step, gray24_step);
+        ret.bg_color = shade_color(base_color, ShadeType::Bright, rgb6_step, gray24_step);
         break;
       case ShadeType::Dark:
-        ret.fg_color = shade_color16(base_color, ShadeType::Bright);
-        ret.bg_color = shade_color16(base_color, ShadeType::Dark);
+        ret.fg_color = shade_color(base_color, ShadeType::Bright, rgb6_step, gray24_step);
+        ret.bg_color = shade_color(base_color, ShadeType::Dark, rgb6_step, gray24_step);
         break;
     }
     return ret;
