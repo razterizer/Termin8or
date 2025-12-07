@@ -1030,6 +1030,43 @@ namespace t8
     assert(false && "Unhandled Color in get_contrast_color()");
     return Color16::Default;
   }
-
+  
+  Color shade_color(Color color, ShadeType shade, int rgb6_step = 1, int gray24_step = 3)
+  {
+    if (auto col16 = color.try_get_color16(); col16.has_value())
+      return shade_color16(col16.value(), shade);
+    
+    if (auto rgb6 = color.try_get_rgb6(); rgb6.has_value())
+    {
+      auto [r, g, b] = rgb6.value();
+      
+      if (shade == ShadeType::Bright)
+      {
+        r = std::min(5, r + rgb6_step);
+        g = std::min(5, g + rgb6_step);
+        b = std::min(5, b + rgb6_step);
+      }
+      else if (shade == ShadeType::Dark)
+      {
+        r = std::max(0, r - rgb6_step);
+        g = std::max(0, g - rgb6_step);
+        b = std::max(0, b - rgb6_step);
+      }
+      return Color(r, g, b);
+    }
+    
+    if (auto gray24 = color.try_get_gray24(); gray24.has_value())
+    {
+      auto [g24] = gray24.value();
+      if (shade == ShadeType::Bright) g24 = std::min(23, g24 + gray24_step);
+      if (shade == ShadeType::Dark)   g24 = std::max(0,  g24 - gray24_step);
+      return Color(Gray24(g24));
+    }
+    
+    // Unchanged for Default/Transparencies.
+    return color;
+  }
+  
+  
 
 }
