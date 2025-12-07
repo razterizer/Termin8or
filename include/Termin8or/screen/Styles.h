@@ -88,7 +88,7 @@ namespace t8
     return ret;
   }
   
-  Style shade_style16(const Style& style, ShadeType shade, bool only_swap_if_fg_bg_same = false)
+  Style shade_style(const Style& style, ShadeType shade, bool only_swap_if_fg_bg_same = false, int rgb6_step = 1, int gray24_step = 3)
   {
     Style ret = style;
     switch (shade)
@@ -98,22 +98,14 @@ namespace t8
         break;
       case ShadeType::Bright:
       {
-        auto fg_color16 = style.fg_color.try_get_color16();
-        auto bg_color16 = style.bg_color.try_get_color16();
-        if (fg_color16.has_value())
-          ret.fg_color = shade_color16(fg_color16.value(), ShadeType::Dark);
-        if (bg_color16.has_value())
-          ret.bg_color = shade_color16(bg_color16.value(), ShadeType::Bright);
+        ret.fg_color = shade_color(style.fg_color, ShadeType::Dark, rgb6_step, gray24_step);
+        ret.bg_color = shade_color(style.bg_color, ShadeType::Bright, rgb6_step, gray24_step);
         break;
       }
       case ShadeType::Dark:
       {
-        auto fg_color16 = style.fg_color.try_get_color16();
-        auto bg_color16 = style.bg_color.try_get_color16();
-        if (fg_color16.has_value())
-          ret.fg_color = shade_color16(fg_color16.value(), ShadeType::Bright);
-        if (bg_color16.has_value())
-          ret.bg_color = shade_color16(bg_color16.value(), ShadeType::Dark);
+        ret.fg_color = shade_color(style.fg_color, ShadeType::Bright, rgb6_step, gray24_step);
+        ret.bg_color = shade_color(style.bg_color, ShadeType::Dark, rgb6_step, gray24_step);
         break;
       }
     }
