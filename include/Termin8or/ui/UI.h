@@ -892,6 +892,13 @@ namespace t8x
         override_textels_pre.emplace_back(local_pos, Style { fg_color, bg_color }, ch);
     }
     
+    void set_textel_str_pre(const RC& local_pos, std::string_view str, Color fg_color, Color bg_color)
+    {
+      auto len = str::lenI(str);
+      for (int i = 0; i < len; ++i)
+        set_textel_pre(local_pos + RC { 0, i }, str[i], fg_color, bg_color);
+    }
+    
     void add_button(const Button& button)
     {
       button_group.add(button);
