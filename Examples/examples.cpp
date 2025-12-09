@@ -63,14 +63,14 @@ int main(int argc, char** argv)
   
   draw_info_screen();
 
-  std::cout << "### Texture Examples ###" << std::endl;
+  //std::cout << "### Texture Examples ###" << std::endl;
   texture::example1();
-  std::cout << "### SpriteHandler Examples ###" << std::endl;
+  //std::cout << "### SpriteHandler Examples ###" << std::endl;
   sprite_handler::example1();
   sprite_handler::example2();
-  std::cout << "### ScreenScaling Examples ###" << std::endl;
+  //std::cout << "### ScreenScaling Examples ###" << std::endl;
   screen_scaling::example1();
-  std::cout << "### Keyboard Examples ###" << std::endl;
+  //std::cout << "### Keyboard Examples ###" << std::endl;
   keyboard::example1();
   
   return 0;
