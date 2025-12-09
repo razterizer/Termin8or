@@ -472,6 +472,39 @@ namespace t8
         return false;
       return true;
     }
+    
+    int compute_minimal_version() const
+    {
+      int minimal_ver = 10;
+      if (minimal_ver < 20)
+      {
+        for (auto col : fg_colors)
+          if (!col.is_color16())
+          {
+            minimal_ver = 20;
+            break;
+          }
+      }
+      if (minimal_ver < 20)
+      {
+        for (auto col : bg_colors)
+          if (!col.is_color16())
+          {
+            minimal_ver = 20;
+            break;
+          }
+      }
+      if (minimal_ver < 21)
+      {
+        for (auto mat : materials)
+          if (mat == -1)
+          {
+            minimal_ver = 21;
+            break;
+          }
+      }
+      return minimal_ver;
+    }
   };
 
 }
