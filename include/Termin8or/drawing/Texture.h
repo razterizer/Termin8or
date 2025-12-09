@@ -56,7 +56,8 @@ namespace t8
   
   struct Texture
   {
-    int ver = 0;
+    static const int compatible_version_until_and_including = 21;
+    int ver = compatible_version_until_and_including;
     RC size;
     int area = 0;
     std::vector<char> characters;
@@ -232,13 +233,17 @@ namespace t8
           {
             if (l.starts_with("VER"))
             {
-              auto tokens = str::tokenize(l, { ' ' });
-              if (tokens.size() == 2)
+              auto tokens = str::tokenize(l, { ' ', '.' });
+              if (tokens.size() >= 2)
               {
+                // VER 1 : Original version. Works without this line.
+                // VER 2 : Added 8-bit color support.
+                // VER 2.1 : Support for -1 materials (represented as '-') and
+                //   fixed missing VER string when saving.
                 // Absence of VER line means it is version 1.
-                int ver_parsed = std::stoi(tokens[1]);
-                // Change from 1 to current version for making sure it is future-incompatible.
-                static const int compatible_version_until_and_including = 2;
+                int maj_ver_parsed = std::stoi(tokens[1]);
+                int min_ver_parsed = tokens.size() == 3 ? std::stoi(tokens[2]) : 0;
+                int ver_parsed = maj_ver_parsed*10 + min_ver_parsed;
                 if (ver_parsed <= compatible_version_until_and_including)
                   ver = ver_parsed;
                 else
@@ -248,7 +253,7 @@ namespace t8
                 }
               }
               else
-                ver = 1; // Absence of VER line means it is version 1.
+                ver = 10; // Absence of VER line means it is version 1.0 -> 10.
             }
             else
             {
@@ -361,6 +366,13 @@ namespace t8
           return '-';
         return '0';
       };
+      
+      // Set the lowest supported version.
+      ver = compute_minimal_version();
+      
+      int maj_ver = ver / 10;
+      int min_ver = ver % 10;
+      lines.emplace_back("VER " + std::to_string(maj_ver) + "." + std::to_string(min_ver));
       
       std::ostringstream oss;
       oss << size.r << " " << size.c;
