@@ -213,6 +213,8 @@ namespace t8
           return ch - '0';
         else if ('A' <= ch)
           return ch - 'A' + 10;
+        else if (ch == '-')
+          return -1;
         return 0;
       };
       
@@ -355,6 +357,8 @@ namespace t8
           return '0' + static_cast<char>(mat);
         else if (10 <= mat)
           return 'A' + static_cast<char>(mat) - 10;
+        else if (mat == -1)
+          return '-';
         return '0';
       };
       
