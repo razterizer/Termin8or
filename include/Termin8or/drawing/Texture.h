@@ -453,10 +453,11 @@ namespace t8
         {
           int idx_from = r * size.c + c;
           int idx_to = (r - bb.r) * bb.c_len + (c - bb.c);
-          sub_texture.characters[idx_to] = sub_texture.characters[idx_from];
-          sub_texture.fg_colors[idx_to] = sub_texture.fg_colors[idx_from];
-          sub_texture.bg_colors[idx_to] = sub_texture.bg_colors[idx_from];
-          sub_texture.materials[idx_to] = sub_texture.materials[idx_to];
+          sub_texture.characters[idx_to] = characters[idx_from];
+          sub_texture.fg_colors[idx_to] = fg_colors[idx_from];
+          sub_texture.bg_colors[idx_to] = bg_colors[idx_from];
+          sub_texture.materials[idx_to] = materials[idx_from];
+          
         }
       }
       
