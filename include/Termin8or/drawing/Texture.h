@@ -395,7 +395,7 @@ namespace t8
         for (int c = 0; c < size.c; ++c)
         {
           int idx = r * size.c + c;
-          curr_line += fg_colors[idx].str();
+          curr_line += fg_colors[idx].str(true);
         }
         lines.emplace_back(curr_line);
       }
@@ -406,7 +406,7 @@ namespace t8
         for (int c = 0; c < size.c; ++c)
         {
           int idx = r * size.c + c;
-          curr_line += bg_colors[idx].str();
+          curr_line += bg_colors[idx].str(true);
         }
         lines.emplace_back(curr_line);
       }
