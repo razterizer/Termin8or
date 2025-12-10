@@ -42,7 +42,9 @@ namespace t8
         return std::string(1, '0' + static_cast<char>(mat));
       else if (10 <= mat)
         return std::string(1, 'A' + static_cast<char>(mat) - 10);
-      return std::string(1, '0');
+      else if (mat == -1)
+        return std::string(1, '-');
+      return std::string(1, '0'); // default mat = 0.
     };
     
     bool operator==(const Textel& other) const
