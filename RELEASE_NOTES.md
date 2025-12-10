@@ -1,5 +1,8 @@
 # Release Notes
 
+## 2.1.2.5
+- Fixed lagging version in released version.h issue.
+
 ## 2.1.1.4
 - `Textel::mat_to_char_str()` now supports `mat = -1` -> `"-"`.
 
