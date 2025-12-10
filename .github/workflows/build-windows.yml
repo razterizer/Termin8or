@@ -42,7 +42,7 @@ jobs:
       - name: Fetch dependencies
         run: |
           cd ..
-          ./Termin8or/fetch-dependencies.py Termin8or/dependencies -y
+          py ./Termin8or/fetch-dependencies.py Termin8or/dependencies -y
       
       # Step 3: Change to the correct directory and build
       - name: Build
