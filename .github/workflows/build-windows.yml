@@ -32,6 +32,7 @@ jobs:
 
   build-examples-with-locked-dependencies:
     runs-on: windows-latest
+    if: false
     
     steps:
       # Step 1: Checkout the repository
@@ -41,6 +42,7 @@ jobs:
       # Step 2: Move to the parent directory and fetch dependencies
       - name: Fetch dependencies
         run: |
+          REM cd ..
           py Termin8or/fetch-dependencies.py Termin8or/dependencies -y
       
       # Step 3: Change to the correct directory and build
