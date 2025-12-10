@@ -1,5 +1,26 @@
 # Release Notes
 
+## 2.1.0.3
+
+### Texture Format & Versioning
+- Added automatic minimal-version inference via `compute_minimal_version()`.
+- Internal version representation standardized (`VER 1.0 → 10` using `maj*10 + min` scheme).
+- Save operation now always writes an explicit `VER x.y` header.
+- Texture format auto-promotes to:
+  - `VER 2.0` when 8-bit colors are used.
+  - `VER 2.1` when materials contain `-1`.
+- Ensured full round-trip consistency between `load()` and `save()`.
+  
+### Texture System
+- Added support for `-1` materials in load/save.
+- Fixed `subset()` to correctly copy characters, colors, and materials.
+  
+### UI
+- Added `Dialog::set_textel_str_pre()` for more flexible textel pre-styling.
+  
+### Examples
+- Reordered example execution in `examples.cpp` and removed header prints.
+
 ## 2.0.0.2
 - Added support for full 256 (8-bit) Colors (actually 259 colors with default color and two transparency colors/modes).
 - Renamed enum class Color -> Color16.
