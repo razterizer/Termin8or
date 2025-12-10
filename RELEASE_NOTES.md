@@ -1,5 +1,8 @@
 # Release Notes
 
+## 2.1.1.4
+- `Textel::mat_to_char_str()` now supports `mat = -1` -> `"-"`.
+
 ## 2.1.0.3
 
 **Texture Format & Versioning**
