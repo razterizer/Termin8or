@@ -10,6 +10,7 @@
   - `VER 2.0` when 8-bit colors are used.
   - `VER 2.1` when materials contain `-1`.
 - Ensured full round-trip consistency between `load()` and `save()`.
+- Fixed format bug in save() where long Color string format was used rather than the compact format.
   
 **Texture System**
 - Added support for `-1` materials in load/save.
