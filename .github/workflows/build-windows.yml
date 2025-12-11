@@ -1,0 +1,53 @@
+name: build windows
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-examples:
+    runs-on: windows-latest
+    
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      # Step 2: Move to the parent directory and fetch dependencies
+      - name: Fetch dependencies
+        run: |
+          cd ..
+          git clone https://github.com/razterizer/Core.git
+
+      # Step 3: Change to the correct directory and build
+      - name: Build
+        run: |
+          cd Examples
+          ./build_examples.bat
+        continue-on-error: false # Ensure errors are not bypassed
+
+  build-examples-with-locked-dependencies:
+    runs-on: windows-latest
+    if: false
+    
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      # Step 2: Move to the parent directory and fetch dependencies
+      - name: Fetch dependencies
+        run: |
+          REM cd ..
+          py Termin8or/fetch-dependencies.py Termin8or/dependencies -y
+      
+      # Step 3: Change to the correct directory and build
+      - name: Build
+        run: |
+          cd Examples
+          ./build_examples.bat
+        continue-on-error: false # Ensure errors are not bypassed
