@@ -128,7 +128,7 @@ jobs:
       - name: Count C++ LOC and generate badge
         run: |
           mkdir -p badges
-          CLOC_RESULT=$(cloc --include-ext=cpp,h --json . | jq '.SUM.code')
+          CLOC_RESULT=$(cloc --include-ext=cpp,h --not-match-f='(tests|examples)' --json . | jq '.SUM.code')
           echo "$CLOC_RESULT"
 
           if [ "$CLOC_RESULT" -lt 10000 ]; then
