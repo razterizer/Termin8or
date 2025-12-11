@@ -123,6 +123,46 @@ There are now two namespaces: `t8` and `t8x`. `t8` contain the core features and
 * `physics/dynamics/DynamicsSystem.h` (`t8x`) : A class that governs the dynamical motions of the rigid bodies that are created from it.
 * `physics/dynamics/CollisionHandler.h` (`t8x`) : A class that governs collison detection and collison response between the rigid bodies created via the `DynamicsSystem` class. Broad-phase uses an AABB BVH and narrow-phase checks overlaps beteen sprite characters of a specified material index. Collision response uses an impulse equation as a function of the velocities of the two bodies and their collision normals.
 
+## Make New Release
+
+To make a new release, you first have to update the `RELEASE_NOTES.md` document. E.g.:
+
+<img width="759" height="406" alt="image" src="https://github.com/user-attachments/assets/f5fbd6e3-cf10-473b-8e7d-908189c82d20" />
+
+
+Then to make a new release you should use the `tag_release.sh` script:
+```sh
+./tag_release -f RELEASE_NOTES.md
+```
+
+or if you want to re-upload an existing release, e.g.:
+```sh
+./tag_release 1.1.5.7. -f RELEASE_NOTES.md
+```
+
+you can also use these commands:
+```sh
+./tag_release bump patch "Release notes."
+```
+```sh
+./tag_release bump minor "Release notes."
+```
+```sh
+./tag_release bump major "Release notes."
+```
+```sh
+./tag_release 1.1.5.7 "Release notes."
+```
+
+If you want to remove a release for some reason, you can do so by running the following git commands:
+```sh
+# Delete local tag
+git tag -d release-1.0.0.0
+
+# Delete remote tag
+git push --delete origin release-1.0.0.0
+```
+
 ## Build & Run Instructions
 
 `Termin8or` only depends on [`Core`](https://github.com/razterizer/Core).
