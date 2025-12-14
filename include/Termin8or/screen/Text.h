@@ -135,7 +135,7 @@ namespace t8
       std::cout << "\n";
     }
     
-    void print_char(char c, Color text_color, Color bg_color = Color16::Default) const
+    void print_char(char32_t c, Color text_color, Color bg_color = Color16::Default) const
     {
       if (sys::is_windows_cmd())
       {
@@ -150,7 +150,7 @@ namespace t8
       }
     }
     
-    using ComplexString = std::vector<std::tuple<char, Color, Color>>;
+    using ComplexString = std::vector<std::tuple<char32_t, Color, Color>>;
     
     void print_complex_sequential(const ComplexString& text)
     {

@@ -43,7 +43,7 @@ namespace t8
   {
     Texture* buffer_texture = nullptr;
     RC buffer_screen_pos { 0, 0 }; //
-    std::vector<char> exclude_src_chars;
+    std::vector<char32_t> exclude_src_chars;
     std::vector<Color> exclude_src_fg_colors;
     std::vector<Color> exclude_src_bg_colors;
     std::vector<Color> dst_fill_bg_colors;
@@ -63,7 +63,7 @@ namespace t8
     std::unique_ptr<Text> m_text;
     
     // Draw from top to bottom.
-    std::array<char, NC*NR> screen_buffer, prev_screen_buffer;
+    std::array<char32_t, NC*NR> screen_buffer, prev_screen_buffer;
     std::array<Color, NC*NR> fg_color_buffer, prev_fg_color_buffer;
     std::array<Color, NC*NR> bg_color_buffer, prev_bg_color_buffer;
     std::array<bool, NC*NR> dirty_flag_buffer;
@@ -401,7 +401,7 @@ namespace t8
     
     void print_screen_buffer_full(Color clear_bg_color) const
     {
-      std::vector<std::tuple<char, Color, Color>> colored_str;
+      std::vector<std::tuple<char32_t, Color, Color>> colored_str;
       colored_str.resize(NR*(NC + 1));
       int i = 0;
       for (int r = 0; r < NR; ++r)
@@ -566,7 +566,7 @@ namespace t8
       return nci < 0 ? 0 : nci;
     }
     
-    void overwrite_data(const std::array<char, NR*NC>& new_screen_buffer,
+    void overwrite_data(const std::array<char32_t, NR*NC>& new_screen_buffer,
                         const std::array<Color, NR*NC>& new_fg_color_buffer,
                         const std::array<Color, NR*NC>& new_bg_color_buffer)
     {
