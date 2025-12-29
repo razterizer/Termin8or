@@ -190,10 +190,13 @@ namespace t8
       {
         if (r >= 0 && r < NR)
         {
-          int n = static_cast<int>(str.size());
-          for (int ci = 0; ci < n; ++ci)
+          //int n = static_cast<int>(str.size());
+          int ci = 0;
+          size_t byte_idx = 0;
+          char32_t ch32 = utf8::none;
+          while (utf8::decode_next_utf8_char32(str, ch32, byte_idx))
           {
-            int c_tot = c + ci;
+            int c_tot = c + ci++;
             if (c_tot >= 0 && c_tot < NC)
             {
               int idx = index(r, c_tot);
@@ -203,7 +206,7 @@ namespace t8
               if (scr_ch == ' '
                 && scr_bg == Color16::Transparent)
               {
-                scr_ch = str[ci];
+                scr_ch = term::get_single_column_char32(ch32);
                 scr_fg = fg_color;
                 scr_bg = bg_color;
               }
@@ -212,7 +215,7 @@ namespace t8
                 scr_bg = bg_color;
                 if (scr_ch == ' ')
                 {
-                  scr_ch = str[ci];
+                  scr_ch = term::get_single_column_char32(ch32);
                   scr_fg = fg_color;
                 }
               }
