@@ -220,7 +220,7 @@ namespace t8
           }
           
           CHAR_INFO ci {};
-          ci.Char.AsciiChar = ch;
+          ci.Char.AsciiChar = utf8::encode_char32_codepage(ch, code_page);
           int fgAttr = get_color_win_cmd(fg); if (fgAttr == -1) fgAttr = 7;
           int bgAttr = get_color_win_cmd(bg); if (bgAttr == -1) bgAttr = 0;
           ci.Attributes = fgAttr | (bgAttr << 4);
@@ -236,7 +236,7 @@ namespace t8
         {
           auto [c, fg_color, bg_color] = text[i];
           auto col_str = get_color_string(fg_color, c == '\n' ? Color16::Default : bg_color);
-          output += col_str + c;
+          output += col_str + utf8::encode_char32_codepage(c, code_page);
         }
         output += "\033[0m";
         //printf("%s", output.c_str());
