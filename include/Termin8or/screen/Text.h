@@ -44,11 +44,15 @@ namespace t8
   
   class Text
   {
+  
+    int code_page = 65001;
     
   public:
     Text()
     {
       std::ios_base::sync_with_stdio(false);
+      if (sys::is_windows_cmd())
+        code_page = 437;
     }
     
     std::string get_color_string(Color text_color, Color bg_color = Color16::Default) const
