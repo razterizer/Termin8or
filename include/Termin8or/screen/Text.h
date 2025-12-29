@@ -50,7 +50,6 @@ namespace t8
   public:
     Text()
     {
-      std::ios_base::sync_with_stdio(false);
       if (sys::is_windows_cmd())
         code_page = 437;
     }
