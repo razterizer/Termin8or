@@ -41,6 +41,18 @@
 
 namespace t8
 {
+
+  namespace term
+  {
+    inline void init_locale()
+    {
+      static std::once_flag flag;
+      std::call_once(flag, []()
+      {
+        std::setlocale(LC_CTYPE, "");
+      });
+    }
+  }
   
   class Text
   {
