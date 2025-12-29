@@ -52,6 +52,25 @@ namespace t8
         std::setlocale(LC_CTYPE, "");
       });
     }
+    
+    inline bool is_single_column(char32_t cp)
+    {
+      init_locale();
+    
+      //return true;
+      if (sys::is_windows_cmd())
+      {
+        // Classic Windows console: only single-byte glyphs are safe.
+        return cp <= 0x7F;
+      }
+      
+      if (cp > 0x10FFFF)
+        return false;
+      
+      wchar_t wc = static_cast<wchar_t>(cp);
+      int w = wcwidth(wc);
+      return w == 1; //w <= 1;
+    }
   }
   
   class Text
