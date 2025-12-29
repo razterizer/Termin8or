@@ -174,7 +174,7 @@ namespace t8x
   void screen_scaling::resample(const t8::ScreenHandler<NRi, NCi>& sh_src,
                                        t8::ScreenHandler<NRo, NCo>& sh_dst)
   {
-    auto new_screen_buffer = resample_data<char, double, NRi, NCi, NRo, NCo>(sh_src.screen_buffer, 0);
+    auto new_screen_buffer = resample_data<char32_t, double, NRi, NCi, NRo, NCo>(sh_src.screen_buffer, 0);
     auto new_fg_color_buffer = resample_data<Color, t8::RGBA, NRi, NCi, NRo, NCo>(sh_src.fg_color_buffer, 0);
     auto new_bg_color_buffer = resample_data<Color, t8::RGBA, NRi, NCi, NRo, NCo>(sh_src.bg_color_buffer, 0);
     sh_dst.overwrite_data(new_screen_buffer, new_fg_color_buffer, new_bg_color_buffer);
