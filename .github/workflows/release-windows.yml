@@ -1,0 +1,116 @@
+name: release windows
+
+on:
+  push:
+    tags:
+      - 'release-*'
+      - 'v*'
+
+jobs:
+  build-windows-release:
+    runs-on: windows-latest
+  
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Move to the parent directory and fetch dependencies
+      - name: Fetch dependencies
+        run: |
+          cd ..
+          git clone https://github.com/razterizer/Core.git
+
+      # Step 3: Build project
+      - name: Run build.bat
+        continue-on-error: false
+        run: |
+          cd $env:GITHUB_WORKSPACE\Examples
+          ./build_examples.bat
+          
+      - name: Debug - List ALL files after build
+        run: |
+          cd $env:GITHUB_WORKSPACE
+          echo "=== Full directory structure ==="
+          Get-ChildItem -Recurse -File | Select-Object Name, Directory | Format-Table
+          
+      - name: Prepare files for upload
+        run: |
+          New-Item -ItemType Directory -Force -Path "upload-temp"
+          Copy-Item "Examples/examples.vs/x64/Release/examples.vs.exe" "upload-temp/"
+          Copy-Item "Examples/background.tx" "upload-temp/"
+          Copy-Item "Examples/colors.tx" "upload-temp/"
+
+      # Step 4: Upload build artifact
+      - name: Upload Windows build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: termin8or_examples-windows-build
+          path: upload-temp/
+          retention-days: 1
+
+  create-windows-release:
+    runs-on: windows-latest
+    needs: build-windows-release
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Download Windows build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: termin8or_examples-windows-build
+          path: windows-build
+          
+      - name: Debug - List downloaded files
+        run: |
+          cd windows-build
+          echo "=== Downloaded files ==="
+          Get-ChildItem -Recurse
+          
+      - name: Create Windows distribution package
+        run: |
+          cd windows-build
+          # Create a clean distribution folder
+          New-Item -ItemType Directory -Force -Path "termin8or_examples-${{ github.ref_name }}"
+          # Copy the executable and necessary files
+          Copy-Item "examples.vs.exe" "termin8or_examples-${{ github.ref_name }}/"
+          # Copy background.tx and colors.tx
+          Copy-Item "background.tx" "termin8or_examples-${{ github.ref_name }}/"
+          Copy-Item "colors.tx" "termin8or_examples-${{ github.ref_name }}/"
+          echo "Unblock instructions:" > termin8or_examples-${{ github.ref_name }}/README.txt
+          echo "=====================" >> termin8or_examples-${{ github.ref_name }}/README.txt
+          echo "To tell Windows that this executable is fine" >> termin8or_examples-${{ github.ref_name }}/README.txt
+          echo " you can unblock the executable by" >> termin8or_examples-${{ github.ref_name }}/README.txt
+          echo " rightclicking the exe, then:" >> termin8or_examples-${{ github.ref_name }}/README.txt
+          echo "   Properties -> Unblock (check this)." >> termin8or_examples-${{ github.ref_name }}/README.txt
+          # Create zip archive
+          Compress-Archive -Path "termin8or_examples-${{ github.ref_name }}" -DestinationPath "termin8or_examples-${{ github.ref_name }}-windows.zip"
+          
+      - name: Extract tag annotation as release notes
+        shell: bash
+        run: |
+          git fetch --tags --force
+          TAG="${{ github.ref_name }}"
+          git tag -l --format='%(contents)' "$TAG" > RELEASE_NOTES.txt
+          echo "Release notes extracted from tag annotation:"
+          cat RELEASE_NOTES.txt
+          
+      - name: Debug Show ref info
+        run: |
+          echo "github.ref:       ${{ github.ref }}"
+          echo "github.ref_name:  ${{ github.ref_name }}"
+          echo "github.event_name: ${{ github.event_name }}"
+          
+      - name: Upload package to release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.ref_name }}
+          artifacts: windows-build/termin8or_examples-${{ github.ref_name }}-windows.zip
+          allowUpdates: true
+          bodyFile: RELEASE_NOTES.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
