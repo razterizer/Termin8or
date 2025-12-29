@@ -71,6 +71,11 @@ namespace t8
       int w = wcwidth(wc);
       return w == 1; //w <= 1;
     }
+    
+    inline char32_t get_single_column_char32(char32_t cp)
+    {
+      return is_single_column(cp) ? cp : U'?';
+    }
   }
   
   class Text
