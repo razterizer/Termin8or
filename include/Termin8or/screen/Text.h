@@ -152,22 +152,22 @@ namespace t8
 #endif
     }
     
-    void print(const std::string& text, Color text_color, Color bg_color = Color16::Default) const
+    void print(const std::wstring& text, Color text_color, Color bg_color = Color16::Default) const
     {
       if (sys::is_windows_cmd())
       {
         set_color_win_cmd(text_color, bg_color);
-        std::cout << text;
+        std::cout << utf8::encode_wstring_utf8(text);
       }
       else
       {
-        std::string output = get_color_string(text_color, bg_color) + text + "\033[0m";
+        std::string output = get_color_string(text_color, bg_color) + utf8::encode_wstring_utf8(text) + "\033[0m";
         //printf("%s", output.c_str());
         std::cout << output;
       }
     }
     
-    void print_line(const std::string& text, Color text_color, Color bg_color = Color16::Default) const
+    void print_line(const std::wstring& text, Color text_color, Color bg_color = Color16::Default) const
     {
       print(text, text_color, bg_color);
       //printf("\n");
