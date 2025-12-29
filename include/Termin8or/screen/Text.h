@@ -277,6 +277,8 @@ namespace t8
         std::cout << "\033[0m";
       }
     }
+    
+    inline int get_code_page() const noexcept { return code_page; }
   };
   
 }
