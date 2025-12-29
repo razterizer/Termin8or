@@ -180,11 +180,11 @@ namespace t8
       if (sys::is_windows_cmd())
       {
         set_color_win_cmd(text_color, bg_color);
-        std::cout << c;
+        std::cout << utf8::encode_char32_codepage(c, code_page);
       }
       else
       {
-        std::string output = get_color_string(text_color, bg_color) + c;
+        std::string output = get_color_string(text_color, bg_color) + utf8::encode_char32_codepage(c, code_page);
         //printf("%s", output.c_str());
         std::cout << output;
       }
