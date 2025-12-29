@@ -267,10 +267,11 @@ namespace t8
           for (size_t i = 0; i < chunk.text.size(); ++i)
           {
             CHAR_INFO ci {};
-            ci.Char.AsciiChar = std::get<0>(chunk.text[i]);
+            auto [ch, fg_color, bg_color] = chunk.text[i];
+            ci.Char.AsciiChar = utf8::encode_char32_codepage(ch, code_page);
             ci.Attributes =
-              get_color_win_cmd(std::get<1>(chunk.text[i])) |
-             (get_color_win_cmd(std::get<2>(chunk.text[i])) << 4);
+              get_color_win_cmd(fg_color) |
+             (get_color_win_cmd(bg_color) << 4);
             buffer[i] = ci;
           }
           
@@ -294,7 +295,7 @@ namespace t8
         {
           output += get_gotorc_str(chunk.pos.r, chunk.pos.c);
           for (const auto& [ch, fg, bg] : chunk.text)
-            output += get_color_string(fg, bg) + ch;
+            output += get_color_string(fg, bg) + utf8::encode_char32_codepage(ch, code_page);
         }
         
         // Reset color.
