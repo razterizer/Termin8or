@@ -3,6 +3,7 @@
 #include "ScreenCommandsBasic.h"
 #include "../geom/RC.h"
 #include <Core/System.h>
+#include <Core/Utf8.h>
 #include <string>
 #include <vector>
 #include <tuple>
