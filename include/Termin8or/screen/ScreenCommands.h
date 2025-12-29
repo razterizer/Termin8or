@@ -59,8 +59,18 @@ namespace t8
     return orig_style;
   }
   
+  inline void disable_stdio_sync()
+  {
+    static bool once [[maybe_unused]] = []()
+    {
+      std::ios_base::sync_with_stdio(false);
+      return true;
+    }();
+  }
+  
   void begin_screen()
   {
+    disable_stdio_sync();
     save_terminal_colors();
     clear_screen();
     return_cursor();

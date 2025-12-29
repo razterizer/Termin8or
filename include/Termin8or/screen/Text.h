@@ -48,7 +48,6 @@ namespace t8
   public:
     Text()
     {
-      std::ios_base::sync_with_stdio(false);
     }
     
     std::string get_color_string(Color text_color, Color bg_color = Color16::Default) const
