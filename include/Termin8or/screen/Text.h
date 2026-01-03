@@ -57,7 +57,7 @@ namespace t8
       });
     }
     
-    // We currently only have support for single column glyphs.
+    // We assume single column and rely on encoder fallback.
     inline bool is_single_column(char32_t cp)
     {
       init_locale();
