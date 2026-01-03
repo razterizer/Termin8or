@@ -153,7 +153,7 @@ namespace t8
 #endif
     }
     
-    void print(const std::string& text, Color text_color, Color bg_color = Color16::Default) const
+    static void print(const std::string& text, Color text_color, Color bg_color = Color16::Default)
     {
       if (sys::is_windows_cmd())
       {
@@ -168,14 +168,14 @@ namespace t8
       }
     }
     
-    void print_line(const std::string& text, Color text_color, Color bg_color = Color16::Default) const
+    static void print_line(const std::string& text, Color text_color, Color bg_color = Color16::Default)
     {
       print(text, text_color, bg_color);
       //printf("\n");
       std::cout << "\n";
     }
     
-    void print_char(char c, Color text_color, Color bg_color = Color16::Default) const
+    static void print_char(char c, Color text_color, Color bg_color = Color16::Default)
     {
       if (sys::is_windows_cmd())
       {
@@ -190,7 +190,7 @@ namespace t8
       }
     }
     
-    void print_char(char32_t c, Color text_color, Color bg_color = Color16::Default) const
+    static void print_char(char32_t c, Color text_color, Color bg_color = Color16::Default)
     {
       if (sys::is_windows_cmd())
       {
