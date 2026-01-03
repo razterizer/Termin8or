@@ -67,8 +67,9 @@ namespace t8
     {
       if (sys::is_windows_cmd())
       {
-        // Classic Windows console: only single-byte glyphs are safe.
-        return cp <= 0x7F;
+        // Treat as single-column if we can encode it to CP437 (or ASCII).
+        // If you don’t have a predicate, just allow and rely on encoding fallback.
+        return cp <= 0x10FFFF;
       }
       
       if (cp > 0x10FFFF)
