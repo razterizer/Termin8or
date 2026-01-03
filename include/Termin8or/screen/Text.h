@@ -79,11 +79,16 @@ namespace t8
     }
     
     inline std::string encode_single_width_glyph(char32_t preferred,
-                                                 char32_t fallback = U'?',
-                                                 int code_page = 65001)
+                                                 char32_t fallback = U'?')
     {
-      char32_t cp = is_single_column(preferred) ? preferred : (is_single_column(fallback) ? fallback : U'?');
-      return utf8::encode_char32_codepage(cp, code_page);
+      char32_t cp = preferred;
+      if (!is_single_column(cp))
+        cp = fallback;
+      if (!is_single_column(cp))
+        cp = U'?';
+        
+      // Use 437 for cmd.exe for now as we only have a mapping from UTF-8 to CP437 atm.
+      return utf8::encode_char32_codepage(cp, sys::is_windows_cmd() ? 437 : 65001);
     }
   }
   
