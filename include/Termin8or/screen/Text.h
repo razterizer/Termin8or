@@ -91,7 +91,7 @@ namespace t8
         code_page = 437;
     }
     
-    std::string get_color_string(Color text_color, Color bg_color = Color16::Default) const
+    static std::string get_color_string(Color text_color, Color bg_color = Color16::Default)
     {
       std::string fg, bg;
     
