@@ -59,7 +59,6 @@ namespace t8
     {
       init_locale();
     
-      //return true;
       if (sys::is_windows_cmd())
       {
         // Classic Windows console: only single-byte glyphs are safe.
