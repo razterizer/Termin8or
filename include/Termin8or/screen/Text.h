@@ -8,6 +8,9 @@
 #include <vector>
 #include <tuple>
 #include <iostream>
+#include <mutex>    // once_flag, call_once
+#include <clocale>  // setlocale, LC_CTYPE
+#include <cwchar>   // wcwidth (or <wchar.h>)
 #ifdef _WIN32
 #include <conio.h>
 #ifndef NOMINMAX
