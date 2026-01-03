@@ -184,7 +184,7 @@ namespace t8
       }
       else
       {
-        std::string output = get_color_string(text_color, bg_color) + c;
+        std::string output = get_color_string(text_color, bg_color) + c + "\033[0m";
         //printf("%s", output.c_str());
         std::cout << output;
       }
@@ -199,7 +199,7 @@ namespace t8
       }
       else
       {
-        std::string output = get_color_string(text_color, bg_color) + utf8::encode_char32_codepage(c, code_page);
+        std::string output = get_color_string(text_color, bg_color) + utf8::encode_char32_codepage(c, code_page) + "\033[0m";
         //printf("%s", output.c_str());
         std::cout << output;
       }
