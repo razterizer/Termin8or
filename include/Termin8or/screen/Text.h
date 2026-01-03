@@ -57,6 +57,11 @@ namespace t8
       });
     }
     
+    inline int get_code_page()
+    {
+      return sys::is_windows_cmd() ? 437 : 65001;
+    }
+    
     // We assume single column and rely on encoder fallback.
     inline bool is_single_column(char32_t cp)
     {
