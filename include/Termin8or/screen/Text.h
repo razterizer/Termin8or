@@ -65,8 +65,6 @@ namespace t8
     // We assume single column and rely on encoder fallback.
     inline bool is_single_column(char32_t cp)
     {
-      init_locale();
-    
       if (sys::is_windows_cmd())
       {
         // Classic Windows console: only single-byte glyphs are safe.
@@ -76,6 +74,7 @@ namespace t8
       if (cp > 0x10FFFF)
         return false;
       
+      init_locale();
       wchar_t wc = static_cast<wchar_t>(cp);
       int w = wcwidth(wc);
       return w == 1; //w <= 1;
