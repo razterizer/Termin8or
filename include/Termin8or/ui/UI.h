@@ -658,6 +658,7 @@ namespace t8x
     size_t len_max = 0;
     std::vector<Style> line_styles;
     std::vector<std::pair<RC, Style>> override_textel_styles;
+    bool use_utf8 = false;
     
     void init()
     {
@@ -737,6 +738,8 @@ namespace t8x
       init();
     }
     
+    void enable_utf8(bool enable) { use_utf8 = enable; }
+    
     bool empty() const noexcept
     {
       return sb.empty();
@@ -781,8 +784,12 @@ namespace t8x
     virtual void calc_pre_draw(str::Adjustment adjustment)
     {
       len_max = 0;
-      for (size_t l_idx = 0; l_idx < N; ++l_idx)
-        math::maximize(len_max, sb[l_idx].size());
+      if (use_utf8)
+        for (size_t l_idx = 0; l_idx < N; ++l_idx)
+          math::maximize(len_max, utf8::num_utf8_codepoints(sb[l_idx]));
+      else
+        for (size_t l_idx = 0; l_idx < N; ++l_idx)
+          math::maximize(len_max, sb[l_idx].size());
       for (size_t l_idx = 0; l_idx < N; ++l_idx)
         sb[l_idx] = str::adjust_str(sb[l_idx], adjustment, static_cast<int>(len_max));
     }
@@ -805,12 +812,35 @@ namespace t8x
 #pragma GCC diagnostic pop
 #endif
       OutlineType outline_type = args.base.outline_type;
-            
-      for (const auto& rc_style : override_textel_styles)
-        if (rc_style.first.r < static_cast<int>(N) && rc_style.first.c < static_cast<int>(len_max))
-          sh.write_buffer(std::string(1, sb[rc_style.first.r][rc_style.first.c]),
-                          pos.r + rc_style.first.r, pos.c + rc_style.first.c,
-                          rc_style.second);
+      
+      if (use_utf8)
+      {
+        for (const auto& rc_style : override_textel_styles)
+          if (rc_style.first.r < static_cast<int>(N) && rc_style.first.c < static_cast<int>(len_max))
+          {
+            size_t byte_idx = 0;
+            char32_t ch32 = utf8::none;
+            int c_idx = 0;
+            while (utf8::decode_next_utf8_char32(sb[rc_style.first.r], ch32, byte_idx))
+            {
+              if (c_idx++ == rc_style.first.c)
+              {
+                sh.write_buffer(utf8::encode_char32_utf8(ch32),
+                                pos.r + rc_style.first.r, pos.c + rc_style.first.c,
+                                rc_style.second);
+                break;
+              }
+            }
+          }
+      }
+      else
+      {
+        for (const auto& rc_style : override_textel_styles)
+          if (rc_style.first.r < static_cast<int>(N) && rc_style.first.c < static_cast<int>(len_max))
+            sh.write_buffer(std::string(1, sb[rc_style.first.r][rc_style.first.c]),
+                            pos.r + rc_style.first.r, pos.c + rc_style.first.c,
+                            rc_style.second);
+      }
       for (size_t l_idx = 0; l_idx < N; ++l_idx)
         sh.write_buffer(sb[l_idx], pos.r + static_cast<int>(l_idx), pos.c, line_styles.empty() ? box_style : line_styles[l_idx]);
       
