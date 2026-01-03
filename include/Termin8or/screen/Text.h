@@ -77,6 +77,14 @@ namespace t8
     {
       return is_single_column(cp) ? cp : U'?';
     }
+    
+    inline std::string encode_single_width_glyph(char32_t preferred,
+                                                 char32_t fallback = U'?',
+                                                 int code_page = 65001)
+    {
+      char32_t cp = is_single_column(preferred) ? preferred : (is_single_column(fallback) ? fallback : U'?');
+      return utf8::encode_char32_codepage(cp, code_page);
+    }
   }
   
   class Text
