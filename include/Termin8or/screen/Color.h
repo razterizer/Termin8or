@@ -268,8 +268,9 @@ namespace t8
       case Color16::White:
         return 15;
       case Color16::Black:
-      default:
         return 0;
+      default:
+        return -1;
     }
   }
   
