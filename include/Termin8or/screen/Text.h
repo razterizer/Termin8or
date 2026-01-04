@@ -154,6 +154,19 @@ namespace t8
       return -1;
     }
     
+#ifdef _WIN32
+    static WORD get_style_win_cmd(Color fg, Color bg)
+    {
+      int fg_val = get_color_win_cmd(fg);
+      if (fg_val == -1)
+        fg_val= 7; // light gray
+      int bg_val = get_color_win_cmd(bg);
+      if (bg_val == -1)
+        bg_val = 0; // black
+      return static_cast<WORD>(fg_val | (bg_val << 4));
+    }
+#endif
+    
     // For classic cmd.exe.
     static void set_color_win_cmd(Color text_color, Color bg_color = Color16::Default)
     {
