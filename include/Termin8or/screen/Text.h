@@ -143,18 +143,15 @@ namespace t8
       
       return fg + bg;
     }
-
+    
+#ifdef _WIN32
     static int get_color_win_cmd(Color color)
     {
-#ifdef _WIN32
       auto color16 = to_nearest_color16(color);
       int win_idx = get_color16_value_win(color16);
       return win_idx;
-#endif
-      return -1;
     }
-    
-#ifdef _WIN32
+
     static WORD get_style_win_cmd(Color fg, Color bg)
     {
       int fg_val = get_color_win_cmd(fg);
