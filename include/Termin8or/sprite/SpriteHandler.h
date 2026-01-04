@@ -22,8 +22,8 @@ namespace t8x
   using Color = t8::Color;
   using Color16 = t8::Color16;
   using Style = t8::Style;
-  template<int NR, int NC>
-  using ScreenHandler = t8::ScreenHandler<NR, NC>;
+  template<int NR, int NC, typename CharT>
+  using ScreenHandler = t8::ScreenHandler<NR, NC, CharT>;
   
   class Sprite
   {
@@ -671,8 +671,8 @@ namespace t8x
       return stlutils::sizeI(texture_frames);
     }
     
-    template<int NR, int NC>
-    bool draw(ScreenHandler<NR, NC>& sh, int sim_frame)
+    template<int NR, int NC, typename CharT>
+    bool draw(ScreenHandler<NR, NC, CharT>& sh, int sim_frame)
     {
       auto* texture = get_curr_sim_frame(sim_frame);
       if (texture == nullptr)
@@ -1116,8 +1116,8 @@ namespace t8x
       return { r_scale_post, c_scale_post };
     }
     
-    template<int NR, int NC>
-    bool draw(ScreenHandler<NR, NC>& sh, int sim_frame)
+    template<int NR, int NC, typename CharT>
+    bool draw(ScreenHandler<NR, NC, CharT>& sh, int sim_frame)
     {
       auto* vector_frame = get_curr_sim_frame(sim_frame);
       if (vector_frame == nullptr)
@@ -1427,8 +1427,8 @@ namespace t8x
       m_sprites.clear();
     }
     
-    template<int NR, int NC>
-    void draw(ScreenHandler<NR, NC>& sh, int sim_frame) const
+    template<int NR, int NC, typename CharT>
+    void draw(ScreenHandler<NR, NC, CharT>& sh, int sim_frame) const
     {
       render(sim_frame, [&sh](Sprite* sprite, int sim_frame)
       {
@@ -1439,8 +1439,8 @@ namespace t8x
       });
     }
     
-    template<int NR, int NC>
-    void draw_dbg_bb(ScreenHandler<NR, NC>& sh, int sim_frame) const
+    template<int NR, int NC, typename CharT>
+    void draw_dbg_bb(ScreenHandler<NR, NC, CharT>& sh, int sim_frame) const
     {
       render(sim_frame, [&sh](Sprite* sprite, int sim_frame)
       {
@@ -1451,8 +1451,8 @@ namespace t8x
       });
     }
     
-    template<int NR, int NC>
-    void draw_dbg_pts(ScreenHandler<NR, NC>& sh, int sim_frame) const
+    template<int NR, int NC, typename CharT>
+    void draw_dbg_pts(ScreenHandler<NR, NC, CharT>& sh, int sim_frame) const
     {
       render(sim_frame, [&sh](Sprite* sprite, int sim_frame)
       {

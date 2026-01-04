@@ -20,8 +20,8 @@ namespace t8x
   using ButtonStyle = t8::ButtonStyle;
   using PromptStyle = t8::PromptStyle;
   using RC = t8::RC;
-  template<int NR, int NC>
-  using ScreenHandler = t8::ScreenHandler<NR, NC>;
+  template<int NR, int NC, typename CharT>
+  using ScreenHandler = t8::ScreenHandler<NR, NC, CharT>;
   using SpecialKey = t8::SpecialKey;
   
 
@@ -123,8 +123,8 @@ namespace t8x
       return left_right + static_cast<int>(text.size());
     }
     
-    template<int NR, int NC>
-    void draw(ScreenHandler<NR, NC>& sh, const RC& pos) const
+    template<int NR, int NC, typename CharT>
+    void draw(ScreenHandler<NR, NC, CharT>& sh, const RC& pos) const
     {
       std::string left = "";
       std::string right = "";
@@ -255,8 +255,8 @@ namespace t8x
       }
     }
     
-    template<int NR, int NC>
-    void draw(ScreenHandler<NR, NC>& sh, const RC& pos, int width) const
+    template<int NR, int NC, typename CharT>
+    void draw(ScreenHandler<NR, NC, CharT>& sh, const RC& pos, int width) const
     {
       if (buttons.empty())
         return;
@@ -331,8 +331,8 @@ namespace t8x
         backspace();
     }
     
-    template<int NR, int NC>
-    void draw(ScreenHandler<NR, NC>& sh, const RC& pos, int anim_ctr) const
+    template<int NR, int NC, typename CharT>
+    void draw(ScreenHandler<NR, NC, CharT>& sh, const RC& pos, int anim_ctr) const
     {
       if (is_selected())
       {
@@ -509,8 +509,8 @@ namespace t8x
     // ###### ###### ###### ###### ###### ######
     // GGGGGGGGGGGGGGGGGGGGGGGG
     
-    template<int NR, int NC>
-    void draw(ScreenHandler<NR, NC>& sh, const RC& pos, int anim_ctr) const
+    template<int NR, int NC, typename CharT>
+    void draw(ScreenHandler<NR, NC, CharT>& sh, const RC& pos, int anim_ctr) const
     {
       auto caret_bg_color = (params.enable_special_colors && caret.r == 0 && caret.c < -col_x_start) ? Color16::Black : get_color();
       const auto caret_bg_color_inv = t8::get_contrast_color(caret_bg_color);
@@ -794,8 +794,8 @@ namespace t8x
         sb[l_idx] = str::adjust_str(sb[l_idx], adjustment, static_cast<int>(len_max));
     }
     
-    template<int NR, int NC>
-    void draw(ScreenHandler<NR, NC>& sh, const TextBoxDrawingArgsPos& args)
+    template<int NR, int NC, typename CharT>
+    void draw(ScreenHandler<NR, NC, CharT>& sh, const TextBoxDrawingArgsPos& args)
     {
       auto pos = args.pos;
       const Style& box_style = args.base.box_style;
@@ -854,8 +854,8 @@ namespace t8x
         draw_box(sh, r, c, r_len, c_len, box_style);
     }
     
-    template<int NR, int NC>
-    void draw(ScreenHandler<NR, NC>& sh, const TextBoxDrawingArgsAlign& args)
+    template<int NR, int NC, typename CharT>
+    void draw(ScreenHandler<NR, NC, CharT>& sh, const TextBoxDrawingArgsAlign& args)
     {
       auto pargs = get_drawing_args_pos<NR, NC>(args);
       
@@ -1039,8 +1039,8 @@ namespace t8x
         cpp.second.update(curr_special_key);
     }
     
-    template<int NR, int NC>
-    void draw(ScreenHandler<NR, NC>& sh, const TextBoxDrawingArgsPos& args, int anim_ctr)
+    template<int NR, int NC, typename CharT>
+    void draw(ScreenHandler<NR, NC, CharT>& sh, const TextBoxDrawingArgsPos& args, int anim_ctr)
     {
       auto pos = args.pos;
       
@@ -1067,8 +1067,8 @@ namespace t8x
       TextBox::draw(sh, args);
     }
     
-    template<int NR, int NC>
-    void draw(ScreenHandler<NR, NC>& sh, const TextBoxDrawingArgsAlign& args, int anim_ctr)
+    template<int NR, int NC, typename CharT>
+    void draw(ScreenHandler<NR, NC, CharT>& sh, const TextBoxDrawingArgsAlign& args, int anim_ctr)
     {
       auto pargs = get_drawing_args_pos<NR, NC>(args);
       

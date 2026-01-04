@@ -16,15 +16,15 @@
 
 namespace t8
 {
-  template<int NR, int NC>
+  template<int NR, int NC, typename CharT>
   class ScreenHandler;
 }
 
 namespace t8x::screen_scaling
 {
-  template<int NRo, int NCo, int NRi, int NCi>
-  void resample(const t8::ScreenHandler<NRi, NCi>& sh_src,
-                t8::ScreenHandler<NRo, NCo>& sh_dst);
+  template<int NRo, int NCo, int NRi, int NCi, typename CharT>
+  void resample(const t8::ScreenHandler<NRi, NCi, CharT>& sh_src,
+                t8::ScreenHandler<NRo, NCo, CharT>& sh_dst);
 }
 
 namespace t8
@@ -57,13 +57,13 @@ namespace t8
   // Bad design.
   static int num_chunks_prev = 10; // #FIXME: Magic number.
   
-  template<int NR = 30, int NC = 80>
+  template<int NR = 30, int NC = 80, typename CharT = char>
   class ScreenHandler
   {
     std::unique_ptr<Text> m_text;
     
     // Draw from top to bottom.
-    std::array<char32_t, NC*NR> screen_buffer, prev_screen_buffer;
+    std::array<CharT, NC*NR> screen_buffer, prev_screen_buffer;
     std::array<Color, NC*NR> fg_color_buffer, prev_fg_color_buffer;
     std::array<Color, NC*NR> bg_color_buffer, prev_bg_color_buffer;
     std::array<bool, NC*NR> dirty_flag_buffer;
@@ -122,6 +122,34 @@ namespace t8
     }
     
     std::vector<OrderedText> ordered_texts;
+    
+    void write_buffer_cell(CharT ch, int r, int c, int ci, Color fg_color, Color bg_color)
+    {
+      int c_tot = c + ci;
+      if (c_tot >= 0 && c_tot < NC)
+      {
+        int idx = index(r, c_tot);
+        auto& scr_ch = screen_buffer[idx];
+        auto& scr_fg = fg_color_buffer[idx];
+        auto& scr_bg = bg_color_buffer[idx];
+        if (scr_ch == ' '
+            && scr_bg == Color16::Transparent)
+        {
+          scr_ch = ch;
+          scr_fg = fg_color;
+          scr_bg = bg_color;
+        }
+        else if (scr_bg == Color16::Transparent2)
+        {
+          scr_bg = bg_color;
+          if (scr_ch == ' ')
+          {
+            scr_ch = ch;
+            scr_fg = fg_color;
+          }
+        }
+      }
+    }
     
   public:
     ScreenHandler()
@@ -186,7 +214,19 @@ namespace t8
     {
       if (str.empty())
         return;
-      //if (c >= 0 && str.size() + c <= NC)
+      if constexpr (std::is_same_v<CharT, char>)
+      {
+        if (c >= 0 && str.size() + c <= NC)
+        {
+          if (r >= 0 && r < NR)
+          {
+            int n = static_cast<int>(str.size());
+            for (int ci = 0; ci < n; ++ci)
+              write_buffer_cell(str[ci], r, c, ci, fg_color, bg_color);
+          }
+        }
+      }
+      else if constexpr (std::is_same_v<CharT, char32_t>)
       {
         if (r >= 0 && r < NR)
         {
@@ -196,33 +236,13 @@ namespace t8
           char32_t ch32 = utf8::none;
           while (utf8::decode_next_utf8_char32(str, ch32, byte_idx))
           {
-            int c_tot = c + ci++;
-            if (c_tot >= 0 && c_tot < NC)
-            {
-              int idx = index(r, c_tot);
-              auto& scr_ch = screen_buffer[idx];
-              auto& scr_fg = fg_color_buffer[idx];
-              auto& scr_bg = bg_color_buffer[idx];
-              if (scr_ch == ' '
-                && scr_bg == Color16::Transparent)
-              {
-                scr_ch = term::get_single_column_char32(ch32);
-                scr_fg = fg_color;
-                scr_bg = bg_color;
-              }
-              else if (scr_bg == Color16::Transparent2)
-              {
-                scr_bg = bg_color;
-                if (scr_ch == ' ')
-                {
-                  scr_ch = term::get_single_column_char32(ch32);
-                  scr_fg = fg_color;
-                }
-              }
-            }
+            write_buffer_cell(term::get_single_column_char32(ch32), r, c, ci, fg_color, bg_color);
+            ci++;
           }
         }
       }
+      else
+        std::cerr << "ERROR in ScreenHandler<NR, NC, CharT>::write_buffer() : Unsupported CharT type.\n";
     }
     
     void replace_bg_color(Color from_bg_color, Color to_bg_color, Rectangle box)
@@ -569,7 +589,7 @@ namespace t8
       return nci < 0 ? 0 : nci;
     }
     
-    void overwrite_data(const std::array<char32_t, NR*NC>& new_screen_buffer,
+    void overwrite_data(const std::array<CharT, NR*NC>& new_screen_buffer,
                         const std::array<Color, NR*NC>& new_fg_color_buffer,
                         const std::array<Color, NR*NC>& new_bg_color_buffer)
     {
@@ -578,9 +598,9 @@ namespace t8
       bg_color_buffer = new_bg_color_buffer;
     }
     
-    template<int NRo, int NCo, int NRi, int NCi>
-    friend void t8x::screen_scaling::resample(const ScreenHandler<NRi, NCi>& sh_src,
-                                              ScreenHandler<NRo, NCo>& sh_dst);
+    template<int NRo, int NCo, int NRi, int NCi, typename char_t>
+    friend void t8x::screen_scaling::resample(const ScreenHandler<NRi, NCi, char_t>& sh_src,
+                                              ScreenHandler<NRo, NCo, char_t>& sh_dst);
   };
   
 }

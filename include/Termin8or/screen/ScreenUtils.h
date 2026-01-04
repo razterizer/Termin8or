@@ -9,8 +9,8 @@
 namespace t8
 {
 
-  template<int NR, int NC>
-  void draw_frame(ScreenHandler<NR, NC>& sh, Color fg_color)
+  template<int NR, int NC, typename CharT>
+  void draw_frame(ScreenHandler<NR, NC, CharT>& sh, Color fg_color)
   {
     const int nc_inset = sh.num_cols_inset();
     const int nr_inset = sh.num_rows_inset();
@@ -28,8 +28,8 @@ namespace t8
 namespace t8x
 {
 
-  template<int NR, int NC>
-  using ScreenHandler = t8::ScreenHandler<NR, NC>;
+  template<int NR, int NC, typename CharT>
+  using ScreenHandler = t8::ScreenHandler<NR, NC, CharT>;
   using Color16 = t8::Color16;
   using Style = t8::Style;
   using HiliteFGStyle = t8::HiliteFGStyle;
@@ -70,8 +70,8 @@ namespace t8x
   // # /    |    \     /   |        \ |    |   \   #
   // # \_______  /\___/   /_______  / |____|_  /   #
   // #         \/                 \/         \/    #
-  template<int NR, int NC>
-  void draw_game_over(ScreenHandler<NR, NC>& sh, float wave_step = 0.1f,
+  template<int NR, int NC, typename CharT>
+  void draw_game_over(ScreenHandler<NR, NC, CharT>& sh, float wave_step = 0.1f,
                       const Style& line_0_style = { Color16::DarkRed, Color16::White },
                       const Style& line_1_style = { Color16::DarkRed, Color16::Yellow },
                       const Style& line_2_style = { Color16::DarkRed, Color16::DarkYellow },
@@ -112,8 +112,8 @@ namespace t8x
   // #  \____   (  <_> )  |  /  \        (  <_> )   |  \| #
   // #  / ______|\____/|____/    \__/\  / \____/|___|  /_ #
   // #  \/                            \/             \/\/ #
-  template<int NR, int NC>
-  void draw_you_won(ScreenHandler<NR, NC>& sh, float wave_step = 0.07f,
+  template<int NR, int NC, typename CharT>
+  void draw_you_won(ScreenHandler<NR, NC, CharT>& sh, float wave_step = 0.07f,
                     const Style& line_0_style = { Color16::DarkBlue, Color16::Cyan },
                     const Style& line_1_style = { Color16::DarkBlue, Color16::DarkCyan })
   {
@@ -142,8 +142,8 @@ namespace t8x
       wave_x0 = 0.f;
   }
   
-  template<int NR, int NC>
-  void draw_paused(ScreenHandler<NR, NC>& sh, int anim_ctr, const Style& info_style)
+  template<int NR, int NC, typename CharT>
+  void draw_paused(ScreenHandler<NR, NC, CharT>& sh, int anim_ctr, const Style& info_style)
   {
     int anim = anim_ctr % 10;
     std::string msg;
@@ -164,8 +164,8 @@ namespace t8x
   }
   
   enum class YesNoButtons { No = 0, Yes = 1 };
-  template<int NR, int NC>
-  void draw_confirm(ScreenHandler<NR, NC>& sh,
+  template<int NR, int NC, typename CharT>
+  void draw_confirm(ScreenHandler<NR, NC, CharT>& sh,
                     const std::vector<std::string>& titles,
                     YesNoButtons button,
                     const Style& title_style,
@@ -213,8 +213,8 @@ namespace t8x
     }
   };
   
-  template<int NR, int NC>
-  bool draw_input_hiscore(ScreenHandler<NR, NC>& sh,
+  template<int NR, int NC, typename CharT>
+  bool draw_input_hiscore(ScreenHandler<NR, NC, CharT>& sh,
                           const KeyPressData& kpd,
                           HiScoreItem& hsi, int& caret_idx, int anim_ctr,
                           const Style& title_style,
@@ -268,8 +268,8 @@ namespace t8x
     return special_key == SpecialKey::Enter;
   }
   
-  template<int NR, int NC>
-  void draw_hiscores(ScreenHandler<NR, NC>& sh, const std::vector<HiScoreItem>& hiscore_list,
+  template<int NR, int NC, typename CharT>
+  void draw_hiscores(ScreenHandler<NR, NC, CharT>& sh, const std::vector<HiScoreItem>& hiscore_list,
                      const Style& title_style,
                      const HiliteFGStyle& nr_style,
                      const HiliteFGStyle& score_style,

@@ -116,8 +116,8 @@ namespace t8x
       }
     }
     
-    template<int NR, int NC>
-    void update(t8::ScreenHandler<NR, NC>& sh, float time, const MessageBoxDrawingArgs& args = {})
+    template<int NR, int NC, typename CharT>
+    void update(t8::ScreenHandler<NR, NC, CharT>& sh, float time, const MessageBoxDrawingArgs& args = {})
     {
       if (message_empty && has_messages())
       {

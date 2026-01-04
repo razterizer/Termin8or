@@ -79,8 +79,8 @@ namespace t8
     hide_cursor();
   }
   
-  template<int NR, int NC>
-  void end_screen(ScreenHandler<NR, NC>& sh)
+  template<int NR, int NC, typename CharT>
+  void end_screen(ScreenHandler<NR, NC, CharT>& sh)
   {
     auto orig_colors [[maybe_unused]] = restore_terminal_colors();
 #ifndef __APPLE__

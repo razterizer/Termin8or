@@ -14,8 +14,8 @@ namespace t8x
   using Style = t8::Style;
   using ShadeType = t8::ShadeType;
   using Texture = t8::Texture;
-  template<int NR, int NC>
-  using ScreenHandler = t8::ScreenHandler<NR, NC>;
+  template<int NR, int NC, typename CharT>
+  using ScreenHandler = t8::ScreenHandler<NR, NC, CharT>;
   
   
   // Bresenham Algorithm.
@@ -99,8 +99,8 @@ namespace t8x
       points);
   }
 
-  template<int NR, int NC>
-  void plot_line(ScreenHandler<NR, NC>& sh, float r0, float c0, float r1, float c1,
+  template<int NR, int NC, typename CharT>
+  void plot_line(ScreenHandler<NR, NC, CharT>& sh, float r0, float c0, float r1, float c1,
                  const std::string& str, Color fg_color, Color bg_color)
   {
     std::vector<RC> points;
@@ -109,8 +109,8 @@ namespace t8x
       sh.write_buffer(str, pt.r, pt.c, fg_color, bg_color);
   }
   
-  template<int NR, int NC>
-  void plot_line(ScreenHandler<NR, NC>& sh, const RC& p0, const RC& p1,
+  template<int NR, int NC, typename CharT>
+  void plot_line(ScreenHandler<NR, NC, CharT>& sh, const RC& p0, const RC& p1,
                  const std::string& str, Color fg_color, Color bg_color)
   {
     std::vector<RC> points;
@@ -136,8 +136,8 @@ namespace t8x
     NUM_ITEMS
   };
   
-  template<int NR, int NC>
-  void draw_box_outline(ScreenHandler<NR, NC>& sh,
+  template<int NR, int NC, typename CharT>
+  void draw_box_outline(ScreenHandler<NR, NC, CharT>& sh,
                         int r, int c, int len_r, int len_c,
                         OutlineType outline_type,
                         const Style& outline_style = { Color16::Default, Color16::Transparent2 },
@@ -332,8 +332,8 @@ namespace t8x
     }
   }
   
-  template<int NR, int NC>
-  void draw_box_outline(ScreenHandler<NR, NC>& sh,
+  template<int NR, int NC, typename CharT>
+  void draw_box_outline(ScreenHandler<NR, NC, CharT>& sh,
                         const Rectangle& bb,
                         OutlineType outline_type,
                         const Style& outline_style = { Color16::Default, Color16::Transparent2 },
@@ -342,8 +342,8 @@ namespace t8x
     draw_box_outline(sh, bb.r, bb.c, bb.r_len, bb.c_len, outline_type, outline_style, light_field);
   }
   
-  template<int NR, int NC>
-  void draw_box(ScreenHandler<NR, NC>& sh,
+  template<int NR, int NC, typename CharT>
+  void draw_box(ScreenHandler<NR, NC, CharT>& sh,
                 int r, int c, int len_r, int len_c,
                 const Style& fill_style = { Color16::Default, Color16::Transparent2 },
                 char fill_char = ' ',
@@ -418,8 +418,8 @@ namespace t8x
     }
   }
   
-  template<int NR, int NC>
-  void draw_box(ScreenHandler<NR, NC>& sh,
+  template<int NR, int NC, typename CharT>
+  void draw_box(ScreenHandler<NR, NC, CharT>& sh,
                 const Rectangle& bb,
                 const Style& fill_style = { Color16::Default, Color16::Transparent2 },
                 char fill_char = ' ',
@@ -442,8 +442,8 @@ namespace t8x
   // r = 5, c = 6, len_r = 9, len_c = 7,
   // fill_texture.size.r = 9, fill_texture.size.c = 7,
   // shadow_texture.size.r = 9, shadow_texture.size.c = 6.
-  template<int NR, int NC>
-  void draw_box_textured(ScreenHandler<NR, NC>& sh,
+  template<int NR, int NC, typename CharT>
+  void draw_box_textured(ScreenHandler<NR, NC, CharT>& sh,
                          int r, int c, int len_r, int len_c,
                          SolarDirection shadow_type = SolarDirection::Zenith,
                          const Texture& fill_texture = {},
@@ -553,8 +553,8 @@ namespace t8x
     }
   }
   
-  template<int NR, int NC>
-  void draw_box_textured(ScreenHandler<NR, NC>& sh,
+  template<int NR, int NC, typename CharT>
+  void draw_box_textured(ScreenHandler<NR, NC, CharT>& sh,
                          const Rectangle& bb,
                          SolarDirection shadow_type = SolarDirection::Zenith,
                          const Texture& fill_texture = {},
@@ -576,8 +576,8 @@ namespace t8x
   // r = 5, c = 6, len_r = 9, len_c = 7,
   // fill_texture.size.r = 9, fill_texture.size.c = 7,
   // shadow_texture.size.r = 9, shadow_texture.size.c = 6.
-  template<int NR, int NC>
-  void draw_box_texture_materials(ScreenHandler<NR, NC>& sh,
+  template<int NR, int NC, typename CharT>
+  void draw_box_texture_materials(ScreenHandler<NR, NC, CharT>& sh,
                                   int r, int c, int len_r, int len_c,
                                   const Texture& texture = {})
   {
@@ -592,8 +592,8 @@ namespace t8x
     }
   }
   
-  template<int NR, int NC>
-  void draw_box_texture_materials(ScreenHandler<NR, NC>& sh,
+  template<int NR, int NC, typename CharT>
+  void draw_box_texture_materials(ScreenHandler<NR, NC, CharT>& sh,
                                   const Rectangle& bb,
                                   const Texture& texture = {})
   {

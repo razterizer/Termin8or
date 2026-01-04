@@ -24,6 +24,10 @@ namespace t8x
     };
   }
 
+  template<typename FromT, typename ToT>
+  ToT find_closest_val(FromT shading_value);
+  
+  template<>
   char find_closest_val(double shading_value)
   {
     // Character set representing different shades
@@ -32,7 +36,18 @@ namespace t8x
     auto index = static_cast<int>((1-t) * (shading_charset.size() - 1));
     return shading_charset[index];
   }
+  
+  template<>
+  char32_t find_closest_val(double shading_value)
+  {
+    // Character set representing different shades
+    const std::string shading_charset = "$#@&%*+=)(\\/\":^_-,. ";
+    double t = shading_value;
+    auto index = static_cast<int>((1-t) * (shading_charset.size() - 1));
+    return shading_charset[index];
+  }
 
+  template<>
   Color find_closest_val(t8::RGBA shading_value)
   {
     // Character set representing different shades
@@ -56,7 +71,8 @@ namespace t8x
     return best_color;
   }
   
-  double find_closest_shading_value(char c)
+  template<typename CharT>
+  double find_closest_shading_value(CharT c)
   {
     switch (c)
     {
@@ -120,10 +136,10 @@ namespace t8x
     auto btm_valid = 0 <= bottom && bottom < NR;
     auto lft_valid = 0 <= left && left < NC;
     auto rgt_valid = 0 <= right && right < NC;
-    auto val_top_lft = top_valid && lft_valid ? buffer[top*NC + left] : find_closest_val(zero_shading_value);
-    auto val_top_rgt = top_valid && rgt_valid ? buffer[top*NC + right] : find_closest_val(zero_shading_value);
-    auto val_btm_lft = btm_valid && lft_valid ? buffer[bottom*NC + left] : find_closest_val(zero_shading_value);
-    auto val_btm_rgt = btm_valid && rgt_valid ? buffer[bottom*NC + right] : find_closest_val(zero_shading_value);
+    auto val_top_lft = top_valid && lft_valid ? buffer[top*NC + left] : find_closest_val<P, T>(zero_shading_value);
+    auto val_top_rgt = top_valid && rgt_valid ? buffer[top*NC + right] : find_closest_val<P, T>(zero_shading_value);
+    auto val_btm_lft = btm_valid && lft_valid ? buffer[bottom*NC + left] : find_closest_val<P, T>(zero_shading_value);
+    auto val_btm_rgt = btm_valid && rgt_valid ? buffer[bottom*NC + right] : find_closest_val<P, T>(zero_shading_value);
     auto sh_top_lft = find_closest_shading_value(val_top_lft);
     auto sh_top_rgt = find_closest_shading_value(val_top_rgt);
     auto sh_btm_lft = find_closest_shading_value(val_btm_lft);
@@ -136,7 +152,7 @@ namespace t8x
     
     shading_value = clamp(shading_value);
     
-    T value = find_closest_val(shading_value);
+    T value = find_closest_val<P, T>(shading_value);
     
     return value;
   }
@@ -170,11 +186,11 @@ namespace t8x
 
 // ////////////////////////////////////////////////
 
-  template<int NRo, int NCo, int NRi, int NCi>
-  void screen_scaling::resample(const t8::ScreenHandler<NRi, NCi>& sh_src,
-                                       t8::ScreenHandler<NRo, NCo>& sh_dst)
+  template<int NRo, int NCo, int NRi, int NCi, typename CharT>
+  void screen_scaling::resample(const t8::ScreenHandler<NRi, NCi, CharT>& sh_src,
+                                       t8::ScreenHandler<NRo, NCo, CharT>& sh_dst)
   {
-    auto new_screen_buffer = resample_data<char32_t, double, NRi, NCi, NRo, NCo>(sh_src.screen_buffer, 0);
+    auto new_screen_buffer = resample_data<CharT, double, NRi, NCi, NRo, NCo>(sh_src.screen_buffer, 0);
     auto new_fg_color_buffer = resample_data<Color, t8::RGBA, NRi, NCi, NRo, NCo>(sh_src.fg_color_buffer, 0);
     auto new_bg_color_buffer = resample_data<Color, t8::RGBA, NRi, NCi, NRo, NCo>(sh_src.bg_color_buffer, 0);
     sh_dst.overwrite_data(new_screen_buffer, new_fg_color_buffer, new_bg_color_buffer);

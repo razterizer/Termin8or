@@ -83,7 +83,7 @@ namespace t8x
     t8::DrawPolicy draw_policy = t8::DrawPolicy::MEASURE_SELECT;
   };
   
-  template<int NR = 30, int NC = 80>
+  template<int NR = 30, int NC = 80, typename CharT = char>
   class GameEngine
   {
     bool paused = false;
@@ -193,7 +193,7 @@ namespace t8x
     std::chrono::time_point<std::chrono::steady_clock> real_start_time_s;
     OneShot time_inited;
     
-    t8::ScreenHandler<NR, NC> sh;
+    t8::ScreenHandler<NR, NC, CharT> sh;
     
     Color bg_color = Color16::Default;
     

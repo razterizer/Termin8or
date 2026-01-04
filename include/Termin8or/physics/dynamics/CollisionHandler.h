@@ -17,8 +17,8 @@ using namespace utils::literals;
 
 namespace t8x
 {
-  template<int NR, int NC>
-  using ScreenHandler = t8::ScreenHandler<NR, NC>;
+  template<int NR, int NC, typename CharT>
+  using ScreenHandler = t8::ScreenHandler<NR, NC, CharT>;
   
   
   struct BVH_Node
@@ -127,8 +127,8 @@ namespace t8x
     }
 
     
-    template<int NR, int NC>
-    void draw(ScreenHandler<NR, NC>& sh, int start_level = -1) const
+    template<int NR, int NC, typename CharT>
+    void draw(ScreenHandler<NR, NC, CharT>& sh, int start_level = -1) const
     {
       if (level >= start_level)
       {
@@ -400,14 +400,14 @@ namespace t8x
       }
     }
     
-    template<int NR, int NC>
-    void draw_dbg_broad_phase(ScreenHandler<NR, NC>& sh, int start_level = -1) const
+    template<int NR, int NC, typename CharT>
+    void draw_dbg_broad_phase(ScreenHandler<NR, NC, CharT>& sh, int start_level = -1) const
     {
       m_aabb_bvh->draw(sh, start_level);
     }
     
-    template<int NR, int NC>
-    void draw_dbg_narrow_phase(ScreenHandler<NR, NC>& sh, Color coll_fg_color = Color16::Magenta) const
+    template<int NR, int NC, typename CharT>
+    void draw_dbg_narrow_phase(ScreenHandler<NR, NC, CharT>& sh, Color coll_fg_color = Color16::Magenta) const
     {
       for (const auto& pt : isect_world_positions)
       {

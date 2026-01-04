@@ -15,16 +15,16 @@
 namespace screen_scaling
 {
 
-  template<int NR, int NC>
-  using ScreenHandler = t8::ScreenHandler<NR, NC>;
+  template<int NR, int NC, typename CharT>
+  using ScreenHandler = t8::ScreenHandler<NR, NC, CharT>;
   using StreamKeyboard = t8::StreamKeyboard;
   using KeyPressDataPair = t8::KeyPressDataPair;
   using Color16 = t8::Color16;
   
   void example1()
   {
-    ScreenHandler<20, 40> sh;
-    ScreenHandler<30, 60> sh_out;
+    ScreenHandler<20, 40, char> sh;
+    ScreenHandler<30, 60, char> sh_out;
     KeyPressDataPair kpdp;
     auto keyboard = std::make_unique<StreamKeyboard>();
     

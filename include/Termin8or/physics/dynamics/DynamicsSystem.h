@@ -14,8 +14,8 @@
 
 namespace t8x
 {
-  template<int NR, int NC>
-  using ScreenHandler = t8::ScreenHandler<NR, NC>;
+  template<int NR, int NC, typename CharT>
+  using ScreenHandler = t8::ScreenHandler<NR, NC, CharT>;
 
 
   class DynamicsSystem
@@ -90,8 +90,8 @@ namespace t8x
         rb->update(time, dt, sim_frame);
     }
     
-    template<int NR, int NC>
-    void draw_dbg(ScreenHandler<NR, NC>& sh)
+    template<int NR, int NC, typename CharT>
+    void draw_dbg(ScreenHandler<NR, NC, CharT>& sh)
     {
       for (auto& rb : m_rigid_bodies)
       {

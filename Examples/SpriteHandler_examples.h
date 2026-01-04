@@ -22,8 +22,8 @@ bool draw_sprites = true;
 
 namespace sprite_handler
 {
-  template<int NR, int NC>
-  using ScreenHandler = t8::ScreenHandler<NR, NC>;
+  template<int NR, int NC, typename CharT>
+  using ScreenHandler = t8::ScreenHandler<NR, NC, CharT>;
   using SpriteHandler = t8x::SpriteHandler;
   using Sprite = t8x::Sprite;
   using DynamicsSystem = t8x::DynamicsSystem;
@@ -36,7 +36,7 @@ namespace sprite_handler
 
   void example1()
   {
-    ScreenHandler<20, 40> sh;
+    ScreenHandler<20, 40, char> sh;
     SpriteHandler sprh;
     KeyPressDataPair kpdp;
     auto keyboard = std::make_unique<StreamKeyboard>();
@@ -248,7 +248,7 @@ quit:
   
   void example2()
   {
-    ScreenHandler<20, 40> sh;
+    ScreenHandler<20, 40, char> sh;
     SpriteHandler sprh;
     KeyPressDataPair kpdp;
     auto keyboard = std::make_unique<StreamKeyboard>();
