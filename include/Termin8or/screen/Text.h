@@ -147,8 +147,6 @@ namespace t8
 #ifdef _WIN32
     static int get_color_win_cmd(Color color)
     {
-      if (color.get_index() < 0)
-        return -1;
       auto color16 = to_nearest_color16(color);
       int win_idx = get_color16_value_win(color16);
       return win_idx;
