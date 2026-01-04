@@ -121,7 +121,13 @@ namespace t8x
   
   // ////////////////////////////////
 
-  enum class OutlineType { Line, Masonry, Masonry2, Masonry3, Masonry4, Temple, Hash, NUM_ITEMS };
+  enum class OutlineType
+  {
+    Line, Hash,
+    Masonry, Masonry2, Masonry3, Masonry4, Temple, // Rogue-like styles.
+    UTF8_SingleLine, UTF8_SingleLineRounded, UTF8_DoubleLine, UTF8_BlockDark, UTF8_BlockNormal, UTF8_BlockLight,
+    NUM_ITEMS
+  };
   enum class SolarDirection
   {
     Nadir, Zenith,
@@ -143,8 +149,8 @@ namespace t8x
     // # #
     // ###
     
-    char outline_n = '#';
-    char outline_s = '#';
+    std::string outline_n = "#";
+    std::string outline_s = "#";
     std::string outline_w = "#";
     std::string outline_e = "#";
     std::string outline_se = "#";
@@ -214,6 +220,66 @@ namespace t8x
         outline_sw = 'O';
         break;
       case OutlineType::Hash:
+        break;
+      case OutlineType::UTF8_SingleLine:
+        outline_n = t8::term::encode_single_width_glyph(0x2500, '-');
+        outline_s = t8::term::encode_single_width_glyph(0x2500, '-');
+        outline_w = t8::term::encode_single_width_glyph(0x2502, '|');
+        outline_e = t8::term::encode_single_width_glyph(0x2502, '|');
+        outline_se = t8::term::encode_single_width_glyph(0x2518, '+');
+        outline_ne = t8::term::encode_single_width_glyph(0x2510, '+');
+        outline_nw = t8::term::encode_single_width_glyph(0x250C, '+');
+        outline_sw = t8::term::encode_single_width_glyph(0x2514, '+');
+        break;
+      case OutlineType::UTF8_SingleLineRounded:
+        outline_n = t8::term::encode_single_width_glyph(0x2500, '-');
+        outline_s = t8::term::encode_single_width_glyph(0x2500, '-');
+        outline_w = t8::term::encode_single_width_glyph(0x2502, '|');
+        outline_e = t8::term::encode_single_width_glyph(0x2502, '|');
+        outline_se = t8::term::encode_single_width_glyph(0x256F, '+');
+        outline_ne = t8::term::encode_single_width_glyph(0x256E, '+');
+        outline_nw = t8::term::encode_single_width_glyph(0x256D, '+');
+        outline_sw = t8::term::encode_single_width_glyph(0x2570, '+');
+        break;
+      case OutlineType::UTF8_DoubleLine:
+        outline_n = t8::term::encode_single_width_glyph(0x2550, '=');
+        outline_s = t8::term::encode_single_width_glyph(0x2550, '=');
+        outline_w = t8::term::encode_single_width_glyph(0x2551, '|');
+        outline_e = t8::term::encode_single_width_glyph(0x2551, '|');
+        outline_se = t8::term::encode_single_width_glyph(0x255D, '+');
+        outline_ne = t8::term::encode_single_width_glyph(0x2557, '+');
+        outline_nw = t8::term::encode_single_width_glyph(0x2554, '+');
+        outline_sw = t8::term::encode_single_width_glyph(0x255A, '+');
+        break;
+      case OutlineType::UTF8_BlockDark:
+        outline_n = t8::term::encode_single_width_glyph(0x2593, '#');
+        outline_s = t8::term::encode_single_width_glyph(0x2593, '#');
+        outline_w = t8::term::encode_single_width_glyph(0x2593, '#');
+        outline_e = t8::term::encode_single_width_glyph(0x2593, '#');
+        outline_se = t8::term::encode_single_width_glyph(0x2593, '#');
+        outline_ne = t8::term::encode_single_width_glyph(0x2593, '#');
+        outline_nw = t8::term::encode_single_width_glyph(0x2593, '#');
+        outline_sw = t8::term::encode_single_width_glyph(0x2593, '#');
+        break;
+      case OutlineType::UTF8_BlockNormal:
+        outline_n = t8::term::encode_single_width_glyph(0x2592, '#');
+        outline_s = t8::term::encode_single_width_glyph(0x2592, '#');
+        outline_w = t8::term::encode_single_width_glyph(0x2592, '#');
+        outline_e = t8::term::encode_single_width_glyph(0x2592, '#');
+        outline_se = t8::term::encode_single_width_glyph(0x2592, '#');
+        outline_ne = t8::term::encode_single_width_glyph(0x2592, '#');
+        outline_nw = t8::term::encode_single_width_glyph(0x2592, '#');
+        outline_sw = t8::term::encode_single_width_glyph(0x2592, '#');
+        break;
+      case OutlineType::UTF8_BlockLight:
+        outline_n = t8::term::encode_single_width_glyph(0x2591, '#');
+        outline_s = t8::term::encode_single_width_glyph(0x2591, '#');
+        outline_w = t8::term::encode_single_width_glyph(0x2591, '#');
+        outline_e = t8::term::encode_single_width_glyph(0x2591, '#');
+        outline_se = t8::term::encode_single_width_glyph(0x2591, '#');
+        outline_ne = t8::term::encode_single_width_glyph(0x2591, '#');
+        outline_nw = t8::term::encode_single_width_glyph(0x2591, '#');
+        outline_sw = t8::term::encode_single_width_glyph(0x2591, '#');
       default:
         break;
     }
@@ -234,14 +300,30 @@ namespace t8x
     // Outline
     int num_horiz = len_c;
     int num_horiz_inset = num_horiz - 2;
-    auto str_horiz_n = outline_nw + str::rep_char(outline_n, num_horiz_inset) + (len_c >= 2 ? outline_ne : "");
-    auto str_horiz_s = outline_sw + str::rep_char(outline_s, num_horiz_inset) + (len_c >= 2 ? outline_se : "");
+    auto str_horiz_n = outline_nw + str::rep_str(outline_n, num_horiz_inset) + (len_c >= 2 ? outline_ne : "");
+    auto str_horiz_s = outline_sw + str::rep_str(outline_s, num_horiz_inset) + (len_c >= 2 ? outline_se : "");
 
-    for (int j = 0; j < len_c; ++j)
+    size_t byte_idx = 0;
+    char32_t ch32 = utf8::none;
+    int j = 0;
+    while (utf8::decode_next_utf8_char32(str_horiz_n, ch32, byte_idx))
     {
-      sh.write_buffer(std::string(1, str_horiz_n[j]), r, j + c, f_shade_style(outline_style, 0, j));
-      sh.write_buffer(std::string(1, str_horiz_s[j]), r + len_r - 1, j + c, f_shade_style(outline_style, len_r - 1, j));
+      if (j == len_c)
+        break;
+      sh.write_buffer(utf8::encode_char32_utf8(ch32), r, j + c, f_shade_style(outline_style, 0, j));
+      j++;
     }
+    
+    byte_idx = 0;
+    j = 0;
+    while (utf8::decode_next_utf8_char32(str_horiz_s, ch32, byte_idx))
+    {
+      if (j == len_c)
+        break;
+      sh.write_buffer(utf8::encode_char32_utf8(ch32), r + len_r - 1, j + c, f_shade_style(outline_style, len_r - 1, j));
+      j++;
+    }
+
     for (int i = r + 1; i < r + len_r - 1; ++i)
     {
       auto r0 = i - r;
