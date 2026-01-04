@@ -173,6 +173,25 @@ namespace t8
       return screen_buffer[index(r, c)] == ' ';
     }
     
+    inline std::string encode_single_width_glyph(char32_t preferred,
+                                                 char32_t fallback = U'?')
+    {
+      if constexpr (std::is_same_v<CharT, char>)
+      {
+        if (preferred <= 0x7F)
+          return std::string(1, static_cast<char>(preferred));
+        if (fallback <= 0x7F)
+          return std::string(1, static_cast<char>(fallback));
+        return "?";
+      }
+      if constexpr (std::is_same_v<CharT, char32_t>)
+        return term::encode_single_width_glyph(preferred, fallback);
+        
+      static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
+                  "ERROR in ScreenHandler::encode_single_width_glyph(): unsupported CharT!");
+      return "?";
+    }
+    
     // write_buffer using StringBox.
     void write_buffer(const str::StringBox& sb, int r, int c, Color fg_color, Color bg_color = Color16::Transparent)
     {
