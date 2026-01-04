@@ -171,12 +171,7 @@ namespace t8
     static void set_color_win_cmd(Color text_color, Color bg_color = Color16::Default)
     {
 #ifdef _WIN32
-      int foreground = get_color_win_cmd(text_color);
-      int background = 16 * get_color_win_cmd(bg_color);
-      
-      int color = foreground + background;
-      
-      SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+      SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), get_style_win_cmd(text_color, bg_color));
 #endif
     }
     
