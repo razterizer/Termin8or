@@ -259,10 +259,9 @@ namespace t8
           }
           
           CHAR_INFO ci {};
-          ci.Char.AsciiChar = utf8::encode_char32_codepage(ch, code_page);
-          int fgAttr = get_color_win_cmd(fg); if (fgAttr == -1) fgAttr = 7;
-          int bgAttr = get_color_win_cmd(bg); if (bgAttr == -1) bgAttr = 0;
-          ci.Attributes = fgAttr | (bgAttr << 4);
+          auto s = utf8::encode_char32_codepage(ch, code_page);
+          ci.Char.AsciiChar = s.empty() ? '?' : s[0];
+          ci.Attributes = get_style_win_cmd(fg, bg);
           lineBuffer.push_back(ci);
         }
 #endif
@@ -308,11 +307,10 @@ namespace t8
           for (size_t i = 0; i < chunk.text.size(); ++i)
           {
             CHAR_INFO ci {};
-            auto [ch, fg_color, bg_color] = chunk.text[i];
-            ci.Char.AsciiChar = utf8::encode_char32_codepage(ch, code_page);
-            ci.Attributes =
-              get_color_win_cmd(fg_color) |
-             (get_color_win_cmd(bg_color) << 4);
+            auto [ch, fg, bg] = chunk.text[i];
+            auto s = utf8::encode_char32_codepage(ch, code_page);
+            ci.Char.AsciiChar = s.empty() ? '?' : s[0];
+            ci.Attributes = get_style_win_cmd(fg, bg);
             buffer[i] = ci;
           }
           
