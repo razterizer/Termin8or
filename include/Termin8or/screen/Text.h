@@ -102,15 +102,8 @@ namespace t8
   
   class Text
   {
-  
-    int code_page = 65001;
-    
   public:
-    Text()
-    {
-      if (sys::is_windows_cmd())
-        code_page = 437;
-    }
+    Text() = default;
     
     static std::string get_color_string(Color text_color, Color bg_color = Color16::Default)
     {
@@ -216,11 +209,11 @@ namespace t8
       if (sys::is_windows_cmd())
       {
         set_color_win_cmd(text_color, bg_color);
-        std::cout << utf8::encode_char32_codepage(c, code_page);
+        std::cout << utf8::encode_char32_codepage(c, term::get_code_page());
       }
       else
       {
-        std::string output = get_color_string(text_color, bg_color) + utf8::encode_char32_codepage(c, code_page) + "\033[0m";
+        std::string output = get_color_string(text_color, bg_color) + utf8::encode_char32_codepage(c, term::get_code_page()) + "\033[0m";
         //printf("%s", output.c_str());
         std::cout << output;
       }
@@ -230,6 +223,8 @@ namespace t8
     
     void print_complex_sequential(const ComplexString& text)
     {
+      int code_page = term::get_code_page();
+    
       if (sys::is_windows_cmd())
       {
 #ifdef _WIN32
@@ -288,6 +283,8 @@ namespace t8
     
     void print_complex_chunks(const std::vector<ComplexStringChunk>& chunk_vec)
     {
+      int code_page = term::get_code_page();
+    
       if (sys::is_windows_cmd())
       {
 #ifdef _WIN32
@@ -350,8 +347,6 @@ namespace t8
         std::cout << "\033[0m";
       }
     }
-    
-    inline int get_code_page() const noexcept { return code_page; }
   };
   
 }
