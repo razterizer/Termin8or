@@ -96,7 +96,7 @@ namespace t8
         cp = U'?';
         
       // Use 437 for cmd.exe for now as we only have a mapping from UTF-8 to CP437 atm.
-      return utf8::encode_char32_codepage(cp, sys::is_windows_cmd() ? 437 : 65001);
+      return utf8::encode_char32_codepage(cp, get_code_page());
     }
   }
   
