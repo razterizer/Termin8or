@@ -62,6 +62,23 @@ namespace t8
       return sys::is_windows_cmd() ? 437 : 65001;
     }
     
+    inline void init_windows_console()
+    {
+#ifdef _WIN32
+      static bool once [[maybe_unused]] = []()
+      {
+        // Only if stdout is a console.
+        DWORD mode = 0;
+        HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+        if (!GetConsoleMode(h, &mode))
+          return true;
+        
+        SetConsoleOutputCP(static_cast<UINT>(term::get_code_page()));
+        return true;
+      }();
+#endif
+    }
+    
     // We assume single column and rely on encoder fallback.
     inline bool is_single_column(char32_t cp)
     {
