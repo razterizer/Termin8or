@@ -116,9 +116,9 @@ namespace t8
         if (text_color == Color16::Default)
           fg += "39";
         else if (0 <= text_color_idx && text_color_idx <= 7)
-          fg += std::to_string(text_color_idx + 30);
+          fg += std::to_string(30 + text_color_idx);
         else if (8 <= text_color_idx && text_color_idx <= 15)
-          fg += std::to_string(text_color_idx + 82);
+          fg += std::to_string(90 + (text_color_idx - 8));
         else if (16 <= text_color_idx)
           fg += "38;5;" + std::to_string(text_color_idx); // 256-color extended mode (6^3 rgb + 24 gray)
           
@@ -132,9 +132,9 @@ namespace t8
         if (bg_color == Color16::Default)
           bg += "49";
         else if (0 <= bg_color_idx && bg_color_idx <= 7)
-          bg += std::to_string(bg_color_idx + 40);
+          bg += std::to_string(40 + bg_color_idx);
         else if (8 <= bg_color_idx && bg_color_idx <= 15)
-          bg += std::to_string(bg_color_idx + 92);
+          bg += std::to_string(100 + (bg_color_idx - 8));
         else if (16 <= bg_color_idx)
           bg += "48;5;" + std::to_string(bg_color_idx); // 256-color extended mode (6^3 rgb + 24 gray)
         
