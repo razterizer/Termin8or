@@ -235,7 +235,7 @@ namespace t8
         return;
       if constexpr (std::is_same_v<CharT, char>)
       {
-        if (c >= 0 && str.size() + c <= NC)
+        if (c >= 0 && str::lenI(str) + c <= NC)
         {
           if (r >= 0 && r < NR)
           {
