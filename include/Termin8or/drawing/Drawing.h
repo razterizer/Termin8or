@@ -347,10 +347,10 @@ namespace t8x
   void draw_box(ScreenHandler<NR, NC, CharT>& sh,
                 int r, int c, int len_r, int len_c,
                 const Style& fill_style = { Color16::Default, Color16::Transparent2 },
-                char fill_char = ' ',
+                t8::term::Glyph fill_char = ' ',
                 SolarDirection shadow_type = SolarDirection::Zenith,
                 const Style& shadow_style = { Color16::Default, Color16::Transparent2 },
-                char shadow_char = ' ',
+                t8::term::Glyph shadow_char = ' ',
                 const bool_vector& light_field = {})
   {
   
@@ -368,9 +368,9 @@ namespace t8x
     };
     
     // Filling
-    auto str_fill = std::string(1, fill_char); //str::rep_char(fill_char, num_horiz_inset);
-    auto str_shadow_ns = std::string(1, shadow_char);//str::rep_char(shadow_char, num_horiz_inset);
-    auto str_shadow_ew = std::string(1, shadow_char);
+    auto str_fill = sh.encode_single_width_glyph(fill_char); //str::rep_char(fill_char, num_horiz_inset);
+    auto str_shadow_ns = sh.encode_single_width_glyph(shadow_char);//str::rep_char(shadow_char, num_horiz_inset);
+    auto str_shadow_ew = sh.encode_single_width_glyph(shadow_char);
     
     if (len_r >= 3)
     {
@@ -423,10 +423,10 @@ namespace t8x
   void draw_box(ScreenHandler<NR, NC, CharT>& sh,
                 const Rectangle& bb,
                 const Style& fill_style = { Color16::Default, Color16::Transparent2 },
-                char fill_char = ' ',
+                t8::term::Glyph fill_char = ' ',
                 SolarDirection shadow_type = SolarDirection::Zenith,
                 const Style& shadow_style = { Color16::Default, Color16::Transparent2 },
-                char shadow_char = ' ',
+                t8::term::Glyph shadow_char = ' ',
                 const bool_vector& light_field = {})
   {
     draw_box(sh,
