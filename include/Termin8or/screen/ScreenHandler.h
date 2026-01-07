@@ -174,7 +174,7 @@ namespace t8
     }
     
     inline std::string encode_single_width_glyph(char32_t preferred,
-                                                 char32_t fallback = U'?')
+                                                 char32_t fallback = U'?') const
     {
       if constexpr (std::is_same_v<CharT, char>)
       {
