@@ -415,10 +415,10 @@ namespace t8x
   void draw_box(ScreenHandler<NR, NC, CharT>& sh,
                 int r, int c, int len_r, int len_c,
                 const Style& fill_style = { Color16::Default, Color16::Transparent2 },
-                t8::term::Glyph fill_char = ' ',
+                t8::Glyph fill_char = ' ',
                 SolarDirection shadow_type = SolarDirection::Zenith,
                 const Style& shadow_style = { Color16::Default, Color16::Transparent2 },
-                t8::term::Glyph shadow_char = ' ',
+                t8::Glyph shadow_char = ' ',
                 const bool_vector& light_field = {})
   {
   
@@ -491,10 +491,10 @@ namespace t8x
   void draw_box(ScreenHandler<NR, NC, CharT>& sh,
                 const Rectangle& bb,
                 const Style& fill_style = { Color16::Default, Color16::Transparent2 },
-                t8::term::Glyph fill_char = ' ',
+                t8::Glyph fill_char = ' ',
                 SolarDirection shadow_type = SolarDirection::Zenith,
                 const Style& shadow_style = { Color16::Default, Color16::Transparent2 },
-                t8::term::Glyph shadow_char = ' ',
+                t8::Glyph shadow_char = ' ',
                 const bool_vector& light_field = {})
   {
     draw_box(sh,

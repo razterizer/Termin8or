@@ -45,7 +45,7 @@ namespace t8
       for (unsigned char c : str)
         glyph_vector.emplace_back(c, c);
     }
-    GlyphString(const term::Glyph& glyph)
+    GlyphString(const Glyph& glyph)
     {
       glyph_vector.emplace_back(glyph);
     }
@@ -59,10 +59,10 @@ namespace t8
       return str;
     }
     
-    term::Glyph& operator[](int idx) { return glyph_vector[idx]; }
-    const term::Glyph& operator[](int idx) const { return glyph_vector[idx]; }
+    Glyph& operator[](int idx) { return glyph_vector[idx]; }
+    const Glyph& operator[](int idx) const { return glyph_vector[idx]; }
   
-    std::vector<term::Glyph> glyph_vector;
+    std::vector<Glyph> glyph_vector;
   };
   
   namespace literals
@@ -117,7 +117,7 @@ namespace t8
     }
     
     // Append Glyph.
-    inline GlyphString operator+(GlyphString lhs, const term::Glyph& rhs)
+    inline GlyphString operator+(GlyphString lhs, const Glyph& rhs)
     {
       lhs.glyph_vector.reserve(lhs.glyph_vector.size() + 1);
       lhs.glyph_vector.emplace_back(rhs);
@@ -287,7 +287,7 @@ namespace t8
       return "?";
     }
     
-    inline std::string encode_single_width_glyph(const term::Glyph& glyph)
+    inline std::string encode_single_width_glyph(const Glyph& glyph)
     {
       return encode_single_width_glyph(glyph.preferred, glyph.fallback);
     }
@@ -314,22 +314,22 @@ namespace t8
       ordered_texts.clear();
     }
     
-    void write_buffer(const term::Glyph& glyph, const RC& pos, const Style& style)
+    void write_buffer(const Glyph& glyph, const RC& pos, const Style& style)
     {
       write_buffer(encode_single_width_glyph(glyph), pos.r, pos.c, style.fg_color, style.bg_color);
     }
     
-    void write_buffer(const term::Glyph& glyph, const RC& pos, Color fg_color, Color bg_color = Color16::Transparent)
+    void write_buffer(const Glyph& glyph, const RC& pos, Color fg_color, Color bg_color = Color16::Transparent)
     {
       write_buffer(encode_single_width_glyph(glyph), pos.r, pos.c, fg_color, bg_color);
     }
     
-    void write_buffer(const term::Glyph& glyph, int r, int c, const Style& style)
+    void write_buffer(const Glyph& glyph, int r, int c, const Style& style)
     {
       write_buffer(encode_single_width_glyph(glyph), r, c, style.fg_color, style.bg_color);
     }
     
-    void write_buffer(const term::Glyph& glyph, int r, int c, Color fg_color, Color bg_color = Color16::Transparent)
+    void write_buffer(const Glyph& glyph, int r, int c, Color fg_color, Color bg_color = Color16::Transparent)
     {
       write_buffer(encode_single_width_glyph(glyph), r, c, fg_color, bg_color);
     }

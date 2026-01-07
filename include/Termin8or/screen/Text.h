@@ -1,6 +1,7 @@
 #pragma once
 #include "Color.h"
 #include "ScreenCommandsBasic.h"
+#include "Glyph.h"
 #include "../geom/RC.h"
 #include <Core/System.h>
 #include <Core/Utf8.h>
@@ -115,19 +116,6 @@ namespace t8
       // Use 437 for cmd.exe for now as we only have a mapping from UTF-8 to CP437 atm.
       return utf8::encode_char32_codepage(cp, get_code_page());
     }
-    
-    struct Glyph
-    {
-      char32_t preferred = U'?';
-      char32_t fallback = U'?';
-      
-      Glyph() = default;
-    
-      Glyph(char32_t pref, char32_t fb = U'?')
-        : preferred(pref)
-        , fallback(fb)
-      {}
-    };
   }
   
   class Text
