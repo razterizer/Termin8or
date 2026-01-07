@@ -126,6 +126,7 @@ namespace t8x
     Line, Hash,
     Masonry, Masonry2, Masonry3, Masonry4, Temple, // Rogue-like styles.
     UTF8_SingleLine, UTF8_SingleLineRounded, UTF8_DoubleLine, UTF8_BlockDark, UTF8_BlockNormal, UTF8_BlockLight,
+    UTF8_Masonry, UTF8_Checker, UTF8_Temple, // Rogue-like styles.
     NUM_ITEMS
   };
   enum class SolarDirection
@@ -157,6 +158,10 @@ namespace t8x
     std::string outline_ne = "#";
     std::string outline_nw = "#";
     std::string outline_sw = "#";
+    std::string outline_n2 = "";
+    std::string outline_s2 = "";
+    std::string outline_w2 = "";
+    std::string outline_e2 = "";
     switch (outline_type)
     {
       case OutlineType::Line:
@@ -281,6 +286,48 @@ namespace t8x
         outline_nw = sh.encode_single_width_glyph(0x2591, '#');
         outline_sw = sh.encode_single_width_glyph(0x2591, '#');
         break;
+      case OutlineType::UTF8_Masonry:
+        outline_n = sh.encode_single_width_glyph(0x252C, '=');
+        outline_s = sh.encode_single_width_glyph(0x2534, '=');
+        outline_w = sh.encode_single_width_glyph(0x251C, 'H');
+        outline_e = sh.encode_single_width_glyph(0x2524, 'H');
+        outline_se = sh.encode_single_width_glyph(0x253C, '#');
+        outline_ne = sh.encode_single_width_glyph(0x253C, '#');
+        outline_nw = sh.encode_single_width_glyph(0x253C, '#');
+        outline_sw = sh.encode_single_width_glyph(0x253C, '#');
+        outline_n2 = sh.encode_single_width_glyph(0x2534, '=');
+        outline_s2 = sh.encode_single_width_glyph(0x252C, '=');
+        outline_w2 = sh.encode_single_width_glyph(0x2524, 'H');
+        outline_e2 = sh.encode_single_width_glyph(0x251C, 'H');
+        break;
+      case OutlineType::UTF8_Checker:
+        outline_n = sh.encode_single_width_glyph(0x2580, 'M');
+        outline_s = sh.encode_single_width_glyph(0x2584, 'W');
+        outline_w = sh.encode_single_width_glyph(0x258C, 'H');
+        outline_e = sh.encode_single_width_glyph(0x2590, 'H');
+        outline_se = sh.encode_single_width_glyph(0x259F, '@');
+        outline_ne = sh.encode_single_width_glyph(0x259C, '@');
+        outline_nw = sh.encode_single_width_glyph(0x259B, '@');
+        outline_sw = sh.encode_single_width_glyph(0x2599, '@');
+        outline_n2 = sh.encode_single_width_glyph(0x2584, 'M');
+        outline_s2 = sh.encode_single_width_glyph(0x2580, 'W');
+        outline_w2 = sh.encode_single_width_glyph(0x2590, 'H');
+        outline_e2 = sh.encode_single_width_glyph(0x258C, 'H');
+        break;
+      case OutlineType::UTF8_Temple:
+        outline_n = sh.encode_single_width_glyph(0x20B8, 'I');
+        outline_s = sh.encode_single_width_glyph(0x27C2, 'I');
+        outline_w = sh.encode_single_width_glyph(0x27DD, 'H');
+        outline_e = sh.encode_single_width_glyph(0x27DE, 'H');
+        outline_se = sh.encode_single_width_glyph(0x256F, 'O');
+        outline_ne = sh.encode_single_width_glyph(0x256E, 'O');
+        outline_nw = sh.encode_single_width_glyph(0x256D, 'O');
+        outline_sw = sh.encode_single_width_glyph(0x2570, 'O');
+        //outline_n2 = sh.encode_single_width_glyph(0x2534, 'I');
+        //outline_s2 = sh.encode_single_width_glyph(0x252C, 'I');
+        //outline_w2 = sh.encode_single_width_glyph(0x2524, 'H');
+        //outline_e2 = sh.encode_single_width_glyph(0x251C, 'H');
+        break;
       default:
         break;
     }
@@ -301,8 +348,22 @@ namespace t8x
     // Outline
     int num_horiz = len_c;
     int num_horiz_inset = num_horiz - 2;
-    auto str_horiz_n = outline_nw + str::rep_str(outline_n, num_horiz_inset) + (len_c >= 2 ? outline_ne : "");
-    auto str_horiz_s = outline_sw + str::rep_str(outline_s, num_horiz_inset) + (len_c >= 2 ? outline_se : "");
+    
+    std::string str_horiz_n_inset;
+    if (outline_n2.empty())
+      str_horiz_n_inset = str::rep_str(outline_n, num_horiz_inset);
+    else
+      for (int i = 0; i < num_horiz_inset; ++i)
+        str_horiz_n_inset += (i % 2 == 0) ? outline_n : outline_n2;
+    
+    std::string str_horiz_s_inset;
+    if (outline_s2.empty())
+      str_horiz_s_inset = str::rep_str(outline_s, num_horiz_inset);
+    else
+      for (int i = 0; i < num_horiz_inset; ++i)
+        str_horiz_s_inset += (i % 2 == 0) ? outline_s : outline_s2;
+    auto str_horiz_n = outline_nw + str_horiz_n_inset + (len_c >= 2 ? outline_ne : "");
+    auto str_horiz_s = outline_sw + str_horiz_s_inset + (len_c >= 2 ? outline_se : "");
 
     size_t byte_idx = 0;
     char32_t ch32 = utf8::none;
@@ -325,11 +386,18 @@ namespace t8x
       j++;
     }
 
+    auto f_sel_vert_glyph = [](const std::string& glyph0, const std::string& glyph1, int i) -> std::string
+    {
+      if (glyph1.empty())
+        return glyph0;
+      return (i % 2 == 0) ? glyph0 : glyph1;
+    };
+    
     for (int i = r + 1; i < r + len_r - 1; ++i)
     {
       auto r0 = i - r;
-      sh.write_buffer(outline_w, i, c, f_shade_style(outline_style, r0, 0));
-      sh.write_buffer(outline_e, i, c + len_c - 1, f_shade_style(outline_style, r0, len_c - 1));
+      sh.write_buffer(f_sel_vert_glyph(outline_w, outline_w2, i), i, c, f_shade_style(outline_style, r0, 0));
+      sh.write_buffer(f_sel_vert_glyph(outline_e, outline_e2, i), i, c + len_c - 1, f_shade_style(outline_style, r0, len_c - 1));
     }
   }
   
