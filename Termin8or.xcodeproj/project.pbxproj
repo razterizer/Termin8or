@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		07233B4F2EDBA7220022B60B /* RGBA.h in Headers */ = {isa = PBXBuildFile; fileRef = 07233B4E2EDBA71C0022B60B /* RGBA.h */; };
+		0774FE152F0EB17900B4D4FC /* Glyph.h in Headers */ = {isa = PBXBuildFile; fileRef = 0774FE142F0EB17400B4D4FC /* Glyph.h */; };
 		07BDBA6C2E741B05002ACC96 /* Styles.h in Headers */ = {isa = PBXBuildFile; fileRef = 07BDBA692E741B05002ACC96 /* Styles.h */; };
 		07BDBA6D2E741B05002ACC96 /* ScreenUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 07BDBA682E741B05002ACC96 /* ScreenUtils.h */; };
 		07BDBA6E2E741B05002ACC96 /* ScreenCommands.h in Headers */ = {isa = PBXBuildFile; fileRef = 07BDBA642E741B05002ACC96 /* ScreenCommands.h */; };
@@ -59,6 +60,7 @@
 		075AC77C2E6C767800D0EE66 /* fetch-dependencies.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = "fetch-dependencies.py"; sourceTree = SOURCE_ROOT; };
 		0760B6F02B9CEABC0032CACD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		07685DAB2CD510E200472204 /* Keyboard_examples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Keyboard_examples.h; sourceTree = "<group>"; };
+		0774FE142F0EB17400B4D4FC /* Glyph.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Glyph.h; sourceTree = "<group>"; };
 		07BDBA632E741B05002ACC96 /* Color.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Color.h; sourceTree = "<group>"; };
 		07BDBA642E741B05002ACC96 /* ScreenCommands.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenCommands.h; sourceTree = "<group>"; };
 		07BDBA652E741B05002ACC96 /* ScreenCommandsBasic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenCommandsBasic.h; sourceTree = "<group>"; };
@@ -162,6 +164,7 @@
 		07BDBA6B2E741B05002ACC96 /* screen */ = {
 			isa = PBXGroup;
 			children = (
+				0774FE142F0EB17400B4D4FC /* Glyph.h */,
 				07BDBA632E741B05002ACC96 /* Color.h */,
 				07233B4E2EDBA71C0022B60B /* RGBA.h */,
 				07BDBA642E741B05002ACC96 /* ScreenCommands.h */,
@@ -347,6 +350,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				07BDBA802E741BC1002ACC96 /* Keyboard.h in Headers */,
+				0774FE152F0EB17900B4D4FC /* Glyph.h in Headers */,
 				07BDBA812E741BC1002ACC96 /* KeyboardEnums.h in Headers */,
 				07BDBA9F2E741C6A002ACC96 /* GameEngine.h in Headers */,
 				07BDBAA02E741C6A002ACC96 /* Logging.h in Headers */,
