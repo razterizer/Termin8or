@@ -280,6 +280,7 @@ namespace t8x
         outline_ne = sh.encode_single_width_glyph(0x2591, '#');
         outline_nw = sh.encode_single_width_glyph(0x2591, '#');
         outline_sw = sh.encode_single_width_glyph(0x2591, '#');
+        break;
       default:
         break;
     }
