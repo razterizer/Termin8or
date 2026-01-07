@@ -443,7 +443,7 @@ namespace t8
     
     void print_screen_buffer_full(Color clear_bg_color) const
     {
-      std::vector<std::tuple<char32_t, Color, Color>> colored_str;
+      Text::ComplexString<CharT> colored_str;
       colored_str.resize(NR*(NC + 1));
       int i = 0;
       for (int r = 0; r < NR; ++r)
@@ -463,11 +463,11 @@ namespace t8
     
     void print_screen_buffer_partial(Color clear_bg_color) const
     {
-      std::vector<Text::ComplexStringChunk> colored_str_chunks;
+      std::vector<Text::ComplexStringChunk<CharT>> colored_str_chunks;
       colored_str_chunks.reserve(math::roundI(num_chunks_prev * 1.2f));
       for (int r = 0; r < NR; ++r)
       {
-        Text::ComplexStringChunk chunk;
+        Text::ComplexStringChunk<CharT> chunk;
         chunk.text.reserve(16); // #FIXME: Magic number.
         for (int c = 0; c < NC; ++c)
         {

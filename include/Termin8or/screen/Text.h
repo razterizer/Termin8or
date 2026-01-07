@@ -241,9 +241,11 @@ namespace t8
       }
     }
     
-    using ComplexString = std::vector<std::tuple<char32_t, Color, Color>>;
+    template<typename CharT>
+    using ComplexString = std::vector<std::tuple<CharT, Color, Color>>;
     
-    void print_complex_sequential(const ComplexString& text)
+    template<typename CharT>
+    void print_complex_sequential(const ComplexString<CharT>& text)
     {
       int code_page = term::get_code_page();
     
@@ -273,8 +275,13 @@ namespace t8
           }
           
           CHAR_INFO ci {};
-          auto s = utf8::encode_char32_codepage(ch, code_page);
-          ci.Char.AsciiChar = s.empty() ? '?' : s[0];
+          if constexpr (std::is_same_v<CharT, char>)
+            ci.Char.AsciiChar = ch;
+          else if constexpr (std::is_same_v<CharT, char32_t>)
+          {
+            auto s = utf8::encode_char32_codepage(ch, code_page);
+            ci.Char.AsciiChar = s.empty() ? '?' : s[0];
+          }
           ci.Attributes = get_style_win_cmd(fg, bg);
           lineBuffer.push_back(ci);
         }
@@ -288,7 +295,10 @@ namespace t8
         {
           auto [c, fg_color, bg_color] = text[i];
           auto col_str = get_color_string(fg_color, c == '\n' ? Color16::Default : bg_color);
-          output += col_str + utf8::encode_char32_codepage(c, code_page);
+          if constexpr (std::is_same_v<CharT, char>)
+            output += col_str + c;
+          else if constexpr (std::is_same_v<CharT, char32_t>)
+            output += col_str + utf8::encode_char32_codepage(c, code_page);
         }
         output += "\033[0m";
         //printf("%s", output.c_str());
@@ -296,13 +306,15 @@ namespace t8
       }
     }
     
+    template<typename CharT>
     struct ComplexStringChunk
     {
       RC pos;
-      ComplexString text;
+      ComplexString<CharT> text;
     };
     
-    void print_complex_chunks(const std::vector<ComplexStringChunk>& chunk_vec)
+    template<typename CharT>
+    void print_complex_chunks(const std::vector<ComplexStringChunk<CharT>>& chunk_vec)
     {
       int code_page = term::get_code_page();
     
@@ -322,8 +334,13 @@ namespace t8
           {
             CHAR_INFO ci {};
             auto [ch, fg, bg] = chunk.text[i];
-            auto s = utf8::encode_char32_codepage(ch, code_page);
-            ci.Char.AsciiChar = s.empty() ? '?' : s[0];
+            if constexpr (std::is_same_v<CharT, char>)
+              ci.Char.AsciiChar = ch;
+            else if constexpr (std::is_same_v<CharT, char32_t>)
+            {
+              auto s = utf8::encode_char32_codepage(ch, code_page);
+              ci.Char.AsciiChar = s.empty() ? '?' : s[0];
+            }
             ci.Attributes = get_style_win_cmd(fg, bg);
             buffer[i] = ci;
           }
@@ -348,7 +365,13 @@ namespace t8
         {
           output += get_gotorc_str(chunk.pos.r, chunk.pos.c);
           for (const auto& [ch, fg, bg] : chunk.text)
-            output += get_color_string(fg, bg) + utf8::encode_char32_codepage(ch, code_page);
+          {
+            output += get_color_string(fg, bg);
+            if constexpr (std::is_same_v<CharT, char>)
+              output += ch;
+            else if constexpr (std::is_same_v<CharT, char32_t>)
+              output += utf8::encode_char32_codepage(ch, code_page);
+          }
         }
         
         // Reset color.
