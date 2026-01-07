@@ -192,6 +192,11 @@ namespace t8
       return "?";
     }
     
+    inline std::string encode_single_width_glyph(const term::Glyph& glyph)
+    {
+      return encode_single_width_glyph(glyph.preferred, glyph.fallback);
+    }
+    
     // write_buffer using StringBox.
     void write_buffer(const str::StringBox& sb, int r, int c, Color fg_color, Color bg_color = Color16::Transparent)
     {
