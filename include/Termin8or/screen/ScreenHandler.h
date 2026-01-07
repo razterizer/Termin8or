@@ -334,6 +334,26 @@ namespace t8
       write_buffer(encode_single_width_glyph(glyph), r, c, fg_color, bg_color);
     }
     
+    void write_buffer(const GlyphString& gstr, const RC& pos, const Style& style)
+    {
+      write_buffer(gstr, pos.r, pos.c, style.fg_color, style.bg_color);
+    }
+    
+    void write_buffer(const GlyphString& gstr, const RC& pos, Color fg_color, Color bg_color = Color16::Transparent)
+    {
+      write_buffer(gstr, pos.r, pos.c, fg_color, bg_color);
+    }
+    
+    void write_buffer(const GlyphString& gstr, int r, int c, const Style& style)
+    {
+      write_buffer(gstr, r, c, style.fg_color, style.bg_color);
+    }
+    
+    void write_buffer(const GlyphString& gstr, int r, int c, Color fg_color, Color bg_color = Color16::Transparent)
+    {
+      write_buffer(gstr.encode(*this), r, c, fg_color, bg_color);
+    }
+    
     void write_buffer(const std::string& str, const RC& pos, const Style& style)
     {
       write_buffer(str, pos.r, pos.c, style.fg_color, style.bg_color);
