@@ -219,6 +219,26 @@ namespace t8
       ordered_texts.clear();
     }
     
+    void write_buffer(const term::Glyph& glyph, const RC& pos, const Style& style)
+    {
+      write_buffer(encode_single_width_glyph(glyph), pos.r, pos.c, style.fg_color, style.bg_color);
+    }
+    
+    void write_buffer(const term::Glyph& glyph, const RC& pos, Color fg_color, Color bg_color = Color16::Transparent)
+    {
+      write_buffer(encode_single_width_glyph(glyph), pos.r, pos.c, fg_color, bg_color);
+    }
+    
+    void write_buffer(const term::Glyph& glyph, int r, int c, const Style& style)
+    {
+      write_buffer(encode_single_width_glyph(glyph), r, c, style.fg_color, style.bg_color);
+    }
+    
+    void write_buffer(const term::Glyph& glyph, int r, int c, Color fg_color, Color bg_color = Color16::Transparent)
+    {
+      write_buffer(encode_single_width_glyph(glyph), r, c, fg_color, bg_color);
+    }
+    
     void write_buffer(const std::string& str, const RC& pos, const Style& style)
     {
       write_buffer(str, pos.r, pos.c, style.fg_color, style.bg_color);
