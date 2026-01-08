@@ -21,6 +21,12 @@ namespace t8
     : preferred(pref)
     , fallback(fb)
     {}
+    
+    bool operator==(const Glyph& g) const
+    {
+      return this->preferred == g.preferred
+          && this->fallback == g.fallback;
+    }
   };
   
 }
