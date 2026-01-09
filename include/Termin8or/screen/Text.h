@@ -44,6 +44,48 @@
 
 namespace t8
 {
+
+  namespace term
+  {
+    
+    // We assume single column and rely on encoder fallback.
+    inline bool is_single_column(char32_t cp)
+    {
+      if (sys::is_windows_cmd())
+      {
+        // Treat as single-column if we can encode it to CP437 (or ASCII).
+        // If you don’t have a predicate, just allow and rely on encoding fallback.
+        return cp <= 0x10FFFF;
+      }
+      
+      if (cp > 0x10FFFF)
+        return false;
+      
+      ::term::init_locale();
+      wchar_t wc = static_cast<wchar_t>(cp);
+      int w = ::wcwidth(wc);
+      return w == 1; //w <= 1;
+    }
+    
+    inline char32_t get_single_column_char32(char32_t cp)
+    {
+      return is_single_column(cp) ? cp : U'?';
+    }
+    
+    inline std::string encode_single_width_glyph(char32_t preferred,
+                                                 char32_t fallback = U'?')
+    {
+      char32_t cp = preferred;
+      if (!is_single_column(cp))
+        cp = fallback;
+      if (!is_single_column(cp))
+        cp = U'?';
+      
+      // Use 437 for cmd.exe for now as we only have a mapping from UTF-8 to CP437 atm.
+      return utf8::encode_char32_utf8(cp);
+    }
+    
+  }
   
   class Text
   {
@@ -159,11 +201,11 @@ namespace t8
       if (sys::is_windows_cmd())
       {
         set_color_win_cmd(text_color, bg_color);
-        std::cout << utf8::encode_char32_codepage(c, term::get_code_page());
+        std::cout << utf8::encode_char32_utf8(c);
       }
       else
       {
-        std::string output = get_color_string(text_color, bg_color) + utf8::encode_char32_codepage(c, term::get_code_page()) + "\033[0m";
+        std::string output = get_color_string(text_color, bg_color) + utf8::encode_char32_utf8(c) + "\033[0m";
         //printf("%s", output.c_str());
         std::cout << output;
       }
@@ -175,8 +217,6 @@ namespace t8
     template<typename CharT>
     void print_complex_sequential(const ComplexString<CharT>& text)
     {
-      int code_page = term::get_code_page();
-    
       if (sys::is_windows_cmd())
       {
 #ifdef _WIN32
@@ -207,7 +247,7 @@ namespace t8
             ci.Char.AsciiChar = ch;
           else if constexpr (std::is_same_v<CharT, char32_t>)
           {
-            auto s = utf8::encode_char32_codepage(ch, code_page);
+            auto s = utf8::encode_char32_utf8(ch);
             ci.Char.AsciiChar = s.empty() ? '?' : s[0];
           }
           ci.Attributes = get_style_win_cmd(fg, bg);
@@ -226,7 +266,7 @@ namespace t8
           if constexpr (std::is_same_v<CharT, char>)
             output += col_str + c;
           else if constexpr (std::is_same_v<CharT, char32_t>)
-            output += col_str + utf8::encode_char32_codepage(c, code_page);
+            output += col_str + utf8::encode_char32_utf8(c);
         }
         output += "\033[0m";
         //printf("%s", output.c_str());
@@ -244,8 +284,6 @@ namespace t8
     template<typename CharT>
     void print_complex_chunks(const std::vector<ComplexStringChunk<CharT>>& chunk_vec)
     {
-      int code_page = term::get_code_page();
-    
       if (sys::is_windows_cmd())
       {
 #ifdef _WIN32
@@ -266,7 +304,7 @@ namespace t8
               ci.Char.AsciiChar = ch;
             else if constexpr (std::is_same_v<CharT, char32_t>)
             {
-              auto s = utf8::encode_char32_codepage(ch, code_page);
+              auto s = utf8::encode_char32_utf8(ch);
               ci.Char.AsciiChar = s.empty() ? '?' : s[0];
             }
             ci.Attributes = get_style_win_cmd(fg, bg);
@@ -298,7 +336,7 @@ namespace t8
             if constexpr (std::is_same_v<CharT, char>)
               output += ch;
             else if constexpr (std::is_same_v<CharT, char32_t>)
-              output += utf8::encode_char32_codepage(ch, code_page);
+              output += utf8::encode_char32_utf8(ch);
           }
         }
         
