@@ -73,7 +73,7 @@ namespace t8
     disable_stdio_sync();
     save_terminal_colors();
     if (sys::is_windows())
-      ::term::init_windows_console();
+      ::term::init_windows_mode(65001);
     clear_screen();
     return_cursor();
     hide_cursor();
