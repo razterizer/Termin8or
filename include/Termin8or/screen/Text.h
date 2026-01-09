@@ -47,6 +47,15 @@ namespace t8
 
   namespace term
   {
+  
+    inline void init_locale()
+    {
+      static std::once_flag flag;
+      std::call_once(flag, []()
+                     {
+        std::setlocale(LC_CTYPE, "");
+      });
+    }
     
     // We assume single column and rely on encoder fallback.
     inline bool is_single_column(char32_t cp)
@@ -61,7 +70,7 @@ namespace t8
       if (cp > 0x10FFFF)
         return false;
       
-      ::term::init_locale();
+      init_locale();
       wchar_t wc = static_cast<wchar_t>(cp);
       int w = ::wcwidth(wc);
       return w == 1; //w <= 1;
