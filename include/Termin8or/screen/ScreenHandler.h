@@ -601,7 +601,7 @@ namespace t8
             bg_col_buf = clear_bg_color;
           colored_str[i++] = { screen_buffer[idx], fg_color_buffer[idx], bg_col_buf };
         }
-        colored_str[i++] = { '\n', Color16::Default, Color16::Default };
+        colored_str[i++] = { static_cast<CharT>('\n'), Color16::Default, Color16::Default };
       }
       m_text->print_complex_sequential(colored_str);
     }
