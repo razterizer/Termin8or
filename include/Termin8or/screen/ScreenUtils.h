@@ -40,21 +40,21 @@ namespace t8x
 
 
   // Game Over / You Won
-  int game_over_timer = 10;
-  int you_won_timer = 10;
-  double timestamp_game_over = 0.f;
-  double timestamp_you_won = 0.f;
-  const double c_min_time_game_over = 3.f;
-  const double c_min_time_you_won = 3.f;
+  inline int game_over_timer = 10;
+  inline int you_won_timer = 10;
+  inline double timestamp_game_over = 0.f;
+  inline double timestamp_you_won = 0.f;
+  inline const double c_min_time_game_over = 3.f;
+  inline const double c_min_time_you_won = 3.f;
   // Wavey Text
-  float wave_x0 = 0.f;
-  float wave_f = 0.4f;
-  float wave_a = 5.f;
+  inline float wave_x0 = 0.f;
+  inline float wave_f = 0.4f;
+  inline float wave_a = 5.f;
   // Misc
-  const float pix_ar = 1.9f;//1.5f; // height/width of "pixel".
-  const float pix_ar_sq = pix_ar*pix_ar;
-  const float pix_ar2 = 1.5f;
-  const float pix_ar2_sq = pix_ar2*pix_ar2;
+  inline const float pix_ar = 1.9f;//1.5f; // height/width of "pixel".
+  inline const float pix_ar_sq = pix_ar*pix_ar;
+  inline const float pix_ar2 = 1.5f;
+  inline const float pix_ar2_sq = pix_ar2*pix_ar2;
   
   // http://www.network-science.de/ascii/
   // http://patorjk.com/software/taag/#p=display&f=Graffiti&t=Game%20Over Graffiti
