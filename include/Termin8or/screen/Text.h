@@ -203,7 +203,7 @@ namespace t8
     void print(const std::string& text, Color text_color, Color bg_color = Color16::Default) const
     {
 #ifdef _WIN32
-      if (!term::supports_ansi(m_term_mode))
+      if (!::term::supports_ansi(m_term_mode))
       {
         set_color_win_cmd(text_color, bg_color);
         ::term::emit_text(m_term_mode, text);
@@ -229,7 +229,7 @@ namespace t8
     void print_char(char c, Color text_color, Color bg_color = Color16::Default) const
     {
 #ifdef _WIN32
-      if (!term::supports_ansi(m_term_mode))
+      if (!::term::supports_ansi(m_term_mode))
       {
         // Legacy console: use WinAPI colors, then emit the byte.
         set_color_win_cmd(text_color, bg_color);
@@ -252,7 +252,7 @@ namespace t8
       std::string glyph = utf8::encode_char32_utf8(c);
       
 #ifdef _WIN32
-      if (!term::supports_ansi(m_term_mode))
+      if (!::term::supports_ansi(m_term_mode))
       {
         set_color_win_cmd(text_color, bg_color);
         ::term::emit_text(m_term_mode, glyph);
