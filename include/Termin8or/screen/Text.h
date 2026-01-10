@@ -289,17 +289,8 @@ namespace t8
         std::vector<CHAR_INFO> lineBuffer;
         lineBuffer.reserve(text.size());
         
-        auto flush = [&]()
-        {
-          if (lineBuffer.empty())
-            return;
-          
-          COORD bufferSize  = { (SHORT)lineBuffer.size(), 1 };
-          COORD bufferCoord = { 0, 0 };
-          SMALL_RECT writeRegion = { 0, currentRow, (SHORT)lineBuffer.size() - 1, currentRow };
-          WriteConsoleOutputW(hConsole, lineBuffer.data(), bufferSize, bufferCoord, &writeRegion);
-          lineBuffer.clear();
-        };
+        auto flushA = make_flush<WriteConsoleOutputA>(hConsole, lineBuffer, currentRow);
+        auto flushW = make_flush<WriteConsoleOutputW>(hConsole, lineBuffer, currentRow);
         
         for (auto [ch, fg, bg] : text)
         {
@@ -307,13 +298,13 @@ namespace t8
           {
             if (ch == '\n')
             {
-              flush();
+              flushA();
               ++currentRow;
               continue;
             }
             
             CHAR_INFO ci {};
-            ci.Char.UnicodeChar = static_cast<wchar_t>(static_cast<unsigned char>(ch)); // Safe for ASCII/CP437-ish bytes.
+            ci.Char.AsciiChar = static_cast<unsigned char>(ch); // Safe for ASCII/CP437-ish bytes.
             ci.Attributes = get_style_win_cmd(fg, bg);
             lineBuffer.push_back(ci);
           }
@@ -321,13 +312,15 @@ namespace t8
           {
             if (ch == U'\n')
             {
-              flush();
+              flushW();
               ++currentRow;
               continue;
             }
             
             CHAR_INFO ci{};
-            ci.Char.UnicodeChar = static_cast<wchar_t>(ch); // BMP assumed.
+            char32_t cp = ch;
+            if (cp > 0xFFFF) cp = U'?';
+            ci.Char.UnicodeChar = static_cast<wchar_t>(cp); // BMP assumed.
             ci.Attributes = get_style_win_cmd(fg, bg);
             lineBuffer.push_back(ci);
           }
@@ -335,7 +328,12 @@ namespace t8
             assert_on_template_arg();
         }
         
-        flush();
+        if constexpr (std::is_same_v<CharT, char>)
+          flushA();
+        else if constexpr (std::is_same_v<CharT, char32_t>)
+          flushW();
+        else
+          assert_on_template_arg();
         return;
       }
 #endif
