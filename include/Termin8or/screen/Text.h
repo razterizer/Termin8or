@@ -70,10 +70,14 @@ namespace t8
       if (cp > 0x10FFFF)
         return false;
       
+#ifdef _WIN32
+      return false;
+#else
       init_locale();
       wchar_t wc = static_cast<wchar_t>(cp);
       int w = ::wcwidth(wc);
       return w == 1; //w <= 1;
+#endif
     }
     
     inline char32_t get_single_column_char32(char32_t cp)
