@@ -54,7 +54,7 @@ namespace t8x
   const float pix_ar = 1.9f;//1.5f; // height/width of "pixel".
   const float pix_ar_sq = pix_ar*pix_ar;
   const float pix_ar2 = 1.5f;
-  const float pix_ar2_sq = pix_ar2*pix_ar;
+  const float pix_ar2_sq = pix_ar2*pix_ar2;
   
   // http://www.network-science.de/ascii/
   // http://patorjk.com/software/taag/#p=display&f=Graffiti&t=Game%20Over Graffiti
