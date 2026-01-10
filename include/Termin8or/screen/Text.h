@@ -385,13 +385,19 @@ namespace t8
           
           std::vector<CHAR_INFO> buffer(chunk.text.size());
           
-          for (auto [ch, fg, bg] : chunk.text)
+          for (size_t i = 0; i < chunk.text.size(); ++i)
           {
+            auto [ch, fg, bg] = chunk.text[i];
+          
             CHAR_INFO ci {};
             if constexpr (std::is_same_v<CharT, char>)
-              ci.Char.UnicodeChar = static_cast<wchar_t>(static_cast<unsigned char>(ch));
+              ci.Char.AsciiChar = static_cast<unsigned char>(ch);
             else if constexpr (std::is_same_v<CharT, char32_t>)
-              ci.Char.UnicodeChar = static_cast<wchar_t>(ch); // BMP assumed.
+            {
+              char32_t cp = ch;
+              if (cp > 0xFFFF) cp = U'?';
+              ci.Char.UnicodeChar = static_cast<wchar_t>(cp); // BMP assumed.
+            }
             else
               static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
                   "ERROR in Text::print_complex_chunks(): unsupported CharT!");
@@ -409,7 +415,10 @@ namespace t8
           COORD bufferSize  = { static_cast<SHORT>(chunk.text.size()), 1 };
           COORD bufferCoord = { 0, 0 };
           
-          WriteConsoleOutputW(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
+          if constexpr (std::is_same_v<CharT, char>)
+            WriteConsoleOutputA(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
+          else if constexpr (std::is_same_v<CharT, char32_t>)
+            WriteConsoleOutputW(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
         }
         return;
       }
