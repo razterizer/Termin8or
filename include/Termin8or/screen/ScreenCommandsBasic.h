@@ -24,7 +24,7 @@ namespace t8
 {
 
   // Clear screen and send cursor to home position.
-  void clear_screen()
+  inline void clear_screen()
   {
     if (sys::is_windows_cmd())
     {
@@ -45,7 +45,7 @@ namespace t8
   }
   
   // Send cursor to home position.
-  void return_cursor()
+  inline void return_cursor()
   {
     if (sys::is_windows_cmd())
     {
@@ -63,13 +63,13 @@ namespace t8
   }
   
   // Clear screen and send cursor to home position.
-  void restore_cursor()
+  inline void restore_cursor()
   {
     if (!sys::is_windows_cmd())
       printf("\x1b[2J"); // #FIXME: Change to "\x1B[H".
   }
   
-  void hide_cursor()
+  inline void hide_cursor()
   {
     if (sys::is_windows_cmd())
     {
@@ -86,7 +86,7 @@ namespace t8
       std::cout << "\x1B[?25l";
   }
   
-  void show_cursor()
+  inline void show_cursor()
   {
     if (sys::is_windows_cmd())
     {
@@ -103,7 +103,7 @@ namespace t8
       std::cout << "\x1B[?25h";
   }
   
-  void gotorc(int r, int c)
+  inline void gotorc(int r, int c)
   {
     if (sys::is_windows_cmd())
     {
@@ -124,7 +124,7 @@ namespace t8
     }
   }
   
-  std::string get_gotorc_str(int r, int c)
+  inline std::string get_gotorc_str(int r, int c)
   {
     if (sys::is_windows_cmd())
     {
@@ -137,7 +137,7 @@ namespace t8
     return "\033[" + std::to_string(r + 1) + ";" + std::to_string(c + 1) + "H";
   }
   
-  std::pair<int, int> get_terminal_window_size()
+  inline std::pair<int, int> get_terminal_window_size()
   {
     int rows = 0;
     int cols = 0;
@@ -165,7 +165,7 @@ namespace t8
     return { rows, cols };
   }
 
-  void resize_terminal_window(int nr, int nc)
+  inline void resize_terminal_window(int nr, int nc)
   {
 #ifdef _WIN32
     // Windows-specific code to resize the console window.
