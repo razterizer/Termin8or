@@ -104,6 +104,27 @@ namespace t8
   {
     ::term::TermMode m_term_mode;
     
+#ifdef _WIN32
+    template <auto WriteFn>
+    static auto make_flush(HANDLE hConsole,
+                    std::vector<CHAR_INFO>& lineBuffer,
+                    SHORT& currentRow)
+    {
+      return [&]()
+      {
+        if (lineBuffer.empty())
+          return;
+        
+        COORD bufferSize  = { static_cast<SHORT>(lineBuffer.size()), 1 };
+        COORD bufferCoord = { 0, 0 };
+        SMALL_RECT writeRegion = { 0, currentRow, static_cast<SHORT>(lineBuffer.size()) - 1, currentRow };
+        
+        WriteFn(hConsole, lineBuffer.data(), bufferSize, bufferCoord, &writeRegion);
+        lineBuffer.clear();
+      };
+    }
+#endif
+    
   public:
     Text() = default;
     
