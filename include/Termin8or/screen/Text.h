@@ -274,6 +274,12 @@ namespace t8
     template<typename CharT>
     void print_complex_sequential(const ComplexString<CharT>& text)
     {
+      constexpr auto assert_on_template_arg = []()
+      {
+        static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
+                  "ERROR in Text::print_complex_sequential(): unsupported CharT!");
+      };
+    
 #ifdef _WIN32
       if (!::term::supports_ansi(m_term_mode))
       {
@@ -326,8 +332,7 @@ namespace t8
             lineBuffer.push_back(ci);
           }
           else
-            static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
-                  "ERROR in Text::print_complex_sequential(): unsupported CharT!");
+            assert_on_template_arg();
         }
         
         flush();
@@ -349,8 +354,7 @@ namespace t8
         else if constexpr (std::is_same_v<CharT, char32_t>)
           output += utf8::encode_char32_utf8(c);
         else
-          static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
-                  "ERROR in Text::print_complex_sequential(): unsupported CharT!");
+          assert_on_template_arg();
       }
       
       output += "\033[0m";
