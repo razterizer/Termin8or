@@ -52,7 +52,7 @@ namespace t8
     {
       static std::once_flag flag;
       std::call_once(flag, []()
-                     {
+      {
         std::setlocale(LC_CTYPE, "");
       });
     }
@@ -98,8 +98,15 @@ namespace t8
   
   class Text
   {
+    ::term::TermMode m_term_mode;
+    
   public:
     Text() = default;
+    
+    void init_terminal_mode()
+    {
+      m_term_mode = ::term::init_terminal_mode(65001);
+    }
     
     static std::string get_color_string(Color text_color, Color bg_color = Color16::Default)
     {
@@ -168,56 +175,72 @@ namespace t8
 #endif
     }
     
-    static void print(const std::string& text, Color text_color, Color bg_color = Color16::Default)
+    void print(const std::string& text, Color text_color, Color bg_color = Color16::Default) const
     {
-      if (sys::is_windows_cmd())
+#ifdef _WIN32
+      if (!term::supports_ansi(m_term_mode))
       {
         set_color_win_cmd(text_color, bg_color);
-        std::cout << text;
+        ::term::emit_text(m_term_mode, text);
+        return;
       }
-      else
-      {
-        std::string output = get_color_string(text_color, bg_color) + text + "\033[0m";
-        //printf("%s", output.c_str());
-        std::cout << output;
-      }
+#endif
+      
+      std::string output;
+      output.reserve(text.size() + 32);
+      output += get_color_string(text_color, bg_color);
+      output += text;
+      output += "\033[0m";
+      ::term::emit_text(m_term_mode, output);
     }
+
     
-    static void print_line(const std::string& text, Color text_color, Color bg_color = Color16::Default)
+    void print_line(const std::string& text, Color text_color, Color bg_color = Color16::Default) const
     {
       print(text, text_color, bg_color);
-      //printf("\n");
-      std::cout << "\n";
+      ::term::emit_text(m_term_mode, "\n");
     }
     
-    static void print_char(char c, Color text_color, Color bg_color = Color16::Default)
+    void print_char(char c, Color text_color, Color bg_color = Color16::Default) const
     {
-      if (sys::is_windows_cmd())
+#ifdef _WIN32
+      if (!term::supports_ansi(m_term_mode))
       {
+        // Legacy console: use WinAPI colors, then emit the byte.
         set_color_win_cmd(text_color, bg_color);
-        std::cout << c;
+        ::term::emit_text(m_term_mode, std::string_view(&c, 1));
+        return;
       }
-      else
-      {
-        std::string output = get_color_string(text_color, bg_color) + c + "\033[0m";
-        //printf("%s", output.c_str());
-        std::cout << output;
-      }
+#endif
+      
+      // ANSI-capable: build escape + char + reset.
+      std::string output;
+      output.reserve(32);
+      output += get_color_string(text_color, bg_color);
+      output.push_back(c);
+      output += "\033[0m";
+      ::term::emit_text(m_term_mode, output);
     }
     
-    static void print_char(char32_t c, Color text_color, Color bg_color = Color16::Default)
+    void print_char(char32_t c, Color text_color, Color bg_color = Color16::Default) const
     {
-      if (sys::is_windows_cmd())
+      std::string glyph = utf8::encode_char32_utf8(c);
+      
+#ifdef _WIN32
+      if (!term::supports_ansi(m_term_mode))
       {
         set_color_win_cmd(text_color, bg_color);
-        std::cout << utf8::encode_char32_utf8(c);
+        ::term::emit_text(m_term_mode, glyph);
+        return;
       }
-      else
-      {
-        std::string output = get_color_string(text_color, bg_color) + utf8::encode_char32_utf8(c) + "\033[0m";
-        //printf("%s", output.c_str());
-        std::cout << output;
-      }
+#endif
+      
+      std::string output;
+      output.reserve(glyph.size() + 32);
+      output += get_color_string(text_color, bg_color);
+      output += glyph;
+      output += "\033[0m";
+      ::term::emit_text(m_term_mode, output);
     }
     
     template<typename CharT>
@@ -226,62 +249,89 @@ namespace t8
     template<typename CharT>
     void print_complex_sequential(const ComplexString<CharT>& text)
     {
-      if (sys::is_windows_cmd())
-      {
 #ifdef _WIN32
+      if (!::term::supports_ansi(m_term_mode))
+      {
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         SHORT currentRow = 0;
         
         std::vector<CHAR_INFO> lineBuffer;
-        for (size_t i = 0; i < text.size(); ++i)
+        lineBuffer.reserve(text.size());
+        
+        auto flush = [&]()
         {
-          auto [ch, fg, bg] = text[i];
+          if (lineBuffer.empty())
+            return;
           
-          if (ch == '\n')
+          COORD bufferSize  = { (SHORT)lineBuffer.size(), 1 };
+          COORD bufferCoord = { 0, 0 };
+          SMALL_RECT writeRegion = { 0, currentRow, (SHORT)lineBuffer.size() - 1, currentRow };
+          WriteConsoleOutputW(hConsole, lineBuffer.data(), bufferSize, bufferCoord, &writeRegion);
+          lineBuffer.clear();
+        };
+        
+        for (auto [ch, fg, bg] : text)
+        {
+          if constexpr (std::is_same_v<CharT, char>)
           {
-            if (!lineBuffer.empty())
+            if (ch == '\n')
             {
-              COORD bufferSize = { (SHORT)lineBuffer.size(), 1 };
-              COORD bufferCoord = { 0, 0 };
-              SMALL_RECT writeRegion = { 0, currentRow, (SHORT)lineBuffer.size() - 1, currentRow };
-              WriteConsoleOutput(hConsole, lineBuffer.data(), bufferSize, bufferCoord, &writeRegion);
-              lineBuffer.clear();
+              flush();
+              ++currentRow;
+              continue;
             }
-            currentRow++;
-            continue;
+            
+            CHAR_INFO ci {};
+            ci.Char.UnicodeChar = static_cast<wchar_t>(static_cast<unsigned char>(ch)); // Safe for ASCII/CP437-ish bytes.
+            ci.Attributes = get_style_win_cmd(fg, bg);
+            lineBuffer.push_back(ci);
           }
-          
-          CHAR_INFO ci {};
-          if constexpr (std::is_same_v<CharT, char>)
-            ci.Char.AsciiChar = ch;
           else if constexpr (std::is_same_v<CharT, char32_t>)
           {
-            auto s = utf8::encode_char32_utf8(ch);
-            ci.Char.AsciiChar = s.empty() ? '?' : s[0];
+            if (ch == U'\n')
+            {
+              flush();
+              ++currentRow;
+              continue;
+            }
+            
+            CHAR_INFO ci{};
+            ci.Char.UnicodeChar = static_cast<wchar_t>(ch); // BMP assumed.
+            ci.Attributes = get_style_win_cmd(fg, bg);
+            lineBuffer.push_back(ci);
           }
-          ci.Attributes = get_style_win_cmd(fg, bg);
-          lineBuffer.push_back(ci);
+          else
+            static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
+                  "ERROR in Text::print_complex_sequential(): unsupported CharT!");
         }
+        
+        flush();
+        return;
+      }
 #endif
-      }
-      else
+      
+      // ANSI-capable path (all platforms).
+      std::string output;
+      output.reserve(text.size() * 8); // Rough estimate.
+      
+      for (const auto& [c, fg_color, bg_color] : text)
       {
-        size_t n = text.size();
-        std::string output;
-        for (size_t i = 0; i < n; ++i)
-        {
-          auto [c, fg_color, bg_color] = text[i];
-          auto col_str = get_color_string(fg_color, c == '\n' ? Color16::Default : bg_color);
-          if constexpr (std::is_same_v<CharT, char>)
-            output += col_str + c;
-          else if constexpr (std::is_same_v<CharT, char32_t>)
-            output += col_str + utf8::encode_char32_utf8(c);
-        }
-        output += "\033[0m";
-        //printf("%s", output.c_str());
-        std::cout << output;
+        const bool is_nl = (c == static_cast<CharT>('\n'));
+        output += get_color_string(fg_color, is_nl ? Color16::Default : bg_color);
+        
+        if constexpr (std::is_same_v<CharT, char>)
+          output.push_back(c);
+        else if constexpr (std::is_same_v<CharT, char32_t>)
+          output += utf8::encode_char32_utf8(c);
+        else
+          static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
+                  "ERROR in Text::print_complex_sequential(): unsupported CharT!");
       }
+      
+      output += "\033[0m";
+      ::term::emit_text(m_term_mode, output);
     }
+
     
     template<typename CharT>
     struct ComplexStringChunk
@@ -293,77 +343,87 @@ namespace t8
     template<typename CharT>
     void print_complex_chunks(const std::vector<ComplexStringChunk<CharT>>& chunk_vec)
     {
-      if (sys::is_windows_cmd())
-      {
 #ifdef _WIN32
+      if (!::term::supports_ansi(m_term_mode))
+      {
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         
         for (const auto& chunk : chunk_vec)
         {
-          COORD coord;
-          coord.X = chunk.pos.c;
-          coord.Y = chunk.pos.r;
+          COORD coord
+          {
+            static_cast<SHORT>(chunk.pos.c),
+            static_cast<SHORT>(chunk.pos.r)
+          };
           
           std::vector<CHAR_INFO> buffer(chunk.text.size());
-          for (size_t i = 0; i < chunk.text.size(); ++i)
+          
+          for (auto [ch, fg, bg] : chunk.text)
           {
             CHAR_INFO ci {};
-            auto [ch, fg, bg] = chunk.text[i];
             if constexpr (std::is_same_v<CharT, char>)
-              ci.Char.AsciiChar = ch;
+              ci.Char.UnicodeChar = static_cast<wchar_t>(static_cast<unsigned char>(ch));
             else if constexpr (std::is_same_v<CharT, char32_t>)
-            {
-              auto s = utf8::encode_char32_utf8(ch);
-              ci.Char.AsciiChar = s.empty() ? '?' : s[0];
-            }
+              ci.Char.UnicodeChar = static_cast<wchar_t>(ch); // BMP assumed.
+            else
+              static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
+                  "ERROR in Text::print_complex_chunks(): unsupported CharT!");
+            
             ci.Attributes = get_style_win_cmd(fg, bg);
             buffer[i] = ci;
           }
           
           SMALL_RECT writeRegion;
-          writeRegion.Left = coord.X;
-          writeRegion.Top = coord.Y;
-          writeRegion.Right = coord.X + (SHORT)chunk.text.size() - 1;
+          writeRegion.Left   = coord.X;
+          writeRegion.Top    = coord.Y;
+          writeRegion.Right  = coord.X + static_cast<SHORT>(chunk.text.size()) - 1;
           writeRegion.Bottom = coord.Y;
           
-          COORD bufferSize = { (SHORT)chunk.text.size(), 1 };
+          COORD bufferSize  = { static_cast<SHORT>(chunk.text.size()), 1 };
           COORD bufferCoord = { 0, 0 };
           
-          WriteConsoleOutput(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
+          WriteConsoleOutputW(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
         }
+        return;
+      }
 #endif
-      }
-      else
+      
+      // ANSI-capable path (all platforms).
+      std::string output;
+      output.reserve(chunk_vec.size() * 32); // Rough estimate.
+      
+      for (const auto& chunk : chunk_vec)
       {
-        std::string output;
-        for (const auto& chunk : chunk_vec)
-        {
-          output += get_gotorc_str(chunk.pos.r, chunk.pos.c);
-          for (const auto& [ch, fg, bg] : chunk.text)
-          {
-            output += get_color_string(fg, bg);
-            if constexpr (std::is_same_v<CharT, char>)
-              output += ch;
-            else if constexpr (std::is_same_v<CharT, char32_t>)
-              output += utf8::encode_char32_utf8(ch);
-          }
-        }
+        output += get_gotorc_str(chunk.pos.r, chunk.pos.c);
         
-        // Reset color.
-        output += "\033[0m";
-        std::cout << output;
+        for (const auto& [ch, fg, bg] : chunk.text)
+        {
+          output += get_color_string(fg, bg);
+          if constexpr (std::is_same_v<CharT, char>)
+            output.push_back(ch);
+          else if constexpr (std::is_same_v<CharT, char32_t>)
+            output += utf8::encode_char32_utf8(ch);
+          else
+            static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
+                  "ERROR in Text::print_complex_chunks(): unsupported CharT!");
+        }
       }
+      
+      output += "\033[0m";
+      ::term::emit_text(m_term_mode, output);
     }
+
     
     void print_reset() const
     {
-      if (sys::is_windows_cmd())
-        set_color_win_cmd(Color16::White, Color16::Black);
-      else
+#ifdef _WIN32
+      if (!::term::supports_ansi(m_term_mode))
       {
-        //printf("%s", "\033[0m");
-        std::cout << "\033[0m";
+        set_color_win_cmd(Color16::White, Color16::Black);
+        return;
       }
+#endif
+      ::term::emit_text(m_term_mode, "\033[0m");
     }
   };
   

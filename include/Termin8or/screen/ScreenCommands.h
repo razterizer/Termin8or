@@ -68,12 +68,12 @@ namespace t8
     }();
   }
   
-  void begin_screen()
+  template<int NR, int NC, typename CharT>
+  void begin_screen(ScreenHandler<NR, NC, CharT>& sh)
   {
     disable_stdio_sync();
     save_terminal_colors();
-    if (sys::is_windows())
-      ::term::init_windows_mode(65001);
+    sh.init_terminal_mode();
     clear_screen();
     return_cursor();
     hide_cursor();

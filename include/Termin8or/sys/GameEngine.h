@@ -298,7 +298,7 @@ namespace t8x
         keyboard->set_held_buffer_size_from_fps(real_fps);
       }
       
-      t8::begin_screen();
+      t8::begin_screen(sh);
       
       if (m_params.enable_terminal_window_resize)
       {
@@ -368,7 +368,7 @@ namespace t8x
       if (m_params.enable_benchmark)
         dur_s = 1e-3f * benchmark::toc(tictoc_game_engine);
     
-      end_screen(sh);
+      t8::end_screen(sh);
       
       if (m_params.enable_terminal_window_resize)
         if (term_win_rows > 0 && term_win_cols > 0)

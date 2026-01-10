@@ -268,6 +268,11 @@ namespace t8
       return screen_buffer[index(r, c)] == ' ';
     }
     
+    void init_terminal_mode()
+    {
+      m_text->init_terminal_mode();
+    }
+    
     inline std::string encode_single_width_glyph(char32_t preferred,
                                                  char32_t fallback = U'?') const
     {
