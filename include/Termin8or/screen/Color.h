@@ -717,7 +717,7 @@ namespace t8
     }
     
   private:
-    int idx = 0;
+    int16_t idx = 0; // Range: [-3, 255]
     
     void set_color16(Color16 col16)
     {
