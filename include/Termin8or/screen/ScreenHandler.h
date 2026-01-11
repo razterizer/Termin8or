@@ -380,14 +380,11 @@ namespace t8
         return;
       if constexpr (std::is_same_v<CharT, char>)
       {
-        if (c >= 0 && str::lenI(str) + c <= NC)
+        if (r >= 0 && r < NR)
         {
-          if (r >= 0 && r < NR)
-          {
-            int n = static_cast<int>(str.size());
-            for (int ci = 0; ci < n; ++ci)
-              write_buffer_cell(str[ci], r, c, ci, fg_color, bg_color);
-          }
+          int n = static_cast<int>(str.size());
+          for (int ci = 0; ci < n; ++ci)
+            write_buffer_cell(str[ci], r, c, ci, fg_color, bg_color);
         }
       }
       else if constexpr (std::is_same_v<CharT, char32_t>)
