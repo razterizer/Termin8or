@@ -13,11 +13,11 @@ namespace t8
   struct Glyph
   {
     char32_t preferred = U'?';
-    char32_t fallback = U'?';
+    char fallback = U'?';
     
     Glyph() = default;
     
-    Glyph(char32_t pref, char32_t fb = U'?')
+    Glyph(char32_t pref, char fb = U'?')
       : preferred(pref)
       , fallback(fb)
     {}
