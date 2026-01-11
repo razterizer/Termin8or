@@ -18,8 +18,8 @@ namespace t8
     Glyph() = default;
     
     Glyph(char32_t pref, char32_t fb = U'?')
-    : preferred(pref)
-    , fallback(fb)
+      : preferred(pref)
+      , fallback(fb)
     {}
     
     bool operator==(const Glyph& g) const
