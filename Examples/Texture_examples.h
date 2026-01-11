@@ -34,7 +34,7 @@ namespace texture
     //                        LET's GO !                        //
     // ///////////////////////////////////////////////////////////
         
-    t8::begin_screen();
+    t8::begin_screen(sh);
     for (;;)
     {
       t8::return_cursor();

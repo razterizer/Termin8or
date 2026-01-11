@@ -192,7 +192,7 @@ namespace sprite_handler
     //                        LET's GO !                        //
     // ///////////////////////////////////////////////////////////
         
-    t8::begin_screen();
+    t8::begin_screen(sh);
     
     float dt = 0.01f;
     for (int i = -3; i < sh.num_rows(); ++i)
@@ -290,7 +290,7 @@ quit:
     const int delay = 20'000;
     const float dt = 1e-6f * delay;
     
-    t8::begin_screen();
+    t8::begin_screen(sh);
     
     benchmark::tic();
     

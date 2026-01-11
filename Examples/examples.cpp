@@ -16,7 +16,7 @@ void draw_info_screen()
   t8::ScreenHandler<20, 40> sh;
   auto keyboard = std::make_unique<t8::StreamKeyboard>();
   
-  t8::begin_screen();
+  t8::begin_screen(sh);
   sh.clear();
   t8::draw_frame(sh, t8::Color16::Yellow);
   sh.write_buffer("q : next example / quit", 2, 2, t8::Color16::Cyan);

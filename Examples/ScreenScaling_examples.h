@@ -37,7 +37,7 @@ namespace screen_scaling
     //                        LET's GO !                        //
     // ///////////////////////////////////////////////////////////
         
-    t8::begin_screen();
+    t8::begin_screen(sh);
     for (;;)
     {
       t8::return_cursor();
