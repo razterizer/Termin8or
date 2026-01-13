@@ -656,7 +656,7 @@ namespace t8x
       for (int j = 1; j < len_c - 1; ++j)
       {
         auto textel = texture(r0 - 1, j - 1);
-        sh.write_buffer(textel.mat_to_char_str(), i, j + c, textel.get_style());
+        sh.write_buffer(textel.mat_to_str(), i, j + c, textel.get_style());
       }
     }
   }

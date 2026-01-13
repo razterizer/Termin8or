@@ -51,7 +51,7 @@ namespace t8x
     
     virtual int num_frames() const = 0;
     
-    virtual bool_vector calc_curr_mask(int sim_frame, const std::vector<int>& mask_materials) = 0;
+    virtual bool_vector calc_curr_mask(int sim_frame, const std::vector<uint8_t>& mask_materials) = 0;
     
     virtual bool calc_cm() const = 0;
     
@@ -476,26 +476,26 @@ namespace t8x
       set_sprite_materials(anim_frame, bb, mat...);
     }
     
-    void set_sprite_material(int anim_frame, int r, int c, int mat)
+    void set_sprite_material(int anim_frame, int r, int c, uint8_t mat)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture != nullptr)
         texture->set_textel_material(r, c, mat);
     }
     
-    void fill_sprite_materials(int anim_frame, int mat)
+    void fill_sprite_materials(int anim_frame, uint8_t mat)
     {
       auto* texture = fetch_frame(anim_frame);
       texture->materials.assign(area, mat);
     }
     
-    void fill_sprite_materials(int anim_frame, const Rectangle& bb, int mat)
+    void fill_sprite_materials(int anim_frame, const Rectangle& bb, uint8_t mat)
     {
       auto* texture = fetch_frame(anim_frame);
       fill_sprite_data(texture->materials, bb, mat);
     }
     
-    void fill_sprite_materials_vert(int anim_frame, int r0, int r1, int c, int mat)
+    void fill_sprite_materials_vert(int anim_frame, int r0, int r1, int c, uint8_t mat)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture != nullptr)
@@ -503,7 +503,7 @@ namespace t8x
           texture->set_textel_material(r, c, mat);
     }
     
-    void fill_sprite_materials_horiz(int anim_frame, int r, int c0, int c1, int mat)
+    void fill_sprite_materials_horiz(int anim_frame, int r, int c0, int c1, uint8_t mat)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture != nullptr)
@@ -520,7 +520,7 @@ namespace t8x
                    std::optional<char> ch, std::optional<char> ch_replace,
                    std::optional<Color> fg_color, std::optional<Color> fg_color_replace,
                    std::optional<Color> bg_color, std::optional<Color> bg_color_replace,
-                   std::optional<int> mat, std::optional<int> mat_replace)
+                   std::optional<uint8_t> mat, std::optional<uint8_t> mat_replace)
     {
       auto* texture = get_curr_sim_frame(sim_frame);
       if (texture == nullptr)
@@ -697,7 +697,7 @@ namespace t8x
       return { static_cast<float>(pos.r) + size.r * 0.5f, static_cast<float>(pos.c) + size.c * 0.5f };
     }
     
-    virtual bool_vector calc_curr_mask(int sim_frame, const std::vector<int>& mask_materials) override
+    virtual bool_vector calc_curr_mask(int sim_frame, const std::vector<uint8_t>& mask_materials) override
     {
       const auto* texture = get_curr_sim_frame(sim_frame);
       if (texture == nullptr)
@@ -756,7 +756,7 @@ namespace t8x
       std::array<Vec2, 2> pos;
       char ch = 0;
       Style style;
-      int mat = 0;
+      uint8_t mat = 0;
     };
     
     struct VectorFrame
@@ -865,7 +865,7 @@ namespace t8x
     // So "o" becomes the center of mass instead.
     
     
-    void add_line_segment(int anim_frame, const Vec2& p0, const Vec2& p1, char ch, const Style& style, int mat = 0)
+    void add_line_segment(int anim_frame, const Vec2& p0, const Vec2& p1, char ch, const Style& style, uint8_t mat = 0)
     {
       auto* vector_frame = fetch_frame(anim_frame);
       auto& line_seg = vector_frame->line_segments.emplace_back();
@@ -1032,7 +1032,7 @@ namespace t8x
           stlutils::erase_at(vector_frame->open_polylines, i);
     }
     
-    void add_line_segment(int anim_frame, const Vec2& p0, const Vec2& p1, const Style& style, int mat = 0)
+    void add_line_segment(int anim_frame, const Vec2& p0, const Vec2& p1, const Style& style, uint8_t mat = 0)
     {
       add_line_segment(anim_frame, p0, p1, -1, style, mat);
     }
@@ -1238,7 +1238,7 @@ namespace t8x
       return to_Vec2(pos); // Assuming you designed the sprite around the centroid / CoM.
     }
     
-    virtual bool_vector calc_curr_mask(int sim_frame, const std::vector<int>& mask_materials) override
+    virtual bool_vector calc_curr_mask(int sim_frame, const std::vector<uint8_t>& mask_materials) override
     {
       const auto* vector_frame = get_curr_sim_frame(sim_frame);
       if (vector_frame == nullptr)

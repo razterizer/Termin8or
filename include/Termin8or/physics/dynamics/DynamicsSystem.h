@@ -30,8 +30,8 @@ namespace t8x
       float e = 0.8f, float dyn_friction = 0.f,
       std::optional<float> crit_speed_r = std::nullopt,
       std::optional<float> crit_speed_c = std::nullopt,
-      const std::vector<int>& inertia_mats = { 1 },
-      const std::vector<int>& coll_mats = { 1 })
+      const std::vector<uint8_t>& inertia_mats = { 1 },
+      const std::vector<uint8_t>& coll_mats = { 1 })
     {
       auto& rb = m_rigid_bodies.emplace_back(std::make_unique<RigidBody>(sprite, rb_mass,
         pos, vel, force,
@@ -59,8 +59,8 @@ namespace t8x
       std::function<float(int)> dyn_friction = [](int) { return 0.f; },
       std::function<std::optional<float>(int)> crit_speed_r = [](int){ return std::nullopt; },
       std::function<std::optional<float>(int)> crit_speed_c = [](int){ return std::nullopt; },
-      std::function<std::vector<int>(int)> inertia_mats = [](int){ return std::vector { 1 }; },
-      std::function<std::vector<int>(int)> coll_mats = [](int){ return std::vector { 1 }; })
+      std::function<std::vector<uint8_t>(int)> inertia_mats = [](int){ return std::vector<uint8_t> { 1 }; },
+      std::function<std::vector<uint8_t>(int)> coll_mats = [](int){ return std::vector<uint8_t> { 1 }; })
     {
       std::array<RigidBody*, NRB> rigid_body_arr;
       for (int s_idx = 0; s_idx < NRB; ++s_idx)

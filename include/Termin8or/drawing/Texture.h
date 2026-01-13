@@ -17,6 +17,110 @@
 
 namespace t8
 {
+  
+  namespace texture
+  {
+    static constexpr uint8_t mat_none = 255;
+    
+    inline bool has_material(uint8_t m) { return m != mat_none; }
+    
+    inline uint8_t encode_material(int m)
+    {
+      if (m < 0) return mat_none;
+      if (m > 254) return 254; // Or maybe assert instead?
+      return static_cast<uint8_t>(m);
+    }
+    
+    inline int decode_material(uint8_t m)
+    {
+      return (m == mat_none) ? -1 : static_cast<int>(m);
+    }
+    
+    std::string mat_to_str(uint8_t mat)
+    {
+      constexpr uint8_t span09 = 1 + (9 - 0);     // 10, 0-9
+      constexpr uint8_t spanAZ = 1 + ('Z' - 'A'); // 26, A-Z, a-z
+      constexpr uint8_t page_span = span09 + 2*spanAZ; // 62
+      if (mat >= mat_none)
+        return "-";
+        
+      static constexpr std::array<std::string_view, 5> prefix_list { "", ".", ",", ":", ";" };
+      int page = mat / page_span;
+      int sub = mat % page_span;
+      if (page >= static_cast<int>(prefix_list.size()))
+        return "-";
+      
+      char ch_sub;
+      if (sub < span09)
+        ch_sub = static_cast<char>('0' + sub);
+      else if (sub < span09 + spanAZ)
+        ch_sub = static_cast<char>('A' + (sub - span09));
+      else
+        ch_sub = static_cast<char>('a' + (sub - span09 - spanAZ));
+      
+      std::string str_ret(prefix_list[page]);
+      str_ret.push_back(ch_sub);
+      return str_ret;
+    }
+    
+    uint8_t str_to_mat(std::string_view sv, int& pos)
+    {
+      constexpr uint8_t span09 = 1 + (9 - 0);     // 10, 0-9
+      constexpr uint8_t spanAZ = 1 + ('Z' - 'A'); // 26, A-Z, a-z
+      constexpr uint8_t page_span = span09 + 2*spanAZ; // 62
+      if (sv.length() <= static_cast<size_t>(pos))
+        return mat_none;
+        
+      //char ch_prefix = 0;
+      char ch = sv[pos];
+      
+      if (ch == '-')
+      {
+        pos++;
+        return texture::mat_none;
+      }
+      
+      static constexpr std::array<char, 4> prefix_list { '.', ',', ':', ';' };
+      
+      auto idx_prefix = stlutils::find_idx(prefix_list, ch);
+      int dp = 1;
+      int mat_page_offs = 0;
+      if (0 <= idx_prefix)
+      {
+        if (sv.length() <= static_cast<size_t>(pos + 1))
+          return mat_none;
+        //ch_prefix = sv[pos];
+        ch = sv[pos + 1];
+        dp = 2;
+        mat_page_offs = (idx_prefix + 1) * page_span;
+      }
+      
+      auto f_check_range = [ch, &pos, dp](char ch_start, char ch_end, int offset, uint8_t& material) -> bool
+      {
+        if (ch_start <= ch && ch <= ch_end)
+        {
+          pos += dp;
+          int mat = (ch - ch_start) + offset;
+          if (mat >= mat_none)
+            material = mat_none;
+          else
+            material = static_cast<uint8_t>(mat);
+          return true;
+        }
+        return false;
+      };
+      
+      uint8_t mat = mat_none;
+      if (f_check_range('0', '9', mat_page_offs, mat))
+        return mat;
+      if (f_check_range('A', 'Z', mat_page_offs + span09, mat))
+        return mat;
+      if (f_check_range('a', 'z', mat_page_offs + span09 + spanAZ, mat))
+        return mat;
+      
+      return mat_none;
+    }
+  }
 
   // size.r = 1, size.c = 1 yields a 1x1 texture.
   struct Textel
@@ -24,7 +128,7 @@ namespace t8
     char ch = ' ';
     Color fg_color = Color16::Default;
     Color bg_color = Color16::Transparent2;
-    int mat = 0;
+    uint8_t mat = 0;
     
     Style get_style() const { return { fg_color, bg_color }; }
     void set_style(const Style& style)
@@ -35,17 +139,7 @@ namespace t8
     
     std::string str() const { return std::string(1, ch); }
     
-    // 0 to 15 is hexadecimal, then just continue down the alphabet.
-    std::string mat_to_char_str()
-    {
-      if (0 <= mat && mat <= 9)
-        return std::string(1, '0' + static_cast<char>(mat));
-      else if (10 <= mat)
-        return std::string(1, 'A' + static_cast<char>(mat) - 10);
-      else if (mat == -1)
-        return std::string(1, '-');
-      return std::string(1, '0'); // default mat = 0.
-    };
+    std::string mat_to_str() const { return texture::mat_to_str(mat); }
     
     bool operator==(const Textel& other) const
     {
@@ -65,7 +159,7 @@ namespace t8
     std::vector<char> characters;
     std::vector<Color> fg_colors;
     std::vector<Color> bg_colors;
-    std::vector<int> materials;
+    std::vector<uint8_t> materials;
     
     Texture() = default;
     Texture(const RC& tex_size)
@@ -93,7 +187,7 @@ namespace t8
       , materials(other.materials)
     {}
     
-    void init_materials(int mat)
+    void init_materials(uint8_t mat)
     {
       stlutils::memset(materials, mat);
     }
@@ -171,7 +265,7 @@ namespace t8
       set_textel_bg_color(pos.r, pos.c, bg_color);
     }
     
-    void set_textel_material(int r, int c, int mat)
+    void set_textel_material_raw(int r, int c, uint8_t mat)
     {
       if (!check_range(r, c))
         return;
@@ -179,9 +273,42 @@ namespace t8
       materials[idx] = mat;
     }
     
+    void set_textel_material_raw(const RC& pos, uint8_t mat)
+    {
+      set_textel_material(pos.r, pos.c, mat);
+    }
+    
+    uint8_t get_textel_material_raw(int r, int c) const
+    {
+      if (!check_range(r, c))
+        return texture::mat_none;
+      int idx = r * size.c + c;
+      return materials[idx];
+    }
+    
+    uint8_t get_textel_material_raw(const RC& pos) const
+    {
+      return get_textel_material(pos.r, pos.c);
+    }
+    
+    void set_textel_material(int r, int c, int mat)
+    {
+      set_textel_material_raw(r,c, texture::encode_material(mat));
+    }
+    
     void set_textel_material(const RC& pos, int mat)
     {
       set_textel_material(pos.r, pos.c, mat);
+    }
+    
+    int  get_textel_material(int r, int c) const
+    {
+      return texture::decode_material(get_textel_material_raw(r, c));
+    }
+    
+    int  get_textel_material(const RC& pos) const
+    {
+      return get_textel_material(pos.r, pos.c);
     }
     
     // File format:
@@ -208,18 +335,6 @@ namespace t8
     bool load(const std::string& file_path)
     {
       std::vector<std::string> lines;
-      
-      // 0 to 15 is hexadecimal, then just continue down the alphabet.
-      auto f_char_to_mat = [](int ch) -> int
-      {
-        if ('0' <= ch && ch <= '9')
-          return ch - '0';
-        else if ('A' <= ch)
-          return ch - 'A' + 10;
-        else if (ch == '-')
-          return -1;
-        return 0;
-      };
       
       bool ret = TextIO::read_file(file_path, lines);
       if (!ret)
@@ -265,7 +380,7 @@ namespace t8
               characters.resize(area, ' ');
               fg_colors.resize(area, Color16::Default);
               bg_colors.resize(area, Color16::Transparent2);
-              materials.resize(area, -1);
+              materials.resize(area, 0);
             }
             r++;
           }
@@ -336,10 +451,11 @@ namespace t8
         {
           if (!l.empty())
           {
+            int l_idx = 0;
             for (int c = 0; c < size.c; ++c)
             {
               int idx = r * size.c + c;
-              materials[idx] = f_char_to_mat(l[c]);
+              materials[idx] = texture::str_to_mat(l, l_idx);
             }
             r++;
           }
@@ -356,18 +472,6 @@ namespace t8
     bool save(const std::string& file_path)
     {
       std::vector<std::string> lines;
-      
-      // 0 to 15 is hexadecimal, then just continue down the alphabet.
-      auto f_mat_to_char = [](int mat) -> char
-      {
-        if (0 <= mat && mat <= 9)
-          return '0' + static_cast<char>(mat);
-        else if (10 <= mat)
-          return 'A' + static_cast<char>(mat) - 10;
-        else if (mat == -1)
-          return '-';
-        return '0';
-      };
       
       // Set the lowest supported version.
       ver = compute_minimal_version();
@@ -419,7 +523,7 @@ namespace t8
         for (int c = 0; c < size.c; ++c)
         {
           int idx = r * size.c + c;
-          curr_line += f_mat_to_char(materials[idx]);
+          curr_line += texture::mat_to_str(materials[idx]);
         }
         lines.emplace_back(curr_line);
       }
@@ -449,9 +553,9 @@ namespace t8
       }
       
       Texture sub_texture(bb.size());
-      for (int r = bb.r; r <= bb.r_len; ++r)
+      for (int r = bb.top(); r <= bb.bottom(); ++r)
       {
-        for (int c = bb.c; c <= bb.c_len; ++c)
+        for (int c = bb.left(); c <= bb.right(); ++c)
         {
           int idx_from = r * size.c + c;
           int idx_to = (r - bb.r) * bb.c_len + (c - bb.c);
@@ -509,10 +613,11 @@ namespace t8
             break;
           }
       }
+      // VER 2.1: material "none" is serialized as '-' (stored internally as 255).
       if (minimal_ver < 21)
       {
         for (auto mat : materials)
-          if (mat == -1)
+          if (mat == texture::mat_none)
           {
             minimal_ver = 21;
             break;

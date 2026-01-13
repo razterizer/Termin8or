@@ -51,8 +51,8 @@ namespace t8x
     AABB<int> curr_sprite_aabb;
     AABB<float> curr_aabb;
     bool_vector curr_inertia_mask, curr_coll_mask;
-    std::vector<int> inertia_materials { 1 };
-    std::vector<int> collision_materials { 1 };
+    std::vector<uint8_t> inertia_materials { 1 };
+    std::vector<uint8_t> collision_materials { 1 };
     std::vector<Vec2> surface_normals;
     
     bool enable_sleeping = false;
@@ -154,8 +154,8 @@ namespace t8x
       float e = 0.8f, float dyn_friction = 0.f,
       std::optional<float> crit_speed_r = std::nullopt,
       std::optional<float> crit_speed_c = std::nullopt,
-      const std::vector<int>& inertia_mats = { 1 },
-      const std::vector<int>& coll_mats = { 1 })
+      const std::vector<uint8_t>& inertia_mats = { 1 },
+      const std::vector<uint8_t>& coll_mats = { 1 })
       : sprite(s)
       , mass(rb_mass)
       , inv_mass(rb_mass == 0.f ? 0.f : 1.f / rb_mass)
