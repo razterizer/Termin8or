@@ -128,7 +128,7 @@ namespace t8
     char ch = ' ';
     Color fg_color = Color16::Default;
     Color bg_color = Color16::Transparent2;
-    uint8_t mat = 0;
+    uint8_t mat = texture::mat_none;
     
     Style get_style() const { return { fg_color, bg_color }; }
     void set_style(const Style& style)
@@ -168,7 +168,7 @@ namespace t8
       , characters(area, ' ')
       , fg_colors(area, Color16::Default)
       , bg_colors(area, Color16::Transparent2)
-      , materials(area, 0)
+      , materials(area, texture::mat_none)
     {}
     Texture(int tex_rows, int tex_cols)
       : size({ tex_rows, tex_cols })
@@ -176,7 +176,7 @@ namespace t8
       , characters(area, ' ')
       , fg_colors(area, Color16::Default)
       , bg_colors(area, Color16::Transparent2)
-      , materials(area, 0)
+      , materials(area, texture::mat_none)
     {}
     Texture(const Texture& other)
       : size(other.size)
@@ -380,7 +380,7 @@ namespace t8
               characters.resize(area, ' ');
               fg_colors.resize(area, Color16::Default);
               bg_colors.resize(area, Color16::Transparent2);
-              materials.resize(area, 0);
+              materials.resize(area, texture::mat_none);
             }
             r++;
           }
