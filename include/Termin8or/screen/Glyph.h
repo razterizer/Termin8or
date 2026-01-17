@@ -20,7 +20,7 @@ namespace t8
     
     Glyph() = default;
     
-    Glyph(char32_t pref, char fb = U'?')
+    Glyph(char32_t pref, char fb = none)
       : preferred(pref)
       , fallback(fb)
     {}
