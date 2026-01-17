@@ -109,7 +109,7 @@ namespace t8
     //
     // "?" => p == ?, f == ? (p == none32 && f == none outputs "?" though)
     // "A" => p == A, f == A
-    bool parse(const std::string& str, int& pos, bool legacy_ascii_only = false)
+    bool parse(const std::string& str, int& pos, bool legacy_ascii_only = false, bool verbose = true)
     {
       // abcd[2603,e]fghi
       // 0123456789ABCDEF
@@ -149,6 +149,13 @@ namespace t8
         return true;
       }
       
+      auto error = [&](const char* msg)
+      {
+        if (verbose)
+          std::cerr << "ERROR in Glyph::parse(str) for str @ " << pos << " : " << msg << '\n';
+        return false;
+      };
+      
       if (substr.starts_with("["))
       {
         auto end_idx = substr.find("]");
@@ -160,10 +167,7 @@ namespace t8
           return true;
         }
         if (end_idx == std::string::npos)
-        {
-          std::cerr << "ERROR in Glyph::parse() @ " << pos << " : Unable to find matching end bracket \"]\"!\n";
-          return false;
-        }
+          return error("Unable to find matching end bracket \"]\"!");
         auto toks_len = end_idx + 1;
         auto toks_str = substr.substr(0, toks_len);
         auto tokens = str::tokenize(toks_str, { ',', '[', ']' });
@@ -173,10 +177,7 @@ namespace t8
         {
           const auto& tok0 = tokens[0];
           if (tok0.length() > 1)
-          {
-            std::cerr << "ERROR in Glyph::parse() @ " << pos << " : A unicode code point > 0x7F must be followed by an ASCII (<= 0x7F) character!\n";
-            return false;
-          }
+            return error("A unicode code point > 0x7F must be followed by an ASCII (<= 0x7F) character!");
           f_set_preferred(tok0);
           fallback = static_cast<char>(preferred); // Normalize ASCII.
           pos += toks_len;
@@ -188,17 +189,11 @@ namespace t8
           if (preferred > 0x7F)
           {
             if (tokens[1].size() != 1)
-            {
-              std::cerr << "ERROR in Glyph::parse() @ " << pos << " : Fallback must be a single ASCII char.\n";
-              return false;
-            }
+              return error("Fallback must be a single ASCII char!");
             f_set_fallback(tokens[1]);
             auto fb_u = static_cast<unsigned char>(fallback);
             if (fallback == none || fb_u > 0x7F)
-            {
-              std::cerr << "ERROR in Glyph::parse() @ " << pos << " : Fallback must be ASCII (<=0x7F).\n";
-              return false;
-            }
+              return error("Fallback must be ASCII (<=0x7F)!");
           }
           else
           {
@@ -209,19 +204,15 @@ namespace t8
           return true;
         }
         else
-        {
-          std::cerr << "ERROR in Glyph::parse() @ " << pos << " : Wrong number of tokens within bracketed glyph scope!\n";
-          return false;
-        }
+          return error("Wrong number of tokens within bracketed glyph scope!");
       }
-      std::cerr << "ERROR in Glyph::parse() @ " << pos << " : Unable to find a bracketed glyph scope!\n";
-      return false;
+      return error("Unable to find a bracketed glyph scope!");
     }
     
-    bool parse(const std::string& str, bool legacy_ascii_only = false)
+    bool parse(const std::string& str, bool legacy_ascii_only = false, bool verbose = true)
     {
       int pos = 0;
-      return parse(str, pos, legacy_ascii_only);
+      return parse(str, pos, legacy_ascii_only, verbose);
     }
   };
   
