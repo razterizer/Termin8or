@@ -178,7 +178,7 @@ namespace t8
             return false;
           }
           f_set_preferred(tok0);
-          f_set_fallback(tok0);
+          fallback = static_cast<char>(preferred); // Normalize ASCII.
           pos += toks_len;
           return true;
         }
