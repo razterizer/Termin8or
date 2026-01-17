@@ -88,9 +88,9 @@ namespace color
     }
     {
       Color col;
+      int l_idx = 0;
       for (int i = 0; i < 40; ++i)
       {
-        int l_idx = i;
         col.parse("****************************************", l_idx);
         assert(col.str(true) == "*");
         assert(l_idx == i + 1);
