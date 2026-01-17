@@ -579,10 +579,17 @@ namespace t8
       return compact ? "*" : "n/a";
     }
     
-    bool parse(const std::string& str, int& start_idx, bool compact = false)
+    bool parse(const std::string& str, int& start_idx, bool compact = false, bool verbose = true)
     {
       if (start_idx >= str::lenI(str))
         return false;
+        
+      auto error = [&](const char* msg)
+      {
+        if (verbose)
+          std::cerr << "ERROR in Color::parse(str) for str @ " << start_idx << " : " << msg << '\n';
+        return false;
+      };
     
       std::string_view remaining(str);
       remaining.remove_prefix(start_idx);
@@ -591,10 +598,7 @@ namespace t8
       if (!remaining.empty() && (remaining[0] == '[' || remaining.starts_with(rgb6_prefix)))
       {
         if (auto i = remaining.find(']'); i == std::string::npos)
-        {
-          std::cerr << "ERROR in Color::parse() : Unable to parse ']' token after rgb6 triplet!\n";
-          return false;
-        }
+          return error("Unable to parse ']' token after rgb6 triplet!");
         else
         {
           if (remaining.starts_with(rgb6_prefix))
@@ -608,10 +612,7 @@ namespace t8
             int g = str::to_digit(rgb6_tokens[0][1]);
             int b = str::to_digit(rgb6_tokens[0][2]);
             if (r < 0 || g < 0 || b < 0)
-            {
-              std::cerr << "ERROR in Color::parse() : Unable to parse compact rgb triplet!\n";
-              return false;
-            }
+              return error("Unable to parse compact rgb triplet!");
             start_idx = end_idx + 1;
             set_rgb(r, g, b);
             return true;
@@ -622,27 +623,20 @@ namespace t8
             int g = str::to_digit(rgb6_tokens[1][0]);
             int b = str::to_digit(rgb6_tokens[2][0]);
             if (r < 0 || g < 0 || b < 0)
-            {
-              std::cerr << "ERROR in Color::parse() : Unable to parse non-compact rgb triplet!\n";
-              return false;
-            }
+              return error("Unable to parse non-compact rgb triplet!");
             start_idx = end_idx + 1;
             set_rgb(r, g, b);
             return true;
           }
         }
-        std::cout << "ERROR in Color::parse() : Unable to parse rgb6 color in [%i%i%i] substring!\n";
-        return false;
+        return error("Unable to parse rgb6 color in [%i%i%i] substring!");
       }
       
       static const char* gray24_prefix = "gray24:";
       if (!remaining.empty() && (remaining[0] == '{' || remaining.starts_with(gray24_prefix)))
       {
         if (auto i = remaining.find('}'); i == std::string::npos)
-        {
-          std::cerr << "ERROR in Color::parse() : Unable to parse ']' token after rgb6 triplet!\n";
-          return false;
-        }
+          return error("Unable to parse ']' token after rgb6 triplet!");
         else
         {
           auto compact = !remaining.starts_with(gray24_prefix);
@@ -660,8 +654,7 @@ namespace t8
             return true;
           }
         }
-        std::cout << "ERROR in Color::parse() : Unable to parse gray24 color in {%i} substring!\n";
-        return false;
+        return error("Unable to parse gray24 color in {%i} substring!");
       }
       
       if (remaining.starts_with("Color16::"))
@@ -710,10 +703,10 @@ namespace t8
       return false;
     }
     
-    bool parse(const std::string& str, bool compact = false)
+    bool parse(const std::string& str, bool compact = false, bool verbose = true)
     {
       int start_idx = 0;
-      return parse(str, start_idx, compact);
+      return parse(str, start_idx, compact, verbose);
     }
     
   private:
