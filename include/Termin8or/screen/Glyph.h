@@ -161,7 +161,7 @@ namespace t8
         }
         if (end_idx == std::string::npos)
         {
-          std::cerr << "ERROR in Glyph::parse() : Unable to find matching end bracket \"]\"!\n";
+          std::cerr << "ERROR in Glyph::parse() @ " << pos << " : Unable to find matching end bracket \"]\"!\n";
           return false;
         }
         auto toks_len = end_idx + 1;
@@ -174,7 +174,7 @@ namespace t8
           const auto& tok0 = tokens[0];
           if (tok0.length() > 1)
           {
-            std::cerr << "ERROR in Glyph::parse() : A unicode code point > 0x7F must be followed by an ASCII (<= 0x7F) character!\n";
+            std::cerr << "ERROR in Glyph::parse() @ " << pos << " : A unicode code point > 0x7F must be followed by an ASCII (<= 0x7F) character!\n";
             return false;
           }
           f_set_preferred(tok0);
@@ -189,14 +189,14 @@ namespace t8
           {
             if (tokens[1].size() != 1)
             {
-              std::cerr << "ERROR in Glyph::parse(): Fallback must be a single ASCII char.\n";
+              std::cerr << "ERROR in Glyph::parse() @ " << pos << " : Fallback must be a single ASCII char.\n";
               return false;
             }
             f_set_fallback(tokens[1]);
             auto fb_u = static_cast<unsigned char>(fallback);
             if (fallback == none || fb_u > 0x7F)
             {
-              std::cerr << "ERROR in Glyph::parse(): Fallback must be ASCII (<=0x7F).\n";
+              std::cerr << "ERROR in Glyph::parse() @ " << pos << " : Fallback must be ASCII (<=0x7F).\n";
               return false;
             }
           }
@@ -210,11 +210,11 @@ namespace t8
         }
         else
         {
-          std::cerr << "ERROR in Glyph::parse() : Wrong number of tokens within bracketed glyph scope!\n";
+          std::cerr << "ERROR in Glyph::parse() @ " << pos << " : Wrong number of tokens within bracketed glyph scope!\n";
           return false;
         }
       }
-      std::cerr << "ERROR in Glyph::parse() : Unable to find a bracketed glyph scope!\n";
+      std::cerr << "ERROR in Glyph::parse() @ " << pos << " : Unable to find a bracketed glyph scope!\n";
       return false;
     }
     
