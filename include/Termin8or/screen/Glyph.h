@@ -12,8 +12,11 @@ namespace t8
   
   struct Glyph
   {
-    char32_t preferred = U'?';
-    char fallback = U'?';
+    static const char32_t none32 = 0xFFFFFFFFu; // char32_t is unsigned.
+    static const char none = '\0'; // NUL character. No use for such characeters in this context.
+    
+    char32_t preferred = none32;
+    char fallback = none;
     
     Glyph() = default;
     
