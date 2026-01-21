@@ -44,61 +44,6 @@
 
 namespace t8
 {
-
-  namespace term
-  {
-  
-    inline void init_locale()
-    {
-      static std::once_flag flag;
-      std::call_once(flag, []()
-      {
-        std::setlocale(LC_CTYPE, "");
-      });
-    }
-    
-    // We assume single column and rely on encoder fallback.
-    inline bool is_single_column(char32_t cp)
-    {
-      if (sys::is_windows_cmd())
-      {
-        // Treat as single-column if we can encode it to CP437 (or ASCII).
-        // If you don’t have a predicate, just allow and rely on encoding fallback.
-        return cp <= 0x10FFFF;
-      }
-      
-      if (cp > 0x10FFFF)
-        return false;
-      
-#ifdef _WIN32
-      return false;
-#else
-      init_locale();
-      wchar_t wc = static_cast<wchar_t>(cp);
-      int w = ::wcwidth(wc);
-      return w == 1; //w <= 1;
-#endif
-    }
-    
-    inline char32_t get_single_column_char32(char32_t cp)
-    {
-      return is_single_column(cp) ? cp : U'?';
-    }
-    
-    inline std::string encode_single_width_glyph(char32_t preferred,
-                                                 char32_t fallback = U'?')
-    {
-      char32_t cp = preferred;
-      if (!is_single_column(cp))
-        cp = fallback;
-      if (!is_single_column(cp))
-        cp = U'?';
-      
-      // Use 437 for cmd.exe for now as we only have a mapping from UTF-8 to CP437 atm.
-      return utf8::encode_char32_utf8(cp);
-    }
-    
-  }
   
   class Text
   {

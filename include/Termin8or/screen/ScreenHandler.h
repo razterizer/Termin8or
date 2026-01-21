@@ -274,27 +274,14 @@ namespace t8
     }
     
     inline std::string encode_single_width_glyph(char32_t preferred,
-                                                 char32_t fallback = U'?') const
+                                                 char fallback = t8::Glyph::none) const
     {
-      if constexpr (std::is_same_v<CharT, char>)
-      {
-        if (preferred <= 0x7F)
-          return std::string(1, static_cast<char>(preferred));
-        if (fallback <= 0x7F)
-          return std::string(1, static_cast<char>(fallback));
-        return "?";
-      }
-      if constexpr (std::is_same_v<CharT, char32_t>)
-        return term::encode_single_width_glyph(preferred, fallback);
-        
-      static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
-                  "ERROR in ScreenHandler::encode_single_width_glyph(): unsupported CharT!");
-      return "?";
+      return t8::term::encode_single_width_glyph<CharT>(preferred, fallback);
     }
     
     inline std::string encode_single_width_glyph(const Glyph& glyph)
     {
-      return encode_single_width_glyph(glyph.preferred, glyph.fallback);
+      return t8::term::encode_single_width_glyph<CharT>(glyph.preferred, glyph.fallback);
     }
     
     // write_buffer using StringBox.
