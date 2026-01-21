@@ -268,6 +268,16 @@ namespace t8
       return screen_buffer[index(r, c)] == ' ';
     }
     
+    void set_force_ascii_fallback(bool force_fallback)
+    {
+      term::force_ascii_fallback = force_fallback;
+    }
+    
+    bool get_force_ascii_fallback() const
+    {
+      return term::force_ascii_fallback;
+    }
+    
     void init_terminal_mode()
     {
       m_text->init_terminal_mode();

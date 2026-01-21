@@ -17,6 +17,8 @@ namespace t8
   {
     static const char32_t none32 = 0xFFFFFFFFu; // char32_t is unsigned.
     static const char none = '\0'; // NUL character. No use for such characeters in this context.
+    
+    inline bool force_ascii_fallback = false;
   
     inline void init_locale()
     {
@@ -72,16 +74,23 @@ namespace t8
     inline std::string encode_single_width_glyph(char32_t preferred,
                                                  char fallback = none)
     {
-      if constexpr (std::is_same_v<CharT, char>)
+      auto f_handle_ascii = [preferred, fallback]() -> std::string
       {
         if (preferred <= 0x7F)
           return std::string(1, static_cast<char>(preferred));
         if (fallback != none && fallback <= 0x7F)
           return std::string(1, static_cast<char>(fallback));
         return "?";
-      }
+      };
+    
+      if constexpr (std::is_same_v<CharT, char>)
+        return f_handle_ascii();
       if constexpr (std::is_same_v<CharT, char32_t>)
+      {
+        if (force_ascii_fallback)
+          return f_handle_ascii();
         return term::encode_single_width_glyph(preferred, fallback);
+      }
       
       static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
                     "ERROR in ScreenHandler::encode_single_width_glyph(): unsupported CharT!");
