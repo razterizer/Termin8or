@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		07233B4F2EDBA7220022B60B /* RGBA.h in Headers */ = {isa = PBXBuildFile; fileRef = 07233B4E2EDBA71C0022B60B /* RGBA.h */; };
 		0774FE152F0EB17900B4D4FC /* Glyph.h in Headers */ = {isa = PBXBuildFile; fileRef = 0774FE142F0EB17400B4D4FC /* Glyph.h */; };
+		0774FE1D2F1E1CB000B4D4FC /* TermHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 0774FE1C2F1E1CA800B4D4FC /* TermHelper.h */; };
 		07BDBA6C2E741B05002ACC96 /* Styles.h in Headers */ = {isa = PBXBuildFile; fileRef = 07BDBA692E741B05002ACC96 /* Styles.h */; };
 		07BDBA6D2E741B05002ACC96 /* ScreenUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 07BDBA682E741B05002ACC96 /* ScreenUtils.h */; };
 		07BDBA6E2E741B05002ACC96 /* ScreenCommands.h in Headers */ = {isa = PBXBuildFile; fileRef = 07BDBA642E741B05002ACC96 /* ScreenCommands.h */; };
@@ -62,6 +63,7 @@
 		07685DAB2CD510E200472204 /* Keyboard_examples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Keyboard_examples.h; sourceTree = "<group>"; };
 		0774FE142F0EB17400B4D4FC /* Glyph.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Glyph.h; sourceTree = "<group>"; };
 		0774FE1B2F16E83400B4D4FC /* Glyph_tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Glyph_tests.h; sourceTree = "<group>"; };
+		0774FE1C2F1E1CA800B4D4FC /* TermHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TermHelper.h; sourceTree = "<group>"; };
 		07BDBA632E741B05002ACC96 /* Color.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Color.h; sourceTree = "<group>"; };
 		07BDBA642E741B05002ACC96 /* ScreenCommands.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenCommands.h; sourceTree = "<group>"; };
 		07BDBA652E741B05002ACC96 /* ScreenCommandsBasic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenCommandsBasic.h; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 				07BDBA682E741B05002ACC96 /* ScreenUtils.h */,
 				07BDBA692E741B05002ACC96 /* Styles.h */,
 				07BDBA6A2E741B05002ACC96 /* Text.h */,
+				0774FE1C2F1E1CA800B4D4FC /* TermHelper.h */,
 			);
 			name = screen;
 			path = include/Termin8or/screen;
@@ -375,6 +378,7 @@
 				07BDBA722E741B05002ACC96 /* ScreenScaling.h in Headers */,
 				07BDBAA62E741CB6002ACC96 /* SpriteHandler.h in Headers */,
 				07BDBA892E741BEF002ACC96 /* Gradient.h in Headers */,
+				0774FE1D2F1E1CB000B4D4FC /* TermHelper.h in Headers */,
 				07BDBA8A2E741BEF002ACC96 /* Texture.h in Headers */,
 				07BDBA8B2E741BEF002ACC96 /* Pixel.h in Headers */,
 				07BDBA8C2E741BEF002ACC96 /* LineData.h in Headers */,
