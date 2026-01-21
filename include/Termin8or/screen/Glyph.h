@@ -216,6 +216,12 @@ namespace t8
       int pos = 0;
       return parse(str, pos, legacy_ascii_only, verbose);
     }
+    
+    template<typename CharT>
+    inline std::string encode_single_width_glyph() const
+    {
+      return t8::term::encode_single_width_glyph<CharT>(preferred, fallback);
+    }
   };
   
 }
