@@ -78,7 +78,7 @@ namespace t8
       {
         if (preferred <= 0x7F)
           return std::string(1, static_cast<char>(preferred));
-        if (fallback != none && fallback <= 0x7F)
+        if (fallback != none && static_cast<unsigned char>(fallback) <= 0x7F)
           return std::string(1, static_cast<char>(fallback));
         return "?";
       };
