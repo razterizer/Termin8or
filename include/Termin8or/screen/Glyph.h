@@ -6,14 +6,16 @@
 //
 
 #pragma once
+#include "TermHelper.h"
+
 
 namespace t8
 {
   
   struct Glyph
   {
-    static const char32_t none32 = 0xFFFFFFFFu; // char32_t is unsigned.
-    static const char none = '\0'; // NUL character. No use for such characeters in this context.
+    static const char32_t none32 = term::none32;
+    static const char none = term::none;
     
     char32_t preferred = none32;
     char fallback = none;
