@@ -46,6 +46,8 @@ int main(int argc, char** argv)
       dbg_draw_narrow_phase = true;
     else if (std::strcmp(argv[i], "--hide_sprites") == 0)
       draw_sprites = false;
+    else if (std::strcmp(argv[i], "--force_ascii_fallback") == 0)
+      force_ascii_fallback = true;
   }
   
   if (show_help)
@@ -57,6 +59,7 @@ int main(int argc, char** argv)
     std::cout << "   [--dbg_draw_broad_phase]" << std::endl;
     std::cout << "   [--dbg_draw_narrow_phase]" << std::endl;
     std::cout << "   [--hide_sprites]" << std::endl;
+    std::cout << "   [--force_ascii_fallback]" << std::endl;
   
     return 0;
   }
