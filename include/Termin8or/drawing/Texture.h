@@ -125,7 +125,7 @@ namespace t8
   // size.r = 1, size.c = 1 yields a 1x1 texture.
   struct Textel
   {
-    char ch = ' ';
+    Glyph glyph = ' ';
     Color fg_color = Color16::Default;
     Color bg_color = Color16::Transparent2;
     uint8_t mat = texture::mat_none;
@@ -137,13 +137,17 @@ namespace t8
       bg_color = style.bg_color;
     }
     
-    std::string str() const { return std::string(1, ch); }
+    template<typename CharT>
+    std::string str() const
+    {
+      return glyph.encode_single_width_glyph<CharT>();
+    }
     
     std::string mat_to_str() const { return texture::mat_to_str(mat); }
     
     bool operator==(const Textel& other) const
     {
-      return this->ch == other.ch
+      return this->glyph == other.glyph
         && this->fg_color == other.fg_color
         && this->bg_color == other.bg_color
         && this->mat == other.mat;
@@ -152,11 +156,17 @@ namespace t8
   
   struct Texture
   {
+    enum class TxGlyphEncoding
+    {
+      AsciiOnly,                  // 1 byte per cell.
+      UnicodePreferredAndFallback // Store preferred + fallback if any.
+    };
+  
     static const int compatible_version_until_and_including = 21;
     int ver = compatible_version_until_and_including;
     RC size;
     int area = 0;
-    std::vector<char> characters;
+    std::vector<Glyph> glyphs;
     std::vector<Color> fg_colors;
     std::vector<Color> bg_colors;
     std::vector<uint8_t> materials;
@@ -165,7 +175,7 @@ namespace t8
     Texture(const RC& tex_size)
       : size(tex_size)
       , area(tex_size.r*tex_size.c)
-      , characters(area, ' ')
+      , glyphs(area, ' ')
       , fg_colors(area, Color16::Default)
       , bg_colors(area, Color16::Transparent2)
       , materials(area, texture::mat_none)
@@ -173,7 +183,7 @@ namespace t8
     Texture(int tex_rows, int tex_cols)
       : size({ tex_rows, tex_cols })
       , area(tex_rows*tex_cols)
-      , characters(area, ' ')
+      , glyphs(area, ' ')
       , fg_colors(area, Color16::Default)
       , bg_colors(area, Color16::Transparent2)
       , materials(area, texture::mat_none)
@@ -181,7 +191,7 @@ namespace t8
     Texture(const Texture& other)
       : size(other.size)
       , area(other.area)
-      , characters(other.characters)
+      , glyphs(other.glyphs)
       , fg_colors(other.fg_colors)
       , bg_colors(other.bg_colors)
       , materials(other.materials)
@@ -198,7 +208,7 @@ namespace t8
         return {};
       Textel tex;
       int idx = r * size.c + c;
-      tex.ch = characters[idx];
+      tex.glyph = glyphs[idx];
       tex.fg_color = fg_colors[idx];
       tex.bg_color = bg_colors[idx];
       tex.mat = materials[idx];
@@ -215,7 +225,7 @@ namespace t8
       if (!check_range(r, c))
         return;
       int idx = r * size.c + c;
-      characters[idx] = textel.ch;
+      glyphs[idx] = textel.glyph;
       fg_colors[idx] = textel.fg_color;
       bg_colors[idx] = textel.bg_color;
       materials[idx] = textel.mat;
@@ -231,12 +241,25 @@ namespace t8
       if (!check_range(r, c))
         return;
       int idx = r * size.c + c;
-      characters[idx] = ch;
+      glyphs[idx] = ch;
     }
     
     void set_textel_char(const RC& pos, char ch)
     {
       set_textel_char(pos.r, pos.c, ch);
+    }
+    
+    void set_textel_glyph(int r, int c, const Glyph& g)
+    {
+      if (!check_range(r, c))
+        return;
+      int idx = r * size.c + c;
+      glyphs[idx] = g;
+    }
+    
+    void set_textel_glyph(const RC& pos, const Glyph& g)
+    {
+      set_textel_glyph(pos.r, pos.c, g);
     }
     
     void set_textel_fg_color(int r, int c, Color fg_color)
@@ -377,7 +400,7 @@ namespace t8
               std::istringstream iss(l);
               iss >> size.r >> size.c;
               area = size.r * size.c;
-              characters.resize(area, ' ');
+              glyphs.resize(area, ' ');
               fg_colors.resize(area, Color16::Default);
               bg_colors.resize(area, Color16::Transparent2);
               materials.resize(area, texture::mat_none);
@@ -401,7 +424,7 @@ namespace t8
             for (int c = 0; c < size.c; ++c)
             {
               int idx = r * size.c + c;
-              characters[idx] = l[c];
+              glyphs[idx] = l[c];
             }
             r++;
           }
@@ -469,7 +492,7 @@ namespace t8
       return true;
     }
     
-    bool save(const std::string& file_path)
+    bool save(const std::string& file_path, TxGlyphEncoding encoding_mode = TxGlyphEncoding::AsciiOnly)
     {
       std::vector<std::string> lines;
       
@@ -490,7 +513,7 @@ namespace t8
         for (int c = 0; c < size.c; ++c)
         {
           int idx = r * size.c + c;
-          curr_line += characters[idx];
+          curr_line += glyphs[idx].str(encoding_mode == TxGlyphEncoding::AsciiOnly);
         }
         lines.emplace_back(curr_line);
       }
@@ -559,7 +582,7 @@ namespace t8
         {
           int idx_from = r * size.c + c;
           int idx_to = (r - bb.r) * bb.c_len + (c - bb.c);
-          sub_texture.characters[idx_to] = characters[idx_from];
+          sub_texture.glyphs[idx_to] = glyphs[idx_from];
           sub_texture.fg_colors[idx_to] = fg_colors[idx_from];
           sub_texture.bg_colors[idx_to] = bg_colors[idx_from];
           sub_texture.materials[idx_to] = materials[idx_from];
@@ -576,7 +599,7 @@ namespace t8
     {
       size = { -1, -1 };
       area = 0;
-      characters.clear();
+      glyphs.clear();
       fg_colors.clear();
       bg_colors.clear();
       materials.clear();

@@ -644,11 +644,11 @@ namespace t8
             continue;
           
           int idx = index(r, c);
-          textel.ch = screen_buffer[idx];
+          textel.glyph = screen_buffer[idx]; // #FIXME: Need to allow e.g. Glyph::str() => "[2603]".
           textel.fg_color = fg_color_buffer[idx];
           textel.bg_color = bg_color_buffer[idx];
           
-          if (stlutils::contains(offscreen_buffer.exclude_src_chars, textel.ch))
+          if (stlutils::contains(offscreen_buffer.exclude_src_chars, textel.glyph.preferred)) // #HACK!
             continue;
           if (stlutils::contains(offscreen_buffer.exclude_src_fg_colors, textel.fg_color))
             continue;

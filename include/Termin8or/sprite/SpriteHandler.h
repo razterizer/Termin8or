@@ -170,7 +170,7 @@ namespace t8x
       texture->clear();
       texture->area = area;
       texture->size = size;
-      texture->characters.resize(area);
+      texture->glyphs.resize(area);
       texture->fg_colors.resize(area);
       texture->bg_colors.resize(area);
       texture->materials.resize(area);
@@ -228,70 +228,70 @@ namespace t8x
     
     // #FIXME: Perhaps move these varyadic functions to Texture for more versatility.
     
-    template<typename... Chars>
-    void set_sprite_chars(int anim_frame, Chars... ch)
+    template<typename... Glyphs>
+    void set_sprite_glyphs(int anim_frame, Glyphs... g)
     {
       auto* texture = fetch_frame(anim_frame);
-      set_sprite_data(texture->characters, ch...);
+      set_sprite_data(texture->glyphs, g...);
     }
     
-    template<typename... Chars>
-    void set_sprite_chars(int anim_frame, const Rectangle& bb, Chars... ch)
+    template<typename... Glyphs>
+    void set_sprite_glyphs(int anim_frame, const Rectangle& bb, Glyphs... g)
     {
       auto* texture = fetch_frame(anim_frame);
-      set_sprite_data(texture->characters, bb, ch...);
+      set_sprite_data(texture->glyphs, bb, g...);
     }
     
-    template<typename... Chars>
-    void set_sprite_chars_vert(int anim_frame, int r0, int r1, int c, Chars... ch)
+    template<typename... Glyphs>
+    void set_sprite_glyphs_vert(int anim_frame, int r0, int r1, int c, Glyphs... g)
     {
       Rectangle bb { r0, c, r1 - r0 + 1, 1 };
-      set_sprite_chars(anim_frame, bb, ch...);
+      set_sprite_glyphs(anim_frame, bb, g...);
     }
     
-    template<typename... Chars>
-    void set_sprite_chars_horiz(int anim_frame, int r, int c0, int c1, Chars... ch)
+    template<typename... Glyphs>
+    void set_sprite_glyphs_horiz(int anim_frame, int r, int c0, int c1, Glyphs... g)
     {
       Rectangle bb { r, c0, 1, c1 - c0 + 1 };
-      set_sprite_chars(anim_frame, bb, ch...);
+      set_sprite_glyphs(anim_frame, bb, g...);
     }
     
-    void set_sprite_char(int anim_frame, int r, int c, char ch)
+    void set_sprite_glyph(int anim_frame, int r, int c, const t8::Glyph& g)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture != nullptr)
-        texture->set_textel_char(r, c, ch);
+        texture->set_textel_glyph(r, c, g);
     }
     
-    void fill_sprite_chars(int anim_frame, char ch)
+    void fill_sprite_glyphs(int anim_frame, const t8::Glyph& g)
     {
       auto* texture = fetch_frame(anim_frame);
-      texture->characters.assign(area, ch);
+      texture->glyphs.assign(area, g);
     }
     
-    void fill_sprite_chars(int anim_frame, const Rectangle& bb, char ch)
+    void fill_sprite_glyphs(int anim_frame, const Rectangle& bb, const t8::Glyph& g)
     {
       auto* texture = fetch_frame(anim_frame);
-      fill_sprite_data(texture->characters, bb, ch);
+      fill_sprite_data(texture->glyphs, bb, g);
     }
     
-    void fill_sprite_chars_vert(int anim_frame, int r0, int r1, int c, char ch)
+    void fill_sprite_glyphs_vert(int anim_frame, int r0, int r1, int c, const t8::Glyph& g)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture != nullptr)
         for (int r = r0; r <= r1; ++r)
-          texture->set_textel_char(r, c, ch);
+          texture->set_textel_glyph(r, c, g);
     }
     
-    void fill_sprite_chars_horiz(int anim_frame, int r, int c0, int c1, char ch)
+    void fill_sprite_glyphs_horiz(int anim_frame, int r, int c0, int c1, const t8::Glyph& g)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture != nullptr)
         for (int c = c0; c <= c1; ++c)
-          texture->set_textel_char(r, c, ch);
+          texture->set_textel_glyph(r, c, g);
     }
     
-    // Set sprite characters from a string for each row.
+    // Set sprite characters from an ASCII string for each row.
     template<typename... Strings>
     bool set_sprite_chars_from_strings(int anim_frame, Strings... rows)
     {
@@ -309,15 +309,15 @@ namespace t8x
       for (const auto& row : row_array)
         if (stlutils::sizeI(row) != texture->size.c)
         {
-          std::cerr << "ERROR in BitmapSprite::set_sprite_chars_from_strings() : Each string must have exactly NC characters." << std::endl;
+          std::cerr << "ERROR in BitmapSprite::set_sprite_chars_from_strings() : Each string must have exactly NC glyphs/characters." << std::endl;
           return false;
         }
       
-      // Unpack strings into the characters vector.
+      // Unpack strings into the glyphs vector.
       int idx = 0;
       for (const auto& row : row_array)
         for (char ch : row)
-          texture->characters[idx++] = ch;
+          texture->glyphs[idx++] = ch;
       
       return true;
     }
@@ -517,7 +517,7 @@ namespace t8x
     // E.g. if ch is nullopt but ch_replace is non-nullopt, then it is the same as if both are nullopt.
     // This mechanism allows you to do penumbra / umbra shading techniques and stuff like that.
     bool plot_line(int sim_frame, const RC& p0, const RC& p1,
-                   std::optional<char> ch, std::optional<char> ch_replace,
+                   std::optional<t8::Glyph> g, std::optional<t8::Glyph> g_replace,
                    std::optional<Color> fg_color, std::optional<Color> fg_color_replace,
                    std::optional<Color> bg_color, std::optional<Color> bg_color_replace,
                    std::optional<uint8_t> mat, std::optional<uint8_t> mat_replace)
@@ -539,7 +539,7 @@ namespace t8x
         auto r = math::roundI(pt.r) - pos.r;
         auto c = math::roundI(pt.c) - pos.c;
         auto textel = (*texture)(r, c);
-        f_set_attribute(textel.ch, ch, ch_replace);
+        f_set_attribute(textel.glyph, g, g_replace);
         f_set_attribute(textel.fg_color, fg_color, fg_color_replace);
         f_set_attribute(textel.bg_color, bg_color, bg_color_replace);
         f_set_attribute(textel.mat, mat, mat_replace);
@@ -552,26 +552,32 @@ namespace t8x
     {
       auto f_flip_char = [](t8::Textel& txt)
       {
-        auto& ch = txt.ch;
-        switch(ch)
+        auto& g = txt.glyph;
+        auto f_set_char = [](auto& ch)
         {
-          case '_': ch = '-'; break;
-          case 'W': ch = 'M'; break;
-          case 'M': ch = 'W'; break;
-          case 'w': ch = 'm'; break;
-          case 'm': ch = 'w'; break;
-          case '^': ch = 'v'; break;
-          case 'v': ch = '^'; break;
-          case '/': ch = '\\'; break;
-          case '\\': ch = '/'; break;
-          case 'b': ch = 'p'; break;
-          case 'p': ch = 'b'; break;
-          case 'z': ch = 's'; break;
-          case 's': ch = 'z'; break;
-          case 'Z': ch = 'S'; break;
-          case 'S': ch = 'Z'; break;
-          default: break;
-        }
+          switch(ch)
+          {
+            case '_': ch = '-'; break;
+            case 'W': ch = 'M'; break;
+            case 'M': ch = 'W'; break;
+            case 'w': ch = 'm'; break;
+            case 'm': ch = 'w'; break;
+            case '^': ch = 'v'; break;
+            case 'v': ch = '^'; break;
+            case '/': ch = '\\'; break;
+            case '\\': ch = '/'; break;
+            case 'b': ch = 'p'; break;
+            case 'p': ch = 'b'; break;
+            case 'z': ch = 's'; break;
+            case 's': ch = 'z'; break;
+            case 'Z': ch = 'S'; break;
+            case 'S': ch = 'Z'; break;
+            default: return false;
+          }
+          return true;
+        };
+        if (!f_set_char(g.preferred))
+          f_set_char(g.fallback);
       };
       
       auto* texture = fetch_frame(anim_frame);
@@ -602,28 +608,34 @@ namespace t8x
     {
       auto f_flip_char = [](t8::Textel& txt)
       {
-        auto& ch = txt.ch;
-        switch(ch)
+        auto& g = txt.glyph;
+        auto f_set_char = [](auto& ch)
         {
-          case '/': ch = '\\'; break;
-          case '\\': ch = '/'; break;
-          case '(': ch = ')'; break;
-          case ')': ch = '('; break;
-          case '[': ch = ']'; break;
-          case ']': ch = '['; break;
-          case '}': ch = '{'; break;
-          case 'd': ch = 'b'; break;
-          case 'b': ch = 'd'; break;
-          case 'J': ch = 'L'; break;
-          case 'L': ch = 'J'; break;
-          case '<': ch = '>'; break;
-          case '>': ch = '<'; break;
-          case 'z': ch = 's'; break;
-          case 's': ch = 'z'; break;
-          case 'Z': ch = 'S'; break;
-          case 'S': ch = 'Z'; break;
-          default: break;
-        }
+          switch(ch)
+          {
+            case '/': ch = '\\'; break;
+            case '\\': ch = '/'; break;
+            case '(': ch = ')'; break;
+            case ')': ch = '('; break;
+            case '[': ch = ']'; break;
+            case ']': ch = '['; break;
+            case '}': ch = '{'; break;
+            case 'd': ch = 'b'; break;
+            case 'b': ch = 'd'; break;
+            case 'J': ch = 'L'; break;
+            case 'L': ch = 'J'; break;
+            case '<': ch = '>'; break;
+            case '>': ch = '<'; break;
+            case 'z': ch = 's'; break;
+            case 's': ch = 'z'; break;
+            case 'Z': ch = 'S'; break;
+            case 'S': ch = 'Z'; break;
+            default: return false;
+          }
+          return true;
+        };
+        if (!f_set_char(g.preferred))
+          f_set_char(g.fallback);
       };
       
       auto* texture = fetch_frame(anim_frame);
@@ -754,7 +766,7 @@ namespace t8x
     struct LineSeg
     {
       std::array<Vec2, 2> pos;
-      char ch = 0;
+      t8::Glyph glyph = 0;
       Style style;
       uint8_t mat = 0;
     };
@@ -764,7 +776,7 @@ namespace t8x
       std::vector<LineSeg> line_segments;
       
       bool fill_closed_polylines = false;
-      char fill_char = 'S';
+      t8::Glyph fill_glyph = 'S';
       Style fill_style { Color16::White, Color16::Transparent2 };
       std::vector<std::vector<LineSeg>> closed_polylines;
       std::vector<LineSeg> open_polylines;
@@ -865,13 +877,13 @@ namespace t8x
     // So "o" becomes the center of mass instead.
     
     
-    void add_line_segment(int anim_frame, const Vec2& p0, const Vec2& p1, char ch, const Style& style, uint8_t mat = 0)
+    void add_line_segment(int anim_frame, const Vec2& p0, const Vec2& p1, t8::Glyph g, const Style& style, uint8_t mat = 0)
     {
       auto* vector_frame = fetch_frame(anim_frame);
       auto& line_seg = vector_frame->line_segments.emplace_back();
       line_seg.pos[0] = p0;
       line_seg.pos[1] = p1;
-      line_seg.ch = ch;
+      line_seg.glyph = g;
       line_seg.style = style;
       line_seg.mat = mat;
     }
@@ -1034,7 +1046,7 @@ namespace t8x
     
     void add_line_segment(int anim_frame, const Vec2& p0, const Vec2& p1, const Style& style, uint8_t mat = 0)
     {
-      add_line_segment(anim_frame, p0, p1, -1, style, mat);
+      add_line_segment(anim_frame, p0, p1, {}, style, mat);
     }
     
     virtual void clone_frame(int anim_frame, int from_anim_frame) override
@@ -1130,8 +1142,8 @@ namespace t8x
       {
         auto [p0, p1] = calc_seg_world_pos_round(line_seg);
         
-        char ch = 0;
-        if (line_seg.ch == -1)
+        t8::Glyph glyph;
+        if (line_seg.glyph.preferred == t8::Glyph::none32)
         {
           auto dir = p0 - p1;
           if (!(dir.r == 0 && dir.c == 0))
@@ -1140,31 +1152,31 @@ namespace t8x
             auto dc = static_cast<float>(dir.c);
             auto lineseg_rot_deg = math::rad2deg(std::atan2(dr, dc));
             if (math::in_range(lineseg_rot_deg, -180.f, -158.f, Range::ClosedOpen))
-              ch = '-';
+              glyph = '-';
             else if (math::in_range(lineseg_rot_deg, -158.f, -112.f, Range::ClosedOpen))
-              ch = '\\';
+              glyph = '\\';
             else if (math::in_range(lineseg_rot_deg, -112.f, -68.f, Range::ClosedOpen))
-              ch = '|';
+              glyph = '|';
             else if (math::in_range(lineseg_rot_deg, -68.f, -22.f, Range::ClosedOpen))
-              ch = '/';
+              glyph = '/';
             else if (math::in_range(lineseg_rot_deg, -22.f, 22.f, Range::ClosedOpen))
-              ch = '-';
+              glyph = '-';
             else if (math::in_range(lineseg_rot_deg, 22.f, 68.f, Range::ClosedOpen))
-              ch = '\\';
+              glyph = '\\';
             else if (math::in_range(lineseg_rot_deg, 68.f, 112.f, Range::ClosedOpen))
-              ch = '|';
+              glyph = '|';
             else if (math::in_range(lineseg_rot_deg, 112.f, 158.f, Range::ClosedOpen))
-              ch = '/';
+              glyph = '/';
             else if (math::in_range(lineseg_rot_deg, 158.f, 180.f, Range::Closed))
-              ch = '-';
+              glyph = '-';
             else
               throw std::invalid_argument(std::to_string(lineseg_rot_deg));
           }
         }
         else
-          ch = line_seg.ch;
+          glyph = line_seg.glyph;
         
-        t8x::plot_line(sh, p0, p1, std::string(1, ch), line_seg.style.fg_color, line_seg.style.bg_color);
+        t8x::plot_line(sh, p0, p1, glyph, line_seg.style.fg_color, line_seg.style.bg_color);
       }
       
       if (vector_frame->fill_closed_polylines)
@@ -1205,7 +1217,7 @@ namespace t8x
               const auto& c1 = occupied_cols[ci + 1];
               if (enable_fill)
                 for (int c = c0 + 1; c < c1; ++c)
-                  sh.write_buffer(std::string(1, vector_frame->fill_char), r, c, vector_frame->fill_style);
+                  sh.write_buffer(vector_frame->fill_glyph, r, c, vector_frame->fill_style);
               
               if (c1 - c0 > 1)
                 math::toggle(enable_fill);

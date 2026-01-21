@@ -78,11 +78,11 @@ namespace sprite_handler
     );
     Rectangle bb0 { 3, 2, 1, 1 };
     sprite0->clone_frame(1, 0);
-    sprite0->set_sprite_chars(1, bb0, '#');
+    sprite0->set_sprite_glyphs(1, bb0, '#');
     sprite0->set_sprite_fg_colors(1, bb0, Color16::Yellow);
     sprite0->set_sprite_bg_colors(1, bb0, Color16::DarkYellow);
     sprite0->clone_frame(2, 0);
-    sprite0->set_sprite_chars(2, bb0, '^');
+    sprite0->set_sprite_glyphs(2, bb0, '^');
     sprite0->set_sprite_fg_colors(2, bb0, Color16::White);
     sprite0->set_sprite_bg_colors(2, bb0, Color16::Transparent2);
     sprite0->func_calc_anim_frame = [](int sim_frame)
@@ -102,7 +102,7 @@ namespace sprite_handler
     sprite1->layer_id = 5;
     sprite1->init(2, 3);
     sprite1->create_frame(0);
-    sprite1->set_sprite_chars(0,
+    sprite1->set_sprite_glyphs(0,
       ' ', 'Y', ' ',
       '%', 'U', '%'
     );
@@ -120,8 +120,8 @@ namespace sprite_handler
     );
     Rectangle bbL { 1, 0, 1, 1 }, bbR { 1, 2, 1, 1 };
     sprite1->clone_frame(1, 0);
-    sprite1->set_sprite_chars(1, bbL, '#');
-    sprite1->set_sprite_chars(1, bbR, '#');
+    sprite1->set_sprite_glyphs(1, bbL, '#');
+    sprite1->set_sprite_glyphs(1, bbR, '#');
     sprite1->set_sprite_fg_colors(1, bbL, Color16::DarkYellow);
     sprite1->set_sprite_fg_colors(1, bbR, Color16::DarkYellow);
     sprite1->func_calc_anim_frame = [](int sim_frame)
@@ -143,7 +143,7 @@ namespace sprite_handler
       sprite2->layer_id = rnd::rand_select<int>({ 1, 3 });
       sprite2->init(1, 1);
       sprite2->create_frame(0);
-      sprite2->set_sprite_chars(0, '@');
+      sprite2->set_sprite_glyphs(0, '@');
       sprite2->set_sprite_fg_colors(0, Color16::DarkGray);
       sprite2->set_sprite_bg_colors(0, Color16::Transparent2);
       // sprite, r_pos, r_vel.
@@ -164,11 +164,11 @@ namespace sprite_handler
       sprite3->init(1, 1);
       sprite3->create_frame(0);
       char star_ch = rnd::rand_select<char>({ '.', '+' });
-      sprite3->set_sprite_chars(0, star_ch);
+      sprite3->set_sprite_glyphs(0, star_ch);
       sprite3->set_sprite_fg_colors(0, rnd::rand_select<Color>({ Color16::White, Color16::White, Color16::White, Color16::White, Color16::White, Color16::Yellow, Color16::Yellow, Color16::Yellow, Color16::Red, Color16::Blue, Color16::Blue, Color16::Blue }));
       sprite3->set_sprite_bg_colors(0, Color16::Transparent2);
       sprite3->create_frame(1);
-      sprite3->set_sprite_chars(1, star_ch);
+      sprite3->set_sprite_glyphs(1, star_ch);
       sprite3->set_sprite_fg_colors(1, Color16::Black);
       sprite3->set_sprite_bg_colors(1, Color16::Transparent2);
       const int max_twinkle = 100;
@@ -263,14 +263,14 @@ quit:
     auto* sprite0 = sprh.create_vector_sprite("spaceship");
     sprite0->layer_id = 1;
     sprite0->pos = { sh.num_rows()/2, sh.num_cols()/2 };
-    sprite0->add_line_segment(0, { 2, 2 }, { -2, 0 }, 'o', { Color16::Yellow, Color16::Transparent2 }, 1);
-    sprite0->add_line_segment(0, { -2, 0 }, { 2, -2 }, 'o', { Color16::Yellow, Color16::Transparent2 }, 1);
-    sprite0->add_line_segment(0, { 2, -2 }, { 2, 2 }, 'o', { Color16::Yellow, Color16::Transparent2 }, 1);
+    sprite0->add_line_segment(0, { 2, 2 }, { -2, 0 }, { 0x7F7, 'o' }, { { 5, 5, 3 }, Color16::Transparent2 }, 1);
+    sprite0->add_line_segment(0, { -2, 0 }, { 2, -2 }, { 0x7F7, 'o' }, { { 5, 4, 1 }, Color16::Transparent2 }, 1);
+    sprite0->add_line_segment(0, { 2, -2 }, { 2, 2 }, { 0x7F7, 'o' }, { { 4, 4, 3 }, Color16::Transparent2 }, 1);
     sprite0->set_rotation(0.f);
     sprite0->finalize_topology(0);
     auto* frame = sprite0->get_curr_local_frame(0);
     frame->fill_closed_polylines = true;
-    frame->fill_char = '#';
+    frame->fill_glyph = { 0xA73, '#' };
     frame->fill_style = { Color16::LightGray, Color16::DarkGray };
     dyn_sys.add_rigid_body(sprite0, 4.f, std::nullopt, { 1.f, -3.f }, {}, 2.f);
     
