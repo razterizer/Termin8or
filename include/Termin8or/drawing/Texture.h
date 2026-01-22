@@ -355,7 +355,7 @@ namespace t8
     // 01030110222
     // 44544344222
     
-    bool load(const std::string& file_path)
+    bool load(const std::string& file_path, bool verbose = true)
     {
       std::vector<std::string> lines;
       
@@ -425,7 +425,7 @@ namespace t8
             for (int c = 0; c < size.c; ++c)
             {
               int idx = r * size.c + c;
-              glyphs[idx].parse(l, l_idx, ver <= 21);
+              glyphs[idx].parse(l, l_idx, ver <= 21, verbose);
             }
             r++;
           }
@@ -443,7 +443,7 @@ namespace t8
             for (int c = 0; c < size.c; ++c)
             {
               int idx = r * size.c + c;
-              fg_colors[idx].parse(l, l_idx);
+              fg_colors[idx].parse(l, l_idx, true, verbose);
             }
             r++;
           }
@@ -461,7 +461,7 @@ namespace t8
             for (int c = 0; c < size.c; ++c)
             {
               int idx = r * size.c + c;
-              bg_colors[idx].parse(l, l_idx);
+              bg_colors[idx].parse(l, l_idx, true, verbose);
             }
             r++;
           }
