@@ -646,6 +646,15 @@ namespace t8
             break;
           }
       }
+      if (minimal_ver < 21)
+      {
+        for (const auto& g : glyphs)
+          if (g.preferred > 0x7F)
+          {
+            minimal_ver = 30;
+            break;
+          }
+      }
       return minimal_ver;
     }
   };
