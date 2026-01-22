@@ -162,7 +162,7 @@ namespace t8
       UnicodePreferredAndFallback // Store preferred + fallback if any.
     };
   
-    static const int compatible_version_until_and_including = 21;
+    static const int compatible_version_until_and_including = 30;
     int ver = compatible_version_until_and_including;
     RC size;
     int area = 0;
