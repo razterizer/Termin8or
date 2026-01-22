@@ -421,10 +421,11 @@ namespace t8
         {
           if (!l.empty())
           {
+            int l_idx = 0;
             for (int c = 0; c < size.c; ++c)
             {
               int idx = r * size.c + c;
-              glyphs[idx] = l[c];
+              glyphs[idx].parse(l, l_idx, ver <= 21);
             }
             r++;
           }
