@@ -42,8 +42,9 @@ namespace t8
       if (cp > 0x10FFFF)
         return false;
       
-      #ifdef _WIN32
-      return false;
+#ifdef _WIN32
+      // If not cmd, assume single-column and rely on fallback policy elsewhere.
+      return cp <= 0x10FFFF;
 #else
       init_locale();
       wchar_t wc = static_cast<wchar_t>(cp);
