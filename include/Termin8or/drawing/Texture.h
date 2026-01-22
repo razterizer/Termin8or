@@ -163,7 +163,7 @@ namespace t8
     };
   
     static const int compatible_version_until_and_including = 30;
-    int ver = compatible_version_until_and_including;
+    int ver = 10;
     RC size;
     int area = 0;
     std::vector<Glyph> glyphs;
