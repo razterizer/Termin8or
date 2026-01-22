@@ -865,7 +865,7 @@ namespace t8x
   
   class Dialog : public TextBox
   {
-    std::vector<std::tuple<RC, Style, char>> override_textels_pre;
+    std::vector<std::tuple<RC, Style, t8::Glyph>> override_textels_pre;
     ButtonGroup button_group; // Buttons have their own reserved row two rows down.
     std::vector<std::pair<RC, TextField>> text_fields;
     std::vector<std::pair<RC, ColorPicker>> color_pickers;
@@ -906,7 +906,7 @@ namespace t8x
           return;
     }
     
-    void set_textel_pre(const RC& local_pos, char ch, Color fg_color, Color bg_color)
+    void set_textel_pre(const RC& local_pos, const t8::Glyph& g, Color fg_color, Color bg_color)
     {
       //stlutils::emplace_back_if_not(override_textels_pre,
       //  std::tuple<RC, Style, char> { local_pos, { fg_color, bg_color }, ch},
@@ -916,10 +916,10 @@ namespace t8x
       if (it != override_textels_pre.end())
       {
         std::get<1>(*it) = { fg_color, bg_color };
-        std::get<2>(*it) = ch;
+        std::get<2>(*it) = g;
       }
       else
-        override_textels_pre.emplace_back(local_pos, Style { fg_color, bg_color }, ch);
+        override_textels_pre.emplace_back(local_pos, Style { fg_color, bg_color }, g);
     }
     
     void set_textel_str_pre(const RC& local_pos, std::string_view str, Color fg_color, Color bg_color)
@@ -1050,7 +1050,7 @@ namespace t8x
         if (math::in_range(tp.r, 0, static_cast<int>(N), Range::ClosedOpen) &&
             math::in_range(tp.c, 0, static_cast<int>(len_max), Range::ClosedOpen))
         {
-          sh.write_buffer(std::string(1, std::get<2>(ot)),
+          sh.write_buffer(std::get<2>(ot),
                           pos.r + tp.r, pos.c + tp.c,
                           std::get<1>(ot));
         }
