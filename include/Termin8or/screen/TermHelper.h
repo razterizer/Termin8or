@@ -55,7 +55,7 @@ namespace t8
     
     inline char32_t get_single_column_char32(char32_t cp)
     {
-      return is_single_column(cp) ? cp : U'?';
+      return is_single_column(cp) ? cp : none32;
     }
     
     inline std::string encode_single_width_glyph(char32_t preferred,
