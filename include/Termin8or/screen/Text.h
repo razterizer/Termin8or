@@ -264,7 +264,10 @@ namespace t8
             
             CHAR_INFO ci{};
             char32_t cp = ch;
-            if (cp > 0xFFFF) cp = U'?';
+            if (cp == term::none32)
+              cp = U' '; // “empty cell”
+            else if (cp > 0xFFFF || (cp >= 0xD800 && cp <= 0xDFFF))
+              cp = U'?'; // last-resort
             ci.Char.UnicodeChar = static_cast<wchar_t>(cp); // BMP assumed.
             ci.Attributes = get_style_win_cmd(fg, bg);
             lineBuffer.push_back(ci);
@@ -340,7 +343,10 @@ namespace t8
             else if constexpr (std::is_same_v<CharT, char32_t>)
             {
               char32_t cp = ch;
-              if (cp > 0xFFFF) cp = U'?';
+              if (cp == term::none32)
+                cp = U' '; // “empty cell”
+              else if (cp > 0xFFFF || (cp >= 0xD800 && cp <= 0xDFFF))
+                cp = U'?'; // last-resort
               ci.Char.UnicodeChar = static_cast<wchar_t>(cp); // BMP assumed.
             }
             else
