@@ -65,7 +65,7 @@ namespace t8
       if (!is_single_column(cp))
         cp = fallback;
       if (!is_single_column(cp))
-        cp = U'?';
+        cp = none32;
       
       // Use 437 for cmd.exe for now as we only have a mapping from UTF-8 to CP437 atm.
       return utf8::encode_char32_utf8(cp);
