@@ -150,18 +150,21 @@ namespace t8x
     // # #
     // ###
     
-    std::string outline_n = "#";
-    std::string outline_s = "#";
-    std::string outline_w = "#";
-    std::string outline_e = "#";
-    std::string outline_se = "#";
-    std::string outline_ne = "#";
-    std::string outline_nw = "#";
-    std::string outline_sw = "#";
-    std::string outline_n2 = "";
-    std::string outline_s2 = "";
-    std::string outline_w2 = "";
-    std::string outline_e2 = "";
+    using namespace t8::operators;
+    using namespace t8::literals;
+    
+    t8::GlyphString outline_n = "#"_gs;
+    t8::GlyphString outline_s = "#"_gs;
+    t8::Glyph outline_w = '#';
+    t8::Glyph outline_e = '#';
+    t8::Glyph outline_se = '#';
+    t8::Glyph outline_ne = '#';
+    t8::Glyph outline_nw = '#';
+    t8::Glyph outline_sw = '#';
+    t8::GlyphString outline_n2;
+    t8::GlyphString outline_s2;
+    t8::Glyph outline_w2;
+    t8::Glyph outline_e2;
     switch (outline_type)
     {
       case OutlineType::Line:
@@ -227,106 +230,106 @@ namespace t8x
       case OutlineType::Hash:
         break;
       case OutlineType::UTF8_SingleLine:
-        outline_n = sh.encode_single_width_glyph(0x2500, '-');
-        outline_s = sh.encode_single_width_glyph(0x2500, '-');
-        outline_w = sh.encode_single_width_glyph(0x2502, '|');
-        outline_e = sh.encode_single_width_glyph(0x2502, '|');
-        outline_se = sh.encode_single_width_glyph(0x2518, '+');
-        outline_ne = sh.encode_single_width_glyph(0x2510, '+');
-        outline_nw = sh.encode_single_width_glyph(0x250C, '+');
-        outline_sw = sh.encode_single_width_glyph(0x2514, '+');
+        outline_n = t8::Glyph { 0x2500, '-' };
+        outline_s = t8::Glyph { 0x2500, '-' };
+        outline_w = t8::Glyph { 0x2502, '|' };
+        outline_e = t8::Glyph { 0x2502, '|' };
+        outline_se = t8::Glyph { 0x2518, '+' };
+        outline_ne = t8::Glyph { 0x2510, '+' };
+        outline_nw = t8::Glyph { 0x250C, '+' };
+        outline_sw = t8::Glyph { 0x2514, '+' };
         break;
       case OutlineType::UTF8_SingleLineRounded:
-        outline_n = sh.encode_single_width_glyph(0x2500, '-');
-        outline_s = sh.encode_single_width_glyph(0x2500, '-');
-        outline_w = sh.encode_single_width_glyph(0x2502, '|');
-        outline_e = sh.encode_single_width_glyph(0x2502, '|');
-        outline_se = sh.encode_single_width_glyph(0x256F, '+');
-        outline_ne = sh.encode_single_width_glyph(0x256E, '+');
-        outline_nw = sh.encode_single_width_glyph(0x256D, '+');
-        outline_sw = sh.encode_single_width_glyph(0x2570, '+');
+        outline_n = t8::Glyph { 0x2500, '-' };
+        outline_s = t8::Glyph { 0x2500, '-' };
+        outline_w = t8::Glyph { 0x2502, '|' };
+        outline_e = t8::Glyph { 0x2502, '|' };
+        outline_se = t8::Glyph { 0x256F, '+' };
+        outline_ne = t8::Glyph { 0x256E, '+' };
+        outline_nw = t8::Glyph { 0x256D, '+' };
+        outline_sw = t8::Glyph { 0x2570, '+' };
         break;
       case OutlineType::UTF8_DoubleLine:
-        outline_n = sh.encode_single_width_glyph(0x2550, '=');
-        outline_s = sh.encode_single_width_glyph(0x2550, '=');
-        outline_w = sh.encode_single_width_glyph(0x2551, '|');
-        outline_e = sh.encode_single_width_glyph(0x2551, '|');
-        outline_se = sh.encode_single_width_glyph(0x255D, '+');
-        outline_ne = sh.encode_single_width_glyph(0x2557, '+');
-        outline_nw = sh.encode_single_width_glyph(0x2554, '+');
-        outline_sw = sh.encode_single_width_glyph(0x255A, '+');
+        outline_n = t8::Glyph { 0x2550, '=' };
+        outline_s = t8::Glyph { 0x2550, '=' };
+        outline_w = t8::Glyph { 0x2551, '|' };
+        outline_e = t8::Glyph { 0x2551, '|' };
+        outline_se = t8::Glyph { 0x255D, '+' };
+        outline_ne = t8::Glyph { 0x2557, '+' };
+        outline_nw = t8::Glyph { 0x2554, '+' };
+        outline_sw = t8::Glyph { 0x255A, '+' };
         break;
       case OutlineType::UTF8_BlockDark:
-        outline_n = sh.encode_single_width_glyph(0x2593, '#');
-        outline_s = sh.encode_single_width_glyph(0x2593, '#');
-        outline_w = sh.encode_single_width_glyph(0x2593, '#');
-        outline_e = sh.encode_single_width_glyph(0x2593, '#');
-        outline_se = sh.encode_single_width_glyph(0x2593, '#');
-        outline_ne = sh.encode_single_width_glyph(0x2593, '#');
-        outline_nw = sh.encode_single_width_glyph(0x2593, '#');
-        outline_sw = sh.encode_single_width_glyph(0x2593, '#');
+        outline_n = t8::Glyph { 0x2593, '#' };
+        outline_s = t8::Glyph { 0x2593, '#' };
+        outline_w = t8::Glyph { 0x2593, '#' };
+        outline_e = t8::Glyph { 0x2593, '#' };
+        outline_se = t8::Glyph { 0x2593, '#' };
+        outline_ne = t8::Glyph { 0x2593, '#' };
+        outline_nw = t8::Glyph { 0x2593, '#' };
+        outline_sw = t8::Glyph { 0x2593, '#' };
         break;
       case OutlineType::UTF8_BlockNormal:
-        outline_n = sh.encode_single_width_glyph(0x2592, '#');
-        outline_s = sh.encode_single_width_glyph(0x2592, '#');
-        outline_w = sh.encode_single_width_glyph(0x2592, '#');
-        outline_e = sh.encode_single_width_glyph(0x2592, '#');
-        outline_se = sh.encode_single_width_glyph(0x2592, '#');
-        outline_ne = sh.encode_single_width_glyph(0x2592, '#');
-        outline_nw = sh.encode_single_width_glyph(0x2592, '#');
-        outline_sw = sh.encode_single_width_glyph(0x2592, '#');
+        outline_n = t8::Glyph { 0x2592, '#' };
+        outline_s = t8::Glyph { 0x2592, '#' };
+        outline_w = t8::Glyph { 0x2592, '#' };
+        outline_e = t8::Glyph { 0x2592, '#' };
+        outline_se = t8::Glyph { 0x2592, '#' };
+        outline_ne = t8::Glyph { 0x2592, '#' };
+        outline_nw = t8::Glyph { 0x2592, '#' };
+        outline_sw = t8::Glyph { 0x2592, '#' };
         break;
       case OutlineType::UTF8_BlockLight:
-        outline_n = sh.encode_single_width_glyph(0x2591, '#');
-        outline_s = sh.encode_single_width_glyph(0x2591, '#');
-        outline_w = sh.encode_single_width_glyph(0x2591, '#');
-        outline_e = sh.encode_single_width_glyph(0x2591, '#');
-        outline_se = sh.encode_single_width_glyph(0x2591, '#');
-        outline_ne = sh.encode_single_width_glyph(0x2591, '#');
-        outline_nw = sh.encode_single_width_glyph(0x2591, '#');
-        outline_sw = sh.encode_single_width_glyph(0x2591, '#');
+        outline_n = t8::Glyph { 0x2591, '#' };
+        outline_s = t8::Glyph { 0x2591, '#' };
+        outline_w = t8::Glyph { 0x2591, '#' };
+        outline_e = t8::Glyph { 0x2591, '#' };
+        outline_se = t8::Glyph { 0x2591, '#' };
+        outline_ne = t8::Glyph { 0x2591, '#' };
+        outline_nw = t8::Glyph { 0x2591, '#' };
+        outline_sw = t8::Glyph { 0x2591, '#' };
         break;
       case OutlineType::UTF8_Masonry:
-        outline_n = sh.encode_single_width_glyph(0x252C, '=');
-        outline_s = sh.encode_single_width_glyph(0x2534, '=');
-        outline_w = sh.encode_single_width_glyph(0x251C, 'H');
-        outline_e = sh.encode_single_width_glyph(0x2524, 'H');
-        outline_se = sh.encode_single_width_glyph(0x253C, '#');
-        outline_ne = sh.encode_single_width_glyph(0x253C, '#');
-        outline_nw = sh.encode_single_width_glyph(0x253C, '#');
-        outline_sw = sh.encode_single_width_glyph(0x253C, '#');
-        outline_n2 = sh.encode_single_width_glyph(0x2534, '=');
-        outline_s2 = sh.encode_single_width_glyph(0x252C, '=');
-        outline_w2 = sh.encode_single_width_glyph(0x2524, 'H');
-        outline_e2 = sh.encode_single_width_glyph(0x251C, 'H');
+        outline_n = t8::Glyph { 0x252C, '=' };
+        outline_s = t8::Glyph { 0x2534, '=' };
+        outline_w = t8::Glyph { 0x251C, 'H' };
+        outline_e = t8::Glyph { 0x2524, 'H' };
+        outline_se = t8::Glyph { 0x253C, '#' };
+        outline_ne = t8::Glyph { 0x253C, '#' };
+        outline_nw = t8::Glyph { 0x253C, '#' };
+        outline_sw = t8::Glyph { 0x253C, '#' };
+        outline_n2 = t8::Glyph { 0x2534, '=' };
+        outline_s2 = t8::Glyph { 0x252C, '=' };
+        outline_w2 = t8::Glyph { 0x2524, 'H' };
+        outline_e2 = t8::Glyph { 0x251C, 'H' };
         break;
       case OutlineType::UTF8_Checker:
-        outline_n = sh.encode_single_width_glyph(0x2580, 'M');
-        outline_s = sh.encode_single_width_glyph(0x2584, 'W');
-        outline_w = sh.encode_single_width_glyph(0x258C, 'H');
-        outline_e = sh.encode_single_width_glyph(0x2590, 'H');
-        outline_se = sh.encode_single_width_glyph(0x259F, '@');
-        outline_ne = sh.encode_single_width_glyph(0x259C, '@');
-        outline_nw = sh.encode_single_width_glyph(0x259B, '@');
-        outline_sw = sh.encode_single_width_glyph(0x2599, '@');
-        outline_n2 = sh.encode_single_width_glyph(0x2584, 'M');
-        outline_s2 = sh.encode_single_width_glyph(0x2580, 'W');
-        outline_w2 = sh.encode_single_width_glyph(0x2590, 'H');
-        outline_e2 = sh.encode_single_width_glyph(0x258C, 'H');
+        outline_n = t8::Glyph { 0x2580, 'M' };
+        outline_s = t8::Glyph { 0x2584, 'W' };
+        outline_w = t8::Glyph { 0x258C, 'H' };
+        outline_e = t8::Glyph { 0x2590, 'H' };
+        outline_se = t8::Glyph { 0x259F, '@' };
+        outline_ne = t8::Glyph { 0x259C, '@' };
+        outline_nw = t8::Glyph { 0x259B, '@' };
+        outline_sw = t8::Glyph { 0x2599, '@' };
+        outline_n2 = t8::Glyph { 0x2584, 'M' };
+        outline_s2 = t8::Glyph { 0x2580, 'W' };
+        outline_w2 = t8::Glyph { 0x2590, 'H' };
+        outline_e2 = t8::Glyph { 0x258C, 'H' };
         break;
       case OutlineType::UTF8_Temple:
-        outline_n = sh.encode_single_width_glyph(0x20B8, 'I');
-        outline_s = sh.encode_single_width_glyph(0x27C2, 'I');
-        outline_w = sh.encode_single_width_glyph(0x27DD, 'H');
-        outline_e = sh.encode_single_width_glyph(0x27DE, 'H');
-        outline_se = sh.encode_single_width_glyph(0x256F, 'O');
-        outline_ne = sh.encode_single_width_glyph(0x256E, 'O');
-        outline_nw = sh.encode_single_width_glyph(0x256D, 'O');
-        outline_sw = sh.encode_single_width_glyph(0x2570, 'O');
-        //outline_n2 = sh.encode_single_width_glyph(0x2534, 'I');
-        //outline_s2 = sh.encode_single_width_glyph(0x252C, 'I');
-        //outline_w2 = sh.encode_single_width_glyph(0x2524, 'H');
-        //outline_e2 = sh.encode_single_width_glyph(0x251C, 'H');
+        outline_n = t8::Glyph { 0x20B8, 'I' };
+        outline_s = t8::Glyph { 0x27C2, 'I' };
+        outline_w = t8::Glyph { 0x27DD, 'H' };
+        outline_e = t8::Glyph { 0x27DE, 'H' };
+        outline_se = t8::Glyph { 0x256F, 'O' };
+        outline_ne = t8::Glyph { 0x256E, 'O' };
+        outline_nw = t8::Glyph { 0x256D, 'O' };
+        outline_sw = t8::Glyph { 0x2570, 'O' };
+        //outline_n2 = t8::Glyph { 0x2534, 'I' };
+        //outline_s2 = t8::Glyph { 0x252C, 'I' };
+        //outline_w2 = t8::Glyph { 0x2524, 'H' };
+        //outline_e2 = t8::Glyph { 0x251C, 'H' };
         break;
       default:
         break;
@@ -349,44 +352,30 @@ namespace t8x
     int num_horiz = len_c;
     int num_horiz_inset = num_horiz - 2;
     
-    std::string str_horiz_n_inset;
+    t8::GlyphString str_horiz_n_inset;
     if (outline_n2.empty())
       str_horiz_n_inset = str::rep_str(outline_n, num_horiz_inset);
     else
       for (int i = 0; i < num_horiz_inset; ++i)
         str_horiz_n_inset += (i % 2 == 0) ? outline_n : outline_n2;
     
-    std::string str_horiz_s_inset;
+    t8::GlyphString str_horiz_s_inset;
     if (outline_s2.empty())
       str_horiz_s_inset = str::rep_str(outline_s, num_horiz_inset);
     else
       for (int i = 0; i < num_horiz_inset; ++i)
         str_horiz_s_inset += (i % 2 == 0) ? outline_s : outline_s2;
-    auto str_horiz_n = outline_nw + str_horiz_n_inset + (len_c >= 2 ? outline_ne : "");
-    auto str_horiz_s = outline_sw + str_horiz_s_inset + (len_c >= 2 ? outline_se : "");
+    auto str_horiz_n = outline_nw + str_horiz_n_inset + (len_c >= 2 ? outline_ne : ""_gs);
+    auto str_horiz_s = outline_sw + str_horiz_s_inset + (len_c >= 2 ? outline_se : ""_gs);
 
-    size_t byte_idx = 0;
-    char32_t ch32 = utf8::none;
-    int j = 0;
-    while (utf8::decode_next_utf8_char32(str_horiz_n, ch32, byte_idx))
+    for (int j = 0; j < len_c; ++j)
     {
-      if (j == len_c)
-        break;
-      sh.write_buffer(utf8::encode_char32_utf8(ch32), r, j + c, f_shade_style(outline_style, 0, j));
-      j++;
-    }
+      sh.write_buffer(str_horiz_n[j], r, c + j, f_shade_style(outline_style, 0, j));
     
-    byte_idx = 0;
-    j = 0;
-    while (utf8::decode_next_utf8_char32(str_horiz_s, ch32, byte_idx))
-    {
-      if (j == len_c)
-        break;
-      sh.write_buffer(utf8::encode_char32_utf8(ch32), r + len_r - 1, j + c, f_shade_style(outline_style, len_r - 1, j));
-      j++;
+      sh.write_buffer(str_horiz_s[j], r + len_r - 1, c + j, f_shade_style(outline_style, len_r - 1, j));
     }
 
-    auto f_sel_vert_glyph = [](const std::string& glyph0, const std::string& glyph1, int i) -> std::string
+    auto f_sel_vert_glyph = [](const auto& glyph0, const auto& glyph1, int i)
     {
       if (glyph1.empty())
         return glyph0;
