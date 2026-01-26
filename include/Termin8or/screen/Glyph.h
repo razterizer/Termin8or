@@ -43,6 +43,11 @@ namespace t8
         fallback = static_cast<char>(preferred);
     }
     
+    inline bool empty() const noexcept
+    {
+      return preferred == none32;
+    }
+    
     bool operator==(const Glyph& g) const
     {
       return this->preferred == g.preferred
