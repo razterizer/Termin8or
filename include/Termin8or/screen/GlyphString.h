@@ -34,6 +34,10 @@ namespace t8
     {
       glyph_vector.emplace_back(glyph);
     }
+    GlyphString(char c)
+    {
+      glyph_vector.emplace_back(c, c);
+    }
     
     template<typename CharT>
     std::string encode() const
