@@ -425,9 +425,9 @@ namespace t8x
     };
     
     // Filling
-    auto str_fill = sh.encode_single_width_glyph(fill_glyph); //str::rep_char(fill_char, num_horiz_inset);
-    auto str_shadow_ns = sh.encode_single_width_glyph(shadow_glyph);//str::rep_char(shadow_char, num_horiz_inset);
-    auto str_shadow_ew = sh.encode_single_width_glyph(shadow_glyph);
+    auto str_fill = fill_glyph.encode_single_width_glyph<CharT>(); //str::rep_char(fill_char, num_horiz_inset);
+    auto str_shadow_ns = shadow_glyph.encode_single_width_glyph<CharT>(); //str::rep_char(shadow_char, num_horiz_inset);
+    auto str_shadow_ew = shadow_glyph.encode_single_width_glyph<CharT>(); //str::rep_char(shadow_char, num_horiz_inset);
     
     if (len_r >= 3)
     {
