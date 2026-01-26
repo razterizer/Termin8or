@@ -39,6 +39,11 @@ namespace t8
       glyph_vector.emplace_back(c, c);
     }
     
+    inline bool empty() const noexcept
+    {
+      return glyph_vector.empty();
+    }
+    
     template<typename CharT>
     std::string encode() const
     {
