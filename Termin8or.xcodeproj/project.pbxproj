@@ -169,8 +169,8 @@
 		07BDBA6B2E741B05002ACC96 /* screen */ = {
 			isa = PBXGroup;
 			children = (
-				0774FE1E2F27523700B4D4FC /* GlyphString.h */,
 				0774FE142F0EB17400B4D4FC /* Glyph.h */,
+				0774FE1E2F27523700B4D4FC /* GlyphString.h */,
 				07BDBA632E741B05002ACC96 /* Color.h */,
 				07233B4E2EDBA71C0022B60B /* RGBA.h */,
 				07BDBA642E741B05002ACC96 /* ScreenCommands.h */,
