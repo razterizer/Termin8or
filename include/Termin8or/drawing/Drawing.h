@@ -375,7 +375,7 @@ namespace t8x
       sh.write_buffer(str_horiz_s[j], r + len_r - 1, c + j, f_shade_style(outline_style, len_r - 1, j));
     }
 
-    auto f_sel_vert_glyph = [](const auto& glyph0, const auto& glyph1, int i)
+    auto f_sel_vert_glyph = [](const t8::Glyph& glyph0, const t8::Glyph& glyph1, int i) -> t8::Glyph
     {
       if (glyph1.empty())
         return glyph0;
