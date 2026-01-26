@@ -46,6 +46,38 @@ namespace t8
     
     Glyph& operator[](int idx) { return glyph_vector[idx]; }
     const Glyph& operator[](int idx) const { return glyph_vector[idx]; }
+    
+    inline GlyphString& operator+=(const GlyphString& gs)
+    {
+      glyph_vector.reserve(glyph_vector.size() + gs.glyph_vector.size());
+      for (const auto& g : gs.glyph_vector)
+        glyph_vector.emplace_back(g);
+      return *this;
+    }
+    
+    inline GlyphString& operator+=(std::string_view sv)
+    {
+      glyph_vector.reserve(glyph_vector.size() + sv.size());
+      for (unsigned char c : sv)
+        glyph_vector.emplace_back(c, c);
+      return *this;
+    }
+    
+    inline GlyphString& operator+=(char c)
+    {
+      glyph_vector.reserve(glyph_vector.size() + 1);
+      glyph_vector.emplace_back(c, c);
+      return *this;
+    }
+    
+    inline GlyphString& operator+=(const Glyph& g)
+    {
+      glyph_vector.reserve(glyph_vector.size() + 1);
+      glyph_vector.emplace_back(g);
+      return *this;
+    }
+    
+    // ///////////////////////////////////////////
   
     std::vector<Glyph> glyph_vector;
   };
