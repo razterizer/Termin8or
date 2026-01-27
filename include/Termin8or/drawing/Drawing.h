@@ -425,22 +425,21 @@ namespace t8x
     };
     
     // Filling
-    auto str_fill = fill_glyph.encode_single_width_glyph<CharT>(); //str::rep_char(fill_char, num_horiz_inset);
-    auto str_shadow_ns = shadow_glyph.encode_single_width_glyph<CharT>(); //str::rep_char(shadow_char, num_horiz_inset);
-    auto str_shadow_ew = shadow_glyph.encode_single_width_glyph<CharT>(); //str::rep_char(shadow_char, num_horiz_inset);
+    auto shadow_ns = shadow_glyph; //str::rep_char(shadow_char, num_horiz_inset);
+    auto shadow_ew = shadow_glyph; //str::rep_char(shadow_char, num_horiz_inset);
     
     if (len_r >= 3)
     {
       for (int i = 1; i < len_c - 1; ++i)
       {
         if (shadow_type == SolarDirection::NW || shadow_type == SolarDirection::N || shadow_type == SolarDirection::NE)
-          sh.write_buffer(str_shadow_ns, r + 1, i + c, f_shade_style(shadow_style, 1, i));
+          sh.write_buffer(shadow_ns, r + 1, i + c, f_shade_style(shadow_style, 1, i));
         else if (shadow_type == SolarDirection::SW || shadow_type == SolarDirection::S || shadow_type == SolarDirection::SE)
-          sh.write_buffer(str_shadow_ns, r + len_r - 2, i + c, f_shade_style(shadow_style, len_r - 2, i));
+          sh.write_buffer(shadow_ns, r + len_r - 2, i + c, f_shade_style(shadow_style, len_r - 2, i));
         else if (shadow_type == SolarDirection::SW_Low || shadow_type == SolarDirection::S_Low || shadow_type == SolarDirection::SE_Low)
-          sh.write_buffer(str_shadow_ns, r + 1, i + c, f_shade_style(fill_style, 1, i));
+          sh.write_buffer(shadow_ns, r + 1, i + c, f_shade_style(fill_style, 1, i));
         else if (shadow_type == SolarDirection::NW_Low || shadow_type == SolarDirection::N_Low || shadow_type == SolarDirection::NE_Low)
-          sh.write_buffer(str_shadow_ns, r + len_r - 2, i + c, f_shade_style(fill_style, len_r - 2, i));
+          sh.write_buffer(shadow_ns, r + len_r - 2, i + c, f_shade_style(fill_style, len_r - 2, i));
       }
     }
     
@@ -453,13 +452,13 @@ namespace t8x
     {
       auto r0 = i - r;
       if (has_west_shadow)
-        sh.write_buffer(str_shadow_ew, i, c + 1, f_shade_style(shadow_style, r0, 1));
+        sh.write_buffer(shadow_ew, i, c + 1, f_shade_style(shadow_style, r0, 1));
       else if (has_east_shadow)
-        sh.write_buffer(str_shadow_ew, i, c + len_c - 2, f_shade_style(shadow_style, r0, len_c - 2));
+        sh.write_buffer(shadow_ew, i, c + len_c - 2, f_shade_style(shadow_style, r0, len_c - 2));
       else if (has_west_twilight)
-        sh.write_buffer(str_shadow_ew, i, c + 1, f_shade_style(fill_style, r0, 1));
+        sh.write_buffer(shadow_ew, i, c + 1, f_shade_style(fill_style, r0, 1));
       else if (has_east_twilight)
-        sh.write_buffer(str_shadow_ew, i, c + len_c - 2, f_shade_style(fill_style, r0, len_c - 2));
+        sh.write_buffer(shadow_ew, i, c + len_c - 2, f_shade_style(fill_style, r0, len_c - 2));
       
       bool night_or_twilight = shadow_type == SolarDirection::Nadir ||
         shadow_type == SolarDirection::N_Low ||
@@ -472,7 +471,7 @@ namespace t8x
         shadow_type == SolarDirection::NW_Low;
       auto style = night_or_twilight ? shadow_style : fill_style;
       for (int j = 1; j < len_c - 1; ++j)
-        sh.write_buffer(str_fill, i, j + c, f_shade_style(style, r0, j));
+        sh.write_buffer(fill_glyph, i, j + c, f_shade_style(style, r0, j));
     }
   }
   
