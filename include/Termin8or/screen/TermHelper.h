@@ -63,7 +63,7 @@ namespace t8
     {
       char32_t cp = preferred;
       if (!is_single_column(cp))
-        cp = fallback;
+        cp = static_cast<unsigned char>(fallback);
       if (!is_single_column(cp))
         cp = none32;
       
