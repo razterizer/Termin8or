@@ -20,6 +20,9 @@ namespace t8
     using value_type = Glyph;
   
     GlyphString() = default;
+    // Consider these for clarity.
+    // GlyphString::from_bytes(std::string_view) (current behavior)
+    // GlyphString::from_utf8(std::string_view) (decode to Glyph(preferred_unicode, ascii_fallback))
     GlyphString(std::string_view sv)
     {
       glyph_vector.reserve(sv.size());
