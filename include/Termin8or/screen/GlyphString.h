@@ -59,6 +59,19 @@ namespace t8
       return glyph_vector.size();
     }
     
+    // Returns npos if not found. npos here is a hack. Doesn't really belong here.
+    inline size_t find(const Glyph& needle) const
+    {
+      size_t idx = 0;
+      for (const auto& hay : glyph_vector)
+      {
+        if (hay == needle)
+          return idx;
+        ++idx;
+      }
+      return std::string::npos;
+    }
+    
     template<typename CharT>
     std::string encode() const
     {
