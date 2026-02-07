@@ -200,50 +200,47 @@ namespace t8
     }
   }
   
-  namespace operators
+  inline GlyphString operator+(GlyphString lhs, const GlyphString& rhs)
   {
-    inline GlyphString operator+(GlyphString lhs, const GlyphString& rhs)
-    {
-      lhs.glyph_vector.reserve(lhs.glyph_vector.size() + rhs.glyph_vector.size());
-      for (const auto& g : rhs.glyph_vector)
-        lhs.glyph_vector.emplace_back(g);
-      return lhs;
-    }
-  
-    // Append ASCII.
-    inline GlyphString operator+(GlyphString lhs, std::string_view rhs)
-    {
-      lhs.glyph_vector.reserve(lhs.glyph_vector.size() + rhs.size());
-      for (unsigned char c : rhs)
-        lhs.glyph_vector.emplace_back(c, c);
-      return lhs;
-    }
-    
-    // Append char.
-    inline GlyphString operator+(GlyphString lhs, char rhs)
-    {
-      lhs.glyph_vector.reserve(lhs.glyph_vector.size() + 1);
-      lhs.glyph_vector.emplace_back(rhs, rhs);
-      return lhs;
-    }
-    
-    // Append char32_t.
-    inline GlyphString operator+(GlyphString lhs, char32_t rhs)
-    {
-      lhs.glyph_vector.reserve(lhs.glyph_vector.size() + 1);
-      lhs.glyph_vector.emplace_back(rhs, rhs);
-      return lhs;
-    }
-    
-    // Append Glyph.
-    inline GlyphString operator+(GlyphString lhs, const Glyph& rhs)
-    {
-      lhs.glyph_vector.reserve(lhs.glyph_vector.size() + 1);
-      lhs.glyph_vector.emplace_back(rhs);
-      return lhs;
-    }
+    lhs.glyph_vector.reserve(lhs.glyph_vector.size() + rhs.glyph_vector.size());
+    for (const auto& g : rhs.glyph_vector)
+      lhs.glyph_vector.emplace_back(g);
+    return lhs;
   }
-
+  
+  // Append ASCII.
+  inline GlyphString operator+(GlyphString lhs, std::string_view rhs)
+  {
+    lhs.glyph_vector.reserve(lhs.glyph_vector.size() + rhs.size());
+    for (unsigned char c : rhs)
+      lhs.glyph_vector.emplace_back(c, c);
+    return lhs;
+  }
+  
+  // Append char.
+  inline GlyphString operator+(GlyphString lhs, char rhs)
+  {
+    lhs.glyph_vector.reserve(lhs.glyph_vector.size() + 1);
+    lhs.glyph_vector.emplace_back(rhs, rhs);
+    return lhs;
+  }
+  
+  // Append char32_t.
+  inline GlyphString operator+(GlyphString lhs, char32_t rhs)
+  {
+    lhs.glyph_vector.reserve(lhs.glyph_vector.size() + 1);
+    lhs.glyph_vector.emplace_back(rhs, rhs);
+    return lhs;
+  }
+  
+  // Append Glyph.
+  inline GlyphString operator+(GlyphString lhs, const Glyph& rhs)
+  {
+    lhs.glyph_vector.reserve(lhs.glyph_vector.size() + 1);
+    lhs.glyph_vector.emplace_back(rhs);
+    return lhs;
+  }
+  
 }
 
 

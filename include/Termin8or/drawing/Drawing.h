@@ -150,7 +150,6 @@ namespace t8x
     // # #
     // ###
     
-    using namespace t8::operators;
     using namespace t8::literals;
     
     t8::GlyphString outline_n = "#"_gs;
