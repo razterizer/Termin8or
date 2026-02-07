@@ -649,16 +649,38 @@ namespace t8x
       caret = { 0, 0 };
     }
   };
+  
+  // /////////////////////////////////////////////////////////////
+  //  _______        _   ____
+  // |__   __|      | | |  _ \
+  //    | | _____  _| |_| |_) | _____  __
+  //    | |/ _ \ \/ / __|  _ < / _ \ \/ /
+  //    | |  __/>  <| |_| |_) | (_) >  <
+  //    |_|\___/_/\_\\__|____/ \___/_/\_\
+  // /////////////////////////////////////////////////////////////
+  
+  template<typename StrT>
+  str::StringBox<StrT> create_StringBox(const StrT& text)
+  {
+    str::StringBox<StrT> sb;
+    
+    if constexpr (std::is_same_v<StrT, t8::GlyphString>)
+      sb = str::StringBox<StrT>{ text, [](const t8::Glyph& g) { return g.preferred; } };
+    else
+      sb = str::StringBox<StrT>{ text, [](auto ch) { return ch; } };
+      
+    return std::move(sb);
+  }
 
+  template<typename StrT>
   class TextBox
   {
   protected:
-    str::StringBox sb;
+    str::StringBox<StrT> sb;
     size_t N = 0;
     size_t len_max = 0;
     std::vector<Style> line_styles;
     std::vector<std::pair<RC, Style>> override_textel_styles;
-    bool use_utf8 = false;
     
     void init()
     {
@@ -724,7 +746,7 @@ namespace t8x
     {
       init();
     }
-    TextBox(const std::vector<std::string>& text_lines, const std::vector<Style>& styles = {})
+    TextBox(const std::vector<StrT>& text_lines, const std::vector<Style>& styles = {})
       : sb(text_lines)
       , line_styles(styles)
     {
@@ -732,24 +754,22 @@ namespace t8x
       if (text_lines.size() != line_styles.size())
         line_styles.clear();
     }
-    TextBox(const std::string& text)
+    TextBox(const StrT& text)
       : sb(text)
     {
       init();
     }
-    
-    void enable_utf8(bool enable) { use_utf8 = enable; }
-    
+        
     bool empty() const noexcept
     {
       return sb.empty();
     }
     
-    void set_text(const std::vector<std::string>& text_lines,
+    void set_text(const std::vector<StrT>& text_lines,
                   const std::vector<Style>& styles = {},
                   const std::vector<std::pair<RC, Style>>& override_styles = {})
     {
-      sb = str::StringBox { text_lines };
+      sb = str::StringBox<StrT> { text_lines };
       line_styles = styles;
       override_textel_styles = override_styles;
       init();
@@ -757,16 +777,16 @@ namespace t8x
         line_styles.clear();
     }
     
-    void set_text(const std::string& text)
+    void set_text(const StrT& text)
     {
-      sb = str::StringBox { text };
+      sb = create_StringBox(text);
       override_textel_styles.clear();
       init();
     }
     
-    void set_text(const std::string& text, Style style)
+    void set_text(const StrT& text, Style style)
     {
-      sb = str::StringBox { text };
+      sb = create_StringBox(text);
       line_styles.clear();
       line_styles.emplace_back(style);
       override_textel_styles.clear();
@@ -775,21 +795,17 @@ namespace t8x
     
     void set_num_lines(size_t num_lines)
     {
-      sb = str::StringBox(num_lines);
+      sb = str::StringBox<StrT>(num_lines);
       init();
     }
     
-    std::string& operator[](size_t r_idx) { return sb[r_idx]; }
+    StrT& operator[](size_t r_idx) { return sb[r_idx]; }
     
     virtual void calc_pre_draw(str::Adjustment adjustment)
     {
       len_max = 0;
-      if (use_utf8)
-        for (size_t l_idx = 0; l_idx < N; ++l_idx)
-          math::maximize(len_max, utf8::num_utf8_codepoints(sb[l_idx]));
-      else
-        for (size_t l_idx = 0; l_idx < N; ++l_idx)
-          math::maximize(len_max, sb[l_idx].size());
+      for (size_t l_idx = 0; l_idx < N; ++l_idx)
+        math::maximize(len_max, sb[l_idx].size());
       for (size_t l_idx = 0; l_idx < N; ++l_idx)
         sb[l_idx] = str::adjust_str(sb[l_idx], adjustment, static_cast<int>(len_max));
     }
@@ -813,27 +829,15 @@ namespace t8x
 #endif
       OutlineType outline_type = args.base.outline_type;
       
-      if (use_utf8)
+      if constexpr (std::is_same_v<StrT, t8::GlyphString>)
       {
         for (const auto& rc_style : override_textel_styles)
           if (rc_style.first.r < static_cast<int>(N) && rc_style.first.c < static_cast<int>(len_max))
-          {
-            size_t byte_idx = 0;
-            char32_t ch32 = utf8::none;
-            int c_idx = 0;
-            while (utf8::decode_next_utf8_char32(sb[rc_style.first.r], ch32, byte_idx))
-            {
-              if (c_idx++ == rc_style.first.c)
-              {
-                sh.write_buffer(utf8::encode_char32_utf8(ch32),
-                                pos.r + rc_style.first.r, pos.c + rc_style.first.c,
-                                rc_style.second);
-                break;
-              }
-            }
-          }
+            sh.write_buffer(sb[rc_style.first.r][rc_style.first.c],
+                            pos.r + rc_style.first.r, pos.c + rc_style.first.c,
+                            rc_style.second);
       }
-      else
+      else if constexpr (std::is_same_v<StrT, std::string>)
       {
         for (const auto& rc_style : override_textel_styles)
           if (rc_style.first.r < static_cast<int>(N) && rc_style.first.c < static_cast<int>(len_max))
