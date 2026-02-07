@@ -868,7 +868,20 @@ namespace t8x
     }
   };
   
-  class Dialog : public TextBox
+  // /////////////////////////////////////////////////////////////
+  //  _____  _       _             ____
+  // |  __ \(_)     | |           |  _ \
+  // | |  | |_  __ _| | ___   __ _| |_) | _____  __
+  // | |  | | |/ _` | |/ _ \ / _` |  _ < / _ \ \/ /
+  // | |__| | | (_| | | (_) | (_| | |_) | (_) >  <
+  // |_____/|_|\__,_|_|\___/ \__, |____/ \___/_/\_\
+  //                          __/ |
+  //                         |___/
+  // /////////////////////////////////////////////////////////////
+  
+  // #NOTE: Supported template argument types: std::string and t8::GlyphString.
+  template<typename StrT>
+  class Dialog : public TextBox<StrT>
   {
     std::vector<std::tuple<RC, Style, t8::Glyph>> override_textels_pre;
     ButtonGroup button_group; // Buttons have their own reserved row two rows down.
@@ -879,16 +892,21 @@ namespace t8x
     
     virtual bool has_buttons() const override { return !button_group.empty(); }
     
+    void init()
+    {
+      TextBox<StrT>::init();
+    }
+    
   public:
     Dialog() = default;
     Dialog(size_t num_lines)
-      : TextBox(num_lines)
+      : TextBox<StrT>(num_lines)
     {}
-    Dialog(const std::vector<std::string>& text_lines, const std::vector<Style>& styles = {})
-      : TextBox(text_lines, styles)
+    Dialog(const std::vector<StrT>& text_lines, const std::vector<Style>& styles = {})
+      : TextBox<StrT>(text_lines, styles)
     {}
-    Dialog(const std::string& text)
-      : TextBox(text)
+    Dialog(const StrT& text)
+      : TextBox<StrT>(text)
     {}
     
     void set_tab_order(int tab)
@@ -1052,8 +1070,8 @@ namespace t8x
       for (const auto& ot : override_textels_pre)
       {
         const auto& tp = std::get<0>(ot);
-        if (math::in_range(tp.r, 0, static_cast<int>(N), Range::ClosedOpen) &&
-            math::in_range(tp.c, 0, static_cast<int>(len_max), Range::ClosedOpen))
+        if (math::in_range(tp.r, 0, static_cast<int>(TextBox<StrT>::N), Range::ClosedOpen) &&
+            math::in_range(tp.c, 0, static_cast<int>(TextBox<StrT>::len_max), Range::ClosedOpen))
         {
           sh.write_buffer(std::get<2>(ot),
                           pos.r + tp.r, pos.c + tp.c,
@@ -1061,7 +1079,9 @@ namespace t8x
         }
       }
                   
-      button_group.draw(sh, { pos.r + static_cast<int>(N) + 1, pos.c }, static_cast<int>(len_max));
+      button_group.draw(sh,
+                        { pos.r + static_cast<int>(TextBox<StrT>::N) + 1, pos.c },
+                        static_cast<int>(TextBox<StrT>::len_max));
       
       for (const auto& tfp : text_fields)
         tfp.second.draw(sh, pos + tfp.first, anim_ctr);
@@ -1069,7 +1089,7 @@ namespace t8x
       for (const auto& cpp : color_pickers)
         cpp.second.draw(sh, pos + cpp.first, anim_ctr);
         
-      TextBox::draw(sh, args);
+      TextBox<StrT>::draw(sh, args);
     }
     
     template<int NR, int NC, typename CharT>
