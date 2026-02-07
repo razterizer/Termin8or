@@ -1173,9 +1173,26 @@ namespace t8x
     }
   };
   
-  class TextBoxDebug : public TextBox
+  // /////////////////////////////////////////////////////////////
+  //  _______        _   ____            _____       _
+  // |__   __|      | | |  _ \          |  __ \     | |
+  //    | | _____  _| |_| |_) | _____  _| |  | | ___| |__  _   _  __ _
+  //    | |/ _ \ \/ / __|  _ < / _ \ \/ / |  | |/ _ \ '_ \| | | |/ _` |
+  //    | |  __/>  <| |_| |_) | (_) >  <| |__| |  __/ |_) | |_| | (_| |
+  //    |_|\___/_/\_\\__|____/ \___/_/\_\_____/ \___|_.__/ \__,_|\__, |
+  //                                                              __/ |
+  //                                                             |___/
+  // /////////////////////////////////////////////////////////////
+  
+  class TextBoxDebug : public TextBox<std::string>
   {
     std::vector<std::unique_ptr<ParamBase>> params;
+    
+    void init()
+    {
+      TextBox<std::string>::sb.text_lines.resize(params.size());
+      TextBox<std::string>::init();
+    }
     
   public:
     TextBoxDebug() = default;
@@ -1184,7 +1201,6 @@ namespace t8x
     void add(const RefParam<T>& ref_param)
     {
       params.emplace_back(std::make_unique<RefParam<T>>(ref_param));
-      sb.text_lines.resize(params.size());
       init();
     }
     
@@ -1192,7 +1208,6 @@ namespace t8x
     void add(const std::string& name, T* var_ptr, T step = static_cast<T>(0), T min = static_cast<T>(0), T max = static_cast<T>(0))
     {
       params.emplace_back(std::make_unique<RefParam<T>>(name, var_ptr, step, min, max));
-      sb.text_lines.resize(params.size());
       init();
     }
     
@@ -1204,7 +1219,6 @@ namespace t8x
       if (it == params.end())
       {
         auto& ref = params.emplace_back(std::make_unique<Param<T>>(name, var_ptr, static_cast<T>(0), static_cast<T>(*var_ptr), static_cast<T>(*var_ptr)));
-        sb.text_lines.resize(params.size());
         init();
         auto* tmp_param = dynamic_cast<Param<T>*>(ref.get());
         return *tmp_param->var;
@@ -1220,7 +1234,6 @@ namespace t8x
       if (it == params.end())
       {
         auto& ref = params.emplace_back(std::make_unique<RefParam<T>>(name, var_ptr, static_cast<T>(0), static_cast<T>(*var_ptr), static_cast<T>(*var_ptr)));
-        sb.text_lines.resize(params.size());
         init();
         auto* param = dynamic_cast<RefParam<T>*>(ref.get());
         return *param->var;
@@ -1237,18 +1250,18 @@ namespace t8x
     void clear()
     {
       params.clear();
-      sb.text_lines.clear();
+      TextBox<std::string>::sb.text_lines.clear();
       init();
     }
     
     virtual void calc_pre_draw(str::Adjustment adjustment) override
     {
-      for (size_t p_idx = 0; p_idx < N; ++p_idx)
+      for (size_t p_idx = 0; p_idx < TextBox<std::string>::N; ++p_idx)
       {
-        sb[p_idx] = params[p_idx]->str();
+        TextBox<std::string>::sb[p_idx] = params[p_idx]->str();
       }
     
-      TextBox::calc_pre_draw(adjustment);
+      TextBox<std::string>::calc_pre_draw(adjustment);
     }
   };
 
