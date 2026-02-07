@@ -112,6 +112,31 @@ namespace t8
       return std::string::npos;
     }
     
+    // npos here is a hack. Doesn't really belong here.
+    inline GlyphString substr(size_t pos, size_t count = std::string::npos) const
+    {
+      // pos = 5, count = 3
+      // [0123456789ABCDEF]
+      //       .--
+      // [0123]
+      //   .--
+      
+      assert(pos != std::string::npos);
+      assert(pos <= glyph_vector.size());
+      
+      const size_t n = glyph_vector.size();
+      size_t len = count;
+      
+      if (len == std::string::npos || pos + len > n)
+        len = n - pos;
+
+      GlyphString ret;
+      ret.glyph_vector.insert(ret.glyph_vector.end(),
+                              glyph_vector.begin() + static_cast<ptrdiff_t>(pos),
+                              glyph_vector.begin() + static_cast<ptrdiff_t>(pos + len));
+      return ret;
+    }
+    
     template<typename CharT>
     std::string encode() const
     {
