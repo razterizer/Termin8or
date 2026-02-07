@@ -49,6 +49,16 @@ namespace t8
       return glyph_vector.empty();
     }
     
+    inline size_t size() const noexcept
+    {
+      return glyph_vector.size();
+    }
+    
+    inline size_t length() const noexcept
+    {
+      return glyph_vector.size();
+    }
+    
     template<typename CharT>
     std::string encode() const
     {
