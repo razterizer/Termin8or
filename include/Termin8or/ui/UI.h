@@ -672,6 +672,7 @@ namespace t8x
     return std::move(sb);
   }
 
+  // #NOTE: Supported template argument types: std::string and t8::GlyphString.
   template<typename StrT>
   class TextBox
   {
