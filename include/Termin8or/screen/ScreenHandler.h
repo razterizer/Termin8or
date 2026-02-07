@@ -201,7 +201,8 @@ namespace t8
     }
     
     // write_buffer using StringBox.
-    void write_buffer(const str::StringBox& sb, int r, int c, Color fg_color, Color bg_color = Color16::Transparent)
+    template<typename StrT>
+    void write_buffer(const str::StringBox<StrT>& sb, int r, int c, Color fg_color, Color bg_color = Color16::Transparent)
     {
       auto Nr = static_cast<int>(sb.text_lines.size());
       for (int r_idx = 0; r_idx < Nr; ++r_idx)
