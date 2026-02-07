@@ -29,6 +29,7 @@ namespace t8x
     bool framed_mode = true;
   };
   
+  template<typename StrT>
   class MessageHandler
   {
   public:
@@ -43,7 +44,7 @@ namespace t8x
     std::string curr_message;
     Level curr_level;
     float curr_duration_s = 1.5f;
-    TextBox tb;
+    TextBox<StrT> tb;
     int str_len = 0;
     
     Color get_fg_color() const
