@@ -17,6 +17,8 @@ namespace t8
 
   struct GlyphString
   {
+    using value_type = Glyph;
+  
     GlyphString() = default;
     GlyphString(std::string_view sv)
     {
