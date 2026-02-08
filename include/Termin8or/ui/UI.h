@@ -707,19 +707,6 @@ namespace t8x
   //    | |  __/>  <| |_| |_) | (_) >  <
   //    |_|\___/_/\_\\__|____/ \___/_/\_\
   // /////////////////////////////////////////////////////////////
-  
-  template<typename StrT>
-  str::StringBox<StrT> create_StringBox(const StrT& text)
-  {
-    str::StringBox<StrT> sb;
-    
-    if constexpr (std::is_same_v<StrT, t8::GlyphString>)
-      sb = str::StringBox<StrT>{ text, [](const t8::Glyph& g) { return g.preferred; } };
-    else
-      sb = str::StringBox<StrT>{ text, [](auto ch) { return ch; } };
-      
-    return std::move(sb);
-  }
 
   // #NOTE: Supported template argument types: std::string and t8::GlyphString.
   template<typename StrT>
@@ -829,14 +816,14 @@ namespace t8x
     
     void set_text(const StrT& text)
     {
-      sb = create_StringBox(text);
+      sb = str::StringBox<StrT>{ text };
       override_textel_styles.clear();
       init();
     }
     
     void set_text(const StrT& text, Style style)
     {
-      sb = create_StringBox(text);
+      sb = str::StringBox<StrT>{ text };
       line_styles.clear();
       line_styles.emplace_back(style);
       override_textel_styles.clear();
