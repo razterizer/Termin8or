@@ -816,14 +816,14 @@ namespace t8x
     
     void set_text(const StrT& text)
     {
-      sb = str::StringBox<StrT>{ text };
+      sb = str::StringBox<StrT> { text };
       override_textel_styles.clear();
       init();
     }
     
     void set_text(const StrT& text, Style style)
     {
-      sb = str::StringBox<StrT>{ text };
+      sb = str::StringBox<StrT> { text };
       line_styles.clear();
       line_styles.emplace_back(style);
       override_textel_styles.clear();
