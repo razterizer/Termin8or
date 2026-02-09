@@ -709,7 +709,7 @@ namespace t8x
   // /////////////////////////////////////////////////////////////
 
   // #NOTE: Supported template argument types: std::string and t8::GlyphString.
-  template<typename StrT>
+  template<typename StrT = std::string>
   class TextBox
   {
   protected:
@@ -916,7 +916,7 @@ namespace t8x
   // /////////////////////////////////////////////////////////////
   
   // #NOTE: Supported template argument types: std::string and t8::GlyphString.
-  template<typename StrT>
+  template<typename StrT = std::string>
   class Dialog : public TextBox<StrT>
   {
     std::vector<std::tuple<RC, Style, t8::Glyph>> override_textels_pre;
