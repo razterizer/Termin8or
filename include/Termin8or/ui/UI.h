@@ -1131,7 +1131,7 @@ namespace t8x
     template<int NR, int NC, typename CharT>
     void draw(ScreenHandler<NR, NC, CharT>& sh, const TextBoxDrawingArgsAlign& args, int anim_ctr)
     {
-      auto pargs = get_drawing_args_pos<NR, NC>(args);
+      auto pargs = TextBox<StrT>::template get_drawing_args_pos<NR, NC>(args);
       
       draw(sh, pargs, anim_ctr);
     }
