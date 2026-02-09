@@ -29,13 +29,11 @@ namespace t8x
     bool framed_mode = true;
   };
   
-  template<typename StrT>
+  enum class Level { Guide, Warning, Fatal };
+  
+  template<typename StrT = std::string>
   class MessageHandler
   {
-  public:
-    enum class Level { Guide, Warning, Fatal };
-    
-  private:
     float trg_time = 0.f;
     bool message_empty = true;
     std::queue<std::pair<std::string, float>> messages_guide;
