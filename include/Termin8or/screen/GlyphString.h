@@ -225,14 +225,6 @@ namespace t8
     return lhs;
   }
   
-  // Append char32_t.
-  inline GlyphString operator+(GlyphString lhs, char32_t rhs)
-  {
-    lhs.glyph_vector.reserve(lhs.glyph_vector.size() + 1);
-    lhs.glyph_vector.emplace_back(rhs, rhs);
-    return lhs;
-  }
-  
   // Append Glyph.
   inline GlyphString operator+(GlyphString lhs, const Glyph& rhs)
   {
