@@ -19,7 +19,7 @@ bool dbg_draw_rigid_bodies = false;
 bool dbg_draw_broad_phase = false;
 bool dbg_draw_narrow_phase = false;
 bool draw_sprites = true;
-bool force_ascii_fallback = false;
+t8::AsciiFallbackPolicy ascii_fallback_policy = t8::AsciiFallbackPolicy::SYSTEM_CONTROLLED;
 
 namespace sprite_handler
 {
@@ -250,7 +250,7 @@ quit:
   void example2()
   {
     ScreenHandler<20, 40, char32_t> sh;
-    sh.set_force_ascii_fallback(force_ascii_fallback);
+    sh.set_ascii_fallback_policy(ascii_fallback_policy);
     SpriteHandler sprh;
     KeyPressDataPair kpdp;
     auto keyboard = std::make_unique<StreamKeyboard>();

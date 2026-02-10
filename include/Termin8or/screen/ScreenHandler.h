@@ -53,6 +53,8 @@ namespace t8
   
   enum class DrawPolicy { FULL, PARTIAL, THRESHOLD_SELECT, MEASURE_SELECT };
   
+  enum class AsciiFallbackPolicy { SYSTEM_CONTROLLED, FORCE_ASCII, FORCE_ASCII_ONLY_ON_WIN_CMD };
+  
   // //////////////////////////////////////////////////
   
   // Bad design.
@@ -174,12 +176,23 @@ namespace t8
       return screen_buffer[index(r, c)] == ' ';
     }
     
-    void set_force_ascii_fallback(bool force_fallback)
+    void set_ascii_fallback_policy(AsciiFallbackPolicy policy)
     {
-      term::force_ascii_fallback = force_fallback;
+      switch (policy)
+      {
+        case AsciiFallbackPolicy::SYSTEM_CONTROLLED:
+          term::force_ascii_fallback = false;
+          break;
+        case AsciiFallbackPolicy::FORCE_ASCII:
+          term::force_ascii_fallback = true;
+          break;
+        case AsciiFallbackPolicy::FORCE_ASCII_ONLY_ON_WIN_CMD:
+          term::force_ascii_fallback = sys::is_windows_cmd();
+          break;
+      }
     }
     
-    bool get_force_ascii_fallback() const
+    bool is_ascii_fallback_forced() const
     {
       return term::force_ascii_fallback;
     }

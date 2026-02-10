@@ -47,7 +47,9 @@ int main(int argc, char** argv)
     else if (std::strcmp(argv[i], "--hide_sprites") == 0)
       draw_sprites = false;
     else if (std::strcmp(argv[i], "--force_ascii_fallback") == 0)
-      force_ascii_fallback = true;
+      ascii_fallback_policy = t8::AsciiFallbackPolicy::FORCE_ASCII;
+    else if (std::strcmp(argv[i], "--force_ascii_fallback_on_win_cmd"))
+      ascii_fallback_policy = t8::AsciiFallbackPolicy::FORCE_ASCII_ONLY_ON_WIN_CMD;
   }
   
   if (show_help)
@@ -60,6 +62,7 @@ int main(int argc, char** argv)
     std::cout << "   [--dbg_draw_narrow_phase]" << std::endl;
     std::cout << "   [--hide_sprites]" << std::endl;
     std::cout << "   [--force_ascii_fallback]" << std::endl;
+    std::cout << "   [--force_ascii_fallback_on_win_cmd]" << std::endl;
   
     return 0;
   }
