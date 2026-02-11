@@ -238,7 +238,7 @@ namespace t8
 
 namespace str
 {
-  t8::GlyphString adjust_str(const t8::GlyphString& str, Adjustment adj, int width, int start_idx = 0, t8::Glyph empty_char = U' ')
+  inline t8::GlyphString adjust_str(const t8::GlyphString& str, Adjustment adj, int width, int start_idx = 0, t8::Glyph empty_char = U' ')
   {
     return adjust_str<t8::GlyphString, t8::Glyph>(str,
                                                   adj,
