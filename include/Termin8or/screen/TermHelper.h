@@ -15,8 +15,8 @@ namespace t8
   
   namespace term
   {
-    static const char32_t none32 = 0xFFFFFFFFu; // char32_t is unsigned.
-    static const char none = '\0'; // NUL character. No use for such characeters in this context.
+    inline constexpr char32_t none32 = 0xFFFFFFFFu; // char32_t is unsigned.
+    inline constexpr char none = '\0'; // NUL character. No use for such characeters in this context.
     
     inline bool force_ascii_fallback = false;
   
