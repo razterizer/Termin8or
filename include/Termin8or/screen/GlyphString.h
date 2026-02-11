@@ -75,8 +75,8 @@ namespace t8
     // Returns npos if not found. npos here is a hack. Doesn't really belong here.
     inline size_t find(const GlyphString& needle) const
     {
-      auto Nh = glyph_vector.size();
-      auto Nn = glyph_vector.size();
+      const size_t Nh = glyph_vector.size();
+      const size_t Nn = needle.glyph_vector.size();
       // E.g.
       // n: 012 (Nn = 3)
       // h: ABC0123 (Nh = 7)
@@ -91,11 +91,13 @@ namespace t8
       //    012
       // ABC0123
       //     012
-      // Nm = Nh - Nn - 1
-      if (Nn >= Nh)
+      // Nm = Nh - Nn + 1 = 7 - 3 + 1 = 5
+      if (Nn == 0)
+        return 0;
+      if (Nn > Nh)
         return std::string::npos;
-      auto Nd = Nh - Nn - 1; // Now guaranteed to be positive or zero.
-      for (size_t i = 0; i < Nd; ++i)
+      auto Nm = Nh - Nn + 1; // Now guaranteed to be positive.
+      for (size_t i = 0; i < Nm; ++i)
       {
         bool all_matches = true;
         for (size_t j = 0; j < Nn; ++j)
