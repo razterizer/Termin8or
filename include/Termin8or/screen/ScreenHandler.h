@@ -57,9 +57,6 @@ namespace t8
   
   // //////////////////////////////////////////////////
   
-  // Bad design.
-  static int num_chunks_prev = 10; // #FIXME: Magic number.
-  
   template<int NR = 30, int NC = 80, typename CharT = char>
   class ScreenHandler
   {
@@ -82,6 +79,7 @@ namespace t8
     int measure_mode = 0; // 0: full, 1: partial.
     int num_full_redraws = 0;
     int num_partial_redraws = 0;
+    mutable int num_chunks_prev = 10; // #FIXME: Magic number.
     
     inline int index(int r, int c) const noexcept { return NC*r + c; }
     
