@@ -18,6 +18,7 @@ namespace t8
   struct GlyphString
   {
     using value_type = Glyph;
+    static constexpr size_t npos = static_cast<size_t>(-1);
   
     GlyphString() = default;
     // Consider these for clarity.
@@ -59,7 +60,6 @@ namespace t8
       return glyph_vector.size();
     }
     
-    // Returns npos if not found. npos here is a hack. Doesn't really belong here.
     inline size_t find(const Glyph& needle) const
     {
       size_t idx = 0;
@@ -69,10 +69,9 @@ namespace t8
           return idx;
         ++idx;
       }
-      return std::string::npos;
+      return npos;
     }
     
-    // Returns npos if not found. npos here is a hack. Doesn't really belong here.
     inline size_t find(const GlyphString& needle) const
     {
       const size_t Nh = glyph_vector.size();
@@ -95,7 +94,7 @@ namespace t8
       if (Nn == 0)
         return 0;
       if (Nn > Nh)
-        return std::string::npos;
+        return npos;
       auto Nm = Nh - Nn + 1; // Now guaranteed to be positive.
       for (size_t i = 0; i < Nm; ++i)
       {
@@ -111,11 +110,10 @@ namespace t8
         if (all_matches)
           return i;
       }
-      return std::string::npos;
+      return npos;
     }
     
-    // npos here is a hack. Doesn't really belong here.
-    inline GlyphString substr(size_t pos, size_t count = std::string::npos) const
+    inline GlyphString substr(size_t pos, size_t count = npos) const
     {
       // pos = 5, count = 3
       // [0123456789ABCDEF]
@@ -123,13 +121,13 @@ namespace t8
       // [0123]
       //   .--
       
-      assert(pos != std::string::npos);
+      assert(pos != npos);
       assert(pos <= glyph_vector.size());
       
       const size_t n = glyph_vector.size();
       size_t len = count;
       
-      if (len == std::string::npos || pos + len > n)
+      if (len == npos || pos + len > n)
         len = n - pos;
 
       GlyphString ret;
