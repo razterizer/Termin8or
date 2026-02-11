@@ -594,13 +594,25 @@ namespace t8
     
     std::vector<std::string> get_screen_buffer_chars() const
     {
+      static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
+                    "ERROR in ScreenHandler<NR, NC, CharT>::get_screen_buffer_chars() : Unsupported CharT type.");
+    
       std::vector<std::string> ret(NR);
       for (int r = 0; r < NR; ++r)
       {
         auto& line = ret[r];
-        line.resize(NC);
-        for (int c = 0; c < NC; ++c)
-          line[c] = screen_buffer[index(r, c)];
+        if constexpr (std::is_same_v<CharT, char>)
+        {
+          line.resize(NC);
+          for (int c = 0; c < NC; ++c)
+            line[c] = screen_buffer[index(r, c)];
+        }
+        else if constexpr (std::is_same_v<CharT, char32_t>)
+        {
+          line.reserve(static_cast<size_t>(NC) * 4); // Worst case.
+          for (int c = 0; c < NC; ++c)
+            line += encode_single_width_glyph(screen_buffer[index(r, c)]);
+        }
       }
       return ret;
     }
