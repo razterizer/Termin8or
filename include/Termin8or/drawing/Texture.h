@@ -606,16 +606,30 @@ namespace t8
       materials.clear();
     }
     
-  private:
-    bool check_range(int r, int c) const
+    bool check_range_r(int r) const noexcept
     {
-      if (!math::in_range(r, 0, size.r, Range::ClosedOpen))
+      if (math::in_range(r, 0, size.r, Range::ClosedOpen))
+        return true;
+      return false;
+    }
+    
+    bool check_range_c(int c) const noexcept
+    {
+      if (math::in_range(c, 0, size.c, Range::ClosedOpen))
+        return true;
+      return false;
+    }
+    
+    bool check_range(int r, int c) const noexcept
+    {
+      if (!check_range_r(r))
         return false;
-      if (!math::in_range(c, 0, size.c, Range::ClosedOpen))
+      if (!check_range_c(c))
         return false;
       return true;
     }
     
+  private:
     int compute_minimal_version() const
     {
       int minimal_ver = 10;
