@@ -635,12 +635,9 @@ namespace t8
     
     void print_screen_buffer_chars() const
     {
-      for (int r = 0; r < NR; ++r)
-      {
-        for (int c = 0; c < NC; ++c)
-          printf("%c", screen_buffer[index(r, c)]);
-        printf("\n");
-      }
+      auto line_vec = get_screen_buffer_chars();
+      for (const auto& line : line_vec)
+        std::cout << line << '\n';
     }
     
     void print_screen_buffer_fg_colors() const
