@@ -563,9 +563,13 @@ namespace t8
       for (int r = 0; r < NR; ++r)
       {
         auto rl = r - pos.r;
+        if (!texture->check_range_r(rl))
+          continue;
         for (int c = 0; c < NC; ++c)
         {
           auto cl = c - pos.c;
+          if (!texture->check_range_c(cl))
+            continue;
           
           auto textel = texture->operator()(rl, cl);
           if (!stlutils::contains(offscreen_buffer.dst_fill_bg_colors, textel.bg_color))
