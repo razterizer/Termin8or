@@ -324,12 +324,12 @@ namespace t8
       set_textel_material(pos.r, pos.c, mat);
     }
     
-    int  get_textel_material(int r, int c) const
+    int get_textel_material(int r, int c) const
     {
       return texture::decode_material(get_textel_material_raw(r, c));
     }
     
-    int  get_textel_material(const RC& pos) const
+    int get_textel_material(const RC& pos) const
     {
       return get_textel_material(pos.r, pos.c);
     }
