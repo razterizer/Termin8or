@@ -21,7 +21,7 @@ namespace t8
   
   
   // Function to save current console fg and bg colors.
-  void save_terminal_colors()
+  inline void save_terminal_colors()
   {
     if (sys::is_windows_cmd())
     {
@@ -45,7 +45,7 @@ namespace t8
   }
   
   // Function to restore the saved console colors.
-  Style restore_terminal_colors()
+  inline Style restore_terminal_colors()
   {
     if (sys::is_windows_cmd())
     {
@@ -69,7 +69,7 @@ namespace t8
   }
   
   template<int NR, int NC, typename CharT>
-  void begin_screen(ScreenHandler<NR, NC, CharT>& sh)
+  inline void begin_screen(ScreenHandler<NR, NC, CharT>& sh)
   {
     disable_stdio_sync();
     save_terminal_colors();
@@ -80,7 +80,7 @@ namespace t8
   }
   
   template<int NR, int NC, typename CharT>
-  void end_screen(ScreenHandler<NR, NC, CharT>& sh)
+  inline void end_screen(ScreenHandler<NR, NC, CharT>& sh)
   {
     auto orig_colors [[maybe_unused]] = restore_terminal_colors();
 #ifndef __APPLE__
