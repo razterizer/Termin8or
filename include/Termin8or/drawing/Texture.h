@@ -577,17 +577,22 @@ namespace t8
       }
       
       Texture sub_texture(bb.size());
-      for (int r = bb.top(); r <= bb.bottom(); ++r)
+      for (int r_src = bb.top(); r_src <= bb.bottom(); ++r_src)
       {
-        for (int c = bb.left(); c <= bb.right(); ++c)
+        if (!check_range_r(r_src))
+          continue;
+        auto r_dst = r_src - bb.r;
+        for (int c_src = bb.left(); c_src <= bb.right(); ++c_src)
         {
-          int idx_from = r * size.c + c;
-          int idx_to = (r - bb.r) * bb.c_len + (c - bb.c);
-          sub_texture.glyphs[idx_to] = glyphs[idx_from];
-          sub_texture.fg_colors[idx_to] = fg_colors[idx_from];
-          sub_texture.bg_colors[idx_to] = bg_colors[idx_from];
-          sub_texture.materials[idx_to] = materials[idx_from];
-          
+          if (!check_range_c(c_src))
+            continue;
+          auto c_dst = c_src - bb.c;
+          int idx_src = r_src * size.c + c_src;
+          int idx_dst = r_dst * sub_texture.size.c + c_dst;
+          sub_texture.glyphs[idx_dst] = glyphs[idx_src];
+          sub_texture.fg_colors[idx_dst] = fg_colors[idx_src];
+          sub_texture.bg_colors[idx_dst] = bg_colors[idx_src];
+          sub_texture.materials[idx_dst] = materials[idx_src];
         }
       }
       
