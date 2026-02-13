@@ -458,7 +458,7 @@ namespace t8
           break;
         case DrawPolicy::THRESHOLD_SELECT:
         {
-          auto dirty_fraction = stlutils::count(dirty_flag_buffer, true) / (NR*NC);
+          auto dirty_fraction = stlutils::count(dirty_flag_buffer, true) / static_cast<float>(NR*NC);
           if (dirty_fraction > dirty_fraction_threshold)
             f_full_redraw(clear_bg_color);
           else
