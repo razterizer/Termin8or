@@ -174,6 +174,8 @@ namespace t8
         cell.fg = Color16::Default;
         cell.bg = Color16::Transparent;
       }
+      if constexpr (needs_fallback)
+        fallbacks.fill(Glyph::none);
       for (auto& df : dirty_flag_buffer)
         df = false;
     }
