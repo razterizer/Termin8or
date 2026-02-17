@@ -63,9 +63,7 @@ namespace t8
     std::unique_ptr<Text> m_text;
     
     // Draw from top to bottom.
-    std::array<CharT, NC*NR> screen_buffer, prev_screen_buffer;
-    std::array<Color, NC*NR> fg_color_buffer, prev_fg_color_buffer;
-    std::array<Color, NC*NR> bg_color_buffer, prev_bg_color_buffer;
+    std::array<Cell<CharT>, NC*NR> screen_buffer, prev_screen_buffer;
     std::array<bool, NC*NR> dirty_flag_buffer;
     Color prev_clear_bg_color = Color16::Default;
     
@@ -130,9 +128,7 @@ namespace t8
       if (c_tot >= 0 && c_tot < NC)
       {
         int idx = index(r, c_tot);
-        auto& scr_ch = screen_buffer[idx];
-        auto& scr_fg = fg_color_buffer[idx];
-        auto& scr_bg = bg_color_buffer[idx];
+        auto& [scr_ch, scr_fg, scr_bg] = screen_buffer[idx];
         if (scr_ch == ' '
             && scr_bg == Color16::Transparent)
         {
@@ -159,12 +155,12 @@ namespace t8
     
     void clear()
     {
-      for (auto& ch : screen_buffer)
-        ch = ' ';
-      for (auto& col : fg_color_buffer)
-        col = Color16::Default;
-      for (auto& col : bg_color_buffer)
-        col = Color16::Transparent;
+      for (auto& cell : screen_buffer)
+      {
+        cell.ch = ' ';
+        cell.fg = Color16::Default;
+        cell.bg = Color16::Transparent;
+      }
       for (auto& df : dirty_flag_buffer)
         df = false;
     }
@@ -329,7 +325,7 @@ namespace t8
         {
           if (box.is_inside(r, c))
           {
-            auto& col = bg_color_buffer[index(r, c)];
+            auto& col = screen_buffer[index(r, c)].bg;
             if (col == from_bg_color)
               col = to_bg_color;
           }
@@ -345,7 +341,7 @@ namespace t8
         {
           if (box.is_inside(r, c))
           {
-            bg_color_buffer[index(r, c)] = to_bg_color;
+            screen_buffer[index(r, c)].bg = to_bg_color;
           }
         }
       }
@@ -357,7 +353,7 @@ namespace t8
       {
         for (int c = 0; c < NC; ++c)
         {
-          bg_color_buffer[index(r, c)] = to_bg_color;
+          screen_buffer[index(r, c)].bg = to_bg_color;
         }
       }
     }
@@ -370,7 +366,7 @@ namespace t8
         {
           if (box.is_inside(r, c))
           {
-            fg_color_buffer[index(r, c)] = to_fg_color;
+            screen_buffer[index(r, c)].fg = to_fg_color;
           }
         }
       }
@@ -382,7 +378,7 @@ namespace t8
       {
         for (int c = 0; c < NC; ++c)
         {
-          fg_color_buffer[index(r, c)] = to_fg_color;
+          screen_buffer[index(r, c)].fg = to_fg_color;
         }
       }
     }
@@ -399,11 +395,13 @@ namespace t8
         for (int c = 0; c < NC; ++c)
         {
           int idx = index(r, c);
-          auto bg_curr = resolve_bg_color(bg_color_buffer[idx], clear_bg_color);
-          auto bg_prev = resolve_bg_color(prev_bg_color_buffer[idx], prev_clear_bg_color);
+          auto [ch_curr, fg_curr, bg0] = screen_buffer[idx];
+          auto [ch_prev, fg_prev, bg1] = prev_screen_buffer[idx];
+          auto bg_curr = resolve_bg_color(bg0, clear_bg_color);
+          auto bg_prev = resolve_bg_color(bg1, prev_clear_bg_color);
           dirty_flag_buffer[idx] =
-               screen_buffer[idx] != prev_screen_buffer[idx]
-            || fg_color_buffer[idx] != prev_fg_color_buffer[idx]
+               ch_curr != ch_prev
+            || fg_curr != fg_prev
             || bg_curr != bg_prev;
         }
       }
@@ -412,8 +410,6 @@ namespace t8
     void update_prev_buffers(Color clear_bg_color)
     {
       prev_screen_buffer = screen_buffer;
-      prev_fg_color_buffer = fg_color_buffer;
-      prev_bg_color_buffer = bg_color_buffer;
       prev_clear_bg_color = clear_bg_color;
     }
     
@@ -508,10 +504,10 @@ namespace t8
         for (int c = 0; c < NC; ++c)
         {
           int idx = index(r, c);
-          Color bg_col_buf = bg_color_buffer[idx];
-          if (bg_col_buf == Color16::Transparent || bg_col_buf == Color16::Transparent2)
-            bg_col_buf = clear_bg_color;
-          colored_str[i++] = { screen_buffer[idx], fg_color_buffer[idx], bg_col_buf };
+          auto [ch, fg, bg] = screen_buffer[idx];
+          if (bg == Color16::Transparent || bg == Color16::Transparent2)
+            bg = clear_bg_color;
+          colored_str[i++] = { ch, fg, bg };
         }
         colored_str[i++] = { static_cast<CharT>('\n'), Color16::Default, Color16::Default };
       }
@@ -533,10 +529,10 @@ namespace t8
           {
             if (chunk.text.empty())
               chunk.pos = { r, c };
-            Color bg_col_buf = bg_color_buffer[idx];
-            if (bg_col_buf == Color16::Transparent || bg_col_buf == Color16::Transparent2)
-              bg_col_buf = clear_bg_color;
-            chunk.text.emplace_back(screen_buffer[idx], fg_color_buffer[idx], bg_col_buf);
+            auto [ch, fg, bg] = screen_buffer[idx];
+            if (bg == Color16::Transparent || bg == Color16::Transparent2)
+              bg = clear_bg_color;
+            chunk.text.emplace_back(ch, fg, bg);
           }
           else if (!chunk.text.empty())
           {
@@ -576,9 +572,10 @@ namespace t8
             continue;
           
           int idx = index(r, c);
-          textel.glyph = screen_buffer[idx]; // #FIXME: Need to allow e.g. Glyph::str() => "[2603]". #glyph
-          textel.fg_color = fg_color_buffer[idx];
-          textel.bg_color = bg_color_buffer[idx];
+          auto [ch, fg, bg] = screen_buffer[idx];
+          textel.glyph = ch; // #FIXME: Need to allow e.g. Glyph::str() => "[2603]". #glyph
+          textel.fg_color = fg;
+          textel.bg_color = bg;
           
           if (stlutils::contains(offscreen_buffer.exclude_src_chars, textel.glyph.preferred)) // #HACK! #glyph
             continue;
@@ -629,9 +626,10 @@ namespace t8
         for (int c = 0; c < NC; ++c)
         {
           int idx = index(r, c);
-          texture.set_textel_char(r, c, screen_buffer[idx]);
-          texture.set_textel_fg_color(r, c, fg_color_buffer[idx]);
-          texture.set_textel_bg_color(r, c, bg_color_buffer[idx]);
+          auto [ch, fg, bg] = screen_buffer[idx];
+          texture.set_textel_char(r, c, ch);
+          texture.set_textel_fg_color(r, c, fg);
+          texture.set_textel_bg_color(r, c, bg);
         }
       }
       return texture;
@@ -649,7 +647,7 @@ namespace t8
       for (int r = 0; r < NR; ++r)
       {
         for (int c = 0; c < NC; ++c)
-          printf("%s", color2str(fg_color_buffer[index(r, c)]).c_str());
+          printf("%s", color2str(screen_buffer[index(r, c)].fg).c_str());
         printf("\n");
       }
     }
@@ -659,7 +657,7 @@ namespace t8
       for (int r = 0; r < NR; ++r)
       {
         for (int c = 0; c < NC; ++c)
-          printf("%s", color2str(bg_color_buffer[index(r, c)]).c_str());
+          printf("%s", color2str(screen_buffer[index(r, c)].bg).c_str());
         printf("\n");
       }
     }
@@ -678,13 +676,9 @@ namespace t8
       return nci < 0 ? 0 : nci;
     }
     
-    void overwrite_data(const std::array<CharT, NR*NC>& new_screen_buffer,
-                        const std::array<Color, NR*NC>& new_fg_color_buffer,
-                        const std::array<Color, NR*NC>& new_bg_color_buffer)
+    void overwrite_data(const std::array<Cell<CharT>, NR*NC>& new_screen_buffer)
     {
       screen_buffer = new_screen_buffer;
-      fg_color_buffer = new_fg_color_buffer;
-      bg_color_buffer = new_bg_color_buffer;
     }
     
     template<int NRo, int NCo, int NRi, int NCi, typename char_t>

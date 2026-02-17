@@ -114,7 +114,7 @@ namespace t8x
   }
   
   template<typename T, typename P, int NR, int NC>
-  T bilinear_interpolate(const std::array<T, NR*NC>& buffer,
+  T bilinear_interpolate(const T tl, const T tr, const T bl, const T br,
                          double row, double col)
   {
     int top = static_cast<int>(row);
@@ -136,10 +136,10 @@ namespace t8x
     auto btm_valid = 0 <= bottom && bottom < NR;
     auto lft_valid = 0 <= left && left < NC;
     auto rgt_valid = 0 <= right && right < NC;
-    auto val_top_lft = top_valid && lft_valid ? buffer[top*NC + left] : find_closest_val<P, T>(zero_shading_value);
-    auto val_top_rgt = top_valid && rgt_valid ? buffer[top*NC + right] : find_closest_val<P, T>(zero_shading_value);
-    auto val_btm_lft = btm_valid && lft_valid ? buffer[bottom*NC + left] : find_closest_val<P, T>(zero_shading_value);
-    auto val_btm_rgt = btm_valid && rgt_valid ? buffer[bottom*NC + right] : find_closest_val<P, T>(zero_shading_value);
+    auto val_top_lft = top_valid && lft_valid ? tl : find_closest_val<P, T>(zero_shading_value);
+    auto val_top_rgt = top_valid && rgt_valid ? tr : find_closest_val<P, T>(zero_shading_value);
+    auto val_btm_lft = btm_valid && lft_valid ? bl : find_closest_val<P, T>(zero_shading_value);
+    auto val_btm_rgt = btm_valid && rgt_valid ? br : find_closest_val<P, T>(zero_shading_value);
     auto sh_top_lft = find_closest_shading_value(val_top_lft);
     auto sh_top_rgt = find_closest_shading_value(val_top_rgt);
     auto sh_btm_lft = find_closest_shading_value(val_btm_lft);
@@ -158,13 +158,15 @@ namespace t8x
   }
   
   // Function to downsample graphics using bilinear interpolation
-  template<typename T, typename P, int NRi, int NCi, int NRo, int NCo>
-  std::array<T, NRo*NCo> resample_data(const std::array<T, NRi*NCi>& buffer, double offs)
+  template<typename CharT, int NRi, int NCi, int NRo, int NCo>
+  std::array<t8::Cell<CharT>, NRo*NCo> resample_data(const std::array<t8::Cell<CharT>, NRi*NCi>& buffer, double offs)
   {
-    double row_ratio = static_cast<double>(NRi) / NRo;
-    double col_ratio = static_cast<double>(NCi) / NCo;
+    double row_ratio = (NRo > 1) ? static_cast<double>(NRi - 1) / (NRo - 1) : 0.0;
+    double col_ratio = (NCo > 1) ? static_cast<double>(NCi - 1) / (NCo - 1) : 0.0;
     
-    std::array<T, NCo*NRo> buffer_new;
+    std::array<t8::Cell<CharT>, NCo*NRo> buffer_new;
+    
+    t8::Cell<CharT> empty_cell { ' ', Color16::Default, Color16::Transparent };
     
     for (int i = 0; i < NRo; ++i)
     {
@@ -173,11 +175,35 @@ namespace t8x
         double original_row = i * row_ratio;
         double original_col = j * col_ratio;
         
-        T interpolated_val = bilinear_interpolate<T, P, NRi, NCi>(buffer,
-                                                        original_row + offs,
-                                                        original_col + offs);
+        double row = original_row + offs;
+        double col = original_col + offs;
         
-        buffer_new[i*NCo + j] = interpolated_val;
+        int top = static_cast<int>(row);
+        int bottom = top + 1;
+        int left = static_cast<int>(col);
+        int right = left + 1;
+        
+        auto top_valid = 0 <= top && top < NRi;
+        auto btm_valid = 0 <= bottom && bottom < NRi;
+        auto lft_valid = 0 <= left && left < NCi;
+        auto rgt_valid = 0 <= right && right < NCi;
+        
+        const auto& tl = top_valid && lft_valid ? buffer[top*NCi + left] : empty_cell;
+        const auto& tr = top_valid && rgt_valid ? buffer[top*NCi + right] : empty_cell;
+        const auto& bl = btm_valid && lft_valid ? buffer[bottom*NCi + left] : empty_cell;
+        const auto& br = btm_valid && rgt_valid ? buffer[bottom*NCi + right] : empty_cell;
+        
+        auto ch_interp =
+          bilinear_interpolate<CharT, double, NRi, NCi>(tl.ch, tr.ch, bl.ch, br.ch,
+                                                    row, col);
+        auto fg_interp =
+          bilinear_interpolate<t8::Color, t8::RGBA, NRi, NCi>(tl.fg, tr.fg, bl.fg, br.fg,
+                                                      row, col);
+        auto bg_interp =
+          bilinear_interpolate<t8::Color, t8::RGBA, NRi, NCi>(tl.bg, tr.bg, bl.bg, br.bg,
+                                                      row, col);
+        
+        buffer_new[i*NCo + j] = { ch_interp, fg_interp, bg_interp };
       }
     }
     return buffer_new;
@@ -190,10 +216,8 @@ namespace t8x
   void screen_scaling::resample(const t8::ScreenHandler<NRi, NCi, CharT>& sh_src,
                                        t8::ScreenHandler<NRo, NCo, CharT>& sh_dst)
   {
-    auto new_screen_buffer = resample_data<CharT, double, NRi, NCi, NRo, NCo>(sh_src.screen_buffer, 0);
-    auto new_fg_color_buffer = resample_data<Color, t8::RGBA, NRi, NCi, NRo, NCo>(sh_src.fg_color_buffer, 0);
-    auto new_bg_color_buffer = resample_data<Color, t8::RGBA, NRi, NCi, NRo, NCo>(sh_src.bg_color_buffer, 0);
-    sh_dst.overwrite_data(new_screen_buffer, new_fg_color_buffer, new_bg_color_buffer);
+    auto new_screen_buffer = resample_data<CharT, NRi, NCi, NRo, NCo>(sh_src.screen_buffer, 0);
+    sh_dst.overwrite_data(new_screen_buffer);
   }
   
 }

@@ -45,6 +45,16 @@
 namespace t8
 {
   
+  template<typename CharT>
+  struct Cell
+  {
+    CharT ch;
+    Color fg;
+    Color bg;
+  };
+  
+  // ////////////////////////////////////
+  
   class Text
   {
     ::term::TermMode m_term_mode;
@@ -214,7 +224,7 @@ namespace t8
     }
     
     template<typename CharT>
-    using ComplexString = std::vector<std::tuple<CharT, Color, Color>>;
+    using ComplexString = std::vector<Cell<CharT>>;
     
     template<typename CharT>
     void print_complex_sequential(const ComplexString<CharT>& text)
