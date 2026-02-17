@@ -453,11 +453,19 @@ namespace t8
             ch_curr = normalize_cp(ch_curr);
             ch_prev = normalize_cp(ch_prev);
           }
+          unsigned char fallback_curr = 0;
+          unsigned char fallback_prev = 0;
+          if constexpr (needs_fallback)
+          {
+            fallback_curr = static_cast<unsigned char>(normalize_byte(fallbacks[idx]));
+            fallback_prev = static_cast<unsigned char>(normalize_byte(prev_fallbacks[idx]));
+          }
           
           dirty_flag_buffer[idx] =
                ch_curr != ch_prev
             || fg_curr != fg_prev
-            || bg_curr != bg_prev;
+            || bg_curr != bg_prev
+            || fallback_curr != fallback_prev;
         }
       }
     }
