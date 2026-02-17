@@ -132,30 +132,30 @@ namespace t8
     
     void write_buffer_cell(CharT ch, char fallback, int r, int c, int ci, Color fg_color, Color bg_color)
     {
-      int c_tot = c + ci;
-      if (c_tot >= 0 && c_tot < NC)
+      const int c_tot = c + ci;
+      if (c_tot < 0 || c_tot >= NC)
+        return;
+      
+      int idx = index(r, c_tot);
+      auto& [scr_ch, scr_fg, scr_bg] = screen_buffer[idx];
+      if (scr_ch == ' '
+          && scr_bg == Color16::Transparent)
       {
-        int idx = index(r, c_tot);
-        auto& [scr_ch, scr_fg, scr_bg] = screen_buffer[idx];
-        if (scr_ch == ' '
-            && scr_bg == Color16::Transparent)
+        scr_ch = ch;
+        scr_fg = fg_color;
+        scr_bg = bg_color;
+        if constexpr (needs_fallback)
+          fallbacks[idx] = fallback;
+      }
+      else if (scr_bg == Color16::Transparent2)
+      {
+        scr_bg = bg_color;
+        if (scr_ch == ' ')
         {
           scr_ch = ch;
           scr_fg = fg_color;
-          scr_bg = bg_color;
           if constexpr (needs_fallback)
             fallbacks[idx] = fallback;
-        }
-        else if (scr_bg == Color16::Transparent2)
-        {
-          scr_bg = bg_color;
-          if (scr_ch == ' ')
-          {
-            scr_ch = ch;
-            scr_fg = fg_color;
-            if constexpr (needs_fallback)
-              fallbacks[idx] = fallback;
-          }
         }
       }
     }
