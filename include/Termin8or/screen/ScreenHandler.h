@@ -67,6 +67,14 @@ namespace t8
     std::array<bool, NC*NR> dirty_flag_buffer;
     Color prev_clear_bg_color = Color16::Default;
     
+#ifdef _WIN32
+    static constexpr bool needs_fallback = std::is_same_v<CharT, char32_t>;
+#else
+    static constexpr bool needs_fallback = false;
+#endif
+    std::conditional_t<needs_fallback, std::array<char, NR*NC>, std::monostate>
+      fallbacks, prev_fallbacks;
+    
     float dirty_fraction_threshold = 0.5f;
     
     benchmark::TicTocTimer t8_ScreenHandler_redraw_timer;
@@ -122,7 +130,7 @@ namespace t8
     
     std::vector<OrderedText> ordered_texts;
     
-    void write_buffer_cell(CharT ch, int r, int c, int ci, Color fg_color, Color bg_color)
+    void write_buffer_cell(CharT ch, char fallback, int r, int c, int ci, Color fg_color, Color bg_color)
     {
       int c_tot = c + ci;
       if (c_tot >= 0 && c_tot < NC)
@@ -135,6 +143,8 @@ namespace t8
           scr_ch = ch;
           scr_fg = fg_color;
           scr_bg = bg_color;
+          if constexpr (needs_fallback)
+            fallbacks[idx] = fallback;
         }
         else if (scr_bg == Color16::Transparent2)
         {
@@ -143,6 +153,8 @@ namespace t8
           {
             scr_ch = ch;
             scr_fg = fg_color;
+            if constexpr (needs_fallback)
+              fallbacks[idx] = fallback;
           }
         }
       }
@@ -232,22 +244,36 @@ namespace t8
     
     void write_buffer(const Glyph& glyph, const RC& pos, const Style& style)
     {
-      write_buffer(encode_single_width_glyph(glyph), pos.r, pos.c, style.fg_color, style.bg_color);
+      write_buffer(glyph, pos.r, pos.c, style.fg_color, style.bg_color);
     }
     
     void write_buffer(const Glyph& glyph, const RC& pos, Color fg_color, Color bg_color = Color16::Transparent)
     {
-      write_buffer(encode_single_width_glyph(glyph), pos.r, pos.c, fg_color, bg_color);
+      write_buffer(glyph, pos.r, pos.c, fg_color, bg_color);
     }
     
     void write_buffer(const Glyph& glyph, int r, int c, const Style& style)
     {
-      write_buffer(encode_single_width_glyph(glyph), r, c, style.fg_color, style.bg_color);
+      write_buffer(glyph, r, c, style.fg_color, style.bg_color);
     }
     
     void write_buffer(const Glyph& glyph, int r, int c, Color fg_color, Color bg_color = Color16::Transparent)
     {
-      write_buffer(encode_single_width_glyph(glyph), r, c, fg_color, bg_color);
+      static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
+                    "ERROR in ScreenHandler<NR, NC, CharT>::write_buffer() : Unsupported CharT type.");
+    
+      if (glyph.empty())
+        return;
+      if constexpr (std::is_same_v<CharT, char>)
+      {
+        if (r >= 0 && r < NR)
+          write_buffer(encode_single_width_glyph(glyph), r, c, fg_color, bg_color);
+      }
+      else if constexpr (std::is_same_v<CharT, char32_t>)
+      {
+        if (r >= 0 && r < NR)
+          write_buffer_cell(glyph.preferred, glyph.fallback, r, c, 0, fg_color, bg_color);
+      }
     }
     
     void write_buffer(const GlyphString& gstr, const RC& pos, const Style& style)
@@ -267,7 +293,17 @@ namespace t8
     
     void write_buffer(const GlyphString& gstr, int r, int c, Color fg_color, Color bg_color = Color16::Transparent)
     {
-      write_buffer(gstr.encode<CharT>(), r, c, fg_color, bg_color);
+      static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
+                    "ERROR in ScreenHandler<NR, NC, CharT>::write_buffer() : Unsupported CharT type.");
+      
+      if (gstr.empty())
+        return;
+      if (r >= 0 && r < NR)
+      {
+        int n = static_cast<int>(gstr.size());
+        for (int ci = 0; ci < n; ++ci)
+          write_buffer(gstr[ci], r, c + ci, fg_color, bg_color);
+      }
     }
     
     void write_buffer(const std::string& str, const RC& pos, const Style& style)
@@ -298,20 +334,19 @@ namespace t8
         {
           int n = static_cast<int>(str.size());
           for (int ci = 0; ci < n; ++ci)
-            write_buffer_cell(str[ci], r, c, ci, fg_color, bg_color);
+            write_buffer_cell(str[ci], Glyph::none, r, c, ci, fg_color, bg_color);
         }
       }
       else if constexpr (std::is_same_v<CharT, char32_t>)
       {
         if (r >= 0 && r < NR)
         {
-          //int n = static_cast<int>(str.size());
           int ci = 0;
           size_t byte_idx = 0;
           char32_t ch32 = utf8::none;
           while (utf8::decode_next_utf8_char32(str, ch32, byte_idx))
           {
-            write_buffer_cell(term::get_single_column_char32(ch32), r, c, ci, fg_color, bg_color);
+            write_buffer_cell(term::get_single_column_char32(ch32), Glyph::none, r, c, ci, fg_color, bg_color);
             ci++;
           }
         }
