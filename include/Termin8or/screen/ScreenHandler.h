@@ -395,10 +395,26 @@ namespace t8
         for (int c = 0; c < NC; ++c)
         {
           int idx = index(r, c);
-          const auto& [ch_curr, fg_curr, bg0] = screen_buffer[idx];
-          const auto& [ch_prev, fg_prev, bg1] = prev_screen_buffer[idx];
+          
+          const auto& [ch_curr_raw, fg_curr, bg0] = screen_buffer[idx];
+          const auto& [ch_prev_raw, fg_prev, bg1] = prev_screen_buffer[idx];
+          
           auto bg_curr = resolve_bg_color(bg0, clear_bg_color);
           auto bg_prev = resolve_bg_color(bg1, prev_clear_bg_color);
+          
+          auto ch_curr = ch_curr_raw;
+          auto ch_prev = ch_prev_raw;
+          if constexpr (std::is_same_v<CharT, char>)
+          {
+            ch_curr = normalize_byte(ch_curr);
+            ch_prev = normalize_byte(ch_prev);
+          }
+          else if constexpr (std::is_same_v<CharT, char32_t>)
+          {
+            ch_curr = normalize_cp(ch_curr);
+            ch_prev = normalize_cp(ch_prev);
+          }
+          
           dirty_flag_buffer[idx] =
                ch_curr != ch_prev
             || fg_curr != fg_prev
