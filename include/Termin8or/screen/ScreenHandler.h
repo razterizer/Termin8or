@@ -395,8 +395,8 @@ namespace t8
         for (int c = 0; c < NC; ++c)
         {
           int idx = index(r, c);
-          auto [ch_curr, fg_curr, bg0] = screen_buffer[idx];
-          auto [ch_prev, fg_prev, bg1] = prev_screen_buffer[idx];
+          const auto& [ch_curr, fg_curr, bg0] = screen_buffer[idx];
+          const auto& [ch_prev, fg_prev, bg1] = prev_screen_buffer[idx];
           auto bg_curr = resolve_bg_color(bg0, clear_bg_color);
           auto bg_prev = resolve_bg_color(bg1, prev_clear_bg_color);
           dirty_flag_buffer[idx] =
@@ -504,10 +504,11 @@ namespace t8
         for (int c = 0; c < NC; ++c)
         {
           int idx = index(r, c);
-          auto [ch, fg, bg] = screen_buffer[idx];
-          if (bg == Color16::Transparent || bg == Color16::Transparent2)
-            bg = clear_bg_color;
-          colored_str[i++] = { ch, fg, bg };
+          const auto& cell = screen_buffer[idx];
+          auto bg_col = cell.bg;
+          if (bg_col == Color16::Transparent || bg_col == Color16::Transparent2)
+            bg_col = clear_bg_color;
+          colored_str[i++] = { cell.ch, cell.fg, bg_col };
         }
         colored_str[i++] = { static_cast<CharT>('\n'), Color16::Default, Color16::Default };
       }
@@ -529,10 +530,11 @@ namespace t8
           {
             if (chunk.text.empty())
               chunk.pos = { r, c };
-            auto [ch, fg, bg] = screen_buffer[idx];
-            if (bg == Color16::Transparent || bg == Color16::Transparent2)
-              bg = clear_bg_color;
-            chunk.text.emplace_back(ch, fg, bg);
+            const auto& cell = screen_buffer[idx];
+            auto bg_col = cell.bg;
+            if (bg_col == Color16::Transparent || bg_col == Color16::Transparent2)
+              bg_col = clear_bg_color;
+            chunk.text.emplace_back(cell.ch, cell.fg, bg_col);
           }
           else if (!chunk.text.empty())
           {
@@ -572,7 +574,7 @@ namespace t8
             continue;
           
           int idx = index(r, c);
-          auto [ch, fg, bg] = screen_buffer[idx];
+          const auto& [ch, fg, bg] = screen_buffer[idx];
           textel.glyph = ch; // #FIXME: Need to allow e.g. Glyph::str() => "[2603]". #glyph
           textel.fg_color = fg;
           textel.bg_color = bg;
@@ -626,7 +628,7 @@ namespace t8
         for (int c = 0; c < NC; ++c)
         {
           int idx = index(r, c);
-          auto [ch, fg, bg] = screen_buffer[idx];
+          const auto& [ch, fg, bg] = screen_buffer[idx];
           texture.set_textel_char(r, c, ch);
           texture.set_textel_fg_color(r, c, fg);
           texture.set_textel_bg_color(r, c, bg);
