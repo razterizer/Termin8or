@@ -287,6 +287,9 @@ namespace t8
     
     void write_buffer(const std::string& str, int r, int c, Color fg_color, Color bg_color = Color16::Transparent)
     {
+      static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
+                    "ERROR in ScreenHandler<NR, NC, CharT>::write_buffer() : Unsupported CharT type.");
+    
       if (str.empty())
         return;
       if constexpr (std::is_same_v<CharT, char>)
@@ -313,8 +316,6 @@ namespace t8
           }
         }
       }
-      else
-        std::cerr << "ERROR in ScreenHandler<NR, NC, CharT>::write_buffer() : Unsupported CharT type.\n";
     }
     
     void replace_bg_color(Color from_bg_color, Color to_bg_color, Rectangle box)
