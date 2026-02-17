@@ -147,7 +147,7 @@ namespace t8
           fallbacks[idx] = fallback;
       };
       
-      if (scr_ch == ' '
+      if (scr_ch == static_cast<CharT>(' ')
           && scr_bg == Color16::Transparent)
       {
         set_glyph();
