@@ -182,7 +182,7 @@ namespace t8
     
     bool test_empty(int r, int c) const
     {
-      return screen_buffer[index(r, c)] == ' ';
+      return screen_buffer[index(r, c)].ch == static_cast<CharT>(' ');
     }
     
     void set_ascii_fallback_policy(AsciiFallbackPolicy policy)
