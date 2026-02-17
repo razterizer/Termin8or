@@ -53,6 +53,23 @@ namespace t8
     Color bg;
   };
   
+  inline constexpr char32_t normalize_cp(char32_t cp) noexcept
+  {
+    if (cp == Glyph::none32) return U' ';
+    if (cp > 0x10FFFF) return U'?';
+    if (cp >= 0xD800 && cp <= 0xDFFF) return U'?';
+    return cp;
+  }
+  
+  inline constexpr unsigned char normalize_byte(char b) noexcept
+  {
+    if (b == Glyph::none)
+      return static_cast<unsigned char>(' ');
+    if (static_cast<unsigned char>(b) == 0)
+      return static_cast<unsigned char>(' '); // Belt-and-suspenders.
+    return static_cast<unsigned char>(b);
+  }
+  
   // ////////////////////////////////////
   
   class Text
@@ -79,23 +96,6 @@ namespace t8
       };
     }
 #endif
-
-    inline constexpr char32_t normalize_cp(char32_t cp) const noexcept
-    {
-      if (cp == Glyph::none32) return U' ';
-      if (cp > 0x10FFFF) return U'?';
-      if (cp >= 0xD800 && cp <= 0xDFFF) return U'?';
-      return cp;
-    }
-    
-    inline constexpr unsigned char normalize_byte(char b) const noexcept
-    {
-      if (b == Glyph::none)
-        return static_cast<unsigned char>(' ');
-      if (static_cast<unsigned char>(b) == 0)
-        return static_cast<unsigned char>(' '); // Belt-and-suspenders.
-      return static_cast<unsigned char>(b);
-    }
     
   public:
     Text() = default;
