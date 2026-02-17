@@ -465,6 +465,8 @@ namespace t8
     void update_prev_buffers(Color clear_bg_color)
     {
       prev_screen_buffer = screen_buffer;
+      if constexpr (needs_fallback)
+        prev_fallbacks = fallbacks;
       prev_clear_bg_color = clear_bg_color;
     }
     
