@@ -217,7 +217,7 @@ namespace t8
       return t8::term::encode_single_width_glyph<CharT>(preferred, fallback);
     }
     
-    inline std::string encode_single_width_glyph(const Glyph& glyph)
+    inline std::string encode_single_width_glyph(const Glyph& glyph) const
     {
       return t8::term::encode_single_width_glyph<CharT>(glyph.preferred, glyph.fallback);
     }
