@@ -138,25 +138,26 @@ namespace t8
       
       int idx = index(r, c_tot);
       auto& [scr_ch, scr_fg, scr_bg] = screen_buffer[idx];
-      if (scr_ch == ' '
-          && scr_bg == Color16::Transparent)
+      
+      auto set_glyph = [&]()
       {
         scr_ch = ch;
         scr_fg = fg_color;
-        scr_bg = bg_color;
         if constexpr (needs_fallback)
           fallbacks[idx] = fallback;
+      };
+      
+      if (scr_ch == ' '
+          && scr_bg == Color16::Transparent)
+      {
+        set_glyph();
+        scr_bg = bg_color;
       }
       else if (scr_bg == Color16::Transparent2)
       {
         scr_bg = bg_color;
-        if (scr_ch == ' ')
-        {
-          scr_ch = ch;
-          scr_fg = fg_color;
-          if constexpr (needs_fallback)
-            fallbacks[idx] = fallback;
-        }
+        if (scr_ch == static_cast<CharT>(' '))
+          set_glyph();
       }
     }
     
