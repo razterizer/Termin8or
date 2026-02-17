@@ -666,13 +666,13 @@ namespace t8
         {
           line.resize(NC);
           for (int c = 0; c < NC; ++c)
-            line[c] = screen_buffer[index(r, c)];
+            line[c] = screen_buffer[index(r, c)].ch;
         }
         else if constexpr (std::is_same_v<CharT, char32_t>)
         {
           line.reserve(static_cast<size_t>(NC) * 4); // Worst case.
           for (int c = 0; c < NC; ++c)
-            line += encode_single_width_glyph(screen_buffer[index(r, c)]);
+            line += encode_single_width_glyph(screen_buffer[index(r, c)].ch);
         }
       }
       return ret;
