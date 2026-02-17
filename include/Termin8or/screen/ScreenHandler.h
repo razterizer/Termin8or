@@ -739,6 +739,8 @@ namespace t8
     void overwrite_data(const std::array<Cell<CharT>, NR*NC>& new_screen_buffer)
     {
       screen_buffer = new_screen_buffer;
+      if constexpr (needs_fallback)
+        fallbacks.fill(Glyph::none);
     }
     
     template<int NRo, int NCo, int NRi, int NCi, typename char_t>
