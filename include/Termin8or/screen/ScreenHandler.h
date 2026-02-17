@@ -488,6 +488,7 @@ namespace t8
       auto f_full_redraw = [this](Color clear_bg_color)
       {
         print_screen_buffer_full(clear_bg_color);
+        update_prev_buffers(clear_bg_color); // Otherwise prev_screen_buffer will go stale and next partial draw will treat many cells as dirty.
         num_full_redraws++;
       };
     
