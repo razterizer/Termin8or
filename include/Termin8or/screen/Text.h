@@ -87,6 +87,8 @@ namespace t8
   {
     ::term::TermMode m_term_mode;
     
+    GlyphMappingPolicy m_mapping_policy = GlyphMappingPolicy::ALWAYS_UNICODE;
+    
 #ifdef _WIN32
     template <auto WriteFn>
     static auto make_flush(HANDLE hConsole,
