@@ -16,7 +16,7 @@ namespace t8
   namespace term
   {
     inline constexpr char32_t none32 = 0xFFFFFFFFu; // char32_t is unsigned.
-    inline constexpr char none = '\0'; // NUL character. No use for such characeters in this context.
+    inline constexpr char none = -0x80;
     
     inline bool force_ascii_fallback = false;
   
