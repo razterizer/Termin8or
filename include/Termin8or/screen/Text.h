@@ -261,10 +261,10 @@ namespace t8
     }
     
     template<typename CharT>
-    using ComplexString = std::vector<OutputCell<CharT>>;
+    using OutputString = std::vector<OutputCell<CharT>>;
     
     template<typename CharT>
-    void emit_sequential(const ComplexString<CharT>& text)
+    void emit_sequential(const OutputString<CharT>& text)
     {
       static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
                     "ERROR in Text::emit_sequential(): unsupported CharT!");
@@ -373,14 +373,14 @@ namespace t8
 
     
     template<typename CharT>
-    struct ComplexStringChunk
+    struct OutputStringChunk
     {
       RC pos;
-      ComplexString<CharT> text;
+      OutputString<CharT> text;
     };
     
     template<typename CharT>
-    void emit_chunks(const std::vector<ComplexStringChunk<CharT>>& chunk_vec)
+    void emit_chunks(const std::vector<OutputStringChunk<CharT>>& chunk_vec)
     {
       static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
                     "ERROR in Text::emit_chunks(): unsupported CharT!");
