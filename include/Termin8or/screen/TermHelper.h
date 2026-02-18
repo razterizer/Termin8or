@@ -58,14 +58,47 @@ namespace t8
       return is_single_column(cp) ? cp : none32;
     }
     
-    inline std::string encode_single_width_glyph(char32_t preferred,
-                                                 char fallback = none)
+    inline char32_t process_single_width_glyph(char32_t preferred, char fallback = none)
     {
       char32_t cp = preferred;
       if (!is_single_column(cp))
         cp = static_cast<unsigned char>(fallback);
       if (!is_single_column(cp))
         cp = none32;
+      return cp;
+    }
+    
+    template<typename CharT>
+    inline CharT process_single_width_glyph(char32_t preferred,
+                                            char fallback = none)
+    {
+      auto f_handle_ascii = [preferred, fallback]() -> char
+      {
+        if (preferred <= 0x7F)
+          return static_cast<char>(preferred);
+        if (fallback != none && static_cast<unsigned char>(fallback) <= 0x7F)
+          return static_cast<char>(fallback);
+        return '?';
+      };
+    
+      if constexpr (std::is_same_v<CharT, char>)
+        return f_handle_ascii();
+      if constexpr (std::is_same_v<CharT, char32_t>)
+      {
+        if (force_ascii_fallback)
+          return static_cast<CharT>(f_handle_ascii());
+        return term::process_single_width_glyph(preferred, fallback);
+      }
+      
+      static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
+                    "ERROR in ScreenHandler::encode_single_width_glyph(): unsupported CharT!");
+      return static_cast<CharT>('?');
+    }
+    
+    inline std::string encode_single_width_glyph(char32_t preferred,
+                                                 char fallback = none)
+    {
+      char32_t cp = process_single_width_glyph(preferred, fallback);
       
       // Use 437 for cmd.exe for now as we only have a mapping from UTF-8 to CP437 atm.
       return utf8::encode_char32_utf8(cp);
