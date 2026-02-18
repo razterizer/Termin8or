@@ -97,7 +97,7 @@ namespace t8
       }
       
       static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
-                    "ERROR in ScreenHandler::encode_single_width_glyph(): unsupported CharT!");
+                    "ERROR in ScreenHandler::process_single_width_glyph() : Unsupported CharT!");
       return static_cast<CharT>('?');
     }
     
@@ -133,7 +133,7 @@ namespace t8
       }
       
       static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
-                    "ERROR in ScreenHandler::encode_single_width_glyph(): unsupported CharT!");
+                    "ERROR in ScreenHandler::encode_single_width_glyph() : Unsupported CharT!");
       return "?";
     }
     
