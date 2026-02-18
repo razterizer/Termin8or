@@ -79,6 +79,8 @@ namespace t8
     return static_cast<unsigned char>(b);
   }
   
+  enum class GlyphMappingPolicy { ALWAYS_UNICODE, WIN_NON_VT_TRY_CP437 };
+  
   // ////////////////////////////////////
   
   class Text
