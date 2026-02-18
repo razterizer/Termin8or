@@ -293,7 +293,7 @@ namespace t8
       else if constexpr (std::is_same_v<CharT, char32_t>)
       {
         if (r >= 0 && r < NR)
-          write_buffer_cell(normalize_cp(term::process_single_width_glyph<CharT>(glyph.preferred, glyph.fallback)),
+          write_buffer_cell(normalize_cp(term::resolve_single_width_glyph<CharT>(glyph.preferred, glyph.fallback)),
                             static_cast<char>(normalize_byte(glyph.fallback)), r, c, 0, fg_color, bg_color);
       }
     }
