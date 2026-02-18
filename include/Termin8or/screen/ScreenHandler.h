@@ -577,7 +577,7 @@ namespace t8
     
     void print_screen_buffer_full(Color clear_bg_color) const
     {
-      Text::OutputString<CharT> colored_str;
+      Text::OutputStringSeq<CharT> colored_str;
       colored_str.resize(NR*(NC + 1));
       int i = 0;
       for (int r = 0; r < NR; ++r)

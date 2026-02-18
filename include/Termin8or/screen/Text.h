@@ -261,10 +261,10 @@ namespace t8
     }
     
     template<typename CharT>
-    using OutputString = std::vector<OutputCell<CharT>>;
+    using OutputStringSeq = std::vector<OutputCell<CharT>>;
     
     template<typename CharT>
-    void emit_sequential(const OutputString<CharT>& text)
+    void emit_sequential(const OutputStringSeq<CharT>& text)
     {
       static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
                     "ERROR in Text::emit_sequential(): unsupported CharT!");
@@ -376,7 +376,7 @@ namespace t8
     struct OutputStringChunk
     {
       RC pos;
-      OutputString<CharT> text;
+      OutputStringSeq<CharT> text;
     };
     
     template<typename CharT>
