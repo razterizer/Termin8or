@@ -592,9 +592,12 @@ namespace t8
           auto bg_col = cell.bg;
           if (bg_col == Color16::Transparent || bg_col == Color16::Transparent2)
             bg_col = clear_bg_color;
-          colored_str[i++] = { cell.ch, cell.fg, bg_col };
+          char fb = Glyph::none;
+          if constexpr (needs_fallback)
+            fb = fallbacks[idx];
+          colored_str[i++] = { cell.ch, fb, cell.fg, bg_col };
         }
-        colored_str[i++] = { static_cast<CharT>('\n'), Color16::Default, Color16::Default };
+        colored_str[i++] = { static_cast<CharT>('\n'), Glyph::none, Color16::Default, Color16::Default };
       }
       m_text->print_complex_sequential(colored_str);
     }
@@ -618,7 +621,10 @@ namespace t8
             auto bg_col = cell.bg;
             if (bg_col == Color16::Transparent || bg_col == Color16::Transparent2)
               bg_col = clear_bg_color;
-            chunk.text.emplace_back(cell.ch, cell.fg, bg_col);
+            char fb = Glyph::none;
+            if constexpr (needs_fallback)
+              fb = fallbacks[idx];
+            chunk.text.emplace_back(cell.ch, fb, cell.fg, bg_col);
           }
           else if (!chunk.text.empty())
           {
