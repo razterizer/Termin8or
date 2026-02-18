@@ -166,6 +166,17 @@ namespace t8
       : m_text(std::make_unique<Text>())
     {}
     
+    // Should be set before call to init_terminal_mode().
+    void set_glyph_mapping_policy(GlyphMappingPolicy mapping_policy)
+    {
+      m_text->set_glyph_mapping_policy(mapping_policy);
+    }
+    
+    GlyphMappingPolicy get_glyph_mapping_policy() const
+    {
+      return m_text->get_glyph_mapping_policy();
+    }
+    
     void clear()
     {
       for (auto& cell : screen_buffer)
