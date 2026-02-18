@@ -202,12 +202,17 @@ namespace t8
       stlutils::memset(materials, mat);
     }
     
+    inline int index(int r, int c) const noexcept
+    {
+      return r * size.c + c;
+    }
+    
     Textel operator()(int r, int c) const
     {
       if (!check_range(r, c))
         return {};
       Textel tex;
-      int idx = r * size.c + c;
+      int idx = index(r, c);
       tex.glyph = glyphs[idx];
       tex.fg_color = fg_colors[idx];
       tex.bg_color = bg_colors[idx];
@@ -224,7 +229,7 @@ namespace t8
     {
       if (!check_range(r, c))
         return;
-      int idx = r * size.c + c;
+      int idx = index(r, c);
       glyphs[idx] = textel.glyph;
       fg_colors[idx] = textel.fg_color;
       bg_colors[idx] = textel.bg_color;
@@ -240,8 +245,7 @@ namespace t8
     {
       if (!check_range(r, c))
         return;
-      int idx = r * size.c + c;
-      glyphs[idx] = ch;
+      glyphs[index(r, c)] = ch;
     }
     
     void set_textel_char(const RC& pos, char ch)
@@ -253,8 +257,7 @@ namespace t8
     {
       if (!check_range(r, c))
         return;
-      int idx = r * size.c + c;
-      glyphs[idx] = g;
+      glyphs[index(r, c)] = g;
     }
     
     void set_textel_glyph(const RC& pos, const Glyph& g)
@@ -266,8 +269,7 @@ namespace t8
     {
       if (!check_range(r, c))
         return;
-      int idx = r * size.c + c;
-      fg_colors[idx] = fg_color;
+      fg_colors[index(r, c)] = fg_color;
     }
     
     void set_textel_fg_color(const RC& pos, Color fg_color)
@@ -279,8 +281,7 @@ namespace t8
     {
       if (!check_range(r, c))
         return;
-      int idx = r * size.c + c;
-      bg_colors[idx] = bg_color;
+      bg_colors[index(r, c)] = bg_color;
     }
     
     void set_textel_bg_color(const RC& pos, Color bg_color)
@@ -292,8 +293,7 @@ namespace t8
     {
       if (!check_range(r, c))
         return;
-      int idx = r * size.c + c;
-      materials[idx] = mat;
+      materials[index(r, c)] = mat;
     }
     
     void set_textel_material_raw(const RC& pos, uint8_t mat)
@@ -305,8 +305,7 @@ namespace t8
     {
       if (!check_range(r, c))
         return texture::mat_none;
-      int idx = r * size.c + c;
-      return materials[idx];
+      return materials[index(r, c)];
     }
     
     uint8_t get_textel_material_raw(const RC& pos) const
@@ -423,10 +422,7 @@ namespace t8
           {
             int l_idx = 0;
             for (int c = 0; c < size.c; ++c)
-            {
-              int idx = r * size.c + c;
-              glyphs[idx].parse(l, l_idx, ver <= 21, verbose);
-            }
+              glyphs[index(r, c)].parse(l, l_idx, ver <= 21, verbose);
             r++;
           }
           else if (r > 0)
@@ -441,10 +437,7 @@ namespace t8
           {
             int l_idx = 0;
             for (int c = 0; c < size.c; ++c)
-            {
-              int idx = r * size.c + c;
-              fg_colors[idx].parse(l, l_idx, true, verbose);
-            }
+              fg_colors[index(r, c)].parse(l, l_idx, true, verbose);
             r++;
           }
           else if (r > 0)
@@ -459,10 +452,7 @@ namespace t8
           {
             int l_idx = 0;
             for (int c = 0; c < size.c; ++c)
-            {
-              int idx = r * size.c + c;
-              bg_colors[idx].parse(l, l_idx, true, verbose);
-            }
+              bg_colors[index(r, c)].parse(l, l_idx, true, verbose);
             r++;
           }
           else if (r > 0)
@@ -477,10 +467,7 @@ namespace t8
           {
             int l_idx = 0;
             for (int c = 0; c < size.c; ++c)
-            {
-              int idx = r * size.c + c;
-              materials[idx] = texture::str_to_mat(l, l_idx);
-            }
+              materials[index(r, c)] = texture::str_to_mat(l, l_idx);
             r++;
           }
           else if (r > 0)
@@ -512,10 +499,7 @@ namespace t8
       {
         std::string curr_line;
         for (int c = 0; c < size.c; ++c)
-        {
-          int idx = r * size.c + c;
-          curr_line += glyphs[idx].str(encoding_mode == TxGlyphEncoding::AsciiOnly);
-        }
+          curr_line += glyphs[index(r, c)].str(encoding_mode == TxGlyphEncoding::AsciiOnly);
         lines.emplace_back(curr_line);
       }
       lines.emplace_back("");
@@ -523,10 +507,7 @@ namespace t8
       {
         std::string curr_line;
         for (int c = 0; c < size.c; ++c)
-        {
-          int idx = r * size.c + c;
-          curr_line += fg_colors[idx].str(true);
-        }
+          curr_line += fg_colors[index(r, c)].str(true);
         lines.emplace_back(curr_line);
       }
       lines.emplace_back("");
@@ -534,10 +515,7 @@ namespace t8
       {
         std::string curr_line;
         for (int c = 0; c < size.c; ++c)
-        {
-          int idx = r * size.c + c;
-          curr_line += bg_colors[idx].str(true);
-        }
+          curr_line += bg_colors[index(r, c)].str(true);
         lines.emplace_back(curr_line);
       }
       lines.emplace_back("");
@@ -545,10 +523,7 @@ namespace t8
       {
         std::string curr_line;
         for (int c = 0; c < size.c; ++c)
-        {
-          int idx = r * size.c + c;
-          curr_line += texture::mat_to_str(materials[idx]);
-        }
+          curr_line += texture::mat_to_str(materials[index(r, c)]);
         lines.emplace_back(curr_line);
       }
       
