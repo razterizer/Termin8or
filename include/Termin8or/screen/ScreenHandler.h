@@ -220,6 +220,13 @@ namespace t8
     void init_terminal_mode()
     {
       m_text->init_terminal_mode();
+      
+#ifdef _WIN32
+      if (m_text->non_vt_console())
+        if constexpr (std::is_same_v<CharT, char32_t>)
+          if (m_text->get_glyph_mapping_policy() == GlyphMappingPolicy::WIN_NON_VT_TRY_CP437)
+            SetConsoleOutputCP(437);
+#endif
     }
     
     inline std::string encode_single_width_glyph(char32_t preferred,
