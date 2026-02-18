@@ -92,7 +92,7 @@ namespace t8
       if constexpr (std::is_same_v<CharT, char32_t>)
       {
         if (force_ascii_fallback)
-          return static_cast<CharT>(f_handle_ascii());
+          return static_cast<char32_t>(static_cast<unsigned char>(f_handle_ascii()));
         return term::process_single_width_glyph(preferred, fallback);
       }
       
