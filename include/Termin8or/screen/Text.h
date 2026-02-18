@@ -301,7 +301,7 @@ namespace t8
             }
             
             CHAR_INFO ci {};
-            ci.Char.AsciiChar = static_cast<unsigned char>(normalize_byte(ch)); // Safe for ASCII/CP437-ish bytes.
+            ci.Char.AsciiChar = static_cast<unsigned char>(ch); // Safe for ASCII/CP437-ish bytes.
             ci.Attributes = get_style_win_cmd(fg, bg);
             lineBuffer.push_back(ci);
           }
@@ -321,12 +321,11 @@ namespace t8
               }
               
               CHAR_INFO ci{};
-              char32_t cp = normalize_cp(ch);
-              auto cp437 = utf8::lookup_cp437(cp);
+              auto cp437 = utf8::lookup_cp437(ch);
               if (cp437.has_value())
                 ci.Char.AsciiChar = static_cast<unsigned char>(cp437.value());
               else if (fallback != Glyph::none)
-                ci.Char.AsciiChar = static_cast<unsigned char>(normalize_byte(fallback));
+                ci.Char.AsciiChar = static_cast<unsigned char>(fallback);
               else
                 ci.Char.AsciiChar = static_cast<unsigned char>('?');
               ci.Attributes = get_style_win_cmd(fg, bg);
@@ -346,7 +345,7 @@ namespace t8
               }
               
               CHAR_INFO ci{};
-              char32_t cp = normalize_cp(ch);
+              char32_t cp = ch;
               if (cp > 0xFFFF)
                 cp = U'?'; // Non-BMP Unicode characters are silently replaced with '?'.
               ci.Char.UnicodeChar = static_cast<wchar_t>(cp); // BMP assumed.
@@ -371,9 +370,9 @@ namespace t8
         output += get_color_string(fg_color, is_nl ? Color16::Default : bg_color);
         
         if constexpr (std::is_same_v<CharT, char>)
-          output.push_back(static_cast<char>(normalize_byte(ch)));
+          output.push_back(static_cast<char>(ch));
         else if constexpr (std::is_same_v<CharT, char32_t>)
-          output += utf8::encode_char32_utf8(normalize_cp(ch));
+          output += utf8::encode_char32_utf8(ch);
       }
       
       output += "\033[0m";
@@ -427,7 +426,7 @@ namespace t8
               assert(ch != '\n');
               
               CHAR_INFO ci {};
-              ci.Char.AsciiChar = static_cast<unsigned char>(normalize_byte(ch));
+              ci.Char.AsciiChar = static_cast<unsigned char>(ch);
               ci.Attributes = get_style_win_cmd(fg, bg);
               buffer[i] = ci;
             }
@@ -444,12 +443,11 @@ namespace t8
                 assert(ch != '\n');
                 
                 CHAR_INFO ci {};
-                char32_t cp = normalize_cp(ch);
-                auto cp437 = utf8::lookup_cp437(cp);
+                auto cp437 = utf8::lookup_cp437(ch);
                 if (cp437.has_value())
                   ci.Char.AsciiChar = static_cast<unsigned char>(cp437.value());
                 else if (fallback != Glyph::none)
-                  ci.Char.AsciiChar = static_cast<unsigned char>(normalize_byte(fallback));
+                  ci.Char.AsciiChar = static_cast<unsigned char>(fallback);
                 else
                   ci.Char.AsciiChar = static_cast<unsigned char>('?');
                 ci.Attributes = get_style_win_cmd(fg, bg);
@@ -466,7 +464,7 @@ namespace t8
                 assert(ch != '\n');
                 
                 CHAR_INFO ci {};
-                char32_t cp = normalize_cp(ch);
+                char32_t cp = ch;
                 if (cp > 0xFFFF)
                   cp = U'?'; // Non-BMP Unicode characters are silently replaced with '?'.
                 ci.Char.UnicodeChar = static_cast<wchar_t>(cp); // BMP assumed.
@@ -494,9 +492,9 @@ namespace t8
           assert(ch != '\n');
           output += get_color_string(fg, bg);
           if constexpr (std::is_same_v<CharT, char>)
-            output.push_back(static_cast<char>(normalize_byte(ch)));
+            output.push_back(static_cast<char>(ch));
           else if constexpr (std::is_same_v<CharT, char32_t>)
-            output += utf8::encode_char32_utf8(normalize_cp(ch));
+            output += utf8::encode_char32_utf8(ch);
         }
       }
       

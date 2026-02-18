@@ -293,7 +293,8 @@ namespace t8
       else if constexpr (std::is_same_v<CharT, char32_t>)
       {
         if (r >= 0 && r < NR)
-          write_buffer_cell(glyph.preferred, glyph.fallback, r, c, 0, fg_color, bg_color);
+          write_buffer_cell(normalize_cp(term::process_single_width_glyph<CharT>(glyph.preferred, glyph.fallback)),
+                            static_cast<char>(normalize_byte(glyph.fallback)), r, c, 0, fg_color, bg_color);
       }
     }
     
@@ -355,7 +356,7 @@ namespace t8
         {
           int n = static_cast<int>(str.size());
           for (int ci = 0; ci < n; ++ci)
-            write_buffer_cell(str[ci], Glyph::none, r, c, ci, fg_color, bg_color);
+            write_buffer_cell(static_cast<char>(normalize_byte(str[ci])), Glyph::none, r, c, ci, fg_color, bg_color);
         }
       }
       else if constexpr (std::is_same_v<CharT, char32_t>)
@@ -453,30 +454,18 @@ namespace t8
         {
           int idx = index(r, c);
           
-          const auto& [ch_curr_raw, fg_curr, bg0] = screen_buffer[idx];
-          const auto& [ch_prev_raw, fg_prev, bg1] = prev_screen_buffer[idx];
+          const auto& [ch_curr, fg_curr, bg0] = screen_buffer[idx];
+          const auto& [ch_prev, fg_prev, bg1] = prev_screen_buffer[idx];
           
           auto bg_curr = resolve_bg_color(bg0, clear_bg_color);
           auto bg_prev = resolve_bg_color(bg1, prev_clear_bg_color);
           
-          auto ch_curr = ch_curr_raw;
-          auto ch_prev = ch_prev_raw;
-          if constexpr (std::is_same_v<CharT, char>)
-          {
-            ch_curr = normalize_byte(ch_curr);
-            ch_prev = normalize_byte(ch_prev);
-          }
-          else if constexpr (std::is_same_v<CharT, char32_t>)
-          {
-            ch_curr = normalize_cp(ch_curr);
-            ch_prev = normalize_cp(ch_prev);
-          }
-          unsigned char fallback_curr = 0;
-          unsigned char fallback_prev = 0;
+          char fallback_curr = 0;
+          char fallback_prev = 0;
           if constexpr (needs_fallback)
           {
-            fallback_curr = static_cast<unsigned char>(normalize_byte(fallbacks[idx]));
-            fallback_prev = static_cast<unsigned char>(normalize_byte(prev_fallbacks[idx]));
+            fallback_curr = fallbacks[idx];
+            fallback_prev = prev_fallbacks[idx];
           }
           
           dirty_flag_buffer[idx] =
