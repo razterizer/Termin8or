@@ -159,14 +159,14 @@ namespace t8x
   
   // Function to downsample graphics using bilinear interpolation
   template<typename CharT, int NRi, int NCi, int NRo, int NCo>
-  std::array<t8::Cell<CharT>, NRo*NCo> resample_data(const std::array<t8::Cell<CharT>, NRi*NCi>& buffer, double offs)
+  std::array<t8::BufferCell<CharT>, NRo*NCo> resample_data(const std::array<t8::BufferCell<CharT>, NRi*NCi>& buffer, double offs)
   {
     double row_ratio = (NRo > 1) ? static_cast<double>(NRi - 1) / (NRo - 1) : 0.0;
     double col_ratio = (NCo > 1) ? static_cast<double>(NCi - 1) / (NCo - 1) : 0.0;
     
-    std::array<t8::Cell<CharT>, NCo*NRo> buffer_new;
+    std::array<t8::BufferCell<CharT>, NCo*NRo> buffer_new;
     
-    t8::Cell<CharT> empty_cell { ' ', Color16::Default, Color16::Transparent };
+    t8::BufferCell<CharT> empty_cell { ' ', Color16::Default, Color16::Transparent };
     
     for (int i = 0; i < NRo; ++i)
     {

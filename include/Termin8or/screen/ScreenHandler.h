@@ -31,6 +31,14 @@ namespace t8x::screen_scaling
 namespace t8
 {
 
+  template<typename CharT>
+  struct BufferCell
+  {
+    CharT ch;
+    Color fg;
+    Color bg;
+  };
+
   struct OrderedText
   {
     std::string str;
@@ -63,7 +71,7 @@ namespace t8
     std::unique_ptr<Text> m_text;
     
     // Draw from top to bottom.
-    std::array<Cell<CharT>, NC*NR> screen_buffer, prev_screen_buffer;
+    std::array<BufferCell<CharT>, NC*NR> screen_buffer, prev_screen_buffer;
     std::array<bool, NC*NR> dirty_flag_buffer;
     Color prev_clear_bg_color = Color16::Default;
     
@@ -757,7 +765,7 @@ namespace t8
       return nci < 0 ? 0 : nci;
     }
     
-    void overwrite_data(const std::array<Cell<CharT>, NR*NC>& new_screen_buffer)
+    void overwrite_data(const std::array<BufferCell<CharT>, NR*NC>& new_screen_buffer)
     {
       screen_buffer = new_screen_buffer;
       if constexpr (needs_fallback)

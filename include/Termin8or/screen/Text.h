@@ -46,14 +46,6 @@ namespace t8
 {
   
   template<typename CharT>
-  struct Cell
-  {
-    CharT ch;
-    Color fg;
-    Color bg;
-  };
-  
-  template<typename CharT>
   struct InputCell
   {
     CharT ch;
