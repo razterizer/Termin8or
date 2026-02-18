@@ -53,6 +53,15 @@ namespace t8
     Color bg;
   };
   
+  template<typename CharT>
+  struct InputCell
+  {
+    CharT ch;
+    char fallback;
+    Color fg;
+    Color bg;
+  };
+  
   inline constexpr char32_t normalize_cp(char32_t cp) noexcept
   {
     if (cp == Glyph::none32) return U' ';
