@@ -46,7 +46,7 @@ namespace t8
 {
   
   template<typename CharT>
-  struct InputCell
+  struct OutputCell
   {
     CharT ch;
     char fallback;
@@ -261,7 +261,7 @@ namespace t8
     }
     
     template<typename CharT>
-    using ComplexString = std::vector<InputCell<CharT>>;
+    using ComplexString = std::vector<OutputCell<CharT>>;
     
     template<typename CharT>
     void print_complex_sequential(const ComplexString<CharT>& text)
