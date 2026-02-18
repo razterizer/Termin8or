@@ -60,12 +60,18 @@ namespace t8
     
     inline char32_t process_single_width_glyph(char32_t preferred, char fallback = none)
     {
-      char32_t cp = preferred;
-      if (!is_single_column(cp))
-        cp = static_cast<unsigned char>(fallback);
-      if (!is_single_column(cp))
-        cp = none32;
-      return cp;
+      if (is_single_column(preferred))
+          return preferred;
+          
+      // Fallback (treat fallback as ASCII only).
+      if (fallback != none)
+      {
+        unsigned char fb = static_cast<unsigned char>(fallback);
+        if (fb <= 0x7F && is_single_column(static_cast<char32_t>(fb)))
+          return static_cast<char32_t>(fb);
+      }
+      
+      return none32;
     }
     
     template<typename CharT>
