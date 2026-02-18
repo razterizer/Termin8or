@@ -58,7 +58,7 @@ namespace t8x
   // ////
   
   enum class ButtonFrame { None, Space, SquareBrackets, AngleBrackets, Braces, Parentheses, Pipes };
-  enum class TextFieldMode { Numeric, AlphaNumeric, Alphabetic, All };
+  enum class TextFieldMode { Numeric, AlphaNumeric, Alphabetic, Hex, PrintableAscii, All };
   enum class ColorPickerCursorColoring { BlackWhite, Contrast };
   enum class ColorPickerCursorBlinking { Persist, EveryOther };
   
@@ -357,15 +357,23 @@ namespace t8x
         return;
       if (mode == TextFieldMode::All && curr_key != 0)
         add_char(curr_key);
-      if (str::is_digit(curr_key))
+      else if (mode == TextFieldMode::PrintableAscii && 0x20 <= curr_key && curr_key <= 0x7E)
+        add_char(curr_key);
+      else if (str::is_digit(curr_key))
       {
-        if (mode == TextFieldMode::Numeric || mode == TextFieldMode::AlphaNumeric)
+        if (mode == TextFieldMode::Numeric || mode == TextFieldMode::AlphaNumeric || mode == TextFieldMode::Hex)
           add_char(curr_key);
       }
       else if (str::is_letter(curr_key))
       {
         if (mode == TextFieldMode::Alphabetic || mode == TextFieldMode::AlphaNumeric)
           add_char(curr_key);
+        else if (mode == TextFieldMode::Hex)
+        {
+          auto ch_low = str::to_upper(curr_key);
+          if ('A' <= ch_low && ch_low <= 'F')
+            add_char(curr_key);
+        }
       }
       else if (curr_special_key == SpecialKey::Backspace)
         backspace();
