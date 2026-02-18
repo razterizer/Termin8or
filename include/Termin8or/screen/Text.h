@@ -113,6 +113,16 @@ namespace t8
   public:
     Text() = default;
     
+    void set_glyph_mapping_policy(GlyphMappingPolicy mapping_policy)
+    {
+      m_mapping_policy = mapping_policy;
+    }
+    
+    GlyphMappingPolicy get_glyph_mapping_policy() const
+    {
+      return m_mapping_policy;
+    }
+    
     void init_terminal_mode()
     {
       m_term_mode = ::term::init_terminal_mode(65001);
