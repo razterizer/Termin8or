@@ -596,7 +596,7 @@ namespace t8
         }
         colored_str[i++] = { static_cast<CharT>('\n'), Glyph::none, Color16::Default, Color16::Default };
       }
-      m_text->print_complex_sequential(colored_str);
+      m_text->emit_sequential(colored_str);
     }
     
     void print_screen_buffer_partial(Color clear_bg_color) const
@@ -633,7 +633,7 @@ namespace t8
         if (!chunk.text.empty())
           colored_str_chunks.emplace_back(std::move(chunk));
       }
-      m_text->print_complex_chunks(colored_str_chunks);
+      m_text->emit_chunks(colored_str_chunks);
       num_chunks_prev = stlutils::sizeI(colored_str_chunks);
     }
     

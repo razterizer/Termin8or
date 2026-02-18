@@ -264,10 +264,10 @@ namespace t8
     using ComplexString = std::vector<OutputCell<CharT>>;
     
     template<typename CharT>
-    void print_complex_sequential(const ComplexString<CharT>& text)
+    void emit_sequential(const ComplexString<CharT>& text)
     {
       static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
-                    "ERROR in Text::print_complex_sequential(): unsupported CharT!");
+                    "ERROR in Text::emit_sequential(): unsupported CharT!");
     
 #ifdef _WIN32
       if (!::term::use_ansi_colors(m_term_mode))
@@ -380,10 +380,10 @@ namespace t8
     };
     
     template<typename CharT>
-    void print_complex_chunks(const std::vector<ComplexStringChunk<CharT>>& chunk_vec)
+    void emit_chunks(const std::vector<ComplexStringChunk<CharT>>& chunk_vec)
     {
       static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
-                    "ERROR in Text::print_complex_chunks(): unsupported CharT!");
+                    "ERROR in Text::emit_chunks(): unsupported CharT!");
     
 #ifdef _WIN32
       if (!::term::use_ansi_colors(m_term_mode))
