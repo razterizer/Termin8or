@@ -603,7 +603,7 @@ namespace t8x
           else if (caret.c == 2)
             curr_char = 'D';
         }
-        sh.write_buffer(std::string(1, curr_char), pos.r + caret.r, pos.c + caret.c, caret_fg_color, caret_bg_color);
+        sh.write_buffer(curr_char, pos.r + caret.r, pos.c + caret.c, caret_fg_color, caret_bg_color);
       }
       
       // Colors
@@ -616,13 +616,13 @@ namespace t8x
           curr_char = 't';
         else if (col == -1)
           curr_char = 'D';
-        sh.write_buffer(std::string(1, curr_char), pos.r, pos.c + col - col_x_start, Color16::White, Color16::Black);
+        sh.write_buffer(curr_char, pos.r, pos.c + col - col_x_start, Color16::White, Color16::Black);
       }
       for (int col = col_4b_start; col <= col_4b_end; ++col)
       {
         char curr_char = unselect_char;
         auto bg_color = get_color(col);
-        sh.write_buffer(std::string(1, curr_char), pos.r, pos.c + col - col_x_start, Color16::White, bg_color);
+        sh.write_buffer(curr_char, pos.r, pos.c + col - col_x_start, Color16::White, bg_color);
       }
       for (int col = col_rgb6_start; col <= col_rgb6_end; ++col)
       {
@@ -632,7 +632,7 @@ namespace t8x
         if (!rgb6.has_value())
           continue;
         auto [r, g, b] = rgb6.value();
-        sh.write_buffer(std::string(1, curr_char), pos.r + (num_16color_rows + g), pos.c + (6*r + b), Color16::White, bg_color);
+        sh.write_buffer(curr_char, pos.r + (num_16color_rows + g), pos.c + (6*r + b), Color16::White, bg_color);
       }
       for (int col = col_g24_start; col <= col_g24_end; ++col)
       {
@@ -643,7 +643,7 @@ namespace t8x
           continue;
         auto [gray] = gray24.value();
         auto row_offs = num_16color_rows + num_rgb6_rows;
-        sh.write_buffer(std::string(1, curr_char), pos.r + row_offs, pos.c + gray, Color16::White, bg_color);
+        sh.write_buffer(curr_char, pos.r + row_offs, pos.c + gray, Color16::White, bg_color);
       }
     }
     
@@ -886,7 +886,7 @@ namespace t8x
       {
         for (const auto& rc_style : override_textel_styles)
           if (rc_style.first.r < static_cast<int>(N) && rc_style.first.c < static_cast<int>(len_max))
-            sh.write_buffer(std::string(1, sb[rc_style.first.r][rc_style.first.c]),
+            sh.write_buffer(sb[rc_style.first.r][rc_style.first.c],
                             pos.r + rc_style.first.r, pos.c + rc_style.first.c,
                             rc_style.second);
       }
