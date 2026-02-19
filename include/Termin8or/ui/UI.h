@@ -977,6 +977,7 @@ namespace t8x
     std::vector<std::tuple<RC, Style, t8::Glyph>> override_textels_pre;
     ButtonGroup button_group; // Buttons have their own reserved row two rows down.
     std::vector<std::pair<RC, TextField>> text_fields;
+    std::vector<std::pair<RC, GlyphPicker>> glyph_pickers;
     std::vector<std::pair<RC, ColorPicker>> color_pickers;
     int tab_idx = 0;
     int max_tab_idx = 0;
@@ -1105,6 +1106,34 @@ namespace t8x
       if (it != text_fields.end())
         return it->second.empty();
       return true; // Treat as empty if unable to find matching text field.
+    }
+    
+    void add_glyph_picker(const RC& pos, const GlyphPicker& gp)
+    {
+      glyph_pickers.emplace_back(pos, gp);
+      math::maximize(max_tab_idx, gp.get_tab_order());
+    }
+    
+    t8::Glyph get_glyph_picker_glyph(int tab) const
+    {
+      auto it = stlutils::find_if(glyph_pickers, [tab](const auto& gpp) { return gpp.second.get_tab_order() == tab; });
+      if (it != glyph_pickers.end())
+        return it->second.get_glyph();
+      return {};
+    }
+    
+    void set_glyph_picker_glyph(int tab, const t8::Glyph& g)
+    {
+      auto it = stlutils::find_if(glyph_pickers, [tab](const auto& gpp) { return gpp.second.get_tab_order() == tab; });
+      if (it != glyph_pickers.end())
+        return it->second.set_glyph(g);
+    }
+    
+    void reset_glyph_picker(int tab)
+    {
+      auto it = stlutils::find_if(glyph_pickers, [tab](const auto& gpp) { return gpp.second.get_tab_order() == tab; });
+      if (it != glyph_pickers.end())
+        return it->second.clear();
     }
     
     void add_color_picker(const RC& pos, const ColorPicker& cp)
