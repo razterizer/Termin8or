@@ -336,6 +336,30 @@ namespace t8
       }
     }
     
+    void write_buffer(char ch, const RC& pos, const Style& style)
+    {
+      write_buffer(ch, pos.r, pos.c, style.fg_color, style.bg_color);
+    }
+    
+    void write_buffer(char ch, const RC& pos, Color fg_color, Color bg_color = Color16::Transparent)
+    {
+      write_buffer(ch, pos.r, pos.c, fg_color, bg_color);
+    }
+    
+    void write_buffer(char ch, int r, int c, const Style& style)
+    {
+      write_buffer(ch, r, c, style.fg_color, style.bg_color);
+    }
+    
+    void write_buffer(char ch, int r, int c, Color fg_color, Color bg_color = Color16::Transparent)
+    {
+      static_assert(std::is_same_v<CharT, char> || std::is_same_v<CharT, char32_t>,
+                    "ERROR in ScreenHandler<NR, NC, CharT>::write_buffer() : Unsupported CharT type.");
+      
+      if (r >= 0 && r < NR)
+        write_buffer_cell(static_cast<CharT>(normalize_byte(ch)), Glyph::none, r, c, 0, fg_color, bg_color);
+    }
+    
     void write_buffer(const std::string& str, const RC& pos, const Style& style)
     {
       write_buffer(str, pos.r, pos.c, style.fg_color, style.bg_color);
