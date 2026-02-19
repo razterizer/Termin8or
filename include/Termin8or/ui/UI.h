@@ -423,6 +423,46 @@ namespace t8x
   };
   
   // /////////////////////////////////////////////////////////////
+  //   _____ _             _     _____ _      _
+  //  / ____| |           | |   |  __ (_)    | |
+  // | |  __| |_   _ _ __ | |__ | |__) |  ___| | _____ _ __
+  // | | |_ | | | | | '_ \| '_ \|  ___/ |/ __| |/ / _ \ '__|
+  // | |__| | | |_| | |_) | | | | |   | | (__|   <  __/ |
+  //  \_____|_|\__, | .__/|_| |_|_|   |_|\___|_|\_\___|_|
+  //            __/ | |
+  //           |___/|_|
+  // /////////////////////////////////////////////////////////////
+  
+  class GlyphPicker : public Widget
+  {
+    TextField cp_field; // preferred (UTF-8)
+    TextField fb_field; // fallback (ASCII)
+    
+    std::array<t8::Glyph, 16> recent_glyphs;
+    [[maybe_unused]] int sel_recent_idx = -1;
+    [[maybe_unused]] int recent_head = 0;
+    [[maybe_unused]] int recent_count = 0;
+    
+    t8::Glyph current_glyph;
+    
+  public:
+    void set_glyph(t8::Glyph& g)
+    {
+      current_glyph = g;
+    }
+    
+    t8::Glyph get_glyph() const
+    {
+      return current_glyph;
+    }
+    
+    void clear()
+    {
+      
+    }
+  };
+  
+  // /////////////////////////////////////////////////////////////
   //   _____      _            _____ _      _
   //  / ____|    | |          |  __ (_)    | |
   // | |     ___ | | ___  _ __| |__) |  ___| | _____ _ __
