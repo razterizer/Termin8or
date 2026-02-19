@@ -7,6 +7,7 @@
 
 #pragma once
 #include "Color.h"
+#include <optional>
 
 namespace t8
 {
@@ -31,9 +32,15 @@ namespace t8
   struct PromptStyle : Style
   {
     PromptStyle() = default;
-    PromptStyle(Color fg, Color bg, Color bg_cursor)
-      : Style(fg, bg), bg_color_cursor(bg_cursor) {}
+    PromptStyle(Color fg, Color bg, Color bg_cursor, std::optional<Color> fg_clear = std::nullopt)
+      : Style(fg, bg), bg_color_cursor(bg_cursor), fg_color_clear(fg_clear) {}
     Color bg_color_cursor = Color16::Transparent;
+    std::optional<Color> fg_color_clear = std::nullopt;
+    
+    Color get_fg_color_clear() const
+    {
+      return fg_color_clear.value_or(fg_color);
+    }
   };
   
   struct HiliteFGStyle : Style
