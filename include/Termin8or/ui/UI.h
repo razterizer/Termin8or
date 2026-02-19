@@ -341,7 +341,8 @@ namespace t8x
     }
     
   public:
-    TextField(int width, TextFieldMode tf_mode, PromptStyle tf_style, int tab = 0, char clear_ch = '_', bool sel = false)
+    TextField(int width, TextFieldMode tf_mode, PromptStyle tf_style,
+              int tab = 0, char clear_ch = '_', bool sel = false)
       : Widget(tab, sel)
       , field_width(width)
       , mode(tf_mode)
@@ -385,10 +386,16 @@ namespace t8x
       if (is_selected())
       {
         auto bg_color_caret = (anim_ctr == 0) ? style.bg_color_cursor : style.bg_color;
-        sh.write_buffer(std::string(1, input[get_caret_pos()]), pos.r, pos.c + get_caret_pos(), style.fg_color, bg_color_caret);
+        Color fg_color_caret = caret < field_width ? style.get_fg_color_clear() : style.fg_color;
+        sh.write_buffer(input[get_caret_pos()], pos.r, pos.c + get_caret_pos(), fg_color_caret, bg_color_caret);
       }
     
-      sh.write_buffer(input, pos, style.fg_color, style.bg_color);
+      for (int i = 0; i < field_width; ++i)
+      {
+        char ch = input[i];
+        Color fg_color = i >= caret && caret < field_width ? style.get_fg_color_clear() : style.fg_color;
+        sh.write_buffer(ch, pos.r, pos.c + i, fg_color, style.bg_color);
+      }
     }
     
     const std::string get_input() const
