@@ -418,7 +418,7 @@ namespace t8x
     
     bool empty() const
     {
-      return input == str::rep_char(clear_char, field_width);
+      return caret == 0;
     }
   };
   
