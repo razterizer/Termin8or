@@ -20,7 +20,7 @@ namespace t8
     inline constexpr char none = -0x80;
     
     inline bool force_ascii_fallback = false;
-  
+    
     inline ::term::TermMode m_term_mode;
   
     inline void init_locale()
@@ -45,7 +45,7 @@ namespace t8
     // We assume single column and rely on encoder fallback.
     inline bool is_single_column(char32_t cp)
     {
-      if (sys::is_windows_cmd())
+      if (!term::use_ansi_renderer())
       {
         // Treat as single-column if we can encode it to CP437 (or ASCII).
         // If you don’t have a predicate, just allow and rely on encoding fallback.
