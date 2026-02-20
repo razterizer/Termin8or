@@ -215,7 +215,7 @@ namespace t8
           term::force_ascii_fallback = true;
           break;
         case AsciiFallbackPolicy::FORCE_ASCII_ONLY_ON_WIN_CMD:
-          term::force_ascii_fallback = sys::is_windows_cmd();
+          term::force_ascii_fallback = sys::is_non_wt_console();
           break;
       }
     }
