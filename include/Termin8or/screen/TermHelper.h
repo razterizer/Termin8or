@@ -37,6 +37,11 @@ namespace t8
       return ::term::use_ansi_renderer(m_term_mode) && !::sys::is_non_wt_console();
     }
     
+    inline void emit_text(std::string_view sv_utf8, std::string_view sv_bytes_for_legacy = {})
+    {
+      ::term::emit_text(m_term_mode, sv_utf8, sv_bytes_for_legacy);
+    }
+    
     // We assume single column and rely on encoder fallback.
     inline bool is_single_column(char32_t cp)
     {
