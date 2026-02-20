@@ -23,7 +23,7 @@ namespace t8
   // Function to save current console fg and bg colors.
   inline void save_terminal_colors()
   {
-    if (sys::is_windows_cmd())
+    if (!term::use_ansi_renderer())
     {
 #ifdef _WIN32
       HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -47,7 +47,7 @@ namespace t8
   // Function to restore the saved console colors.
   inline Style restore_terminal_colors()
   {
-    if (sys::is_windows_cmd())
+    if (!term::use_ansi_renderer())
     {
 #ifdef _WIN32
       HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
