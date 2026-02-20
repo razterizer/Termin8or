@@ -117,6 +117,7 @@ namespace t8
     sh.replace_bg_color(orig_colors.bg_color);
     sh.print_screen_buffer(orig_colors.bg_color);
 #endif
+    clear_screen();
     restore_cursor();
     show_cursor();
   }
