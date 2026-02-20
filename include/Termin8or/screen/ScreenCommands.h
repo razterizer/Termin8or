@@ -72,8 +72,8 @@ namespace t8
   inline void begin_screen(ScreenHandler<NR, NC, CharT>& sh)
   {
     disable_stdio_sync();
-    save_terminal_colors();
     sh.init_terminal_mode();
+    save_terminal_colors();
     clear_screen();
     return_cursor();
     hide_cursor();
