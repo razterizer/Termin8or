@@ -77,8 +77,6 @@ namespace t8
   
   class Text
   {
-    ::term::TermMode m_term_mode;
-    
     GlyphMappingPolicy m_mapping_policy = GlyphMappingPolicy::ALWAYS_UNICODE;
     
 #ifdef _WIN32
@@ -117,7 +115,7 @@ namespace t8
     
     void init_terminal_mode()
     {
-      m_term_mode = ::term::init_terminal_mode(65001);
+      term::m_term_mode = ::term::init_terminal_mode(65001);
     }
     
     static std::string get_color_string(Color text_color, Color bg_color = Color16::Default)

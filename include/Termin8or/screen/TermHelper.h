@@ -8,6 +8,7 @@
 #pragma once
 #include <Core/Utf8.h>
 #include <Core/System.h>
+#include <Core/Term.h>
 
 
 namespace t8
@@ -19,6 +20,8 @@ namespace t8
     inline constexpr char none = -0x80;
     
     inline bool force_ascii_fallback = false;
+  
+    inline ::term::TermMode m_term_mode;
   
     inline void init_locale()
     {
