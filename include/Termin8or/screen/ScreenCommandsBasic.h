@@ -23,28 +23,7 @@
 
 namespace t8
 {
-
-  // Clear screen and send cursor to home position.
-  inline void clear_screen()
-  {
-    if (!term::use_ansi_renderer())
-    {
-#ifdef _WIN32
-      // Too slow and not necessary.
-      //HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-      //COORD coord = { 0, 0 };
-      //DWORD count;
-      //CONSOLE_SCREEN_BUFFER_INFO csbi;
-      //
-      //GetConsoleScreenBufferInfo(hStdOut, &csbi);
-      //FillConsoleOutputCharacterA(hStdOut, ' ', csbi.dwSize.X * csbi.dwSize.Y, coord, &count);
-      //SetConsoleCursorPosition(hStdOut, coord);
-#endif
-    }
-    else
-      printf("\x1b[2J");
-  }
-  
+ 
   // Send cursor to home position.
   inline void return_cursor()
   {

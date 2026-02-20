@@ -18,7 +18,35 @@ namespace t8
   inline WORD savedAttributes = 0;
 #endif
   inline Style orig_style = { Color16::White, Color16::Black };
-  
+
+
+  // Clear screen and send cursor to home position.
+  inline void clear_screen()
+  {
+    if (!term::use_ansi_renderer())
+    {
+#ifdef _WIN32
+      // Very slow
+      HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+      if (h == INVALID_HANDLE_VALUE)
+        return;
+
+      CONSOLE_SCREEN_BUFFER_INFO csbi {};
+      if (!GetConsoleScreenBufferInfo(h, &csbi))
+        return;
+
+      const DWORD cellCount = static_cast<DWORD>(csbi.dwSize.X) * static_cast<DWORD>(csbi.dwSize.Y);
+      const COORD home { 0, 0 };
+      DWORD written = 0;
+
+      FillConsoleOutputCharacterW(h, L' ', cellCount, home, &written);
+      FillConsoleOutputAttribute(h, savedAttributes, cellCount, home, &written);
+      SetConsoleCursorPosition(h, home);
+#endif
+    }
+    else
+      printf("\x1b[2J");
+  }
   
   // Function to save current console fg and bg colors.
   inline void save_terminal_colors()
