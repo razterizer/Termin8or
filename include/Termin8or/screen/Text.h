@@ -191,7 +191,7 @@ namespace t8
       if (!term::use_ansi_renderer())
       {
         set_color_win_cmd(text_color, bg_color);
-        ::term::emit_text(m_term_mode, text);
+        term::emit_text(text);
         return;
       }
 #endif
@@ -201,14 +201,14 @@ namespace t8
       output += get_color_string(text_color, bg_color);
       output += text;
       output += "\033[0m";
-      ::term::emit_text(m_term_mode, output);
+      term::emit_text(output);
     }
 
     
     void print_line(const std::string& text, Color text_color, Color bg_color = Color16::Default) const
     {
       print(text, text_color, bg_color);
-      ::term::emit_text(m_term_mode, "\n");
+      term::emit_text("\n");
     }
     
     void print_char(char c, Color text_color, Color bg_color = Color16::Default) const
@@ -218,7 +218,7 @@ namespace t8
       {
         // Legacy console: use WinAPI colors, then emit the byte.
         set_color_win_cmd(text_color, bg_color);
-        ::term::emit_text(m_term_mode, std::string_view(&c, 1));
+        term::emit_text(std::string_view(&c, 1));
         return;
       }
 #endif
@@ -229,7 +229,7 @@ namespace t8
       output += get_color_string(text_color, bg_color);
       output.push_back(c);
       output += "\033[0m";
-      ::term::emit_text(m_term_mode, output);
+      term::emit_text(output);
     }
     
     void print_char(char32_t c, Color text_color, Color bg_color = Color16::Default) const
@@ -240,7 +240,7 @@ namespace t8
       if (!term::use_ansi_renderer())
       {
         set_color_win_cmd(text_color, bg_color);
-        ::term::emit_text(m_term_mode, glyph);
+        term::emit_text(glyph);
         return;
       }
 #endif
@@ -250,7 +250,7 @@ namespace t8
       output += get_color_string(text_color, bg_color);
       output += glyph;
       output += "\033[0m";
-      ::term::emit_text(m_term_mode, output);
+      term::emit_text(output);
     }
     
     template<typename CharT>
@@ -361,7 +361,7 @@ namespace t8
       }
       
       output += "\033[0m";
-      ::term::emit_text(m_term_mode, output);
+      term::emit_text(output);
     }
 
     
@@ -484,7 +484,7 @@ namespace t8
       }
       
       output += "\033[0m";
-      ::term::emit_text(m_term_mode, output);
+      term::emit_text(output);
     }
 
     
@@ -497,7 +497,7 @@ namespace t8
         return;
       }
 #endif
-      ::term::emit_text(m_term_mode, "\033[0m");
+      term::emit_text("\033[0m");
     }
   };
   
