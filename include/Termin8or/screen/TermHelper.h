@@ -32,6 +32,11 @@ namespace t8
       }();
     }
     
+    inline bool use_ansi_renderer()
+    {
+      return ::term::use_ansi_renderer(m_term_mode) && !::sys::is_non_wt_console();
+    }
+    
     // We assume single column and rely on encoder fallback.
     inline bool is_single_column(char32_t cp)
     {
