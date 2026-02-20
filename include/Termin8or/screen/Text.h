@@ -120,11 +120,6 @@ namespace t8
       m_term_mode = ::term::init_terminal_mode(65001);
     }
     
-    bool non_vt_console() const
-    {
-      return m_term_mode.is_console && !m_term_mode.vt_enabled;
-    }
-    
     static std::string get_color_string(Color text_color, Color bg_color = Color16::Default)
     {
       std::string fg, bg;
