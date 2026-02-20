@@ -188,7 +188,7 @@ namespace t8
     void print(const std::string& text, Color text_color, Color bg_color = Color16::Default) const
     {
 #ifdef _WIN32
-      if (!::term::use_ansi_colors(m_term_mode))
+      if (!term::use_ansi_renderer())
       {
         set_color_win_cmd(text_color, bg_color);
         ::term::emit_text(m_term_mode, text);
@@ -214,7 +214,7 @@ namespace t8
     void print_char(char c, Color text_color, Color bg_color = Color16::Default) const
     {
 #ifdef _WIN32
-      if (!::term::use_ansi_colors(m_term_mode))
+      if (!term::use_ansi_renderer())
       {
         // Legacy console: use WinAPI colors, then emit the byte.
         set_color_win_cmd(text_color, bg_color);
@@ -237,7 +237,7 @@ namespace t8
       std::string glyph = utf8::encode_char32_utf8(normalize_cp(c));
       
 #ifdef _WIN32
-      if (!::term::use_ansi_colors(m_term_mode))
+      if (!term::use_ansi_renderer())
       {
         set_color_win_cmd(text_color, bg_color);
         ::term::emit_text(m_term_mode, glyph);
@@ -263,7 +263,7 @@ namespace t8
                     "ERROR in Text::emit_sequential(): unsupported CharT!");
     
 #ifdef _WIN32
-      if (!::term::use_ansi_colors(m_term_mode))
+      if (!::term::use_ansi_renderer())
       {
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         SHORT currentRow = 0;
@@ -379,7 +379,7 @@ namespace t8
                     "ERROR in Text::emit_chunks(): unsupported CharT!");
     
 #ifdef _WIN32
-      if (!::term::use_ansi_colors(m_term_mode))
+      if (!::term::use_ansi_renderer())
       {
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         
@@ -491,7 +491,7 @@ namespace t8
     void print_reset() const
     {
 #ifdef _WIN32
-      if (!::term::use_ansi_colors(m_term_mode))
+      if (!term::use_ansi_renderer())
       {
         set_color_win_cmd(Color16::White, Color16::Black);
         return;
