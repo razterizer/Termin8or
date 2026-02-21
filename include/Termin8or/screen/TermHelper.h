@@ -34,7 +34,7 @@ namespace t8
     
     inline bool use_ansi_renderer()
     {
-      return ::term::use_ansi_renderer(m_term_mode) && !::sys::is_non_wt_console();
+      return ::term::use_ansi_renderer(m_term_mode);
     }
     
     inline void emit_text(std::string_view sv_utf8, std::string_view sv_bytes_for_legacy = {})
