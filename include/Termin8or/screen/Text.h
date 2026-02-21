@@ -158,7 +158,7 @@ namespace t8
     }
     
 #ifdef _WIN32
-    static int get_color_win_cmd(Color color)
+    static int get_color_win_non_wt_console(Color color)
     {
       auto color16 = to_nearest_color16(color);
       int win_idx = get_color16_value_win(color16);
@@ -167,10 +167,10 @@ namespace t8
 
     static WORD get_style_win_cmd(Color fg, Color bg)
     {
-      int fg_val = get_color_win_cmd(fg);
+      int fg_val = get_color_win_non_wt_console(fg);
       if (fg_val == -1)
         fg_val= 7; // light gray
-      int bg_val = get_color_win_cmd(bg);
+      int bg_val = get_color_win_non_wt_console(bg);
       if (bg_val == -1)
         bg_val = 0; // black
       return static_cast<WORD>(fg_val | (bg_val << 4));
