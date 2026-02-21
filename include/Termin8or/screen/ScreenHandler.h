@@ -236,7 +236,10 @@ namespace t8
       if (term::m_term_mode.is_conhost_like)
         if constexpr (std::is_same_v<CharT, char32_t>)
           if (m_text->get_glyph_mapping_policy() == GlyphMappingPolicy::WIN_NON_VT_TRY_CP437)
-            SetConsoleOutputCP(437);
+          {
+            term::m_term_mode.codepage = 437;
+            SetConsoleOutputCP(term::m_term_mode.codepage);
+          }
 #endif
     }
     
