@@ -74,7 +74,7 @@ namespace t8
     inline char32_t resolve_single_width_glyph(char32_t preferred, char fallback = none)
     {
       if (is_single_column(preferred))
-          return preferred;
+        return preferred;
           
       // Fallback (treat fallback as ASCII only).
       if (fallback != none)
