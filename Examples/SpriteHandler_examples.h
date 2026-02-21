@@ -272,7 +272,7 @@ quit:
     sprite0->finalize_topology(0);
     auto* frame = sprite0->get_curr_local_frame(0);
     frame->fill_closed_polylines = true;
-    frame->fill_glyph = { 0xA73, '#' };
+    frame->fill_glyph = { 0x254B, '#' };
     frame->fill_style = { Color16::LightGray, Color16::DarkGray };
     dyn_sys.add_rigid_body(sprite0, 4.f, std::nullopt, { 1.f, -3.f }, {}, 2.f);
     

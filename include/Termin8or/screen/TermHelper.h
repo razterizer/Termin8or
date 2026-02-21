@@ -8,6 +8,7 @@
 #pragma once
 #include <Core/Utf8.h>
 #include <Core/System.h>
+#include <Core/Term.h>
 
 
 namespace t8
@@ -19,6 +20,8 @@ namespace t8
     inline constexpr char none = -0x80;
     
     inline bool force_ascii_fallback = false;
+    
+    inline ::term::TermMode m_term_mode;
   
     inline void init_locale()
     {
@@ -29,10 +32,20 @@ namespace t8
       }();
     }
     
+    inline bool use_ansi_renderer()
+    {
+      return ::term::use_ansi_renderer(m_term_mode) && !::sys::is_non_wt_console();
+    }
+    
+    inline void emit_text(std::string_view sv_utf8, std::string_view sv_bytes_for_legacy = {})
+    {
+      ::term::emit_text(m_term_mode, sv_utf8, sv_bytes_for_legacy);
+    }
+    
     // We assume single column and rely on encoder fallback.
     inline bool is_single_column(char32_t cp)
     {
-      if (sys::is_windows_cmd())
+      if (!term::use_ansi_renderer())
       {
         // Treat as single-column if we can encode it to CP437 (or ASCII).
         // If you don’t have a predicate, just allow and rely on encoding fallback.

@@ -18,36 +18,16 @@
 #include <unistd.h>
 #endif
 #include <Core/System.h>
+#include "TermHelper.h"
 
 
 namespace t8
 {
-
-  // Clear screen and send cursor to home position.
-  inline void clear_screen()
-  {
-    if (sys::is_windows_cmd())
-    {
-#ifdef _WIN32
-      // Too slow and not necessary.
-      //HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-      //COORD coord = { 0, 0 };
-      //DWORD count;
-      //CONSOLE_SCREEN_BUFFER_INFO csbi;
-      //
-      //GetConsoleScreenBufferInfo(hStdOut, &csbi);
-      //FillConsoleOutputCharacterA(hStdOut, ' ', csbi.dwSize.X * csbi.dwSize.Y, coord, &count);
-      //SetConsoleCursorPosition(hStdOut, coord);
-#endif
-    }
-    else
-      printf("\x1b[2J");
-  }
-  
+ 
   // Send cursor to home position.
   inline void return_cursor()
   {
-    if (sys::is_windows_cmd())
+    if (!term::use_ansi_renderer())
     {
 #ifdef _WIN32
       HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -65,13 +45,13 @@ namespace t8
   // Clear screen and send cursor to home position.
   inline void restore_cursor()
   {
-    if (!sys::is_windows_cmd())
+    if (term::use_ansi_renderer())
       printf("\x1b[2J"); // #FIXME: Change to "\x1B[H".
   }
   
   inline void hide_cursor()
   {
-    if (sys::is_windows_cmd())
+    if (!term::use_ansi_renderer())
     {
 #ifdef _WIN32
       HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -88,7 +68,7 @@ namespace t8
   
   inline void show_cursor()
   {
-    if (sys::is_windows_cmd())
+    if (!term::use_ansi_renderer())
     {
 #ifdef _WIN32
       HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -105,7 +85,7 @@ namespace t8
   
   inline void gotorc(int r, int c)
   {
-    if (sys::is_windows_cmd())
+    if (!term::use_ansi_renderer())
     {
 #ifdef _WIN32
       // Windows uses 0-indexed rows and cols.
@@ -126,7 +106,7 @@ namespace t8
   
   inline std::string get_gotorc_str(int r, int c)
   {
-    if (sys::is_windows_cmd())
+    if (!term::use_ansi_renderer())
     {
 #ifdef _WIN32
       // Windows doesn't use ANSI escape codes for cursor movement.

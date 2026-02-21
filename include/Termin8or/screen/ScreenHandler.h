@@ -14,6 +14,9 @@
 #include <array>
 #include <map>
 #include <memory>
+#include <type_traits>
+#include <variant>
+
 
 namespace t8
 {
@@ -215,7 +218,7 @@ namespace t8
           term::force_ascii_fallback = true;
           break;
         case AsciiFallbackPolicy::FORCE_ASCII_ONLY_ON_WIN_CMD:
-          term::force_ascii_fallback = sys::is_windows_cmd();
+          term::force_ascii_fallback = sys::is_non_wt_console();
           break;
       }
     }
@@ -230,7 +233,7 @@ namespace t8
       m_text->init_terminal_mode();
       
 #ifdef _WIN32
-      if (m_text->non_vt_console())
+      if (sys::is_non_wt_console())
         if constexpr (std::is_same_v<CharT, char32_t>)
           if (m_text->get_glyph_mapping_policy() == GlyphMappingPolicy::WIN_NON_VT_TRY_CP437)
             SetConsoleOutputCP(437);

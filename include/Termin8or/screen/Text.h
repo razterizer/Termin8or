@@ -77,8 +77,6 @@ namespace t8
   
   class Text
   {
-    ::term::TermMode m_term_mode;
-    
     GlyphMappingPolicy m_mapping_policy = GlyphMappingPolicy::ALWAYS_UNICODE;
     
 #ifdef _WIN32
@@ -117,12 +115,7 @@ namespace t8
     
     void init_terminal_mode()
     {
-      m_term_mode = ::term::init_terminal_mode(65001);
-    }
-    
-    bool non_vt_console() const
-    {
-      return m_term_mode.is_console && !m_term_mode.vt_enabled;
+      term::m_term_mode = ::term::init_terminal_mode(65001);
     }
     
     static std::string get_color_string(Color text_color, Color bg_color = Color16::Default)
@@ -165,19 +158,19 @@ namespace t8
     }
     
 #ifdef _WIN32
-    static int get_color_win_cmd(Color color)
+    static int get_color_win_non_wt_console(Color color)
     {
       auto color16 = to_nearest_color16(color);
       int win_idx = get_color16_value_win(color16);
       return win_idx;
     }
 
-    static WORD get_style_win_cmd(Color fg, Color bg)
+    static WORD get_style_win_non_wt_console(Color fg, Color bg)
     {
-      int fg_val = get_color_win_cmd(fg);
+      int fg_val = get_color_win_non_wt_console(fg);
       if (fg_val == -1)
         fg_val= 7; // light gray
-      int bg_val = get_color_win_cmd(bg);
+      int bg_val = get_color_win_non_wt_console(bg);
       if (bg_val == -1)
         bg_val = 0; // black
       return static_cast<WORD>(fg_val | (bg_val << 4));
@@ -185,20 +178,20 @@ namespace t8
 #endif
     
     // For classic cmd.exe.
-    static void set_color_win_cmd(Color text_color, Color bg_color = Color16::Default)
+    static void set_color_win_non_wt_console(Color text_color, Color bg_color = Color16::Default)
     {
 #ifdef _WIN32
-      SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), get_style_win_cmd(text_color, bg_color));
+      SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), get_style_win_non_wt_console(text_color, bg_color));
 #endif
     }
     
     void print(const std::string& text, Color text_color, Color bg_color = Color16::Default) const
     {
 #ifdef _WIN32
-      if (!::term::use_ansi_colors(m_term_mode))
+      if (!term::use_ansi_renderer())
       {
-        set_color_win_cmd(text_color, bg_color);
-        ::term::emit_text(m_term_mode, text);
+        set_color_win_non_wt_console(text_color, bg_color);
+        term::emit_text(text);
         return;
       }
 #endif
@@ -208,24 +201,24 @@ namespace t8
       output += get_color_string(text_color, bg_color);
       output += text;
       output += "\033[0m";
-      ::term::emit_text(m_term_mode, output);
+      term::emit_text(output);
     }
 
     
     void print_line(const std::string& text, Color text_color, Color bg_color = Color16::Default) const
     {
       print(text, text_color, bg_color);
-      ::term::emit_text(m_term_mode, "\n");
+      term::emit_text("\n");
     }
     
     void print_char(char c, Color text_color, Color bg_color = Color16::Default) const
     {
 #ifdef _WIN32
-      if (!::term::use_ansi_colors(m_term_mode))
+      if (!term::use_ansi_renderer())
       {
         // Legacy console: use WinAPI colors, then emit the byte.
-        set_color_win_cmd(text_color, bg_color);
-        ::term::emit_text(m_term_mode, std::string_view(&c, 1));
+        set_color_win_non_wt_console(text_color, bg_color);
+        term::emit_text(std::string_view(&c, 1));
         return;
       }
 #endif
@@ -236,7 +229,7 @@ namespace t8
       output += get_color_string(text_color, bg_color);
       output.push_back(c);
       output += "\033[0m";
-      ::term::emit_text(m_term_mode, output);
+      term::emit_text(output);
     }
     
     void print_char(char32_t c, Color text_color, Color bg_color = Color16::Default) const
@@ -244,10 +237,10 @@ namespace t8
       std::string glyph = utf8::encode_char32_utf8(normalize_cp(c));
       
 #ifdef _WIN32
-      if (!::term::use_ansi_colors(m_term_mode))
+      if (!term::use_ansi_renderer())
       {
-        set_color_win_cmd(text_color, bg_color);
-        ::term::emit_text(m_term_mode, glyph);
+        set_color_win_non_wt_console(text_color, bg_color);
+        term::emit_text(glyph);
         return;
       }
 #endif
@@ -257,7 +250,7 @@ namespace t8
       output += get_color_string(text_color, bg_color);
       output += glyph;
       output += "\033[0m";
-      ::term::emit_text(m_term_mode, output);
+      term::emit_text(output);
     }
     
     template<typename CharT>
@@ -270,7 +263,7 @@ namespace t8
                     "ERROR in Text::emit_sequential(): unsupported CharT!");
     
 #ifdef _WIN32
-      if (!::term::use_ansi_colors(m_term_mode))
+      if (!::term::use_ansi_renderer())
       {
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         SHORT currentRow = 0;
@@ -294,7 +287,7 @@ namespace t8
             
             CHAR_INFO ci {};
             ci.Char.AsciiChar = static_cast<unsigned char>(ch); // Safe for ASCII/CP437-ish bytes.
-            ci.Attributes = get_style_win_cmd(fg, bg);
+            ci.Attributes = get_style_win_non_wt_console(fg, bg);
             lineBuffer.push_back(ci);
           }
           flushA();
@@ -320,7 +313,7 @@ namespace t8
                 ci.Char.AsciiChar = static_cast<unsigned char>(fallback);
               else
                 ci.Char.AsciiChar = static_cast<unsigned char>('?');
-              ci.Attributes = get_style_win_cmd(fg, bg);
+              ci.Attributes = get_style_win_non_wt_console(fg, bg);
               lineBuffer.push_back(ci);
             }
             flushA();
@@ -341,7 +334,7 @@ namespace t8
               if (cp > 0xFFFF)
                 cp = U'?'; // Non-BMP Unicode characters are silently replaced with '?'.
               ci.Char.UnicodeChar = static_cast<wchar_t>(cp); // BMP assumed.
-              ci.Attributes = get_style_win_cmd(fg, bg);
+              ci.Attributes = get_style_win_non_wt_console(fg, bg);
               lineBuffer.push_back(ci);
             }
             flushW();
@@ -368,7 +361,7 @@ namespace t8
       }
       
       output += "\033[0m";
-      ::term::emit_text(m_term_mode, output);
+      term::emit_text(output);
     }
 
     
@@ -386,7 +379,7 @@ namespace t8
                     "ERROR in Text::emit_chunks(): unsupported CharT!");
     
 #ifdef _WIN32
-      if (!::term::use_ansi_colors(m_term_mode))
+      if (!::term::use_ansi_renderer())
       {
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         
@@ -419,7 +412,7 @@ namespace t8
               
               CHAR_INFO ci {};
               ci.Char.AsciiChar = static_cast<unsigned char>(ch);
-              ci.Attributes = get_style_win_cmd(fg, bg);
+              ci.Attributes = get_style_win_non_wt_console(fg, bg);
               buffer[i] = ci;
             }
             WriteConsoleOutputA(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
@@ -442,7 +435,7 @@ namespace t8
                   ci.Char.AsciiChar = static_cast<unsigned char>(fallback);
                 else
                   ci.Char.AsciiChar = static_cast<unsigned char>('?');
-                ci.Attributes = get_style_win_cmd(fg, bg);
+                ci.Attributes = get_style_win_non_wt_console(fg, bg);
                 buffer[i] = ci;
               }
               WriteConsoleOutputA(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
@@ -460,7 +453,7 @@ namespace t8
                 if (cp > 0xFFFF)
                   cp = U'?'; // Non-BMP Unicode characters are silently replaced with '?'.
                 ci.Char.UnicodeChar = static_cast<wchar_t>(cp); // BMP assumed.
-                ci.Attributes = get_style_win_cmd(fg, bg);
+                ci.Attributes = get_style_win_non_wt_console(fg, bg);
                 buffer[i] = ci;
               }
               WriteConsoleOutputW(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
@@ -491,20 +484,20 @@ namespace t8
       }
       
       output += "\033[0m";
-      ::term::emit_text(m_term_mode, output);
+      term::emit_text(output);
     }
 
     
     void print_reset() const
     {
 #ifdef _WIN32
-      if (!::term::use_ansi_colors(m_term_mode))
+      if (!term::use_ansi_renderer())
       {
-        set_color_win_cmd(Color16::White, Color16::Black);
+        set_color_win_non_wt_console(Color16::White, Color16::Black);
         return;
       }
 #endif
-      ::term::emit_text(m_term_mode, "\033[0m");
+      term::emit_text("\033[0m");
     }
   };
   
