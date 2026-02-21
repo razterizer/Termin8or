@@ -178,7 +178,7 @@ namespace t8
 #endif
     
     // For classic cmd.exe.
-    static void set_color_win_cmd(Color text_color, Color bg_color = Color16::Default)
+    static void set_color_win_non_wt_console(Color text_color, Color bg_color = Color16::Default)
     {
 #ifdef _WIN32
       SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), get_style_win_non_wt_console(text_color, bg_color));
@@ -190,7 +190,7 @@ namespace t8
 #ifdef _WIN32
       if (!term::use_ansi_renderer())
       {
-        set_color_win_cmd(text_color, bg_color);
+        set_color_win_non_wt_console(text_color, bg_color);
         term::emit_text(text);
         return;
       }
@@ -217,7 +217,7 @@ namespace t8
       if (!term::use_ansi_renderer())
       {
         // Legacy console: use WinAPI colors, then emit the byte.
-        set_color_win_cmd(text_color, bg_color);
+        set_color_win_non_wt_console(text_color, bg_color);
         term::emit_text(std::string_view(&c, 1));
         return;
       }
@@ -239,7 +239,7 @@ namespace t8
 #ifdef _WIN32
       if (!term::use_ansi_renderer())
       {
-        set_color_win_cmd(text_color, bg_color);
+        set_color_win_non_wt_console(text_color, bg_color);
         term::emit_text(glyph);
         return;
       }
@@ -493,7 +493,7 @@ namespace t8
 #ifdef _WIN32
       if (!term::use_ansi_renderer())
       {
-        set_color_win_cmd(Color16::White, Color16::Black);
+        set_color_win_non_wt_console(Color16::White, Color16::Black);
         return;
       }
 #endif
