@@ -165,7 +165,7 @@ namespace t8
       return win_idx;
     }
 
-    static WORD get_style_win_cmd(Color fg, Color bg)
+    static WORD get_style_win_non_wt_console(Color fg, Color bg)
     {
       int fg_val = get_color_win_non_wt_console(fg);
       if (fg_val == -1)
@@ -181,7 +181,7 @@ namespace t8
     static void set_color_win_cmd(Color text_color, Color bg_color = Color16::Default)
     {
 #ifdef _WIN32
-      SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), get_style_win_cmd(text_color, bg_color));
+      SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), get_style_win_non_wt_console(text_color, bg_color));
 #endif
     }
     
@@ -287,7 +287,7 @@ namespace t8
             
             CHAR_INFO ci {};
             ci.Char.AsciiChar = static_cast<unsigned char>(ch); // Safe for ASCII/CP437-ish bytes.
-            ci.Attributes = get_style_win_cmd(fg, bg);
+            ci.Attributes = get_style_win_non_wt_console(fg, bg);
             lineBuffer.push_back(ci);
           }
           flushA();
@@ -313,7 +313,7 @@ namespace t8
                 ci.Char.AsciiChar = static_cast<unsigned char>(fallback);
               else
                 ci.Char.AsciiChar = static_cast<unsigned char>('?');
-              ci.Attributes = get_style_win_cmd(fg, bg);
+              ci.Attributes = get_style_win_non_wt_console(fg, bg);
               lineBuffer.push_back(ci);
             }
             flushA();
@@ -334,7 +334,7 @@ namespace t8
               if (cp > 0xFFFF)
                 cp = U'?'; // Non-BMP Unicode characters are silently replaced with '?'.
               ci.Char.UnicodeChar = static_cast<wchar_t>(cp); // BMP assumed.
-              ci.Attributes = get_style_win_cmd(fg, bg);
+              ci.Attributes = get_style_win_non_wt_console(fg, bg);
               lineBuffer.push_back(ci);
             }
             flushW();
@@ -412,7 +412,7 @@ namespace t8
               
               CHAR_INFO ci {};
               ci.Char.AsciiChar = static_cast<unsigned char>(ch);
-              ci.Attributes = get_style_win_cmd(fg, bg);
+              ci.Attributes = get_style_win_non_wt_console(fg, bg);
               buffer[i] = ci;
             }
             WriteConsoleOutputA(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
@@ -435,7 +435,7 @@ namespace t8
                   ci.Char.AsciiChar = static_cast<unsigned char>(fallback);
                 else
                   ci.Char.AsciiChar = static_cast<unsigned char>('?');
-                ci.Attributes = get_style_win_cmd(fg, bg);
+                ci.Attributes = get_style_win_non_wt_console(fg, bg);
                 buffer[i] = ci;
               }
               WriteConsoleOutputA(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
@@ -453,7 +453,7 @@ namespace t8
                 if (cp > 0xFFFF)
                   cp = U'?'; // Non-BMP Unicode characters are silently replaced with '?'.
                 ci.Char.UnicodeChar = static_cast<wchar_t>(cp); // BMP assumed.
-                ci.Attributes = get_style_win_cmd(fg, bg);
+                ci.Attributes = get_style_win_non_wt_console(fg, bg);
                 buffer[i] = ci;
               }
               WriteConsoleOutputW(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
