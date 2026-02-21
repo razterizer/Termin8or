@@ -14,6 +14,9 @@
 #include <array>
 #include <map>
 #include <memory>
+#include <type_traits>
+#include <variant>
+
 
 namespace t8
 {
