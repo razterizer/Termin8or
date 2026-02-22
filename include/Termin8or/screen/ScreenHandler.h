@@ -382,7 +382,7 @@ namespace t8
           char32_t ch32 = utf8::none;
           while (utf8::decode_next_utf8_char32(str, ch32, byte_idx))
           {
-            write_buffer_cell(term::get_single_column_char32(ch32), Glyph::none, r, c, ci, fg_color, bg_color);
+            write_buffer_cell(term::get_renderable_char32(ch32), Glyph::none, r, c, ci, fg_color, bg_color);
             ci++;
           }
         }

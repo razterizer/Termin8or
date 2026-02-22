@@ -9,6 +9,7 @@
 #include <Core/Utf8.h>
 #include <Core/System.h>
 #include <Core/Term.h>
+#include <Core/MathUtils.h>
 
 
 namespace t8
@@ -66,21 +67,65 @@ namespace t8
 #endif
     }
     
-    inline char32_t get_single_column_char32(char32_t cp)
+    inline bool can_render_single_column_cp(char32_t cp)
     {
-      return is_single_column(cp) ? cp : none32;
+      // Reject invalid.
+      if (cp > 0x10FFFF)
+        return false;
+      if (0xD800 <= cp && cp <= 0xDFFF)
+        return false;
+      
+      if (m_term_mode.is_conhost_like)
+      {
+        // WinAPI buffer is BMP-only.
+        if (cp > 0xFFFF)
+          return false;
+          
+        // Conservative whitelist: box + block + ASCII.
+        const bool ascii = math::in_r_c<char32_t>(cp, 0x20, 0x7E);
+        const bool box   = math::in_r_c<char32_t>(cp, 0x2500, 0x257F);
+        const bool block = math::in_r_c<char32_t>(cp, 0x2580, 0x259F);
+          
+        if (ascii || box || block)
+          return true;
+        
+        switch (m_term_mode.win_font_class)
+        {
+          case ::term::WinFontClass::Unknown:
+            return ascii;
+          case ::term::WinFontClass::RasterTerminal:
+            assert(!m_term_mode.truetype_font);
+            return ascii;
+          case ::term::WinFontClass::LucidaConsole:
+            // #FIXME: Implement me.
+            return ascii || box || block;
+          case ::term::WinFontClass::ConsolasLike:
+            // #FIXME: Implement me.
+            return ascii || box || block;
+          case ::term::WinFontClass::UnknownTrueType:
+            //return ascii; // Perhaps too restrictive.
+            return ascii || box || block; // More practical.
+        }
+        return true;
+      }
+      return is_single_column(cp);
+    }
+    
+    inline char32_t get_renderable_char32(char32_t cp)
+    {
+      return can_render_single_column_cp(cp) ? cp : none32;
     }
     
     inline char32_t resolve_single_width_glyph(char32_t preferred, char fallback = none)
     {
-      if (is_single_column(preferred))
+      if (can_render_single_column_cp(preferred))
         return preferred;
           
       // Fallback (treat fallback as ASCII only).
       if (fallback != none)
       {
         unsigned char fb = static_cast<unsigned char>(fallback);
-        if (fb <= 0x7F && is_single_column(static_cast<char32_t>(fb)))
+        if (fb <= 0x7F && can_render_single_column_cp(static_cast<char32_t>(fb)))
           return static_cast<char32_t>(fb);
       }
       
