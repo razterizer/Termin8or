@@ -263,7 +263,7 @@ namespace t8
                     "ERROR in Text::emit_sequential(): unsupported CharT!");
     
 #ifdef _WIN32
-      if (!::term::use_ansi_renderer())
+      if (!term::use_ansi_renderer())
       {
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         SHORT currentRow = 0;
@@ -379,7 +379,7 @@ namespace t8
                     "ERROR in Text::emit_chunks(): unsupported CharT!");
     
 #ifdef _WIN32
-      if (!::term::use_ansi_renderer())
+      if (!term::use_ansi_renderer())
       {
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         
