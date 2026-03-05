@@ -70,15 +70,11 @@ namespace t8
       return static_cast<unsigned char>(' '); // Belt-and-suspenders.
     return static_cast<unsigned char>(b);
   }
-  
-  enum class GlyphMappingPolicy { ALWAYS_UNICODE, WIN_NON_VT_TRY_CP437 };
-  
+    
   // ////////////////////////////////////
   
   class Text
   {
-    GlyphMappingPolicy m_mapping_policy = GlyphMappingPolicy::ALWAYS_UNICODE;
-    
 #ifdef _WIN32
     template <auto WriteFn>
     static auto make_flush(HANDLE hConsole,
@@ -102,16 +98,6 @@ namespace t8
     
   public:
     Text() = default;
-    
-    void set_glyph_mapping_policy(GlyphMappingPolicy mapping_policy)
-    {
-      m_mapping_policy = mapping_policy;
-    }
-    
-    GlyphMappingPolicy get_glyph_mapping_policy() const
-    {
-      return m_mapping_policy;
-    }
     
     void init_terminal_mode()
     {
@@ -294,51 +280,24 @@ namespace t8
         }
         else if constexpr (std::is_same_v<CharT, char32_t>)
         {
-          if (m_mapping_policy == GlyphMappingPolicy::WIN_NON_VT_TRY_CP437)
+          for (const auto& [ch, fallback, fg, bg] : text)
           {
-            for (const auto& [ch, fallback, fg, bg] : text)
+            if (ch == U'\n')
             {
-              if (ch == U'\n')
-              {
-                flushA();
-                ++currentRow;
-                continue;
-              }
-              
-              CHAR_INFO ci{};
-              auto cp437 = utf8::lookup_cp437(ch);
-              if (cp437.has_value())
-                ci.Char.AsciiChar = static_cast<unsigned char>(cp437.value());
-              else if (fallback != Glyph::none)
-                ci.Char.AsciiChar = static_cast<unsigned char>(fallback);
-              else
-                ci.Char.AsciiChar = static_cast<unsigned char>('?');
-              ci.Attributes = get_style_win_non_wt_console(fg, bg);
-              lineBuffer.push_back(ci);
+              flushW();
+              ++currentRow;
+              continue;
             }
-            flushA();
+            
+            CHAR_INFO ci{};
+            char32_t cp = ch;
+            if (cp > 0xFFFF)
+              cp = U'?'; // Non-BMP Unicode characters are silently replaced with '?'.
+            ci.Char.UnicodeChar = static_cast<wchar_t>(cp); // BMP assumed.
+            ci.Attributes = get_style_win_non_wt_console(fg, bg);
+            lineBuffer.push_back(ci);
           }
-          else
-          {
-            for (const auto& [ch, fallback, fg, bg] : text)
-            {
-              if (ch == U'\n')
-              {
-                flushW();
-                ++currentRow;
-                continue;
-              }
-              
-              CHAR_INFO ci{};
-              char32_t cp = ch;
-              if (cp > 0xFFFF)
-                cp = U'?'; // Non-BMP Unicode characters are silently replaced with '?'.
-              ci.Char.UnicodeChar = static_cast<wchar_t>(cp); // BMP assumed.
-              ci.Attributes = get_style_win_non_wt_console(fg, bg);
-              lineBuffer.push_back(ci);
-            }
-            flushW();
-          }
+          flushW();
         }
         
         return;
@@ -419,45 +378,21 @@ namespace t8
           }
           else if constexpr (std::is_same_v<CharT, char32_t>)
           {
-            if (m_mapping_policy == GlyphMappingPolicy::WIN_NON_VT_TRY_CP437)
+            for (size_t i = 0; i < chunk.text.size(); ++i)
             {
-              for (size_t i = 0; i < chunk.text.size(); ++i)
-              {
-                const auto& [ch, fallback, fg, bg] = chunk.text[i];
-                
-                assert(ch != '\n');
-                
-                CHAR_INFO ci {};
-                auto cp437 = utf8::lookup_cp437(ch);
-                if (cp437.has_value())
-                  ci.Char.AsciiChar = static_cast<unsigned char>(cp437.value());
-                else if (fallback != Glyph::none)
-                  ci.Char.AsciiChar = static_cast<unsigned char>(fallback);
-                else
-                  ci.Char.AsciiChar = static_cast<unsigned char>('?');
-                ci.Attributes = get_style_win_non_wt_console(fg, bg);
-                buffer[i] = ci;
-              }
-              WriteConsoleOutputA(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
+              const auto& [ch, fallback, fg, bg] = chunk.text[i];
+              
+              assert(ch != '\n');
+              
+              CHAR_INFO ci {};
+              char32_t cp = ch;
+              if (cp > 0xFFFF)
+                cp = U'?'; // Non-BMP Unicode characters are silently replaced with '?'.
+              ci.Char.UnicodeChar = static_cast<wchar_t>(cp); // BMP assumed.
+              ci.Attributes = get_style_win_non_wt_console(fg, bg);
+              buffer[i] = ci;
             }
-            else
-            {
-              for (size_t i = 0; i < chunk.text.size(); ++i)
-              {
-                const auto& [ch, fallback, fg, bg] = chunk.text[i];
-                
-                assert(ch != '\n');
-                
-                CHAR_INFO ci {};
-                char32_t cp = ch;
-                if (cp > 0xFFFF)
-                  cp = U'?'; // Non-BMP Unicode characters are silently replaced with '?'.
-                ci.Char.UnicodeChar = static_cast<wchar_t>(cp); // BMP assumed.
-                ci.Attributes = get_style_win_non_wt_console(fg, bg);
-                buffer[i] = ci;
-              }
-              WriteConsoleOutputW(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
-            }
+            WriteConsoleOutputW(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
           }
         }
         return;
