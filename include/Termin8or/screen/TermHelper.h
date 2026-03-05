@@ -590,7 +590,7 @@ namespace t8
 #endif
     }
     
-    inline bool can_render_single_column_cp(char32_t cp)
+    inline bool can_render_single_column_cp(char32_t cp, bool allow_emojis)
     {
       // Reject invalid.
       if (cp > 0x10FFFF)
@@ -605,12 +605,9 @@ namespace t8
           return false;
           
         // Conservative whitelist: box + block + ASCII.
-        const bool ascii = math::in_r_c<char32_t>(cp, 0x20, 0x7E);
-        const bool box   = math::in_r_c<char32_t>(cp, 0x2500, 0x257F);
-        const bool block = math::in_r_c<char32_t>(cp, 0x2580, 0x259F);
-          
-        if (ascii || box || block)
-          return true;
+        const bool ascii = 0x20 <= cp && cp <= 0x7E;
+        const bool box   = 0x2500 <= cp && cp <= 0x257F;
+        const bool block = 0x2580 <= cp && cp <= 0x259F;
         
         switch (m_term_mode.win_font_class)
         {
@@ -620,35 +617,49 @@ namespace t8
             assert(!m_term_mode.truetype_font);
             return ascii;
           case ::term::WinFontClass::LucidaConsole:
-            // #FIXME: Implement me.
-            return ascii || box || block;
-          case ::term::WinFontClass::ConsolasLike:
-            // #FIXME: Implement me.
-            return ascii || box || block;
+            return stlutils::in_ranges<char32_t>(cp, impl::wincmd_singlecol_glyph_lucida_console);
+          case ::term::WinFontClass::Consolas:
+            return stlutils::in_ranges<char32_t>(cp, impl::wincmd_singlecol_glyph_consolas);
+          case ::term::WinFontClass::Cascadia:
+            return stlutils::in_ranges<char32_t>(cp, impl::wincmd_singlecol_glyph_cascadia_mono);
           case ::term::WinFontClass::UnknownTrueType:
             //return ascii; // Perhaps too restrictive.
             return ascii || box || block; // More practical.
         }
         return true;
       }
+      
+      if (!allow_emojis && stlutils::in_ranges<char32_t>(cp, impl::emojis))
+        return false;
+      
+#ifdef __APPLE__
+      // mac_not_singlecol : Where wcwidth == 1 is incorrect.
+      // mac_no_singlecol_glyph : Missing single width/cell/column glyphs.
+      if (!is_single_column(cp))
+        return false;
+      if (stlutils::in_ranges<char32_t>(cp, impl::mac_not_singlecol))
+        return false;
+      if (stlutils::in_ranges<char32_t>(cp, impl::mac_no_singlecol_glyph))
+        return false;
+#endif
       return is_single_column(cp);
     }
     
     inline char32_t get_renderable_char32(char32_t cp)
     {
-      return can_render_single_column_cp(cp) ? cp : none32;
+      return can_render_single_column_cp(cp, false) ? cp : none32;
     }
     
     inline char32_t resolve_single_width_glyph(char32_t preferred, char fallback = none)
     {
-      if (can_render_single_column_cp(preferred))
+      if (can_render_single_column_cp(preferred, false))
         return preferred;
           
       // Fallback (treat fallback as ASCII only).
       if (fallback != none)
       {
         unsigned char fb = static_cast<unsigned char>(fallback);
-        if (fb <= 0x7F && can_render_single_column_cp(static_cast<char32_t>(fb)))
+        if (fb <= 0x7F && is_single_column(static_cast<char32_t>(fb)))
           return static_cast<char32_t>(fb);
       }
       
