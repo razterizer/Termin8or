@@ -78,7 +78,9 @@ namespace t8
     std::array<bool, NC*NR> dirty_flag_buffer;
     Color prev_clear_bg_color = Color16::Default;
     
-#ifdef _WIN32
+#if defined(_WIN32)
+    static constexpr bool needs_fallback = std::is_same_v<CharT, char32_t>;
+#elif defined(__APPLE__)
     static constexpr bool needs_fallback = std::is_same_v<CharT, char32_t>;
 #else
     static constexpr bool needs_fallback = false;
