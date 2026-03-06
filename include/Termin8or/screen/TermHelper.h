@@ -698,7 +698,6 @@ namespace t8
     {
       char32_t cp = resolve_single_width_glyph(preferred, fallback);
       
-      // Use 437 for cmd.exe for now as we only have a mapping from UTF-8 to CP437 atm.
       return utf8::encode_char32_utf8(cp);
     }
     
