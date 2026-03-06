@@ -46,10 +46,9 @@ namespace t8
 {
   
   template<typename CharT>
-  struct OutputCell
+  struct BufferCell
   {
     CharT ch;
-    char fallback;
     Color fg;
     Color bg;
   };
@@ -240,7 +239,7 @@ namespace t8
     }
     
     template<typename CharT>
-    using OutputStringSeq = std::vector<OutputCell<CharT>>;
+    using OutputStringSeq = std::vector<BufferCell<CharT>>;
     
     template<typename CharT>
     void emit_sequential(const OutputStringSeq<CharT>& text)
@@ -262,7 +261,7 @@ namespace t8
         
         if constexpr (std::is_same_v<CharT, char>)
         {
-          for (const auto& [ch, fallback, fg, bg] : text)
+          for (const auto& [ch, fg, bg] : text)
           {
             if (ch == '\n')
             {
@@ -280,7 +279,7 @@ namespace t8
         }
         else if constexpr (std::is_same_v<CharT, char32_t>)
         {
-          for (const auto& [ch, fallback, fg, bg] : text)
+          for (const auto& [ch, fg, bg] : text)
           {
             if (ch == U'\n')
             {
@@ -308,7 +307,7 @@ namespace t8
       std::string output;
       output.reserve(text.size() * 8); // Rough estimate.
       
-      for (const auto& [ch, fallback, fg_color, bg_color] : text)
+      for (const auto& [ch, fg_color, bg_color] : text)
       {
         const bool is_nl = (ch == static_cast<CharT>('\n'));
         output += get_color_string(fg_color, is_nl ? Color16::Default : bg_color);
@@ -365,7 +364,7 @@ namespace t8
           {
             for (size_t i = 0; i < chunk.text.size(); ++i)
             {
-              const auto& [ch, fallback, fg, bg] = chunk.text[i];
+              const auto& [ch, fg, bg] = chunk.text[i];
               
               assert(ch != '\n');
               
@@ -380,7 +379,7 @@ namespace t8
           {
             for (size_t i = 0; i < chunk.text.size(); ++i)
             {
-              const auto& [ch, fallback, fg, bg] = chunk.text[i];
+              const auto& [ch, fg, bg] = chunk.text[i];
               
               assert(ch != '\n');
               
@@ -407,7 +406,7 @@ namespace t8
       {
         output += get_gotorc_str(chunk.pos.r, chunk.pos.c);
         
-        for (const auto& [ch, fallback, fg, bg] : chunk.text)
+        for (const auto& [ch, fg, bg] : chunk.text)
         {
           assert(ch != '\n');
           output += get_color_string(fg, bg);

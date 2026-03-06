@@ -34,14 +34,6 @@ namespace t8x::screen_scaling
 namespace t8
 {
 
-  template<typename CharT>
-  struct BufferCell
-  {
-    CharT ch;
-    Color fg;
-    Color bg;
-  };
-
   struct OrderedText
   {
     std::string str;
@@ -77,16 +69,6 @@ namespace t8
     std::array<BufferCell<CharT>, NC*NR> screen_buffer, prev_screen_buffer;
     std::array<bool, NC*NR> dirty_flag_buffer;
     Color prev_clear_bg_color = Color16::Default;
-    
-#if defined(_WIN32)
-    static constexpr bool needs_fallback = std::is_same_v<CharT, char32_t>;
-#elif defined(__APPLE__)
-    static constexpr bool needs_fallback = std::is_same_v<CharT, char32_t>;
-#else
-    static constexpr bool needs_fallback = false;
-#endif
-    std::conditional_t<needs_fallback, std::array<char, NR*NC>, std::monostate>
-      fallbacks, prev_fallbacks;
     
     float dirty_fraction_threshold = 0.5f;
     
@@ -143,7 +125,7 @@ namespace t8
     
     std::vector<OrderedText> ordered_texts;
     
-    void write_buffer_cell(CharT ch, char fallback, int r, int c, int ci, Color fg_color, Color bg_color)
+    void write_buffer_cell(CharT ch, int r, int c, int ci, Color fg_color, Color bg_color)
     {
       const int c_tot = c + ci;
       if (c_tot < 0 || c_tot >= NC)
@@ -156,8 +138,6 @@ namespace t8
       {
         scr_ch = ch;
         scr_fg = fg_color;
-        if constexpr (needs_fallback)
-          fallbacks[idx] = fallback;
       };
       
       if (scr_ch == static_cast<CharT>(' ')
@@ -187,8 +167,6 @@ namespace t8
         cell.fg = Color16::Default;
         cell.bg = Color16::Transparent;
       }
-      if constexpr (needs_fallback)
-        fallbacks.fill(Glyph::none);
       for (auto& df : dirty_flag_buffer)
         df = false;
     }
@@ -289,7 +267,7 @@ namespace t8
       {
         if (r >= 0 && r < NR)
           write_buffer_cell(normalize_cp(term::resolve_single_width_glyph<CharT>(glyph.preferred, glyph.fallback)),
-                            static_cast<char>(normalize_byte(glyph.fallback)), r, c, 0, fg_color, bg_color);
+                            r, c, 0, fg_color, bg_color);
       }
     }
     
@@ -351,7 +329,7 @@ namespace t8
         {
           int n = static_cast<int>(str.size());
           for (int ci = 0; ci < n; ++ci)
-            write_buffer_cell(static_cast<char>(normalize_byte(str[ci])), Glyph::none, r, c, ci, fg_color, bg_color);
+            write_buffer_cell(static_cast<char>(normalize_byte(str[ci])), r, c, ci, fg_color, bg_color);
         }
       }
       else if constexpr (std::is_same_v<CharT, char32_t>)
@@ -363,7 +341,7 @@ namespace t8
           char32_t ch32 = utf8::none;
           while (utf8::decode_next_utf8_char32(str, ch32, byte_idx))
           {
-            write_buffer_cell(term::get_renderable_char32(ch32), Glyph::none, r, c, ci, fg_color, bg_color);
+            write_buffer_cell(term::get_renderable_char32(ch32), r, c, ci, fg_color, bg_color);
             ci++;
           }
         }
@@ -455,19 +433,10 @@ namespace t8
           auto bg_curr = resolve_bg_color(bg0, clear_bg_color);
           auto bg_prev = resolve_bg_color(bg1, prev_clear_bg_color);
           
-          char fallback_curr = 0;
-          char fallback_prev = 0;
-          if constexpr (needs_fallback)
-          {
-            fallback_curr = fallbacks[idx];
-            fallback_prev = prev_fallbacks[idx];
-          }
-          
           dirty_flag_buffer[idx] =
                ch_curr != ch_prev
             || fg_curr != fg_prev
-            || bg_curr != bg_prev
-            || fallback_curr != fallback_prev;
+            || bg_curr != bg_prev;
         }
       }
     }
@@ -475,8 +444,6 @@ namespace t8
     void update_prev_buffers(Color clear_bg_color)
     {
       prev_screen_buffer = screen_buffer;
-      if constexpr (needs_fallback)
-        prev_fallbacks = fallbacks;
       prev_clear_bg_color = clear_bg_color;
     }
     
@@ -576,12 +543,9 @@ namespace t8
           auto bg_col = cell.bg;
           if (bg_col == Color16::Transparent || bg_col == Color16::Transparent2)
             bg_col = clear_bg_color;
-          char fb = Glyph::none;
-          if constexpr (needs_fallback)
-            fb = fallbacks[idx];
-          colored_str[i++] = { cell.ch, fb, cell.fg, bg_col };
+          colored_str[i++] = { cell.ch, cell.fg, bg_col };
         }
-        colored_str[i++] = { static_cast<CharT>('\n'), Glyph::none, Color16::Default, Color16::Default };
+        colored_str[i++] = { static_cast<CharT>('\n'), Color16::Default, Color16::Default };
       }
       m_text->emit_sequential(colored_str);
     }
@@ -605,10 +569,7 @@ namespace t8
             auto bg_col = cell.bg;
             if (bg_col == Color16::Transparent || bg_col == Color16::Transparent2)
               bg_col = clear_bg_color;
-            char fb = Glyph::none;
-            if constexpr (needs_fallback)
-              fb = fallbacks[idx];
-            chunk.text.emplace_back(cell.ch, fb, cell.fg, bg_col);
+            chunk.text.emplace_back(cell.ch, cell.fg, bg_col);
           }
           else if (!chunk.text.empty())
           {
@@ -755,8 +716,6 @@ namespace t8
     void overwrite_data(const std::array<BufferCell<CharT>, NR*NC>& new_screen_buffer)
     {
       screen_buffer = new_screen_buffer;
-      if constexpr (needs_fallback)
-        fallbacks.fill(Glyph::none);
     }
     
     template<int NRo, int NCo, int NRi, int NCi, typename char_t>
