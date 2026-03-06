@@ -573,7 +573,7 @@ namespace t8
     }
     
     // We assume single column and rely on encoder fallback.
-    inline bool is_single_column(char32_t cp)
+    inline bool may_be_single_column(char32_t cp)
     {
       if (!term::use_ansi_renderer())
       {
@@ -641,14 +641,14 @@ namespace t8
 #ifdef __APPLE__
       // mac_not_singlecol : Where wcwidth == 1 is incorrect.
       // mac_no_singlecol_glyph : Missing single width/cell/column glyphs.
-      if (!is_single_column(cp))
+      if (!may_be_single_column(cp))
         return false;
       if (stlutils::in_ranges<char32_t>(cp, impl::mac_not_singlecol))
         return false;
       if (stlutils::in_ranges<char32_t>(cp, impl::mac_no_singlecol_glyph))
         return false;
 #endif
-      return is_single_column(cp);
+      return may_be_single_column(cp);
     }
     
     inline char32_t get_renderable_char32(char32_t cp)
