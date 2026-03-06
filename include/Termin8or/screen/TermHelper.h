@@ -556,6 +556,12 @@ namespace t8
       }};
     }
     
+    template<typename CharT>
+    inline constexpr bool is_printable_ascii(CharT cp) noexcept
+    {
+      return math::in_r_c<CharT>(cp, 0x20, 0x7E);
+    }
+    
     inline bool use_ansi_renderer()
     {
       return ::term::use_ansi_renderer(m_term_mode);
