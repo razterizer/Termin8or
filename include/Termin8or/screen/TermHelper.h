@@ -662,12 +662,8 @@ namespace t8
         return preferred;
           
       // Fallback (treat fallback as ASCII only).
-      if (fallback != none)
-      {
-        unsigned char fb = static_cast<unsigned char>(fallback);
-        if (fb <= 0x7F && is_single_column(static_cast<char32_t>(fb)))
-          return static_cast<char32_t>(fb);
-      }
+      if (fallback != none && is_printable_ascii(fallback))
+        return static_cast<char32_t>(fallback);
       
       return none32;
     }
@@ -680,7 +676,7 @@ namespace t8
       {
         if (preferred <= 0x7F)
           return static_cast<char>(preferred);
-        if (fallback != none && static_cast<unsigned char>(fallback) <= 0x7F)
+        if (fallback != none && is_printable_ascii(fallback))
           return fallback;
         return '?';
       };
@@ -715,7 +711,7 @@ namespace t8
       {
         if (preferred <= 0x7F)
           return std::string(1, static_cast<char>(preferred));
-        if (fallback != none && static_cast<unsigned char>(fallback) <= 0x7F)
+        if (fallback != none && is_printable_ascii(fallback))
           return std::string(1, fallback);
         return "?";
       };
