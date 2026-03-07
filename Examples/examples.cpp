@@ -48,7 +48,7 @@ int main(int argc, char** argv)
       draw_sprites = false;
     else if (std::strcmp(argv[i], "--force_ascii_fallback") == 0)
       ascii_fallback_policy = t8::AsciiFallbackPolicy::FORCE_ASCII;
-    else if (std::strcmp(argv[i], "--force_ascii_fallback_on_win_cmd"))
+    else if (std::strcmp(argv[i], "--force_ascii_fallback_on_win_cmd") == 0)
       ascii_fallback_policy = t8::AsciiFallbackPolicy::FORCE_ASCII_ONLY_ON_WIN_CMD;
   }
   

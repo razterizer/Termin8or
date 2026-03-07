@@ -46,10 +46,9 @@ namespace t8
 {
   
   template<typename CharT>
-  struct OutputCell
+  struct BufferCell
   {
     CharT ch;
-    char fallback;
     Color fg;
     Color bg;
   };
@@ -70,15 +69,11 @@ namespace t8
       return static_cast<unsigned char>(' '); // Belt-and-suspenders.
     return static_cast<unsigned char>(b);
   }
-  
-  enum class GlyphMappingPolicy { ALWAYS_UNICODE, WIN_NON_VT_TRY_CP437 };
-  
+    
   // ////////////////////////////////////
   
   class Text
   {
-    GlyphMappingPolicy m_mapping_policy = GlyphMappingPolicy::ALWAYS_UNICODE;
-    
 #ifdef _WIN32
     template <auto WriteFn>
     static auto make_flush(HANDLE hConsole,
@@ -102,16 +97,6 @@ namespace t8
     
   public:
     Text() = default;
-    
-    void set_glyph_mapping_policy(GlyphMappingPolicy mapping_policy)
-    {
-      m_mapping_policy = mapping_policy;
-    }
-    
-    GlyphMappingPolicy get_glyph_mapping_policy() const
-    {
-      return m_mapping_policy;
-    }
     
     void init_terminal_mode()
     {
@@ -254,7 +239,7 @@ namespace t8
     }
     
     template<typename CharT>
-    using OutputStringSeq = std::vector<OutputCell<CharT>>;
+    using OutputStringSeq = std::vector<BufferCell<CharT>>;
     
     template<typename CharT>
     void emit_sequential(const OutputStringSeq<CharT>& text)
@@ -263,7 +248,7 @@ namespace t8
                     "ERROR in Text::emit_sequential(): unsupported CharT!");
     
 #ifdef _WIN32
-      if (!::term::use_ansi_renderer())
+      if (!term::use_ansi_renderer())
       {
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         SHORT currentRow = 0;
@@ -276,7 +261,7 @@ namespace t8
         
         if constexpr (std::is_same_v<CharT, char>)
         {
-          for (const auto& [ch, fallback, fg, bg] : text)
+          for (const auto& [ch, fg, bg] : text)
           {
             if (ch == '\n')
             {
@@ -294,51 +279,24 @@ namespace t8
         }
         else if constexpr (std::is_same_v<CharT, char32_t>)
         {
-          if (m_mapping_policy == GlyphMappingPolicy::WIN_NON_VT_TRY_CP437)
+          for (const auto& [ch, fg, bg] : text)
           {
-            for (const auto& [ch, fallback, fg, bg] : text)
+            if (ch == U'\n')
             {
-              if (ch == U'\n')
-              {
-                flushA();
-                ++currentRow;
-                continue;
-              }
-              
-              CHAR_INFO ci{};
-              auto cp437 = utf8::lookup_cp437(ch);
-              if (cp437.has_value())
-                ci.Char.AsciiChar = static_cast<unsigned char>(cp437.value());
-              else if (fallback != Glyph::none)
-                ci.Char.AsciiChar = static_cast<unsigned char>(fallback);
-              else
-                ci.Char.AsciiChar = static_cast<unsigned char>('?');
-              ci.Attributes = get_style_win_non_wt_console(fg, bg);
-              lineBuffer.push_back(ci);
+              flushW();
+              ++currentRow;
+              continue;
             }
-            flushA();
+            
+            CHAR_INFO ci{};
+            char32_t cp = ch;
+            if (cp > 0xFFFF)
+              cp = U'?'; // Non-BMP Unicode characters are silently replaced with '?'.
+            ci.Char.UnicodeChar = static_cast<wchar_t>(cp); // BMP assumed.
+            ci.Attributes = get_style_win_non_wt_console(fg, bg);
+            lineBuffer.push_back(ci);
           }
-          else
-          {
-            for (const auto& [ch, fallback, fg, bg] : text)
-            {
-              if (ch == U'\n')
-              {
-                flushW();
-                ++currentRow;
-                continue;
-              }
-              
-              CHAR_INFO ci{};
-              char32_t cp = ch;
-              if (cp > 0xFFFF)
-                cp = U'?'; // Non-BMP Unicode characters are silently replaced with '?'.
-              ci.Char.UnicodeChar = static_cast<wchar_t>(cp); // BMP assumed.
-              ci.Attributes = get_style_win_non_wt_console(fg, bg);
-              lineBuffer.push_back(ci);
-            }
-            flushW();
-          }
+          flushW();
         }
         
         return;
@@ -349,7 +307,7 @@ namespace t8
       std::string output;
       output.reserve(text.size() * 8); // Rough estimate.
       
-      for (const auto& [ch, fallback, fg_color, bg_color] : text)
+      for (const auto& [ch, fg_color, bg_color] : text)
       {
         const bool is_nl = (ch == static_cast<CharT>('\n'));
         output += get_color_string(fg_color, is_nl ? Color16::Default : bg_color);
@@ -379,7 +337,7 @@ namespace t8
                     "ERROR in Text::emit_chunks(): unsupported CharT!");
     
 #ifdef _WIN32
-      if (!::term::use_ansi_renderer())
+      if (!term::use_ansi_renderer())
       {
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         
@@ -406,7 +364,7 @@ namespace t8
           {
             for (size_t i = 0; i < chunk.text.size(); ++i)
             {
-              const auto& [ch, fallback, fg, bg] = chunk.text[i];
+              const auto& [ch, fg, bg] = chunk.text[i];
               
               assert(ch != '\n');
               
@@ -419,45 +377,21 @@ namespace t8
           }
           else if constexpr (std::is_same_v<CharT, char32_t>)
           {
-            if (m_mapping_policy == GlyphMappingPolicy::WIN_NON_VT_TRY_CP437)
+            for (size_t i = 0; i < chunk.text.size(); ++i)
             {
-              for (size_t i = 0; i < chunk.text.size(); ++i)
-              {
-                const auto& [ch, fallback, fg, bg] = chunk.text[i];
-                
-                assert(ch != '\n');
-                
-                CHAR_INFO ci {};
-                auto cp437 = utf8::lookup_cp437(ch);
-                if (cp437.has_value())
-                  ci.Char.AsciiChar = static_cast<unsigned char>(cp437.value());
-                else if (fallback != Glyph::none)
-                  ci.Char.AsciiChar = static_cast<unsigned char>(fallback);
-                else
-                  ci.Char.AsciiChar = static_cast<unsigned char>('?');
-                ci.Attributes = get_style_win_non_wt_console(fg, bg);
-                buffer[i] = ci;
-              }
-              WriteConsoleOutputA(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
+              const auto& [ch, fg, bg] = chunk.text[i];
+              
+              assert(ch != '\n');
+              
+              CHAR_INFO ci {};
+              char32_t cp = ch;
+              if (cp > 0xFFFF)
+                cp = U'?'; // Non-BMP Unicode characters are silently replaced with '?'.
+              ci.Char.UnicodeChar = static_cast<wchar_t>(cp); // BMP assumed.
+              ci.Attributes = get_style_win_non_wt_console(fg, bg);
+              buffer[i] = ci;
             }
-            else
-            {
-              for (size_t i = 0; i < chunk.text.size(); ++i)
-              {
-                const auto& [ch, fallback, fg, bg] = chunk.text[i];
-                
-                assert(ch != '\n');
-                
-                CHAR_INFO ci {};
-                char32_t cp = ch;
-                if (cp > 0xFFFF)
-                  cp = U'?'; // Non-BMP Unicode characters are silently replaced with '?'.
-                ci.Char.UnicodeChar = static_cast<wchar_t>(cp); // BMP assumed.
-                ci.Attributes = get_style_win_non_wt_console(fg, bg);
-                buffer[i] = ci;
-              }
-              WriteConsoleOutputW(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
-            }
+            WriteConsoleOutputW(hConsole, buffer.data(), bufferSize, bufferCoord, &writeRegion);
           }
         }
         return;
@@ -472,7 +406,7 @@ namespace t8
       {
         output += get_gotorc_str(chunk.pos.r, chunk.pos.c);
         
-        for (const auto& [ch, fallback, fg, bg] : chunk.text)
+        for (const auto& [ch, fg, bg] : chunk.text)
         {
           assert(ch != '\n');
           output += get_color_string(fg, bg);
