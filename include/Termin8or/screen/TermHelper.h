@@ -37,7 +37,7 @@ namespace t8
     
     struct RenderCacheEntry
     {
-      char32_t cp = 0xFFFFFFFFu;
+      char32_t cp = none32;
       bool renderable = false;
     };
     
