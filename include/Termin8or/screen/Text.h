@@ -114,7 +114,7 @@ namespace t8
     
     void print(const std::string& text, Color text_color, Color bg_color = Color16::Default) const
     {
-      if (sys::is_windows_cmd())
+      if (sys::is_non_wt_console())
       {
         set_color_win_cmd(text_color, bg_color);
         std::cout << text;
@@ -136,7 +136,7 @@ namespace t8
     
     void print_char(char c, Color text_color, Color bg_color = Color16::Default) const
     {
-      if (sys::is_windows_cmd())
+      if (sys::is_non_wt_console())
       {
         set_color_win_cmd(text_color, bg_color);
         std::cout << c;
@@ -153,7 +153,7 @@ namespace t8
     
     void print_complex_sequential(const ComplexString& text)
     {
-      if (sys::is_windows_cmd())
+      if (sys::is_non_wt_console())
       {
 #ifdef _WIN32
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -211,7 +211,7 @@ namespace t8
     
     void print_complex_chunks(const std::vector<ComplexStringChunk>& chunk_vec)
     {
-      if (sys::is_windows_cmd())
+      if (sys::is_non_wt_console())
       {
 #ifdef _WIN32
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -264,7 +264,7 @@ namespace t8
     
     void print_reset() const
     {
-      if (sys::is_windows_cmd())
+      if (sys::is_non_wt_console())
         set_color_win_cmd(Color16::White, Color16::Black);
       else
       {

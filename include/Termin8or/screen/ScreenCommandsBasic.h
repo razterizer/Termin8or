@@ -26,7 +26,7 @@ namespace t8
   // Clear screen and send cursor to home position.
   void clear_screen()
   {
-    if (sys::is_windows_cmd())
+    if (sys::is_non_wt_console())
     {
 #ifdef _WIN32
       // Too slow and not necessary.
@@ -47,7 +47,7 @@ namespace t8
   // Send cursor to home position.
   void return_cursor()
   {
-    if (sys::is_windows_cmd())
+    if (sys::is_non_wt_console())
     {
 #ifdef _WIN32
       HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -65,13 +65,13 @@ namespace t8
   // Clear screen and send cursor to home position.
   void restore_cursor()
   {
-    if (!sys::is_windows_cmd())
+    if (!sys::is_non_wt_console())
       printf("\x1b[2J"); // #FIXME: Change to "\x1B[H".
   }
   
   void hide_cursor()
   {
-    if (sys::is_windows_cmd())
+    if (sys::is_non_wt_console())
     {
 #ifdef _WIN32
       HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -88,7 +88,7 @@ namespace t8
   
   void show_cursor()
   {
-    if (sys::is_windows_cmd())
+    if (sys::is_non_wt_console())
     {
 #ifdef _WIN32
       HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -105,7 +105,7 @@ namespace t8
   
   void gotorc(int r, int c)
   {
-    if (sys::is_windows_cmd())
+    if (sys::is_non_wt_console())
     {
 #ifdef _WIN32
       // Windows uses 0-indexed rows and cols.
@@ -126,7 +126,7 @@ namespace t8
   
   std::string get_gotorc_str(int r, int c)
   {
-    if (sys::is_windows_cmd())
+    if (sys::is_non_wt_console())
     {
 #ifdef _WIN32
       // Windows doesn't use ANSI escape codes for cursor movement.
