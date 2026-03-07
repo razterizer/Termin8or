@@ -35,6 +35,12 @@ namespace t8
       }();
     }
     
+    struct RenderCacheEntry
+    {
+      char32_t cp = 0xFFFFFFFFu;
+      bool renderable = false;
+    };
+    
     namespace impl
     {
       // Where wcwidth == 1 is incorrect.
@@ -579,7 +585,12 @@ namespace t8
         { 0x2C62, 0x2C62 }, // Latin Extended-C
         { 0xFB01, 0xFB02 }, // Alphabetic Presentation Forms
       }};
+      
+      inline std::array<RenderCacheEntry, 512> render_cache {};
+      inline constexpr size_t mask = render_cache.size() - 1;
     }
+
+    // /////////////////////////////////////////////////////////////
     
     template<typename CharT>
     inline constexpr bool is_printable_ascii(CharT cp) noexcept
@@ -676,14 +687,34 @@ namespace t8
       return may_be_single_column(cp);
     }
     
+    inline bool can_render_single_column_cp_cached(char32_t cp)
+    {
+      char32_t h = cp;
+      h ^= h >> 8;
+      h ^= h >> 16;
+      
+      size_t idx = static_cast<size_t>(h) & impl::mask;
+      auto& entry = impl::render_cache[idx];
+      
+      if (entry.cp == cp)
+        return entry.renderable;
+      
+      bool result = can_render_single_column_cp(cp, false);
+      
+      entry.cp = cp;
+      entry.renderable = result;
+      
+      return result;
+    }
+    
     inline char32_t get_renderable_char32(char32_t cp)
     {
-      return can_render_single_column_cp(cp, false) ? cp : none32;
+      return can_render_single_column_cp_cached(cp) ? cp : none32;
     }
     
     inline char32_t resolve_single_width_glyph(char32_t preferred, char fallback = none)
     {
-      if (can_render_single_column_cp(preferred, false))
+      if (can_render_single_column_cp_cached(preferred))
         return preferred;
           
       // Fallback (treat fallback as ASCII only).
