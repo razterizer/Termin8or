@@ -412,7 +412,7 @@ namespace t8
         //{ 0xFFFD, 0xFFFD }, // Specials (0xFFFD : questionmark-box)
       }};
       // Correct and printable single width/cell/column glyphs.
-      inline const std::vector<stlutils::Range<char32_t>> wincmd_singlecol_glyph_cascadia_mono =
+      inline const std::array<stlutils::Range<char32_t>, 164> wincmd_singlecol_glyph_cascadia_mono =
       {{
         { 0x20, 0x7E }, // Basic Latin
         { 0xA0, 0xFF }, // Latin-1 Supplement
@@ -552,7 +552,32 @@ namespace t8
         { 0x222B, 0x222B }, // Mathematical Operators
         { 0x2248, 0x2248 }, // Mathematical Operators
         { 0x2260, 0x2265 }, // Mathematical Operators
-        // ... to be continued ...
+        { 0x2302, 0x2302 }, // Miscellaneous Technical
+        { 0x2310, 0x2310 }, // Miscellaneous Technical
+        { 0x2320, 0x2321 }, // Miscellaneous Technical
+        { 0x23AF, 0x23AF }, // Miscellaneous Technical
+        { 0x23CE, 0x23CE }, // Miscellaneous Technical
+        { 0x2400, 0x2426 }, // Control Pictures
+        { 0x2500, 0x257F }, // Box Drawing
+        { 0x2580, 0x259F }, // Block Elements
+        { 0x25A0, 0x25FF }, // Geometric Shapes
+        { 0x2619, 0x2619 }, // Miscellaneous Symbols
+        { 0x263A, 0x263C }, // Miscellaneous Symbols
+        { 0x2640, 0x2640 }, // Miscellaneous Symbols
+        { 0x2642, 0x2642 }, // Miscellaneous Symbols
+        { 0x2660, 0x2660 }, // Miscellaneous Symbols
+        { 0x2663, 0x2663 }, // Miscellaneous Symbols
+        { 0x2665, 0x2666 }, // Miscellaneous Symbols
+        { 0x266A, 0x266B }, // Miscellaneous Symbols
+        { 0x2713, 0x2713 }, // Dingbats
+        { 0x2767, 0x2767 }, // Dingbats
+        { 0x276C, 0x2771 }, // Dingbats
+        { 0x2800, 0x28FF }, // Braille Patterns
+        { 0x2B12, 0x2B2F }, // Miscellaneous Symbols and Arrows
+        { 0x2BC5, 0x2BC8 }, // Miscellaneous Symbols and Arrows
+        { 0x2BCA, 0x2BCB }, // Miscellaneous Symbols and Arrows
+        { 0x2C62, 0x2C62 }, // Latin Extended-C
+        { 0xFB01, 0xFB02 }, // Alphabetic Presentation Forms
       }};
     }
     
