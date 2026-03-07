@@ -81,7 +81,6 @@ namespace t8x
     
     bool enable_benchmark = false;
     t8::DrawPolicy draw_policy = t8::DrawPolicy::MEASURE_SELECT;
-    t8::GlyphMappingPolicy glyph_mapping_policy = t8::GlyphMappingPolicy::ALWAYS_UNICODE;
     t8::AsciiFallbackPolicy ascii_fallback_policy = t8::AsciiFallbackPolicy::SYSTEM_CONTROLLED;
   };
   
@@ -286,7 +285,6 @@ namespace t8x
       if (!show_title)
         show_instructions = params.enable_instructions_screen;
         
-      sh.set_glyph_mapping_policy(params.glyph_mapping_policy);
       sh.set_ascii_fallback_policy(params.ascii_fallback_policy);
     }
     
