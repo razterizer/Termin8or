@@ -38,7 +38,7 @@ namespace t8
     struct RenderCacheEntry
     {
       char32_t cp = none32;
-      bool renderable = false;
+      uint8_t renderable = 0; // Avoids possible paddington surprise with some compilers.
     };
     
     namespace impl
@@ -697,12 +697,12 @@ namespace t8
       auto& entry = impl::render_cache[idx];
       
       if (entry.cp == cp)
-        return entry.renderable;
+        return entry.renderable != 0;
       
       bool result = can_render_single_column_cp(cp, false);
       
       entry.cp = cp;
-      entry.renderable = result;
+      entry.renderable = static_cast<uint8_t>(result);
       
       return result;
     }
