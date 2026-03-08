@@ -527,7 +527,7 @@ namespace t8x
           const auto nt = fill_texture(tex_pos);
           const auto st = shadow_texture(tex_pos);
           const auto& t = f_has_light(1, i) ? nt : st;
-          sh.write_buffer(t.template str<CharT>(), r + 1, i + c, t.get_style());
+          sh.write_buffer(t.glyph, r + 1, i + c, t.get_style());
         }
         else if (shadow_type == SolarDirection::SW || shadow_type == SolarDirection::S || shadow_type == SolarDirection::SE)
         {
@@ -535,19 +535,19 @@ namespace t8x
           const auto nt = fill_texture(tex_pos);
           const auto st = shadow_texture(tex_pos);
           const auto& t = f_has_light(len_r - 2, i) ? nt : st;
-          sh.write_buffer(t.template str<CharT>(), r + len_r - 2, i + c, t.get_style());
+          sh.write_buffer(t.glyph, r + len_r - 2, i + c, t.get_style());
         }
         else if (shadow_type == SolarDirection::SW_Low || shadow_type == SolarDirection::S_Low || shadow_type == SolarDirection::SE_Low)
         {
           const auto tex_pos = tex_offset + RC { 0, i - 1 };
           const auto nt = fill_texture(tex_pos);
-          sh.write_buffer(nt.template str<CharT>(), r + 1, i + c, nt.get_style());
+          sh.write_buffer(nt.glyph, r + 1, i + c, nt.get_style());
         }
         else if (shadow_type == SolarDirection::NW_Low || shadow_type == SolarDirection::N_Low || shadow_type == SolarDirection::NE_Low)
         {
           const auto tex_pos = tex_offset + RC { len_r - 3, i - 1 };
           const auto nt = fill_texture(tex_pos);
-          sh.write_buffer(nt.template str<CharT>(), r + len_r - 2, i + c, nt.get_style());
+          sh.write_buffer(nt.glyph, r + len_r - 2, i + c, nt.get_style());
         }
       }
     }
@@ -566,7 +566,7 @@ namespace t8x
         const auto nt = fill_texture(tex_pos);
         const auto st = shadow_texture(tex_pos);
         const auto& t = f_has_light(r0, 1) ? nt : st;
-        sh.write_buffer(t.template str<CharT>(), i, c + 1, t.get_style());
+        sh.write_buffer(t.glyph, i, c + 1, t.get_style());
       }
       else if (has_east_shadow)
       {
@@ -574,19 +574,19 @@ namespace t8x
         const auto nt = fill_texture(tex_pos);
         const auto st = shadow_texture(tex_pos);
         const auto& t = f_has_light(r0, len_c - 2) ? nt : st;
-        sh.write_buffer(t.template str<CharT>(), i, c + len_c - 2, t.get_style());
+        sh.write_buffer(t.glyph, i, c + len_c - 2, t.get_style());
       }
       else if (has_west_twilight)
       {
         const auto tex_pos = tex_offset + RC { r0 - 1, 0 };
         const auto nt = fill_texture(tex_pos);
-        sh.write_buffer(nt.template str<CharT>(), i, c + 1, nt.get_style());
+        sh.write_buffer(nt.glyph, i, c + 1, nt.get_style());
       }
       else if (has_east_twilight)
       {
         const auto tex_pos = tex_offset + RC { r0 - 1, len_c - 3 };
         const auto nt = fill_texture(tex_pos);
-        sh.write_buffer(nt.template str<CharT>(), i, c + len_c - 2, nt.get_style());
+        sh.write_buffer(nt.glyph, i, c + len_c - 2, nt.get_style());
       }
       
       bool night_or_twilight = shadow_type == SolarDirection::Nadir ||
@@ -604,7 +604,7 @@ namespace t8x
         const auto nt = fill_texture(tex_pos);
         const auto st = shadow_texture(tex_pos);
         const auto& t = f_has_light(r0, j) ? nt : ((is_underground || night_or_twilight) ? st : nt);
-        sh.write_buffer(t.template str<CharT>(), i, j + c, t.get_style());
+        sh.write_buffer(t.glyph, i, j + c, t.get_style());
       }
     }
   }
