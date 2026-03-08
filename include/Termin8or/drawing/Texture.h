@@ -137,12 +137,6 @@ namespace t8
       bg_color = style.bg_color;
     }
     
-    template<typename CharT>
-    std::string str() const
-    {
-      return glyph.encode_single_width_glyph<CharT>();
-    }
-    
     std::string mat_to_str() const { return texture::mat_to_str(mat); }
     
     bool operator==(const Textel& other) const
