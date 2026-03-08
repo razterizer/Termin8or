@@ -322,7 +322,7 @@ namespace t8
                     "ERROR in ScreenHandler<NR, NC, CharT>::write_buffer() : Unsupported CharT type.");
       
       if (r >= 0 && r < NR)
-        write_buffer_cell(static_cast<CharT>(normalize_byte(ch)), Glyph::none, r, c, 0, fg_color, bg_color);
+        write_buffer_cell(static_cast<CharT>(normalize_byte(ch)), r, c, 0, fg_color, bg_color);
     }
     
     void write_buffer(const std::string& str, const RC& pos, const Style& style)
