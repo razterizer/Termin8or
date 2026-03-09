@@ -664,9 +664,17 @@ namespace t8
         {
           int idx = index(r, c);
           const auto& [ch, fg, bg] = screen_buffer[idx];
-          texture.set_textel_char(r, c, ch);
           texture.set_textel_fg_color(r, c, fg);
           texture.set_textel_bg_color(r, c, bg);
+          if constexpr (std::is_same_v<CharT, char>)
+            texture.set_textel_char(r, c, ch);
+          else if constexpr (std::is_same_v<CharT, char32_t>)
+          {
+            if (term::is_printable_ascii(ch))
+              texture.set_textel_char(r, c, ch);
+            else
+              texture.set_textel_glyph(r, c, { ch, '?' });
+          }
         }
       }
       return texture;
