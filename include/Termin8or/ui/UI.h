@@ -653,7 +653,7 @@ namespace t8x
   class TextBox
   {
   protected:
-    str::StringBox sb;
+    str::StringBox<std::string> sb;
     size_t N = 0;
     size_t len_max = 0;
     std::vector<Style> line_styles;
