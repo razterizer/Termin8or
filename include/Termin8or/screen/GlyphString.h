@@ -148,6 +148,8 @@ namespace t8
     
     Glyph& operator[](int idx) { return glyph_vector[idx]; }
     const Glyph& operator[](int idx) const { return glyph_vector[idx]; }
+    Glyph& operator[](size_t idx) { return glyph_vector[idx]; }
+    const Glyph& operator[](size_t idx) const { return glyph_vector[idx]; }
     
     inline GlyphString& operator+=(const GlyphString& gs)
     {
