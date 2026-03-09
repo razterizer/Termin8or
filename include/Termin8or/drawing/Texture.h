@@ -148,14 +148,14 @@ namespace t8
     }
   };
   
+  enum class TxGlyphEncoding
+  {
+    AsciiOnly,                  // 1 byte per cell.
+    UnicodePreferredAndFallback // Store preferred + fallback if any.
+  };
+  
   struct Texture
   {
-    enum class TxGlyphEncoding
-    {
-      AsciiOnly,                  // 1 byte per cell.
-      UnicodePreferredAndFallback // Store preferred + fallback if any.
-    };
-  
     static const int compatible_version_until_and_including = 30;
     int ver = 10;
     RC size;
