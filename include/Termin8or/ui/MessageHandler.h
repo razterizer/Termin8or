@@ -29,7 +29,7 @@ namespace t8x
     bool framed_mode = true;
   };
   
-  enum class Level { Guide, Warning, Fatal };
+  enum class MessageHandlerLevel { Guide, Warning, Fatal };
   
   template<typename StrT = std::string>
   class MessageHandler
@@ -40,7 +40,7 @@ namespace t8x
     std::queue<std::pair<std::string, float>> messages_warning;
     std::queue<std::pair<std::string, float>> messages_fatal;
     std::string curr_message;
-    Level curr_level;
+    MessageHandlerLevel curr_level;
     float curr_duration_s = 1.5f;
     TextBox<StrT> tb;
     int str_len = 0;
@@ -49,10 +49,10 @@ namespace t8x
     {
       switch (curr_level)
       {
-        case Level::Guide:   return Color16::White;
-        case Level::Warning: return Color16::White;
-        case Level::Fatal:   return Color16::White;
-        default:             return Color16::Default;
+        case MessageHandlerLevel::Guide:   return Color16::White;
+        case MessageHandlerLevel::Warning: return Color16::White;
+        case MessageHandlerLevel::Fatal:   return Color16::White;
+        default: return Color16::Default;
       }
     }
     
@@ -60,10 +60,10 @@ namespace t8x
     {
       switch (curr_level)
       {
-        case Level::Guide:   return Color16::DarkBlue;
-        case Level::Warning: return Color16::DarkYellow;
-        case Level::Fatal:   return Color16::DarkRed;
-        default:             return Color16::Default;
+        case MessageHandlerLevel::Guide:   return Color16::DarkBlue;
+        case MessageHandlerLevel::Warning: return Color16::DarkYellow;
+        case MessageHandlerLevel::Fatal:   return Color16::DarkRed;
+        default: return Color16::Default;
       }
     }
     
@@ -72,44 +72,44 @@ namespace t8x
       return !messages_guide.empty() || !messages_warning.empty() || !messages_fatal.empty();
     }
     
-    std::tuple<std::string, Level, float> fetch_next_message()
+    std::tuple<std::string, MessageHandlerLevel, float> fetch_next_message()
     {
       if (!messages_fatal.empty())
       {
         const auto& msg = messages_fatal.front();
-        const auto ret = std::make_tuple(msg.first, Level::Fatal, msg.second);
+        const auto ret = std::make_tuple(msg.first, MessageHandlerLevel::Fatal, msg.second);
         messages_fatal.pop();
         return ret;
       }
       if (!messages_warning.empty())
       {
         const auto& msg = messages_warning.front();
-        const auto ret = std::make_tuple(msg.first, Level::Warning, msg.second);
+        const auto ret = std::make_tuple(msg.first, MessageHandlerLevel::Warning, msg.second);
         messages_warning.pop();
         return ret;
       }
       if (!messages_guide.empty())
       {
         const auto& msg = messages_guide.front();
-        const auto ret = std::make_tuple(msg.first, Level::Guide, msg.second);
+        const auto ret = std::make_tuple(msg.first, MessageHandlerLevel::Guide, msg.second);
         messages_guide.pop();
         return ret;
       }
-      return { "<Invalid Message>", Level::Guide, 0.5f };
+      return { "<Invalid Message>", MessageHandlerLevel::Guide, 0.5f };
     }
     
   public:
-    void add_message(float time, const std::string& msg, Level lvl, float duration_s = 1.5f)
+    void add_message(float time, const std::string& msg, MessageHandlerLevel lvl, float duration_s = 1.5f)
     {
       switch (lvl)
       {
-        case Level::Guide:
+        case MessageHandlerLevel::Guide:
           messages_guide.push({ msg, duration_s });
           break;
-        case Level::Warning:
+        case MessageHandlerLevel::Warning:
           messages_warning.push({ msg, duration_s });
           break;
-        case Level::Fatal:
+        case MessageHandlerLevel::Fatal:
           messages_fatal.push({ msg, duration_s });
           break;
       }
