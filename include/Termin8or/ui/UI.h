@@ -462,6 +462,19 @@ namespace t8x
         return;
     }
     
+    template<int NR, int NC, typename CharT>
+    void draw(ScreenHandler<NR, NC, CharT>& sh, const RC& pos, int anim_ctr) const
+    {
+      // Recent Glyphs: [         ]
+      // Current Glyph: __
+      // Preferred (Unicode): _
+      // Fallback (ASCII):    _
+      
+      //sh.write_buffer("Recent Glyphs:", pos, Color)
+      cp_field.draw(sh, pos + RC { 2, 1 }, anim_ctr);
+      fb_field.draw(sh, pos + RC { 3, 1 }, anim_ctr);
+    }
+    
     void clear()
     {
       
