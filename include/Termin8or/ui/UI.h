@@ -487,6 +487,13 @@ namespace t8x
     {
       
     }
+    
+    virtual void set_selected(bool sel) override
+    {
+      Widget::set_selected(sel);
+      
+      cp_field.set_selected(sel);
+    }
   };
   
   // /////////////////////////////////////////////////////////////
