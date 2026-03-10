@@ -456,6 +456,12 @@ namespace t8x
       return current_glyph;
     }
     
+    void update(SpecialKey curr_special_key)
+    {
+      if (!is_selected())
+        return;
+    }
+    
     void clear()
     {
       
