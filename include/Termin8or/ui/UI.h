@@ -446,6 +446,14 @@ namespace t8x
     t8::Glyph current_glyph;
     
   public:
+    GlyphPicker(PromptStyle tf_style, int tab, char clear_ch = '_', bool sel = false)
+      : Widget(tab, sel)
+      , cp_field(6, TextFieldMode::Hex, tf_style,
+                 tab, clear_ch, sel)
+      , fb_field(6, TextFieldMode::PrintableAscii, tf_style,
+                 tab, clear_ch, sel)
+    {}
+  
     void set_glyph(t8::Glyph& g)
     {
       current_glyph = g;
