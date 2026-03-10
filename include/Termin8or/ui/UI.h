@@ -1001,7 +1001,7 @@ namespace t8x
       : TextBox<StrT>(text)
     {}
     
-    void set_tab_order(int tab)
+    void set_tab_selection(int tab)
     {
       // Clear widgets
       button_group.clear_selections();
@@ -1174,7 +1174,7 @@ namespace t8x
       if (curr_special_key == SpecialKey::Tab)
       {
         tab_idx = (tab_idx + 1) % (max_tab_idx + 1);
-        set_tab_order(tab_idx);
+        set_tab_selection(tab_idx);
       }
       else if (curr_special_key == SpecialKey::Left)
         dec_button_selection();
