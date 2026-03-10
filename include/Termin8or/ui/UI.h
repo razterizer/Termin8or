@@ -1007,6 +1007,8 @@ namespace t8x
       button_group.clear_selections();
       for (auto& tfp : text_fields)
         tfp.second.set_selected(false);
+      for (auto& gpp : glyph_pickers)
+        gpp.second.set_selected(false);
       for (auto& cpp : color_pickers)
         cpp.second.set_selected(false);
       
@@ -1015,6 +1017,9 @@ namespace t8x
         return;
       for (auto& tfp : text_fields)
         if (tfp.second.try_tab_select(tab))
+          return;
+      for (auto& gpp : glyph_pickers)
+        if (gpp.second.try_tab_select(tab))
           return;
       for (auto& cpp : color_pickers)
         if (cpp.second.try_tab_select(tab))
@@ -1178,6 +1183,8 @@ namespace t8x
 
       for (auto& tfp : text_fields)
         tfp.second.update(curr_key, curr_special_key);
+      for (auto& gpp : glyph_pickers)
+        gpp.second.update(curr_special_key);
       for (auto& cpp : color_pickers)
         cpp.second.update(curr_special_key);
     }
@@ -1205,6 +1212,9 @@ namespace t8x
       
       for (const auto& tfp : text_fields)
         tfp.second.draw(sh, pos + tfp.first, anim_ctr);
+        
+      for (const auto& gpp : glyph_pickers)
+        gpp.second.draw(sh, pos + gpp.first, anim_ctr);
         
       for (const auto& cpp : color_pickers)
         cpp.second.draw(sh, pos + cpp.first, anim_ctr);
