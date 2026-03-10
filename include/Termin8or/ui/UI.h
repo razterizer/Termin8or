@@ -107,7 +107,7 @@ namespace t8x
       return false;
     }
     
-    void set_selected(bool sel) { selected = sel; }
+    virtual void set_selected(bool sel) { selected = sel; }
     void toggle_selected() { math::toggle(selected); }
     bool is_selected() const { return selected; }
   };
