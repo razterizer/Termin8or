@@ -50,19 +50,20 @@ namespace t8x
       return time - time_stamp < life_time;
     }
     
-    template<int NR, int NC, typename CharT>
-    void draw(ScreenHandler<NR, NC, CharT>& sh, const std::string& str, Color fg_color, Color bg_color, float time) const
+    template<int NR, int NC, typename CharT, typename StrT = std::string>
+    void draw(ScreenHandler<NR, NC, CharT>& sh, const StrT& str, Color fg_color, Color bg_color, float time) const
     {
       if (alive(time))
         sh.write_buffer(str, math::roundI(pos_r), math::roundI(pos_c), fg_color, bg_color);
     }
   };
   
+  template<typename StrT = std::string>
   struct ParticleGradientGroup
   {
     Gradient<Color> fg_color_gradient;
     Gradient<Color> bg_color_gradient;
-    Gradient<std::string> string_gradient;
+    Gradient<StrT> string_gradient;
   };
   
   struct ParticleHandler
@@ -90,16 +91,16 @@ namespace t8x
       }
     }
     
-    template<int NR, int NC, typename CharT>
-    void draw(ScreenHandler<NR, NC, CharT>& sh, const std::string& str, Color fg_color, Color bg_color, float time) const
+    template<int NR, int NC, typename CharT, typename StrT = std::string>
+    void draw(ScreenHandler<NR, NC, CharT>& sh, const StrT& str, Color fg_color, Color bg_color, float time) const
     {
       for (const auto& particle : particle_stream)
         if (!particle.dead)
           particle.draw(sh, str, fg_color, bg_color, time);
     }
     
-    template<int NR, int NC, typename CharT>
-    void draw(ScreenHandler<NR, NC, CharT>& sh, const std::vector<std::string>& str,
+    template<int NR, int NC, typename CharT, typename StrT = std::string>
+    void draw(ScreenHandler<NR, NC, CharT>& sh, const std::vector<StrT>& str,
               const Gradient<Color>& fg_color, const Gradient<Color>& bg_color, float time) const
     {
       for (const auto& particle : particle_stream)
@@ -112,8 +113,8 @@ namespace t8x
         }
     }
     
-    template<int NR, int NC, typename CharT>
-    void draw(ScreenHandler<NR, NC, CharT>& sh, const std::vector<std::string>& str,
+    template<int NR, int NC, typename CharT, typename StrT = std::string>
+    void draw(ScreenHandler<NR, NC, CharT>& sh, const std::vector<StrT>& str,
               const std::vector<std::pair<float, std::pair<Gradient<Color>, Gradient<Color>>>>& color_fg_bg_vec,
               float time) const
     {
@@ -130,9 +131,9 @@ namespace t8x
         }
     }
     
-    template<int NR, int NC, typename CharT>
+    template<int NR, int NC, typename CharT, typename StrT = std::string>
     void draw(ScreenHandler<NR, NC, CharT>& sh,
-              const std::vector<std::pair<float, ParticleGradientGroup>>& gradient_groups,
+              const std::vector<std::pair<float, ParticleGradientGroup<StrT>>>& gradient_groups,
               float time) const
     {
       for (const auto& particle : particle_stream)
@@ -142,7 +143,7 @@ namespace t8x
           const auto& grads = rnd::rand_select(gradient_groups);
           const Gradient<Color>& fg_grad = grads.fg_color_gradient;
           const Gradient<Color>& bg_grad = grads.bg_color_gradient;
-          const Gradient<std::string>& str_grad = grads.string_gradient;
+          const Gradient<StrT>& str_grad = grads.string_gradient;
           particle.draw(sh, str_grad(t), fg_grad(t), bg_grad(t), time);
         }
     }
