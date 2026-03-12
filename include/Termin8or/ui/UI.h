@@ -107,6 +107,9 @@ namespace t8x
       return false;
     }
     
+    virtual int width() const = 0;
+    virtual int height() const = 0;
+    
     virtual void set_selected(bool sel) { selected = sel; }
     void toggle_selected() { math::toggle(selected); }
     bool is_selected() const { return selected; }
@@ -135,12 +138,17 @@ namespace t8x
       , frame(btn_frame)
     {}
     
-    int get_width() const
+    virtual int width() const override
     {
       int left_right = 2;
       if (frame == ButtonFrame::None)
         left_right = 0;
       return left_right + static_cast<int>(text.size());
+    }
+    
+    virtual int height() const override
+    {
+      return 1;
     }
     
     template<int NR, int NC, typename CharT>
@@ -292,14 +300,14 @@ namespace t8x
       if (buttons.empty())
         return;
     
-      int width_btns = stlutils::sum<int>(buttons, [](const auto& btn) { return btn.get_width(); });
+      int width_btns = stlutils::sum<int>(buttons, [](const auto& btn) { return btn.width(); });
       int spacing = (width - width_btns) / static_cast<int>(buttons.size() - (buttons.size() > 1));
       
       int c = pos.c;
       for (const auto& btn : buttons)
       {
         btn.draw(sh, RC { pos.r, c });
-        c += btn.get_width() + spacing;
+        c += btn.width() + spacing;
       }
     }
   };
@@ -398,6 +406,16 @@ namespace t8x
       }
     }
     
+    virtual int width() const override
+    {
+      return field_width;
+    }
+    
+    virtual int height() const override
+    {
+      return 1;
+    }
+    
     const std::string get_input() const
     {
       return input.substr(0, caret);
@@ -483,6 +501,16 @@ namespace t8x
       fb_field.draw(sh, pos + RC { 3, 1 }, anim_ctr);
     }
     
+    virtual int width() const override
+    {
+      return 0; // #FIXME
+    }
+    
+    virtual int height() const override
+    {
+      return 4;
+    }
+    
     void clear()
     {
       
@@ -535,6 +563,7 @@ namespace t8x
     int num_rgb6_rows = 0;
     int num_gray24_rows = 0;
     int num_rows = 0;
+    int num_cols = 0;
     int r_max = 0;
     
     Color get_color(int idx) const
@@ -578,6 +607,13 @@ namespace t8x
         
       num_rows = std::max(1, num_16color_rows + num_rgb6_rows + num_gray24_rows);
       r_max = num_rows - 1;
+      
+      if (num_16color_colors > 0)
+        num_cols = num_16color_colors;
+      if (params.enable_rgb6_colors)
+        num_cols = std::max(num_cols, 36);
+      if (params.enable_gray24_colors)
+        num_cols = std::max(num_cols, 24);
     }
     
     void update(SpecialKey curr_special_key)
@@ -728,7 +764,12 @@ namespace t8x
       }
     }
     
-    int height() const
+    virtual int width() const override
+    {
+      return num_cols;
+    }
+    
+    virtual int height() const override
     {
       return num_rows;
     }
