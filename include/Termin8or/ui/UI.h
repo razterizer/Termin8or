@@ -313,6 +313,50 @@ namespace t8x
   };
   
   // /////////////////////////////////////////////////////////////
+  //  _           _          _
+  // | |         | |        | |
+  // | |     __ _| |__   ___| |
+  // | |    / _` | '_ \ / _ \ |
+  // | |___| (_| | |_) |  __/ |
+  // |______\__,_|_.__/ \___|_|
+  // /////////////////////////////////////////////////////////////
+  
+  class Label : public Widget
+  {
+    std::string text;
+    Style style;
+    
+  public:
+    Label(const std::string& label_text, Style label_style,
+          int tab = 0, bool sel = false)
+      : Widget(tab, sel)
+      , text(label_text)
+      , style(label_style)
+    {}
+    
+    template<int NR, int NC, typename CharT>
+    void draw(ScreenHandler<NR, NC, CharT>& sh, const RC& pos) const
+    {
+      sh.write_buffer(text, pos, style);
+    }
+    
+    virtual int width() const override
+    {
+      return text.length();
+    }
+    
+    virtual int height() const override
+    {
+      return 1;
+    }
+    
+    bool empty() const
+    {
+      return text.empty();
+    }
+  };
+  
+  // /////////////////////////////////////////////////////////////
   //  _______        _   ______ _      _     _
   // |__   __|      | | |  ____(_)    | |   | |
   //    | | _____  _| |_| |__   _  ___| | __| |
