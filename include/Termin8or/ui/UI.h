@@ -1095,6 +1095,7 @@ namespace t8x
   {
     std::vector<std::tuple<RC, Style, t8::Glyph>> override_textels_pre;
     ButtonGroup button_group; // Buttons have their own reserved row two rows down.
+    std::vector<std::pair<RC, Label>> labels;
     std::vector<std::pair<RC, TextField>> text_fields;
     std::vector<std::pair<RC, GlyphPicker>> glyph_pickers;
     std::vector<std::pair<RC, ColorPicker>> color_pickers;
@@ -1194,6 +1195,11 @@ namespace t8x
       if (auto* button = button_group.get_selected_button(); button != nullptr)
         return button->get_text();
       return "";
+    }
+    
+    void add_label(const RC& pos, const Label& l)
+    {
+      labels.emplace_back(pos, l);
     }
     
     void add_text_field(const RC& pos, const TextField& tf)
@@ -1329,6 +1335,9 @@ namespace t8x
                         { pos.r + static_cast<int>(TextBox<StrT>::N) + 1, pos.c },
                         static_cast<int>(TextBox<StrT>::len_max));
       
+      for (const auto& lp : labels)
+        lp.second.draw(sh, pos + lp.first);
+        
       for (const auto& tfp : text_fields)
         tfp.second.draw(sh, pos + tfp.first, anim_ctr);
         
