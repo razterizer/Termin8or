@@ -1040,22 +1040,11 @@ namespace t8x
 #endif
       OutlineType outline_type = args.base.outline_type;
       
-      if constexpr (std::is_same_v<StrT, t8::GlyphString>)
-      {
-        for (const auto& rc_style : override_textel_styles)
-          if (rc_style.first.r < static_cast<int>(N) && rc_style.first.c < static_cast<int>(len_max))
-            sh.write_buffer(sb[rc_style.first.r][rc_style.first.c],
-                            pos.r + rc_style.first.r, pos.c + rc_style.first.c,
-                            rc_style.second);
-      }
-      else if constexpr (std::is_same_v<StrT, std::string>)
-      {
-        for (const auto& rc_style : override_textel_styles)
-          if (rc_style.first.r < static_cast<int>(N) && rc_style.first.c < static_cast<int>(len_max))
-            sh.write_buffer(sb[rc_style.first.r][rc_style.first.c],
-                            pos.r + rc_style.first.r, pos.c + rc_style.first.c,
-                            rc_style.second);
-      }
+      for (const auto& rc_style : override_textel_styles)
+        if (rc_style.first.r < static_cast<int>(N) && rc_style.first.c < static_cast<int>(len_max))
+          sh.write_buffer(sb[rc_style.first.r][rc_style.first.c],
+                          pos.r + rc_style.first.r, pos.c + rc_style.first.c,
+                          rc_style.second);
       for (size_t l_idx = 0; l_idx < N; ++l_idx)
         sh.write_buffer(sb[l_idx], pos.r + static_cast<int>(l_idx), pos.c, line_styles.empty() ? box_style : line_styles[l_idx]);
       
