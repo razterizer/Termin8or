@@ -907,10 +907,14 @@ namespace t8x
       int box_padding_ud = args.base.box_padding_ud;
       int box_padding_lr = args.base.box_padding_lr;
     
+      const auto panel_size = get_panel_size();
+      int panel_height = panel_size.r;
+      int panel_width = panel_size.c;
+    
       RC pos { 0, 0 };
       
-      auto r_diff = std::max(0, NR - static_cast<int>(N));
-      auto c_diff = std::max(0, NC - static_cast<int>(len_max));
+      auto r_diff = std::max(0, NR - panel_height);
+      auto c_diff = std::max(0, NC - panel_width);
       auto mid_v = static_cast<int>(std::round(r_diff*0.5f) - (r_diff%2 == 1)*0.5f);
       auto mid_h = static_cast<int>(std::round(c_diff*0.5f) - (c_diff%2 == 1)*0.5f);
       
