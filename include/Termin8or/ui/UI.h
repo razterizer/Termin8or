@@ -1043,7 +1043,10 @@ namespace t8x
     template<int NR, int NC, typename CharT>
     void draw(ScreenHandler<NR, NC, CharT>& sh, const TextBoxDrawingArgsPos& args)
     {
-      auto pos = args.pos;
+      const auto& pos = args.pos;
+      auto panel_size = get_panel_size();
+      int panel_height = panel_size.r;
+      int panel_width = panel_size.c;
       const Style& box_style = args.base.box_style;
       bool do_draw_box_outline = args.base.draw_box_outline;
       bool do_draw_box_bkg = args.base.draw_box_bkg;
@@ -1069,8 +1072,8 @@ namespace t8x
       
       int r = pos.r - 1 - box_padding_ud;
       int c = pos.c - 1 - box_padding_lr;
-      int r_len = static_cast<int>(N + 2 + 2*has_buttons() + 2*box_padding_ud);
-      int c_len = static_cast<int>(len_max + 2 + 2*box_padding_lr);
+      int r_len = panel_height + static_cast<int>(2 + 2*has_buttons() + 2*box_padding_ud);
+      int c_len = panel_width + static_cast<int>(2 + 2*box_padding_lr);
       if (do_draw_box_outline)
         draw_box_outline(sh, r, c, r_len, c_len, outline_type, box_outline_style.value_or(box_style));
       if (do_draw_box_bkg)
