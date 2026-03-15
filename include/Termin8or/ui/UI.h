@@ -1080,6 +1080,11 @@ namespace t8x
       
       draw(sh, pargs);
     }
+    
+    void invalidate()
+    {
+      min_size = std::nullopt;
+    }
   };
   
   // /////////////////////////////////////////////////////////////
