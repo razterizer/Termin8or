@@ -1125,6 +1125,38 @@ namespace t8x
       TextBox<StrT>::init();
     }
     
+    // Resizes the dialog depending on its contents.
+    virtual RC measure_panel_size() const override
+    {
+      auto panel_size = TextBox<StrT>::measure_panel_size();
+      
+      for (const auto& lp : labels)
+      {
+        math::maximize(panel_size.r, lp.first.r + lp.second.height());
+        math::maximize(panel_size.c, lp.first.c + lp.second.width());
+      }
+        
+      for (const auto& tfp : text_fields)
+      {
+        math::maximize(panel_size.r, tfp.first.r + tfp.second.height());
+        math::maximize(panel_size.c, tfp.first.c + tfp.second.width());
+      }
+        
+      for (const auto& gpp : glyph_pickers)
+      {
+        math::maximize(panel_size.r, gpp.first.r + gpp.second.height());
+        math::maximize(panel_size.c, gpp.first.c + gpp.second.width());
+      }
+        
+      for (const auto& cpp : color_pickers)
+      {
+        math::maximize(panel_size.r, cpp.first.r + cpp.second.height());
+        math::maximize(panel_size.c, cpp.first.c + cpp.second.width());
+      }
+      
+      return panel_size;
+    }
+    
   public:
     Dialog() = default;
     Dialog(size_t num_lines)
