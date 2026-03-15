@@ -1088,7 +1088,7 @@ namespace t8x
       draw(sh, pargs);
     }
     
-    void invalidate()
+    void invalidate_layout()
     {
       cached_panel_size = std::nullopt;
     }
