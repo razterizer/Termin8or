@@ -892,7 +892,7 @@ namespace t8x
     size_t len_max = 0;
     std::vector<Style> line_styles;
     std::vector<std::pair<RC, Style>> override_textel_styles;
-    std::optional<RC> min_size = std::nullopt;
+    std::optional<RC> cached_panel_size = std::nullopt;
     
     void init()
     {
@@ -959,9 +959,9 @@ namespace t8x
     
     RC get_panel_size()
     {
-      if (!min_size.has_value())
-        min_size = measure_panel_size();
-      return min_size.value();
+      if (!cached_panel_size.has_value())
+        cached_panel_size = measure_panel_size();
+      return cached_panel_size.value();
     }
     
   public:
@@ -1083,7 +1083,7 @@ namespace t8x
     
     void invalidate()
     {
-      min_size = std::nullopt;
+      cached_panel_size = std::nullopt;
     }
   };
   
