@@ -906,7 +906,7 @@ namespace t8x
     {
       int box_padding_ud = args.base.box_padding_ud;
       int box_padding_lr = args.base.box_padding_lr;
-    
+      
       const auto panel_size = get_panel_size();
       int panel_height = panel_size.r;
       int panel_width = panel_size.c;
@@ -1365,13 +1365,17 @@ namespace t8x
     template<int NR, int NC, typename CharT>
     void draw(ScreenHandler<NR, NC, CharT>& sh, const TextBoxDrawingArgsPos& args, int anim_ctr)
     {
-      auto pos = args.pos;
+      const auto& pos = args.pos;
+      
+      auto panel_size = TextBox<StrT>::get_panel_size();
+      int r_len = panel_size.r;
+      int c_len = panel_size.c;
       
       for (const auto& ot : override_textels_pre)
       {
         const auto& tp = std::get<0>(ot);
-        if (math::in_range(tp.r, 0, static_cast<int>(TextBox<StrT>::N), Range::ClosedOpen) &&
-            math::in_range(tp.c, 0, static_cast<int>(TextBox<StrT>::len_max), Range::ClosedOpen))
+        if (math::in_range(tp.r, 0, r_len, Range::ClosedOpen) &&
+            math::in_range(tp.c, 0, c_len, Range::ClosedOpen))
         {
           sh.write_buffer(std::get<2>(ot),
                           pos.r + tp.r, pos.c + tp.c,
@@ -1380,8 +1384,8 @@ namespace t8x
       }
                   
       button_group.draw(sh,
-                        { pos.r + static_cast<int>(TextBox<StrT>::N) + 1, pos.c },
-                        static_cast<int>(TextBox<StrT>::len_max));
+                        { pos.r + r_len + 1, pos.c },
+                        c_len);
       
       for (const auto& lp : labels)
         lp.second.draw(sh, pos + lp.first);
