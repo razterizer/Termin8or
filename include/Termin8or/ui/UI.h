@@ -957,6 +957,13 @@ namespace t8x
       return { r_len, c_len };
     }
     
+    RC get_panel_size()
+    {
+      if (!min_size.has_value())
+        min_size = measure_panel_size();
+      return min_size.value();
+    }
+    
   public:
     virtual ~TextBox() = default;
     TextBox() = default;
