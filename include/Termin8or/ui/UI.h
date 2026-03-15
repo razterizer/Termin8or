@@ -892,6 +892,7 @@ namespace t8x
     size_t len_max = 0;
     std::vector<Style> line_styles;
     std::vector<std::pair<RC, Style>> override_textel_styles;
+    std::optional<RC> min_size = std::nullopt;
     
     void init()
     {
