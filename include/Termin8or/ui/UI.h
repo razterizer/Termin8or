@@ -950,6 +950,13 @@ namespace t8x
       return pargs;
     }
     
+    virtual RC measure_panel_size() const
+    {
+      int r_len = static_cast<int>(TextBox<StrT>::N);
+      int c_len = static_cast<int>(TextBox<StrT>::len_max);
+      return { r_len, c_len };
+    }
+    
   public:
     virtual ~TextBox() = default;
     TextBox() = default;
