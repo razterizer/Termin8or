@@ -898,6 +898,7 @@ namespace t8x
     void init()
     {
       N = sb.size();
+      invalidate_layout();
     }
     
     virtual bool has_buttons() const { return false; }
