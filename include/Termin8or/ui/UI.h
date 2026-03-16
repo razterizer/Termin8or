@@ -985,21 +985,28 @@ namespace t8x
   public:
     virtual ~TextBox() = default;
     TextBox() = default;
-    TextBox(size_t num_lines)
+    TextBox(str::Adjustment master_adj)
+      : master_adjustment(master_adj)
+    {}
+    TextBox(size_t num_lines, str::Adjustment master_adj = str::Adjustment::Left)
       : sb(num_lines)
+      , master_adjustment(master_adj)
     {
       init();
     }
-    TextBox(const std::vector<StrT>& text_lines, const std::vector<Style>& styles = {})
+    TextBox(const std::vector<StrT>& text_lines, const std::vector<Style>& styles = {},
+            str::Adjustment master_adj = str::Adjustment::Left)
       : sb(text_lines)
       , line_styles(styles)
+      , master_adjustment(master_adj)
     {
       init();
       if (text_lines.size() != line_styles.size())
         line_styles.clear();
     }
-    TextBox(const StrT& text)
+    TextBox(const StrT& text, str::Adjustment master_adj = str::Adjustment::Left)
       : sb(text)
+      , master_adjustment(master_adj)
     {
       init();
     }
@@ -1011,29 +1018,34 @@ namespace t8x
     
     void set_text(const std::vector<StrT>& text_lines,
                   const std::vector<Style>& styles = {},
-                  const std::vector<std::pair<RC, Style>>& override_styles = {})
+                  const std::vector<std::pair<RC, Style>>& override_styles = {},
+                  str::Adjustment master_adj = str::Adjustment::Left)
     {
       sb = str::StringBox<StrT> { text_lines };
       line_styles = styles;
       override_textel_styles = override_styles;
+      master_adjustment = master_adj;
       init();
       if (text_lines.size() != line_styles.size())
         line_styles.clear();
     }
     
-    void set_text(const StrT& text)
+    void set_text(const StrT& text,
+                  str::Adjustment master_adj = str::Adjustment::Left)
     {
       sb = str::StringBox<StrT> { text };
       override_textel_styles.clear();
+      master_adjustment = master_adj;
       init();
     }
     
-    void set_text(const StrT& text, Style style)
+    void set_text(const StrT& text, Style style, str::Adjustment master_adj = str::Adjustment::Left)
     {
       sb = str::StringBox<StrT> { text };
       line_styles.clear();
       line_styles.emplace_back(style);
       override_textel_styles.clear();
+      master_adjustment = master_adj;
       init();
     }
     
@@ -1174,14 +1186,18 @@ namespace t8x
     
   public:
     Dialog() = default;
-    Dialog(size_t num_lines)
-      : TextBox<StrT>(num_lines)
+    Dialog(str::Adjustment master_adj)
+      : TextBox<StrT>(master_adj)
     {}
-    Dialog(const std::vector<StrT>& text_lines, const std::vector<Style>& styles = {})
-      : TextBox<StrT>(text_lines, styles)
+    Dialog(size_t num_lines, str::Adjustment master_adj = str::Adjustment::Left)
+      : TextBox<StrT>(num_lines, master_adj)
     {}
-    Dialog(const StrT& text)
-      : TextBox<StrT>(text)
+    Dialog(const std::vector<StrT>& text_lines, const std::vector<Style>& styles = {},
+           str::Adjustment master_adj = str::Adjustment::Left)
+      : TextBox<StrT>(text_lines, styles, master_adj)
+    {}
+    Dialog(const StrT& text, str::Adjustment master_adj = str::Adjustment::Left)
+      : TextBox<StrT>(text, master_adj)
     {}
     
     void set_tab_selection(int tab)
@@ -1529,6 +1545,10 @@ namespace t8x
   public:
     TextBoxDebug() = default;
     
+    TextBoxDebug(str::Adjustment master_adj)
+      : TextBox<std::string>(master_adj)
+    {}
+  
     template<typename T>
     void add(const RefParam<T>& ref_param)
     {
