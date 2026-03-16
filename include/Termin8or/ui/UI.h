@@ -966,9 +966,21 @@ namespace t8x
     RC fetch_panel_size()
     {
       if (!cached_panel_size.has_value())
+      {
+        N = sb.size();
+        len_max = 0;
+        for (size_t l_idx = 0; l_idx < N; ++l_idx)
+          math::maximize(len_max, sb[l_idx].size());
+        
         cached_panel_size = measure_panel_size();
+        
+        for (size_t l_idx = 0; l_idx < N; ++l_idx)
+          sb[l_idx] = str::adjust_str(sb[l_idx], master_adjustment, static_cast<int>(len_max));
+      }
       return cached_panel_size.value();
     }
+    
+    virtual void on_pre_draw() {}
     
   public:
     virtual ~TextBox() = default;
@@ -1033,18 +1045,11 @@ namespace t8x
     
     StrT& operator[](size_t r_idx) { return sb[r_idx]; }
     
-    virtual void calc_pre_draw(str::Adjustment adjustment)
-    {
-      len_max = 0;
-      for (size_t l_idx = 0; l_idx < N; ++l_idx)
-        math::maximize(len_max, sb[l_idx].size());
-      for (size_t l_idx = 0; l_idx < N; ++l_idx)
-        sb[l_idx] = str::adjust_str(sb[l_idx], adjustment, static_cast<int>(len_max));
-    }
-    
     template<int NR, int NC, typename CharT>
     void draw(ScreenHandler<NR, NC, CharT>& sh, const TextBoxDrawingArgsPos& args)
     {
+      on_pre_draw();
+    
       const auto& pos = args.pos;
       auto panel_size = fetch_panel_size();
       int panel_height = panel_size.r;
@@ -1506,6 +1511,13 @@ namespace t8x
       TextBox<std::string>::init();
     }
     
+  protected:
+    virtual void on_pre_draw() override
+    {
+      for (size_t p_idx = 0; p_idx < TextBox<std::string>::N; ++p_idx)
+        TextBox<std::string>::sb[p_idx] = params[p_idx]->str();
+    }
+    
   public:
     TextBoxDebug() = default;
     
@@ -1564,16 +1576,6 @@ namespace t8x
       params.clear();
       TextBox<std::string>::sb.text_lines.clear();
       init();
-    }
-    
-    virtual void calc_pre_draw(str::Adjustment adjustment) override
-    {
-      for (size_t p_idx = 0; p_idx < TextBox<std::string>::N; ++p_idx)
-      {
-        TextBox<std::string>::sb[p_idx] = params[p_idx]->str();
-      }
-    
-      TextBox<std::string>::calc_pre_draw(adjustment);
     }
   };
 
