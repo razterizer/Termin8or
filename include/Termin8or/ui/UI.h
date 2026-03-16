@@ -1043,7 +1043,15 @@ namespace t8x
       init();
     }
     
-    StrT& operator[](size_t r_idx) { return sb[r_idx]; }
+    StrT& operator[](size_t r_idx)
+    {
+      return sb[r_idx];
+      invalidate_layout();
+    }
+    const StrT& operator[](size_t r_idx) const
+    {
+      return sb[r_idx];
+    }
     
     template<int NR, int NC, typename CharT>
     void draw(ScreenHandler<NR, NC, CharT>& sh, const TextBoxDrawingArgsPos& args)
