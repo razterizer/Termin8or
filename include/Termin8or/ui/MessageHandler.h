@@ -130,8 +130,7 @@ namespace t8x
       {
         auto fg_color = get_fg_color();
         auto bg_color = get_bg_color();
-        tb.set_text(curr_message);
-        tb.calc_pre_draw(str::Adjustment::Center);
+        tb.set_text(curr_message, str::Adjustment::Center);
         TextBoxDrawingArgsAlign aargs;
         aargs.v_align = args.v_align;
         aargs.h_align = args.h_align;
