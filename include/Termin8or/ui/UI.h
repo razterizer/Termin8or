@@ -893,6 +893,7 @@ namespace t8x
     std::vector<Style> line_styles;
     std::vector<std::pair<RC, Style>> override_textel_styles;
     std::optional<RC> cached_panel_size = std::nullopt;
+    str::Adjustment master_adjustment = str::Adjustment::Left;
     
     void init()
     {
