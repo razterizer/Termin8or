@@ -907,7 +907,7 @@ namespace t8x
       int box_padding_ud = args.base.box_padding_ud;
       int box_padding_lr = args.base.box_padding_lr;
       
-      const auto panel_size = get_panel_size();
+      const auto panel_size = fetch_panel_size();
       int panel_height = panel_size.r;
       int panel_width = panel_size.c;
     
@@ -961,7 +961,7 @@ namespace t8x
       return { r_len, c_len };
     }
     
-    RC get_panel_size()
+    RC fetch_panel_size()
     {
       if (!cached_panel_size.has_value())
         cached_panel_size = measure_panel_size();
@@ -1044,7 +1044,7 @@ namespace t8x
     void draw(ScreenHandler<NR, NC, CharT>& sh, const TextBoxDrawingArgsPos& args)
     {
       const auto& pos = args.pos;
-      auto panel_size = get_panel_size();
+      auto panel_size = fetch_panel_size();
       int panel_height = panel_size.r;
       int panel_width = panel_size.c;
       const Style& box_style = args.base.box_style;
@@ -1367,7 +1367,7 @@ namespace t8x
     {
       const auto& pos = args.pos;
       
-      auto panel_size = TextBox<StrT>::get_panel_size();
+      auto panel_size = TextBox<StrT>::fetch_panel_size();
       int r_len = panel_size.r;
       int c_len = panel_size.c;
       
