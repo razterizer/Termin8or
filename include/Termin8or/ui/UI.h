@@ -95,13 +95,17 @@ namespace t8x
       : tab_order(tab)
       , selected(sel)
     {}
+    
+    virtual int num_components() const { return 1; }
+    virtual void set_component_focus(int /*sub_tab*/, bool /*selected*/) {}
   
     int get_tab_order() const { return tab_order; }
-    bool try_tab_select(int tab)
+    bool try_tab_select(int tab, int sub_tab)
     {
       if (tab_order == tab)
       {
         selected = true;
+        set_component_focus(sub_tab, true);
         return true;
       }
       return false;
@@ -111,6 +115,11 @@ namespace t8x
     virtual int height() const = 0;
     
     virtual void set_selected(bool sel) { selected = sel; }
+    void clear_focused_components()
+    {
+      for (int sc_idx = 0; sc_idx < num_components(); ++sc_idx)
+        set_component_focus(sc_idx, false);
+    }
     void toggle_selected() { math::toggle(selected); }
     bool is_selected() const { return selected; }
   };
@@ -560,11 +569,21 @@ namespace t8x
       
     }
     
-    virtual void set_selected(bool sel) override
+    //virtual void set_selected(bool sel) override
+    //{
+    //  Widget::set_selected(sel);
+    //
+    //  cp_field.set_selected(sel);
+    //}
+    
+    virtual int num_components() const override { return 2; }
+    
+    virtual void set_component_focus(int sub_tab, bool selected) override
     {
-      Widget::set_selected(sel);
-      
-      cp_field.set_selected(sel);
+      if (sub_tab == 0)
+        cp_field.set_selected(selected);
+      else if (sub_tab == 1)
+        fb_field.set_selected(selected);
     }
   };
   
@@ -1143,6 +1162,7 @@ namespace t8x
     std::vector<std::pair<RC, GlyphPicker>> glyph_pickers;
     std::vector<std::pair<RC, ColorPicker>> color_pickers;
     int tab_idx = 0;
+    int sub_tab_idx = 0;
     int max_tab_idx = 0;
     
     virtual bool has_buttons() const override { return !button_group.empty(); }
@@ -1200,14 +1220,17 @@ namespace t8x
       : TextBox<StrT>(text, master_adj)
     {}
     
-    void set_tab_selection(int tab)
+    void set_tab_selection(int tab, int sub_tab = 0)
     {
       // Clear widgets
       button_group.clear_selections();
       for (auto& tfp : text_fields)
         tfp.second.set_selected(false);
       for (auto& gpp : glyph_pickers)
+      {
         gpp.second.set_selected(false);
+        gpp.second.clear_focused_components();
+      }
       for (auto& cpp : color_pickers)
         cpp.second.set_selected(false);
       
@@ -1215,13 +1238,13 @@ namespace t8x
       if (button_group.try_tab_select(tab))
         return;
       for (auto& tfp : text_fields)
-        if (tfp.second.try_tab_select(tab))
+        if (tfp.second.try_tab_select(tab, sub_tab))
           return;
       for (auto& gpp : glyph_pickers)
-        if (gpp.second.try_tab_select(tab))
+        if (gpp.second.try_tab_select(tab, sub_tab))
           return;
       for (auto& cpp : color_pickers)
-        if (cpp.second.try_tab_select(tab))
+        if (cpp.second.try_tab_select(tab, sub_tab))
           return;
     }
     
@@ -1377,8 +1400,20 @@ namespace t8x
     {
       if (curr_special_key == SpecialKey::Tab)
       {
-        tab_idx = (tab_idx + 1) % (max_tab_idx + 1);
-        set_tab_selection(tab_idx);
+        // 0.0 -> 1.0 : Label(0), GlyphPicker(1), Label(2)
+        // 1.0 -> 1.1
+        // 1.1 -> 2.0
+        auto it = stlutils::find_if(glyph_pickers, [&](const auto& gpp) { return gpp.second.get_tab_order() == tab_idx; });
+        if (it != glyph_pickers.end())
+        {
+          sub_tab_idx = (sub_tab_idx + 1) % it->second.num_components();
+          if (sub_tab_idx == 0)
+            tab_idx = (tab_idx + 1) % (max_tab_idx + 1);
+        }
+        else
+          tab_idx = (tab_idx + 1) % (max_tab_idx + 1);
+        
+        set_tab_selection(tab_idx, sub_tab_idx);
       }
       else if (curr_special_key == SpecialKey::Left)
         dec_button_selection();
