@@ -352,7 +352,7 @@ namespace t8x
     
     virtual int width() const override
     {
-      return text.length();
+      return static_cast<int>(text.length());
     }
     
     virtual int height() const override
