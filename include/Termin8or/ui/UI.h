@@ -1162,6 +1162,7 @@ namespace t8x
     std::vector<std::pair<RC, std::unique_ptr<TextField>>> text_fields;
     std::vector<std::pair<RC, std::unique_ptr<GlyphPicker>>> glyph_pickers;
     std::vector<std::pair<RC, std::unique_ptr<ColorPicker>>> color_pickers;
+    std::vector<Widget*> all_widgets;
     int tab_idx = 0;
     int sub_tab_idx = 0;
     int max_tab_idx = 0;
@@ -1274,7 +1275,8 @@ namespace t8x
     
     void add_button(const Button& button)
     {
-      button_group.add(button);
+      auto* ptr = button_group.add(button);
+      all_widgets.emplace_back(ptr);
       math::maximize(max_tab_idx, button.get_tab_order());
     }
     
@@ -1302,12 +1304,14 @@ namespace t8x
     
     void add_label(const RC& pos, const Label& l)
     {
-      labels.emplace_back(pos, std::make_unique<Label>(l));
+      auto& lp = labels.emplace_back(pos, std::make_unique<Label>(l));
+      all_widgets.emplace_back(lp.second.get());
     }
     
     void add_text_field(const RC& pos, const TextField& tf)
     {
-      text_fields.emplace_back(pos, std::make_unique<TextField>(tf));
+      auto& tfp = text_fields.emplace_back(pos, std::make_unique<TextField>(tf));
+      all_widgets.emplace_back(tfp.second.get());
       math::maximize(max_tab_idx, tf.get_tab_order());
     }
     
@@ -1343,7 +1347,8 @@ namespace t8x
     
     void add_glyph_picker(const RC& pos, const GlyphPicker& gp)
     {
-      glyph_pickers.emplace_back(pos, std::make_unique<GlyphPicker>(gp));
+      auto& gpp = glyph_pickers.emplace_back(pos, std::make_unique<GlyphPicker>(gp));
+      all_widgets.emplace_back(gpp.second.get());
       math::maximize(max_tab_idx, gp.get_tab_order());
     }
     
@@ -1371,7 +1376,8 @@ namespace t8x
     
     void add_color_picker(const RC& pos, const ColorPicker& cp)
     {
-      color_pickers.emplace_back(pos, std::make_unique<ColorPicker>(cp));
+      auto& cpp = color_pickers.emplace_back(pos, std::make_unique<ColorPicker>(cp));
+      all_widgets.emplace_back(cpp.second.get());
       math::maximize(max_tab_idx, cp.get_tab_order());
     }
     
