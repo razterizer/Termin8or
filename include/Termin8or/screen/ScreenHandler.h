@@ -695,7 +695,7 @@ namespace t8
           else if constexpr (std::is_same_v<CharT, char32_t>)
           {
             if (term::is_printable_ascii(ch))
-              texture.set_textel_char(r, c, ch);
+              texture.set_textel_char(r, c, static_cast<char>(ch));
             else
               texture.set_textel_glyph(r, c, { ch, '?' });
           }
