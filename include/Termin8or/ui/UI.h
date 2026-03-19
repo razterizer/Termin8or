@@ -1157,10 +1157,10 @@ namespace t8x
   {
     std::vector<std::tuple<RC, Style, t8::Glyph>> override_textels_pre;
     ButtonGroup button_group; // Buttons have their own reserved row two rows down.
-    std::vector<std::pair<RC, Label>> labels;
-    std::vector<std::pair<RC, TextField>> text_fields;
-    std::vector<std::pair<RC, GlyphPicker>> glyph_pickers;
-    std::vector<std::pair<RC, ColorPicker>> color_pickers;
+    std::vector<std::pair<RC, std::unique_ptr<Label>>> labels;
+    std::vector<std::pair<RC, std::unique_ptr<TextField>>> text_fields;
+    std::vector<std::pair<RC, std::unique_ptr<GlyphPicker>>> glyph_pickers;
+    std::vector<std::pair<RC, std::unique_ptr<ColorPicker>>> color_pickers;
     int tab_idx = 0;
     int sub_tab_idx = 0;
     int max_tab_idx = 0;
@@ -1179,26 +1179,26 @@ namespace t8x
       
       for (const auto& lp : labels)
       {
-        math::maximize(panel_size.r, lp.first.r + lp.second.height());
-        math::maximize(panel_size.c, lp.first.c + lp.second.width());
+        math::maximize(panel_size.r, lp.first.r + lp.second->height());
+        math::maximize(panel_size.c, lp.first.c + lp.second->width());
       }
         
       for (const auto& tfp : text_fields)
       {
-        math::maximize(panel_size.r, tfp.first.r + tfp.second.height());
-        math::maximize(panel_size.c, tfp.first.c + tfp.second.width());
+        math::maximize(panel_size.r, tfp.first.r + tfp.second->height());
+        math::maximize(panel_size.c, tfp.first.c + tfp.second->width());
       }
         
       for (const auto& gpp : glyph_pickers)
       {
-        math::maximize(panel_size.r, gpp.first.r + gpp.second.height());
-        math::maximize(panel_size.c, gpp.first.c + gpp.second.width());
+        math::maximize(panel_size.r, gpp.first.r + gpp.second->height());
+        math::maximize(panel_size.c, gpp.first.c + gpp.second->width());
       }
         
       for (const auto& cpp : color_pickers)
       {
-        math::maximize(panel_size.r, cpp.first.r + cpp.second.height());
-        math::maximize(panel_size.c, cpp.first.c + cpp.second.width());
+        math::maximize(panel_size.r, cpp.first.r + cpp.second->height());
+        math::maximize(panel_size.c, cpp.first.c + cpp.second->width());
       }
       
       return panel_size;
@@ -1225,26 +1225,26 @@ namespace t8x
       // Clear widgets
       button_group.clear_selections();
       for (auto& tfp : text_fields)
-        tfp.second.set_selected(false);
+        tfp.second->set_selected(false);
       for (auto& gpp : glyph_pickers)
       {
-        gpp.second.set_selected(false);
-        gpp.second.clear_focused_components();
+        gpp.second->set_selected(false);
+        gpp.second->clear_focused_components();
       }
       for (auto& cpp : color_pickers)
-        cpp.second.set_selected(false);
+        cpp.second->set_selected(false);
       
       // Select a widget
       if (button_group.try_tab_select(tab))
         return;
       for (auto& tfp : text_fields)
-        if (tfp.second.try_tab_select(tab, sub_tab))
+        if (tfp.second->try_tab_select(tab, sub_tab))
           return;
       for (auto& gpp : glyph_pickers)
-        if (gpp.second.try_tab_select(tab, sub_tab))
+        if (gpp.second->try_tab_select(tab, sub_tab))
           return;
       for (auto& cpp : color_pickers)
-        if (cpp.second.try_tab_select(tab, sub_tab))
+        if (cpp.second->try_tab_select(tab, sub_tab))
           return;
     }
     
@@ -1301,48 +1301,48 @@ namespace t8x
     
     void add_label(const RC& pos, const Label& l)
     {
-      labels.emplace_back(pos, l);
+      labels.emplace_back(pos, std::make_unique<Label>(l));
     }
     
     void add_text_field(const RC& pos, const TextField& tf)
     {
-      text_fields.emplace_back(pos, tf);
+      text_fields.emplace_back(pos, std::make_unique<TextField>(tf));
       math::maximize(max_tab_idx, tf.get_tab_order());
     }
     
     const std::string get_text_field_input(int tab) const
     {
-      auto it = stlutils::find_if(text_fields, [tab](const auto& tfp) { return tfp.second.get_tab_order() == tab; });
+      auto it = stlutils::find_if(text_fields, [tab](const auto& tfp) { return tfp.second->get_tab_order() == tab; });
       if (it != text_fields.end())
-        return it->second.get_input();
+        return it->second->get_input();
       return "";
     }
     
     void set_text_field_input(int tab, const std::string& str)
     {
-      auto it = stlutils::find_if(text_fields, [tab](const auto& tfp) { return tfp.second.get_tab_order() == tab; });
+      auto it = stlutils::find_if(text_fields, [tab](const auto& tfp) { return tfp.second->get_tab_order() == tab; });
       if (it != text_fields.end())
-        return it->second.set_input(str);
+        return it->second->set_input(str);
     }
     
     void clear_text_field_input(int tab)
     {
-      auto it = stlutils::find_if(text_fields, [tab](const auto& tfp) { return tfp.second.get_tab_order() == tab; });
+      auto it = stlutils::find_if(text_fields, [tab](const auto& tfp) { return tfp.second->get_tab_order() == tab; });
       if (it != text_fields.end())
-        return it->second.clear_input();
+        return it->second->clear_input();
     }
     
     bool text_field_empty(int tab)
     {
-      auto it = stlutils::find_if(text_fields, [tab](const auto& tfp) { return tfp.second.get_tab_order() == tab; });
+      auto it = stlutils::find_if(text_fields, [tab](const auto& tfp) { return tfp.second->get_tab_order() == tab; });
       if (it != text_fields.end())
-        return it->second.empty();
+        return it->second->empty();
       return true; // Treat as empty if unable to find matching text field.
     }
     
     void add_glyph_picker(const RC& pos, const GlyphPicker& gp)
     {
-      glyph_pickers.emplace_back(pos, gp);
+      glyph_pickers.emplace_back(pos, std::make_unique<GlyphPicker>(gp));
       math::maximize(max_tab_idx, gp.get_tab_order());
     }
     
@@ -1370,28 +1370,28 @@ namespace t8x
     
     void add_color_picker(const RC& pos, const ColorPicker& cp)
     {
-      color_pickers.emplace_back(pos, cp);
+      color_pickers.emplace_back(pos, std::make_unique<ColorPicker>(cp));
       math::maximize(max_tab_idx, cp.get_tab_order());
     }
     
     const Color get_color_picker_color(int tab) const
     {
-      auto it = stlutils::find_if(color_pickers, [tab](const auto& cpp) { return cpp.second.get_tab_order() == tab; });
+      auto it = stlutils::find_if(color_pickers, [tab](const auto& cpp) { return cpp.second->get_tab_order() == tab; });
       if (it != color_pickers.end())
-        return it->second.get_color();
+        return it->second->get_color();
       return Color16::Default;
     }
     
     void set_color_picker_color(int tab, Color color)
     {
-      auto it = stlutils::find_if(color_pickers, [tab](const auto& cpp) { return cpp.second.get_tab_order() == tab; });
+      auto it = stlutils::find_if(color_pickers, [tab](const auto& cpp) { return cpp.second->get_tab_order() == tab; });
       if (it != color_pickers.end())
-        return it->second.set_color(color);
+        return it->second->set_color(color);
     }
     
     void reset_color_picker(int tab)
     {
-      auto it = stlutils::find_if(color_pickers, [tab](const auto& cpp) { return cpp.second.get_tab_order() == tab; });
+      auto it = stlutils::find_if(color_pickers, [tab](const auto& cpp) { return cpp.second->get_tab_order() == tab; });
       if (it != color_pickers.end())
         return it->second.clear();
     }
@@ -1403,10 +1403,10 @@ namespace t8x
         // 0.0 -> 1.0 : Label(0), GlyphPicker(1), Label(2)
         // 1.0 -> 1.1
         // 1.1 -> 2.0
-        auto it = stlutils::find_if(glyph_pickers, [&](const auto& gpp) { return gpp.second.get_tab_order() == tab_idx; });
+        auto it = stlutils::find_if(glyph_pickers, [&](const auto& gpp) { return gpp.second->get_tab_order() == tab_idx; });
         if (it != glyph_pickers.end())
         {
-          sub_tab_idx = (sub_tab_idx + 1) % it->second.num_components();
+          sub_tab_idx = (sub_tab_idx + 1) % it->second->num_components();
           if (sub_tab_idx == 0)
             tab_idx = (tab_idx + 1) % (max_tab_idx + 1);
         }
@@ -1421,11 +1421,11 @@ namespace t8x
         inc_button_selection();
 
       for (auto& tfp : text_fields)
-        tfp.second.update(curr_key, curr_special_key);
+        tfp.second->update(curr_key, curr_special_key);
       for (auto& gpp : glyph_pickers)
-        gpp.second.update(curr_special_key);
+        gpp.second->update(curr_special_key);
       for (auto& cpp : color_pickers)
-        cpp.second.update(curr_special_key);
+        cpp.second->update(curr_special_key);
     }
     
     template<int NR, int NC, typename CharT>
@@ -1454,16 +1454,16 @@ namespace t8x
                         c_len);
       
       for (const auto& lp : labels)
-        lp.second.draw(sh, pos + lp.first);
+        lp.second->draw(sh, pos + lp.first);
         
       for (const auto& tfp : text_fields)
-        tfp.second.draw(sh, pos + tfp.first, anim_ctr);
+        tfp.second->draw(sh, pos + tfp.first, anim_ctr);
         
       for (const auto& gpp : glyph_pickers)
-        gpp.second.draw(sh, pos + gpp.first, anim_ctr);
+        gpp.second->draw(sh, pos + gpp.first, anim_ctr);
         
       for (const auto& cpp : color_pickers)
-        cpp.second.draw(sh, pos + cpp.first, anim_ctr);
+        cpp.second->draw(sh, pos + cpp.first, anim_ctr);
         
       TextBox<StrT>::draw(sh, args);
     }
