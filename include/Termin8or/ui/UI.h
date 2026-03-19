@@ -1410,10 +1410,10 @@ namespace t8x
         // 0.0 -> 1.0 : Label(0), GlyphPicker(1), Label(2)
         // 1.0 -> 1.1
         // 1.1 -> 2.0
-        auto it = stlutils::find_if(glyph_pickers, [&](const auto& gpp) { return gpp.second->get_tab_order() == tab_idx; });
-        if (it != glyph_pickers.end())
+        auto it = stlutils::find_if(all_widgets, [&](const auto* widget) { return widget->get_tab_order() == tab_idx; });
+        if (it != all_widgets.end())
         {
-          sub_tab_idx = (sub_tab_idx + 1) % it->second->num_components();
+          sub_tab_idx = (sub_tab_idx + 1) % (*it)->num_components();
           if (sub_tab_idx == 0)
             tab_idx = (tab_idx + 1) % (max_tab_idx + 1);
         }
