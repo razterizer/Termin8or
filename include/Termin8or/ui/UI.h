@@ -213,7 +213,7 @@ namespace t8x
   
   class ButtonGroup
   {
-    std::vector<Button> buttons;
+    std::vector<std::unique_ptr<Button>> buttons;
     int selected = -1;
     
   public:
@@ -223,7 +223,7 @@ namespace t8x
     void clear_selections()
     {
       for (auto& btn : buttons)
-        btn.set_selected(false);
+        btn->set_selected(false);
     }
     
     bool try_tab_select(int tab)
@@ -231,9 +231,9 @@ namespace t8x
       for (int b_idx = 0; b_idx < stlutils::sizeI(buttons); ++b_idx)
       {
         auto& btn = buttons[b_idx];
-        if (btn.get_tab_order() == tab)
+        if (btn->get_tab_order() == tab)
         {
-          btn.set_selected(true);
+          btn->set_selected(true);
           selected = b_idx;
           return true;
         }
@@ -241,9 +241,10 @@ namespace t8x
       return false;
     }
   
-    void add(const Button& btn)
+    Button* add(const Button& btn)
     {
-      buttons.emplace_back(btn);
+      auto& uptr = buttons.emplace_back(std::make_unique<Button>(btn));
+      return uptr.get();
     }
     void set_selection(int sel_idx, bool sel, int* sel_tab_idx)
     {
@@ -259,7 +260,7 @@ namespace t8x
     {
       auto sz = stlutils::sizeI(buttons);
       if (0 <= selected && selected < sz)
-        return &buttons[selected];
+        return buttons[selected].get();
       return nullptr;
     }
     void inc_selection(int* sel_tab_idx)
@@ -309,14 +310,14 @@ namespace t8x
       if (buttons.empty())
         return;
     
-      int width_btns = stlutils::sum<int>(buttons, [](const auto& btn) { return btn.width(); });
+      int width_btns = stlutils::sum<int>(buttons, [](const auto& btn) { return btn->width(); });
       int spacing = (width - width_btns) / static_cast<int>(buttons.size() - (buttons.size() > 1));
       
       int c = pos.c;
       for (const auto& btn : buttons)
       {
-        btn.draw(sh, RC { pos.r, c });
-        c += btn.width() + spacing;
+        btn->draw(sh, RC { pos.r, c });
+        c += btn->width() + spacing;
       }
     }
   };
