@@ -517,6 +517,8 @@ namespace t8x
     Label hex_prefix_lbl;
     TextField cp_field; // preferred (UTF-8)
     TextField fb_field; // fallback (ASCII)
+    std::string cp_str_prev;
+    std::string fb_str_prev;
     
     std::array<t8::Glyph, 16> recent_glyphs;
     [[maybe_unused]] int sel_recent_idx = -1;
@@ -556,9 +558,23 @@ namespace t8x
         return;
         
       if (cp_field.is_selected())
+      {
         cp_field.update(curr_key, curr_special_key);
+        if (cp_field.empty())
+          current_glyph.preferred = t8::Glyph::none32;
+        else if (cp_str_prev != cp_field.get_input())
+          current_glyph.preferred = str::hex2int(cp_field.get_input());
+        cp_str_prev = cp_field.get_input();
+      }
       if (fb_field.is_selected())
+      {
         fb_field.update(curr_key, curr_special_key);
+        if (fb_field.empty())
+          current_glyph.fallback = t8::Glyph::none;
+        else if (fb_str_prev != fb_field.get_input())
+          current_glyph.fallback = fb_field.get_input()[0];
+        fb_str_prev = fb_field.get_input();
+      }
     }
     
     template<int NR, int NC, typename CharT>
@@ -574,7 +590,7 @@ namespace t8x
         if constexpr (std::is_same_v<CharT, char>)
         {
           std::string str_fallback = current_glyph.fallback == t8::Glyph::none ? "" : std::string(1, current_glyph.fallback);
-          return "[|" + str_fallback + "]";
+          return str_fallback;
         }
         else if constexpr (std::is_same_v<CharT, char32_t>)
         {
