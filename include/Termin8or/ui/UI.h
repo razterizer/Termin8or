@@ -575,13 +575,6 @@ namespace t8x
       
     }
     
-    //virtual void set_selected(bool sel) override
-    //{
-    //  Widget::set_selected(sel);
-    //
-    //  cp_field.set_selected(sel);
-    //}
-    
     virtual int num_components() const override { return 2; }
     
     virtual void set_component_focus(int sub_tab, bool selected) override
