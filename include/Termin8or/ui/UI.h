@@ -507,6 +507,14 @@ namespace t8x
   
   class GlyphPicker : public Widget
   {
+    // cp_ : codepoint
+    // fb_ : fallback
+    // cg_ : current glyph
+    Style lbl_style;
+    Label cg_lbl;
+    Label cp_lbl;
+    Label fb_lbl;
+    Label hex_prefix_lbl;
     TextField cp_field; // preferred (UTF-8)
     TextField fb_field; // fallback (ASCII)
     
@@ -518,11 +526,17 @@ namespace t8x
     t8::Glyph current_glyph;
     
   public:
-    GlyphPicker(PromptStyle tf_style, int tab, char clear_ch = '_', bool sel = false)
+    GlyphPicker(PromptStyle tf_style, Style label_style, Style hex_prefix_style,
+                int tab, char clear_ch = '_', bool sel = false)
       : Widget(tab, sel)
+      , lbl_style(label_style)
+      , cg_lbl("Current Glyph:", label_style)
+      , cp_lbl("Preferred (Unicode):", label_style)
+      , fb_lbl("Fallback (ASCII):", label_style)
+      , hex_prefix_lbl("0x", hex_prefix_style)
       , cp_field(6, TextFieldMode::Hex, tf_style,
                  tab, clear_ch, sel)
-      , fb_field(6, TextFieldMode::PrintableAscii, tf_style,
+      , fb_field(1, TextFieldMode::PrintableAscii, tf_style,
                  tab, clear_ch, sel)
     {}
   
@@ -550,19 +564,44 @@ namespace t8x
     template<int NR, int NC, typename CharT>
     void draw(ScreenHandler<NR, NC, CharT>& sh, const RC& pos, int anim_ctr) const
     {
-      // Recent Glyphs: [         ]
       // Current Glyph: __
-      // Preferred (Unicode): _
-      // Fallback (ASCII):    _
+      // Recent Glyphs: [         ]
+      // Preferred (Unicode): 0x______
+      // Fallback (ASCII):      _
+      
+      auto f_format_curr_glyph = [&]() -> std::string
+      {
+        if constexpr (std::is_same_v<CharT, char>)
+        {
+          std::string str_fallback = current_glyph.fallback == t8::Glyph::none ? "" : std::string(1, current_glyph.fallback);
+          return "[|" + str_fallback + "]";
+        }
+        else if constexpr (std::is_same_v<CharT, char32_t>)
+        {
+          auto preferred = t8::term::get_renderable_char32(current_glyph.preferred);
+          std::string str_preferred = preferred == t8::Glyph::none32 ? "" : current_glyph.encode_single_width_glyph<CharT>();
+          std::string str_fallback = current_glyph.fallback == t8::Glyph::none ? "" : std::string(1, current_glyph.fallback);
+          return "[" + str_preferred + "|" + str_fallback + "]";
+        }
+        return "[|]";
+      };
       
       //sh.write_buffer("Recent Glyphs:", pos, Color)
-      cp_field.draw(sh, pos + RC { 2, 1 }, anim_ctr);
-      fb_field.draw(sh, pos + RC { 3, 1 }, anim_ctr);
+      
+      cg_lbl.draw(sh, pos + RC { 0, 0 });
+      sh.write_buffer(f_format_curr_glyph(), pos + RC { 0, cg_lbl.width() + 1 }, lbl_style);
+      
+      cp_lbl.draw(sh, pos + RC { 2, 0 });
+      hex_prefix_lbl.draw(sh, pos + RC { 2, cp_lbl.width() + 1 });
+      cp_field.draw(sh, pos + RC { 2, cp_lbl.width() + 1 + hex_prefix_lbl.width() }, anim_ctr);
+      
+      fb_lbl.draw(sh, pos + RC { 3, 0 });
+      fb_field.draw(sh, pos + RC { 3, cp_lbl.width() + 1 + hex_prefix_lbl.width() }, anim_ctr);
     }
     
     virtual int width() const override
     {
-      return 0; // #FIXME
+      return cp_lbl.width() + 1 + hex_prefix_lbl.width() + cp_field.width();
     }
     
     virtual int height() const override
@@ -575,13 +614,13 @@ namespace t8x
       
     }
     
-    virtual int num_components() const override { return 2; }
+    virtual int num_components() const override { return 3; }
     
     virtual void set_component_focus(int sub_tab, bool selected) override
     {
-      if (sub_tab == 0)
+      if (sub_tab == 1)
         cp_field.set_selected(selected);
-      else if (sub_tab == 1)
+      else if (sub_tab == 2)
         fb_field.set_selected(selected);
     }
   };
