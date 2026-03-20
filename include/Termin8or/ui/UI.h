@@ -536,10 +536,15 @@ namespace t8x
       return current_glyph;
     }
     
-    void update(SpecialKey curr_special_key)
+    void update(char curr_key, SpecialKey curr_special_key)
     {
       if (!is_selected())
         return;
+        
+      if (cp_field.is_selected())
+        cp_field.update(curr_key, curr_special_key);
+      if (fb_field.is_selected())
+        fb_field.update(curr_key, curr_special_key);
     }
     
     template<int NR, int NC, typename CharT>
@@ -1430,7 +1435,7 @@ namespace t8x
       for (auto& tfp : text_fields)
         tfp.second->update(curr_key, curr_special_key);
       for (auto& gpp : glyph_pickers)
-        gpp.second->update(curr_special_key);
+        gpp.second->update(curr_key, curr_special_key);
       for (auto& cpp : color_pickers)
         cpp.second->update(curr_special_key);
     }
