@@ -41,6 +41,7 @@
 		07BDBAAE2E741CE6002ACC96 /* CollisionHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 07BDBAA72E741CE6002ACC96 /* CollisionHandler.h */; };
 		07BDBAAF2E741CE6002ACC96 /* RigidBody.h in Headers */ = {isa = PBXBuildFile; fileRef = 07BDBAA92E741CE6002ACC96 /* RigidBody.h */; };
 		07BDBAB02E741CE6002ACC96 /* DynamicsSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 07BDBAA82E741CE6002ACC96 /* DynamicsSystem.h */; };
+		07FE32A82F6E20B4009336E1 /* StyledString.h in Headers */ = {isa = PBXBuildFile; fileRef = 07FE32A72F6E20AC009336E1 /* StyledString.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -110,6 +111,7 @@
 		07FDE97F2CA0C4E100116BA7 /* build_unit_tests.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build_unit_tests.sh; sourceTree = "<group>"; };
 		07FDE9802CA0C4E100116BA7 /* unit_tests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = unit_tests.cpp; sourceTree = "<group>"; };
 		07FDE9822CA0C75C00116BA7 /* build-and-test-ubuntu.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; name = "build-and-test-ubuntu.yml"; path = ".github/workflows/build-and-test-ubuntu.yml"; sourceTree = "<group>"; };
+		07FE32A72F6E20AC009336E1 /* StyledString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StyledString.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +181,7 @@
 				07BDBA672E741B05002ACC96 /* ScreenScaling.h */,
 				07BDBA682E741B05002ACC96 /* ScreenUtils.h */,
 				07BDBA692E741B05002ACC96 /* Styles.h */,
+				07FE32A72F6E20AC009336E1 /* StyledString.h */,
 				07BDBA6A2E741B05002ACC96 /* Text.h */,
 				0774FE1C2F1E1CA800B4D4FC /* TermHelper.h */,
 			);
@@ -369,6 +372,7 @@
 				07BDBA6E2E741B05002ACC96 /* ScreenCommands.h in Headers */,
 				07BDBA6F2E741B05002ACC96 /* Text.h in Headers */,
 				07BDBA702E741B05002ACC96 /* ScreenHandler.h in Headers */,
+				07FE32A82F6E20B4009336E1 /* StyledString.h in Headers */,
 				07BDBAAD2E741CE6002ACC96 /* ParticleSystem.h in Headers */,
 				07BDBAAE2E741CE6002ACC96 /* CollisionHandler.h in Headers */,
 				07BDBAAF2E741CE6002ACC96 /* RigidBody.h in Headers */,
