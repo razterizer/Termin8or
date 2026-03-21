@@ -589,8 +589,9 @@ namespace t8x
       {
         if constexpr (std::is_same_v<CharT, char>)
         {
+          std::string str_preferred = current_glyph.preferred == t8::Glyph::none32 ? "" : "0x" + str::int2hex(current_glyph.preferred);
           std::string str_fallback = current_glyph.fallback == t8::Glyph::none ? "" : std::string(1, current_glyph.fallback);
-          return str_fallback;
+          return "[" + str_preferred + "|" + str_fallback + "]";
         }
         else if constexpr (std::is_same_v<CharT, char32_t>)
         {
