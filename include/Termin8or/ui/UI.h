@@ -601,11 +601,6 @@ namespace t8x
       
       auto f_format_curr_glyph = [&]() -> std::vector<t8::StyledString>
       {
-        std::vector<t8::StyledString> ss_vec;
-        ss_vec.resize(5);
-        ss_vec[0] = { "[", brck_style };
-        ss_vec[2] = { "|", brck_style };
-        ss_vec[4] = { "]", brck_style };
         std::string str_preferred;
         std::string str_fallback;
         if constexpr (std::is_same_v<CharT, char>)
@@ -619,9 +614,13 @@ namespace t8x
           str_preferred = preferred == t8::Glyph::none32 ? "" : current_glyph.encode_single_width_glyph<CharT>();
           str_fallback = current_glyph.fallback == t8::Glyph::none ? "" : std::string(1, current_glyph.fallback);
         }
-        ss_vec[1] = { str_preferred, lbl_style };
-        ss_vec[3] = { str_fallback, lbl_style };
-        return ss_vec;
+        return {
+          { "[", brck_style },
+          { str_preferred, lbl_style },
+          { "|", brck_style },
+          { str_fallback, lbl_style },
+          { "]", brck_style }
+        };
       };
       
       current_glyph_disp_str = f_format_curr_glyph();
