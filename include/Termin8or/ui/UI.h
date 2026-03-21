@@ -510,7 +510,9 @@ namespace t8x
     // cp_ : codepoint
     // fb_ : fallback
     // cg_ : current glyph
+    // rg_ : recent glyphs
     Style lbl_style;
+    Label rg_lbl;
     Label cg_lbl;
     Label cp_lbl;
     Label fb_lbl;
@@ -533,6 +535,7 @@ namespace t8x
                 int tab, char clear_ch = '_', bool sel = false)
       : Widget(tab, sel)
       , lbl_style(label_style)
+      , rg_lbl("Recent Glyphs:", label_style)
       , cg_lbl("Current Glyph:", label_style)
       , cp_lbl("Preferred (Unicode):", label_style)
       , fb_lbl("Fallback (ASCII):", label_style)
@@ -586,7 +589,7 @@ namespace t8x
     template<int NR, int NC, typename CharT>
     void draw(ScreenHandler<NR, NC, CharT>& sh, const RC& pos, int anim_ctr) const
     {
-      // Current Glyph: __
+      // Current Glyph: [|]
       // Recent Glyphs: [         ]
       // Preferred (Unicode): 0x______
       // Fallback (ASCII):      _
@@ -613,9 +616,12 @@ namespace t8x
       
       current_glyph_disp_str = f_format_curr_glyph();
       
+      // /////
       
       cg_lbl.draw(sh, pos + RC { 0, 0 });
       sh.write_buffer(current_glyph_disp_str, pos + RC { 0, cg_lbl.width() + 1 }, lbl_style);
+      
+      rg_lbl.draw(sh, pos + RC { 1, 0 });
       
       cp_lbl.draw(sh, pos + RC { 2, 0 });
       hex_prefix_lbl.draw(sh, pos + RC { 2, cp_lbl.width() + 1 });
