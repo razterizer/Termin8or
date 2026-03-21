@@ -637,7 +637,8 @@ namespace t8x
     
     void clear()
     {
-      
+      current_glyph.clear();
+      current_glyph_disp_str.clear();
     }
     
     virtual int num_components() const override { return 3; }
