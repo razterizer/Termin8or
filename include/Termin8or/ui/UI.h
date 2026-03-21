@@ -613,10 +613,10 @@ namespace t8x
         }
         else if constexpr (std::is_same_v<CharT, char32_t>)
         {
-          auto preferred = t8::term::get_renderable_char32(current_glyph.preferred);
-          str_preferred = preferred == t8::Glyph::none32 ? "" : current_glyph.encode_single_width_glyph<CharT>();
+          bool can_render_preferred = t8::term::can_render_single_column_cp_cached(current_glyph.preferred);
+          str_preferred = cp_field.empty() ? "" : (can_render_preferred ? current_glyph.encode_single_width_glyph<CharT>() : "0x" + str::int2hex(current_glyph.preferred));
           str_fallback = current_glyph.fallback == t8::Glyph::none ? "" : std::string(1, current_glyph.fallback);
-          width_preferred = str_preferred.empty() ? 0 : 1;
+          width_preferred = str_preferred.empty() ? 0 : (can_render_preferred ? 1 : str::lenI(str_preferred));
         }
         width_fallback = str::lenI(str_fallback);
         
