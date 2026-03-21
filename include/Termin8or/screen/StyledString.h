@@ -17,6 +17,7 @@ namespace t8
   {
     std::string text;
     Style style;
+    int width = 0;
   };
   
 }
