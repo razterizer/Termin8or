@@ -513,6 +513,7 @@ namespace t8x
     // cg_ : current glyph
     // rg_ : recent glyphs
     Style lbl_style;
+    Style brck_style;
     Label rg_lbl;
     Label cg_lbl;
     Label cp_lbl;
@@ -529,13 +530,14 @@ namespace t8x
     [[maybe_unused]] int recent_count = 0;
     
     t8::Glyph current_glyph;
-    mutable std::string current_glyph_disp_str; // Cached representation of current_glyph for display.
+    mutable std::vector<t8::StyledString> current_glyph_disp_str; // Cached representation of current_glyph for display.
     
   public:
-    GlyphPicker(PromptStyle tf_style, Style label_style, Style hex_prefix_style,
+    GlyphPicker(PromptStyle tf_style, Style label_style, Style hex_prefix_style, Style bracket_style,
                 int tab, char clear_ch = '_', bool sel = false)
       : Widget(tab, sel)
       , lbl_style(label_style)
+      , brck_style(bracket_style)
       , rg_lbl("Recent Glyphs:", label_style)
       , cg_lbl("Current Glyph:", label_style)
       , cp_lbl("Preferred (Unicode):", label_style)
@@ -557,7 +559,7 @@ namespace t8x
       return current_glyph;
     }
     
-    const std::string& get_glyph_str() const
+    const std::vector<t8::StyledString>& get_glyph_str() const
     {
       return current_glyph_disp_str;
     }
@@ -597,22 +599,29 @@ namespace t8x
       
       //sh.write_buffer("Recent Glyphs:", pos, Color)
       
-      auto f_format_curr_glyph = [&]() -> std::string
+      auto f_format_curr_glyph = [&]() -> std::vector<t8::StyledString>
       {
+        std::vector<t8::StyledString> ss_vec;
+        ss_vec.resize(5);
+        ss_vec[0] = { "[", brck_style };
+        ss_vec[2] = { "|", brck_style };
+        ss_vec[4] = { "]", brck_style };
+        std::string str_preferred;
+        std::string str_fallback;
         if constexpr (std::is_same_v<CharT, char>)
         {
-          std::string str_preferred = current_glyph.preferred == t8::Glyph::none32 ? "" : "0x" + str::int2hex(current_glyph.preferred);
-          std::string str_fallback = current_glyph.fallback == t8::Glyph::none ? "" : std::string(1, current_glyph.fallback);
-          return "[" + str_preferred + "|" + str_fallback + "]";
+          str_preferred = current_glyph.preferred == t8::Glyph::none32 ? "" : "0x" + str::int2hex(current_glyph.preferred);
+          str_fallback = current_glyph.fallback == t8::Glyph::none ? "" : std::string(1, current_glyph.fallback);
         }
         else if constexpr (std::is_same_v<CharT, char32_t>)
         {
           auto preferred = t8::term::get_renderable_char32(current_glyph.preferred);
-          std::string str_preferred = preferred == t8::Glyph::none32 ? "" : current_glyph.encode_single_width_glyph<CharT>();
-          std::string str_fallback = current_glyph.fallback == t8::Glyph::none ? "" : std::string(1, current_glyph.fallback);
-          return "[" + str_preferred + "|" + str_fallback + "]";
+          str_preferred = preferred == t8::Glyph::none32 ? "" : current_glyph.encode_single_width_glyph<CharT>();
+          str_fallback = current_glyph.fallback == t8::Glyph::none ? "" : std::string(1, current_glyph.fallback);
         }
-        return "[|]";
+        ss_vec[1] = { str_preferred, lbl_style };
+        ss_vec[3] = { str_fallback, lbl_style };
+        return ss_vec;
       };
       
       current_glyph_disp_str = f_format_curr_glyph();
@@ -620,7 +629,15 @@ namespace t8x
       // /////
       
       cg_lbl.draw(sh, pos + RC { 0, 0 });
-      sh.write_buffer(current_glyph_disp_str, pos + RC { 0, cg_lbl.width() + 1 }, lbl_style);
+      {
+        int h_pos = cg_lbl.width() + 1;
+        for (const auto& ss : current_glyph_disp_str)
+        {
+          sh.write_buffer(ss.text, pos + RC { 0, h_pos }, ss.style);
+          // #FHX: UTF-8 hack to avoid extra white space that sometimes occur for some codepoints.
+          h_pos += ss.text.empty() ? 0 : (ss.text.starts_with("0x") ? ss.text.length() : 1);
+        }
+      }
       
       rg_lbl.draw(sh, pos + RC { 1, 0 });
       
