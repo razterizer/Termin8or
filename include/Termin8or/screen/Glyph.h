@@ -48,6 +48,12 @@ namespace t8
       return preferred == none32;
     }
     
+    inline void clear()
+    {
+      preferred = none32;
+      fallback = none;
+    }
+    
     bool operator==(const Glyph& g) const
     {
       return this->preferred == g.preferred
