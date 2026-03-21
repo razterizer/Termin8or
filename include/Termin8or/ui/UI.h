@@ -611,7 +611,7 @@ namespace t8x
         return "[|]";
       };
       
-      current_glyph_disp_str = f_format_curr_glyph;
+      current_glyph_disp_str = f_format_curr_glyph();
       
       
       cg_lbl.draw(sh, pos + RC { 0, 0 });
