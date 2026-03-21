@@ -9,6 +9,7 @@
 #include "../geom/RC.h"
 #include "../input/KeyboardEnums.h"
 #include "../drawing/Drawing.h"
+#include "../screen/StyledString.h"
 #include <Core/StringBox.h>
 #include <Core/Utils.h>
 
