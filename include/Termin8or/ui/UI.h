@@ -526,6 +526,7 @@ namespace t8x
     [[maybe_unused]] int recent_count = 0;
     
     t8::Glyph current_glyph;
+    mutable std::string current_glyph_disp_str; // Cached representation of current_glyph for display.
     
   public:
     GlyphPicker(PromptStyle tf_style, Style label_style, Style hex_prefix_style,
@@ -550,6 +551,11 @@ namespace t8x
     t8::Glyph get_glyph() const
     {
       return current_glyph;
+    }
+    
+    const std::string& get_glyph_str() const
+    {
+      return current_glyph_disp_str;
     }
     
     void update(char curr_key, SpecialKey curr_special_key)
@@ -585,6 +591,8 @@ namespace t8x
       // Preferred (Unicode): 0x______
       // Fallback (ASCII):      _
       
+      //sh.write_buffer("Recent Glyphs:", pos, Color)
+      
       auto f_format_curr_glyph = [&]() -> std::string
       {
         if constexpr (std::is_same_v<CharT, char>)
@@ -603,10 +611,11 @@ namespace t8x
         return "[|]";
       };
       
-      //sh.write_buffer("Recent Glyphs:", pos, Color)
+      current_glyph_disp_str = f_format_curr_glyph;
+      
       
       cg_lbl.draw(sh, pos + RC { 0, 0 });
-      sh.write_buffer(f_format_curr_glyph(), pos + RC { 0, cg_lbl.width() + 1 }, lbl_style);
+      sh.write_buffer(current_glyph_disp_str, pos + RC { 0, cg_lbl.width() + 1 }, lbl_style);
       
       cp_lbl.draw(sh, pos + RC { 2, 0 });
       hex_prefix_lbl.draw(sh, pos + RC { 2, cp_lbl.width() + 1 });
