@@ -603,23 +603,29 @@ namespace t8x
       {
         std::string str_preferred;
         std::string str_fallback;
+        int width_preferred = 0;
+        int width_fallback = 0;
         if constexpr (std::is_same_v<CharT, char>)
         {
           str_preferred = current_glyph.preferred == t8::Glyph::none32 ? "" : "0x" + str::int2hex(current_glyph.preferred);
           str_fallback = current_glyph.fallback == t8::Glyph::none ? "" : std::string(1, current_glyph.fallback);
+          width_preferred = str::lenI(str_preferred);
         }
         else if constexpr (std::is_same_v<CharT, char32_t>)
         {
           auto preferred = t8::term::get_renderable_char32(current_glyph.preferred);
           str_preferred = preferred == t8::Glyph::none32 ? "" : current_glyph.encode_single_width_glyph<CharT>();
           str_fallback = current_glyph.fallback == t8::Glyph::none ? "" : std::string(1, current_glyph.fallback);
+          width_preferred = str_preferred.empty() ? 0 : 1;
         }
+        width_fallback = str::lenI(str_fallback);
+        
         return {
-          { "[", brck_style },
-          { str_preferred, lbl_style },
-          { "|", brck_style },
-          { str_fallback, lbl_style },
-          { "]", brck_style }
+          { "[", brck_style, 1 },
+          { str_preferred, lbl_style, width_preferred },
+          { "|", brck_style, 1 },
+          { str_fallback, lbl_style, width_fallback },
+          { "]", brck_style, 1 }
         };
       };
       
@@ -633,8 +639,7 @@ namespace t8x
         for (const auto& ss : current_glyph_disp_str)
         {
           sh.write_buffer(ss.text, pos + RC { 0, h_pos }, ss.style);
-          // #FHX: UTF-8 hack to avoid extra white space that sometimes occur for some codepoints.
-          h_pos += ss.text.empty() ? 0 : (ss.text.starts_with("0x") ? ss.text.length() : 1);
+          h_pos += ss.width;
         }
       }
       
