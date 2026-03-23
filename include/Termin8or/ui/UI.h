@@ -532,13 +532,6 @@ namespace t8x
     t8::Glyph current_glyph;
     mutable std::vector<t8::StyledString> current_glyph_disp_str; // Cached representation of current_glyph for display.
     
-    void push_recent(const t8::Glyph& g)
-    {
-      recent_glyphs[recent_head] = g;
-      recent_head = (recent_head + 1) % recent_glyphs.size();
-      recent_count = std::min(recent_count + 1, (int)recent_glyphs.size());
-    }
-    
   public:
     GlyphPicker(PromptStyle tf_style, Style label_style, Style hex_prefix_style, Style bracket_style,
                 int tab, char clear_ch = '_', bool sel = false)
@@ -684,6 +677,13 @@ namespace t8x
         cp_field.set_selected(selected);
       else if (sub_tab == 2)
         fb_field.set_selected(selected);
+    }
+    
+    void push_recent()
+    {
+      recent_glyphs[recent_head] = current_glyph;
+      recent_head = (recent_head + 1) % recent_glyphs.size();
+      recent_count = std::min(recent_count + 1, (int)recent_glyphs.size());
     }
   };
   
