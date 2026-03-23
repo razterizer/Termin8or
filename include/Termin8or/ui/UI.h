@@ -683,7 +683,7 @@ namespace t8x
     {
       recent_glyphs[recent_head] = current_glyph;
       recent_head = (recent_head + 1) % recent_glyphs.size();
-      recent_count = std::min(recent_count + 1, (int)recent_glyphs.size());
+      recent_count = std::min(recent_count + 1, static_cast<int>(recent_glyphs.size()));
     }
   };
   
