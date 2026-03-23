@@ -525,7 +525,7 @@ namespace t8x
     std::string fb_str_prev;
     
     std::array<t8::Glyph, 16> recent_glyphs;
-    int sel_recent_idx = -1;
+    [[maybe_unused]] int sel_recent_idx = -1;
     int recent_head = 0;
     int recent_count = 0;
     
