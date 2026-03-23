@@ -525,9 +525,9 @@ namespace t8x
     std::string fb_str_prev;
     
     std::array<t8::Glyph, 16> recent_glyphs;
-    [[maybe_unused]] int sel_recent_idx = -1;
-    [[maybe_unused]] int recent_head = 0;
-    [[maybe_unused]] int recent_count = 0;
+    int sel_recent_idx = -1;
+    int recent_head = 0;
+    int recent_count = 0;
     
     t8::Glyph current_glyph;
     mutable std::vector<t8::StyledString> current_glyph_disp_str; // Cached representation of current_glyph for display.
