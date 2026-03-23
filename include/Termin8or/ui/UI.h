@@ -682,8 +682,8 @@ namespace t8x
     void push_recent()
     {
       recent_glyphs[recent_head] = current_glyph;
-      recent_head = (recent_head + 1) % recent_glyphs.size();
-      recent_count = std::min(recent_count + 1, static_cast<int>(recent_glyphs.size()));
+      recent_head = (recent_head + 1) % stlutils::sizeI(recent_glyphs);
+      recent_count = std::min(recent_count + 1, stlutils::sizeI(recent_glyphs));
     }
   };
   
