@@ -669,6 +669,18 @@ namespace t8x
       f_write_buffer_ss(current_glyph_disp_str, pos + RC { 0, cg_lbl.width() + 1 });
       
       rg_lbl.draw(sh, pos + RC { 1, 0 });
+      {
+        int rg_col_start = rg_lbl.width() + 1;
+        for (int g_idx = 0; g_idx < 4; ++g_idx)
+        {
+          const auto& rg = recent_glyphs[g_idx];
+          if (rg.preferred != t8::Glyph::none32)
+          {
+            auto ss_vec = format_glyph_short<CharT>(rg);
+            rg_col_start = f_write_buffer_ss(ss_vec, pos + RC { 0, rg_col_start });
+          }
+        }
+      }
       
       cp_lbl.draw(sh, pos + RC { 2, 0 });
       hex_prefix_lbl.draw(sh, pos + RC { 2, cp_lbl.width() + 1 });
