@@ -654,15 +654,19 @@ namespace t8x
       
       // /////
       
-      cg_lbl.draw(sh, pos + RC { 0, 0 });
+      auto f_write_buffer_ss = [&](const std::vector<t8::StyledString>& ss_vec, const RC& pos) -> int
       {
-        int h_pos = cg_lbl.width() + 1;
-        for (const auto& ss : current_glyph_disp_str)
+        int h_pos = 0;
+        for (const auto& ss : ss_vec)
         {
           sh.write_buffer(ss.text, pos + RC { 0, h_pos }, ss.style);
           h_pos += ss.width;
         }
-      }
+        return h_pos;
+      };
+      
+      cg_lbl.draw(sh, pos + RC { 0, 0 });
+      f_write_buffer_ss(current_glyph_disp_str, pos + RC { 0, cg_lbl.width() + 1 });
       
       rg_lbl.draw(sh, pos + RC { 1, 0 });
       
