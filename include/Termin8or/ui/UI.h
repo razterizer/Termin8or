@@ -512,6 +512,7 @@ namespace t8x
     // fb_ : fallback
     // cg_ : current glyph
     // rg_ : recent glyphs
+    PromptStyle prmpt_style;
     Style lbl_style;
     Style brck_style;
     Label rg_lbl;
@@ -575,6 +576,7 @@ namespace t8x
     GlyphPicker(PromptStyle tf_style, Style label_style, Style hex_prefix_style, Style bracket_style,
                 int tab, char clear_ch = '_', bool sel = false)
       : Widget(tab, sel)
+      , prmpt_style(tf_style)
       , lbl_style(label_style)
       , brck_style(bracket_style)
       , rg_lbl("Recent Glyphs:", label_style)
