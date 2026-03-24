@@ -644,7 +644,7 @@ namespace t8x
     void draw(ScreenHandler<NR, NC, CharT>& sh, const RC& pos, int anim_ctr) const
     {
       // Current Glyph: [|]
-      // Recent Glyphs: [         ]
+      // Recent Glyphs: [#8][pf][pf][pf]
       // Preferred (Unicode): 0x______
       // Fallback (ASCII):      _
       
