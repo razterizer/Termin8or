@@ -247,6 +247,14 @@ namespace t8x
       auto& uptr = buttons.emplace_back(std::make_unique<Button>(btn));
       return uptr.get();
     }
+    
+    template<typename... Args>
+    Button* emplace(Args&&... args)
+    {
+      auto& uptr = buttons.emplace_back(std::make_unique<Button>(std::forward<Args>(args)...));
+      return uptr.get();
+    }
+    
     void set_selection(int sel_idx, bool sel, int* sel_tab_idx)
     {
       selected = math::clamp(sel_idx, 0, static_cast<int>(buttons.size()));
@@ -1421,6 +1429,14 @@ namespace t8x
       math::maximize(max_tab_idx, button.get_tab_order());
     }
     
+    Button& emplace_button(const std::string& txt, ButtonStyle btn_style, ButtonFrame btn_frame, int tab = 0, bool sel = false)
+    {
+      auto* ptr = button_group.emplace(txt, btn_style, btn_frame, tab, sel);
+      all_widgets.emplace_back(ptr);
+      math::maximize(max_tab_idx, ptr->get_tab_order());
+      return *ptr;
+    }
+    
     void set_button_selection(int sel_idx, bool sel)
     {
       button_group.set_selection(sel_idx, sel, &tab_idx);
@@ -1449,11 +1465,34 @@ namespace t8x
       all_widgets.emplace_back(lp.second.get());
     }
     
+    Label& emplace_label(const RC& pos,
+                         const std::string& label_text, Style label_style,
+                         int tab = 0, bool sel = false)
+    {
+      auto ptr = std::make_unique<Label>(label_text, label_style, tab, sel);
+      labels.emplace_back(pos, std::move(ptr));
+      all_widgets.emplace_back(ptr.get());
+      auto& ref = *ptr;
+      return ref;
+    }
+    
     void add_text_field(const RC& pos, const TextField& tf)
     {
       auto& tfp = text_fields.emplace_back(pos, std::make_unique<TextField>(tf));
       all_widgets.emplace_back(tfp.second.get());
       math::maximize(max_tab_idx, tf.get_tab_order());
+    }
+    
+    TextField& emplace_text_field(const RC& pos,
+                                  int width, TextFieldMode tf_mode, PromptStyle tf_style,
+                                  int tab = 0, char clear_ch = '_', bool sel = false)
+    {
+      auto ptr = std::make_unique<TextField>(width, tf_mode, tf_style, tab, clear_ch, sel);
+      text_fields.emplace_back(pos, std::move(ptr));
+      all_widgets.emplace_back(ptr.get());
+      math::maximize(max_tab_idx, ptr->get_tab_order());
+      auto& ref = *ptr;
+      return ref;
     }
     
     const std::string get_text_field_input(int tab) const
@@ -1493,6 +1532,18 @@ namespace t8x
       math::maximize(max_tab_idx, gp.get_tab_order());
     }
     
+    GlyphPicker& emplace_glyph_picker(const RC& pos,
+                                      PromptStyle tf_style, Style label_style, Style hex_prefix_style, Style bracket_style,
+                                      int tab, char clear_ch = '_', bool sel = false)
+    {
+      auto ptr = std::make_unique<GlyphPicker>(tf_style, label_style, hex_prefix_style, bracket_style, tab, clear_ch, sel);
+      glyph_pickers.emplace_back(pos, std::move(ptr));
+      all_widgets.emplace_back(ptr.get());
+      math::maximize(max_tab_idx, ptr->get_tab_order());
+      auto& ref = *ptr;
+      return ref;
+    }
+    
     t8::Glyph get_glyph_picker_glyph(int tab) const
     {
       auto it = stlutils::find_if(glyph_pickers, [tab](const auto& gpp) { return gpp.second.get_tab_order() == tab; });
@@ -1528,6 +1579,21 @@ namespace t8x
       auto& cpp = color_pickers.emplace_back(pos, std::make_unique<ColorPicker>(cp));
       all_widgets.emplace_back(cpp.second.get());
       math::maximize(max_tab_idx, cp.get_tab_order());
+    }
+    
+    ColorPicker& emplace_color_picker(const RC& pos,
+                                      Color fg_sel, Color fg_sel_hilite,
+                                      const ColorPickerParams& cp_params,
+                                      int tab = 0, bool cursor_wrapping = false,
+                                      char sel_char = '*', char unsel_char = ' ',
+                                      bool sel = false)
+    {
+      auto ptr = std::make_unique<ColorPicker>(fg_sel, fg_sel_hilite, cp_params, tab, cursor_wrapping, sel_char, unsel_char, sel);
+      color_pickers.emplace_back(pos, std::move(ptr));
+      all_widgets.emplace_back(ptr.get());
+      math::maximize(max_tab_idx, ptr->get_tab_order());
+      auto& ref = *ptr;
+      return ref;
     }
     
     const Color get_color_picker_color(int tab) const
