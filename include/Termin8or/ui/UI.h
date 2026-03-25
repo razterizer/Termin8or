@@ -1515,6 +1515,14 @@ namespace t8x
         return it->second.clear();
     }
     
+    bool glyph_picker_empty(int tab)
+    {
+      auto it = stlutils::find_if(glyph_pickers, [tab](const auto& gpp) { return gpp.second->get_tab_order() == tab; });
+      if (it != glyph_pickers.end())
+        return it->second->empty();
+      return true; // Treat as empty if unable to find matching glyph picker.
+    }
+    
     void add_color_picker(const RC& pos, const ColorPicker& cp)
     {
       auto& cpp = color_pickers.emplace_back(pos, std::make_unique<ColorPicker>(cp));
