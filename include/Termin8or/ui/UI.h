@@ -706,6 +706,11 @@ namespace t8x
       current_glyph_disp_str.clear();
     }
     
+    bool empty() const
+    {
+      return current_glyph.empty();
+    }
+    
     virtual int num_components() const override { return 3; }
     
     virtual void set_component_focus(int sub_tab, bool selected) override
