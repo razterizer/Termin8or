@@ -1519,24 +1519,24 @@ namespace t8x
     
     t8::Glyph get_glyph_picker_glyph(int tab) const
     {
-      auto it = stlutils::find_if(glyph_pickers, [tab](const auto& gpp) { return gpp.second.get_tab_order() == tab; });
+      auto it = stlutils::find_if(glyph_pickers, [tab](const auto& gpp) { return gpp.second->get_tab_order() == tab; });
       if (it != glyph_pickers.end())
-        return it->second.get_glyph();
+        return it->second->get_glyph();
       return {};
     }
     
     void set_glyph_picker_glyph(int tab, const t8::Glyph& g)
     {
-      auto it = stlutils::find_if(glyph_pickers, [tab](const auto& gpp) { return gpp.second.get_tab_order() == tab; });
+      auto it = stlutils::find_if(glyph_pickers, [tab](const auto& gpp) { return gpp.second->get_tab_order() == tab; });
       if (it != glyph_pickers.end())
-        return it->second.set_glyph(g);
+        return it->second->set_glyph(g);
     }
     
     void reset_glyph_picker(int tab)
     {
-      auto it = stlutils::find_if(glyph_pickers, [tab](const auto& gpp) { return gpp.second.get_tab_order() == tab; });
+      auto it = stlutils::find_if(glyph_pickers, [tab](const auto& gpp) { return gpp.second->get_tab_order() == tab; });
       if (it != glyph_pickers.end())
-        return it->second.clear();
+        return it->second->clear();
     }
     
     bool glyph_picker_empty(int tab)
@@ -1581,7 +1581,7 @@ namespace t8x
     {
       auto it = stlutils::find_if(color_pickers, [tab](const auto& cpp) { return cpp.second->get_tab_order() == tab; });
       if (it != color_pickers.end())
-        return it->second.clear();
+        return it->second->clear();
     }
     
     void update(char curr_key, SpecialKey curr_special_key)
