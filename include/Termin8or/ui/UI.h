@@ -1422,12 +1422,12 @@ namespace t8x
         set_textel_pre(local_pos + RC { 0, i }, str[i], fg_color, bg_color);
     }
     
-    void add_button(const Button& button)
-    {
-      auto* ptr = button_group.add(button);
-      all_widgets.emplace_back(ptr);
-      math::maximize(max_tab_idx, button.get_tab_order());
-    }
+    //void add_button(const Button& button)
+    //{
+    //  auto* ptr = button_group.add(button);
+    //  all_widgets.emplace_back(ptr);
+    //  math::maximize(max_tab_idx, button.get_tab_order());
+    //}
     
     Button& emplace_button(const std::string& txt, ButtonStyle btn_style, ButtonFrame btn_frame, int tab = 0, bool sel = false)
     {
@@ -1459,11 +1459,11 @@ namespace t8x
       return "";
     }
     
-    void add_label(const RC& pos, const Label& l)
-    {
-      auto& lp = labels.emplace_back(pos, std::make_unique<Label>(l));
-      all_widgets.emplace_back(lp.second.get());
-    }
+    //void add_label(const RC& pos, const Label& l)
+    //{
+    //  auto& lp = labels.emplace_back(pos, std::make_unique<Label>(l));
+    //  all_widgets.emplace_back(lp.second.get());
+    //}
     
     Label& emplace_label(const RC& pos,
                          const std::string& label_text, Style label_style,
@@ -1476,12 +1476,12 @@ namespace t8x
       return ref;
     }
     
-    void add_text_field(const RC& pos, const TextField& tf)
-    {
-      auto& tfp = text_fields.emplace_back(pos, std::make_unique<TextField>(tf));
-      all_widgets.emplace_back(tfp.second.get());
-      math::maximize(max_tab_idx, tf.get_tab_order());
-    }
+    //void add_text_field(const RC& pos, const TextField& tf)
+    //{
+    //  auto& tfp = text_fields.emplace_back(pos, std::make_unique<TextField>(tf));
+    //  all_widgets.emplace_back(tfp.second.get());
+    //  math::maximize(max_tab_idx, tf.get_tab_order());
+    //}
     
     TextField& emplace_text_field(const RC& pos,
                                   int width, TextFieldMode tf_mode, PromptStyle tf_style,
@@ -1525,12 +1525,12 @@ namespace t8x
       return true; // Treat as empty if unable to find matching text field.
     }
     
-    void add_glyph_picker(const RC& pos, const GlyphPicker& gp)
-    {
-      auto& gpp = glyph_pickers.emplace_back(pos, std::make_unique<GlyphPicker>(gp));
-      all_widgets.emplace_back(gpp.second.get());
-      math::maximize(max_tab_idx, gp.get_tab_order());
-    }
+    //void add_glyph_picker(const RC& pos, const GlyphPicker& gp)
+    //{
+    //  auto& gpp = glyph_pickers.emplace_back(pos, std::make_unique<GlyphPicker>(gp));
+    //  all_widgets.emplace_back(gpp.second.get());
+    //  math::maximize(max_tab_idx, gp.get_tab_order());
+    //}
     
     GlyphPicker& emplace_glyph_picker(const RC& pos,
                                       PromptStyle tf_style, Style label_style, Style hex_prefix_style, Style bracket_style,
@@ -1574,12 +1574,12 @@ namespace t8x
       return true; // Treat as empty if unable to find matching glyph picker.
     }
     
-    void add_color_picker(const RC& pos, const ColorPicker& cp)
-    {
-      auto& cpp = color_pickers.emplace_back(pos, std::make_unique<ColorPicker>(cp));
-      all_widgets.emplace_back(cpp.second.get());
-      math::maximize(max_tab_idx, cp.get_tab_order());
-    }
+    //void add_color_picker(const RC& pos, const ColorPicker& cp)
+    //{
+    //  auto& cpp = color_pickers.emplace_back(pos, std::make_unique<ColorPicker>(cp));
+    //  all_widgets.emplace_back(cpp.second.get());
+    //  math::maximize(max_tab_idx, cp.get_tab_order());
+    //}
     
     ColorPicker& emplace_color_picker(const RC& pos,
                                       Color fg_sel, Color fg_sel_hilite,
