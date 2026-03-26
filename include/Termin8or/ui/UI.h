@@ -1431,10 +1431,10 @@ namespace t8x
     
     Button& emplace_button(const std::string& txt, ButtonStyle btn_style, ButtonFrame btn_frame, int tab = 0, bool sel = false)
     {
-      auto* ptr = button_group.emplace(txt, btn_style, btn_frame, tab, sel);
-      all_widgets.emplace_back(ptr);
-      math::maximize(max_tab_idx, ptr->get_tab_order());
-      return *ptr;
+      auto* rptr = button_group.emplace(txt, btn_style, btn_frame, tab, sel);
+      all_widgets.emplace_back(rptr);
+      math::maximize(max_tab_idx, rptr->get_tab_order());
+      return *rptr;
     }
     
     void set_button_selection(int sel_idx, bool sel)
@@ -1469,11 +1469,11 @@ namespace t8x
                          const std::string& label_text, Style label_style,
                          int tab = 0, bool sel = false)
     {
-      auto ptr = std::make_unique<Label>(label_text, label_style, tab, sel);
-      labels.emplace_back(pos, std::move(ptr));
-      all_widgets.emplace_back(ptr.get());
-      auto& ref = *ptr;
-      return ref;
+      auto uptr = std::make_unique<Label>(label_text, label_style, tab, sel);
+      auto* rptr = uptr.get();
+      labels.emplace_back(pos, std::move(uptr));
+      all_widgets.emplace_back(rptr);
+      return *rptr;
     }
     
     //void add_text_field(const RC& pos, const TextField& tf)
@@ -1487,12 +1487,12 @@ namespace t8x
                                   int width, TextFieldMode tf_mode, PromptStyle tf_style,
                                   int tab = 0, char clear_ch = '_', bool sel = false)
     {
-      auto ptr = std::make_unique<TextField>(width, tf_mode, tf_style, tab, clear_ch, sel);
-      text_fields.emplace_back(pos, std::move(ptr));
-      all_widgets.emplace_back(ptr.get());
-      math::maximize(max_tab_idx, ptr->get_tab_order());
-      auto& ref = *ptr;
-      return ref;
+      auto uptr = std::make_unique<TextField>(width, tf_mode, tf_style, tab, clear_ch, sel);
+      auto* rptr = uptr.get();
+      text_fields.emplace_back(pos, std::move(uptr));
+      all_widgets.emplace_back(rptr);
+      math::maximize(max_tab_idx, rptr->get_tab_order());
+      return *rptr;
     }
     
     const std::string get_text_field_input(int tab) const
@@ -1536,12 +1536,12 @@ namespace t8x
                                       PromptStyle tf_style, Style label_style, Style hex_prefix_style, Style bracket_style,
                                       int tab, char clear_ch = '_', bool sel = false)
     {
-      auto ptr = std::make_unique<GlyphPicker>(tf_style, label_style, hex_prefix_style, bracket_style, tab, clear_ch, sel);
-      glyph_pickers.emplace_back(pos, std::move(ptr));
-      all_widgets.emplace_back(ptr.get());
-      math::maximize(max_tab_idx, ptr->get_tab_order());
-      auto& ref = *ptr;
-      return ref;
+      auto uptr = std::make_unique<GlyphPicker>(tf_style, label_style, hex_prefix_style, bracket_style, tab, clear_ch, sel);
+      auto* rptr = uptr.get();
+      glyph_pickers.emplace_back(pos, std::move(uptr));
+      all_widgets.emplace_back(rptr);
+      math::maximize(max_tab_idx, rptr->get_tab_order());
+      return *rptr;
     }
     
     t8::Glyph get_glyph_picker_glyph(int tab) const
@@ -1588,12 +1588,12 @@ namespace t8x
                                       char sel_char = '*', char unsel_char = ' ',
                                       bool sel = false)
     {
-      auto ptr = std::make_unique<ColorPicker>(fg_sel, fg_sel_hilite, cp_params, tab, cursor_wrapping, sel_char, unsel_char, sel);
-      color_pickers.emplace_back(pos, std::move(ptr));
-      all_widgets.emplace_back(ptr.get());
-      math::maximize(max_tab_idx, ptr->get_tab_order());
-      auto& ref = *ptr;
-      return ref;
+      auto uptr = std::make_unique<ColorPicker>(fg_sel, fg_sel_hilite, cp_params, tab, cursor_wrapping, sel_char, unsel_char, sel);
+      auto* rptr = uptr.get();
+      color_pickers.emplace_back(pos, std::move(uptr));
+      all_widgets.emplace_back(rptr);
+      math::maximize(max_tab_idx, rptr->get_tab_order());
+      return *rptr;
     }
     
     const Color get_color_picker_color(int tab) const
