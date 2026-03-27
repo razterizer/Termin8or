@@ -628,7 +628,7 @@ namespace t8
       init_locale();
       wchar_t wc = static_cast<wchar_t>(cp);
       int w = ::wcwidth(wc);
-      return w == 1; //w <= 1;
+      return w <= 1; // w == 1;
 #endif
     }
     
