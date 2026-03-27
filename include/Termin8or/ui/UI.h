@@ -712,6 +712,8 @@ namespace t8x
     {
       current_glyph.clear();
       current_glyph_disp_str.clear();
+      cp_field.clear_input();
+      fb_field.clear_input();
     }
     
     bool empty() const
