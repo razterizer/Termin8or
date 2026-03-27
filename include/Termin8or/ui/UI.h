@@ -685,7 +685,7 @@ namespace t8x
           if (rg.preferred != t8::Glyph::none32)
           {
             auto ss_vec = format_glyph_short<CharT>(rg);
-            rg_col_start = f_write_buffer_ss(ss_vec, pos + RC { 0, rg_col_start });
+            rg_col_start = f_write_buffer_ss(ss_vec, pos + RC { 1, rg_col_start });
           }
         }
       }
