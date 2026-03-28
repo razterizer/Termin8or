@@ -12,15 +12,22 @@ namespace t8
   template<int NR, int NC, typename CharT>
   void draw_frame(ScreenHandler<NR, NC, CharT>& sh, Color fg_color)
   {
+    using namespace literals;
     const int nc_inset = sh.num_cols_inset();
     const int nr_inset = sh.num_rows_inset();
-    sh.write_buffer("+" + str::rep_char('-', nc_inset) + "+", 0, 0, fg_color);
+    static const GlyphString glyph_horiz = Glyph { 0x2501, '-' };
+    static const GlyphString glyph_vert = Glyph { 0x2503, '|' };
+    static const auto glyph_tl = Glyph { 0x250F, '+' };
+    static const auto glyph_tr = Glyph { 0x2513, '+' };
+    static const auto glyph_bl = Glyph { 0x2517, '+' };
+    static const auto glyph_br = Glyph { 0x251B, '+' };
+    sh.write_buffer(glyph_tl + str::rep_str(glyph_horiz, nc_inset) + glyph_tr, 0, 0, fg_color);
     for (int r = 1; r <= nr_inset; ++r)
     {
-      sh.write_buffer("|", r, 0, fg_color);
-      sh.write_buffer("|", r, nc_inset+1, fg_color);
+      sh.write_buffer(glyph_vert, r, 0, fg_color);
+      sh.write_buffer(glyph_vert, r, nc_inset+1, fg_color);
     }
-    sh.write_buffer("+" + str::rep_char('-', nc_inset) + "+", nr_inset+1, 0, fg_color);
+    sh.write_buffer(glyph_bl + str::rep_str(glyph_horiz, nc_inset) + glyph_br, nr_inset+1, 0, fg_color);
   }
   
 }
