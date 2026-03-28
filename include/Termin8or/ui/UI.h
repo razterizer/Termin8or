@@ -1434,6 +1434,7 @@ namespace t8x
     
     void set_button_selection(int sel_idx, bool sel)
     {
+      button_group.clear_selections();
       button_group.set_selection(sel_idx, sel, &tab_idx);
     }
     
