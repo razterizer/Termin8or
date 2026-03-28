@@ -125,8 +125,11 @@ namespace t8x
   {
     Line, Hash,
     Masonry, Masonry2, Masonry3, Masonry4, Temple, // Rogue-like styles.
-    UTF8_SingleLine, UTF8_SingleLineRounded, UTF8_DoubleLine, UTF8_BlockDark, UTF8_BlockNormal, UTF8_BlockLight,
-    UTF8_Masonry, UTF8_Checker, UTF8_Temple, // Rogue-like styles.
+    Unicode_SingleLine, Unicode_SingleLineRounded,
+    Unicode_SingleLineThick, Unicode_SingleLineThickRounded,
+    Unicode_DoubleLine,
+    Unicode_BlockDark, Unicode_BlockNormal, Unicode_BlockLight,
+    Unicode_Masonry, Unicode_Checker, Unicode_Temple, // Rogue-like styles.
     NUM_ITEMS
   };
   enum class SolarDirection
@@ -228,7 +231,7 @@ namespace t8x
         break;
       case OutlineType::Hash:
         break;
-      case OutlineType::UTF8_SingleLine:
+      case OutlineType::Unicode_SingleLine:
         outline_n = t8::Glyph { 0x2500, '-' };
         outline_s = t8::Glyph { 0x2500, '-' };
         outline_w = t8::Glyph { 0x2502, '|' };
@@ -238,7 +241,7 @@ namespace t8x
         outline_nw = t8::Glyph { 0x250C, '+' };
         outline_sw = t8::Glyph { 0x2514, '+' };
         break;
-      case OutlineType::UTF8_SingleLineRounded:
+      case OutlineType::Unicode_SingleLineRounded:
         outline_n = t8::Glyph { 0x2500, '-' };
         outline_s = t8::Glyph { 0x2500, '-' };
         outline_w = t8::Glyph { 0x2502, '|' };
@@ -248,7 +251,27 @@ namespace t8x
         outline_nw = t8::Glyph { 0x256D, '+' };
         outline_sw = t8::Glyph { 0x2570, '+' };
         break;
-      case OutlineType::UTF8_DoubleLine:
+      case OutlineType::Unicode_SingleLineThick:
+        outline_n = t8::Glyph { 0x2501, '-' };
+        outline_s = t8::Glyph { 0x2501, '-' };
+        outline_w = t8::Glyph { 0x2503, '|' };
+        outline_e = t8::Glyph { 0x2503, '|' };
+        outline_se = t8::Glyph { 0x251B, '+' };
+        outline_ne = t8::Glyph { 0x2513, '+' };
+        outline_nw = t8::Glyph { 0x250F, '+' };
+        outline_sw = t8::Glyph { 0x2517, '+' };
+        break;
+      case OutlineType::Unicode_SingleLineThickRounded:
+        outline_n = t8::Glyph { 0x2501, '-' };
+        outline_s = t8::Glyph { 0x2501, '-' };
+        outline_w = t8::Glyph { 0x2503, '|' };
+        outline_e = t8::Glyph { 0x2503, '|' };
+        outline_se = t8::Glyph { 0x2688, '+' };
+        outline_ne = t8::Glyph { 0x2688, '+' };
+        outline_nw = t8::Glyph { 0x2688, '+' };
+        outline_sw = t8::Glyph { 0x2688, '+' };
+        break;
+      case OutlineType::Unicode_DoubleLine:
         outline_n = t8::Glyph { 0x2550, '=' };
         outline_s = t8::Glyph { 0x2550, '=' };
         outline_w = t8::Glyph { 0x2551, '|' };
@@ -258,7 +281,7 @@ namespace t8x
         outline_nw = t8::Glyph { 0x2554, '+' };
         outline_sw = t8::Glyph { 0x255A, '+' };
         break;
-      case OutlineType::UTF8_BlockDark:
+      case OutlineType::Unicode_BlockDark:
         outline_n = t8::Glyph { 0x2593, '#' };
         outline_s = t8::Glyph { 0x2593, '#' };
         outline_w = t8::Glyph { 0x2593, '#' };
@@ -268,7 +291,7 @@ namespace t8x
         outline_nw = t8::Glyph { 0x2593, '#' };
         outline_sw = t8::Glyph { 0x2593, '#' };
         break;
-      case OutlineType::UTF8_BlockNormal:
+      case OutlineType::Unicode_BlockNormal:
         outline_n = t8::Glyph { 0x2592, '#' };
         outline_s = t8::Glyph { 0x2592, '#' };
         outline_w = t8::Glyph { 0x2592, '#' };
@@ -278,7 +301,7 @@ namespace t8x
         outline_nw = t8::Glyph { 0x2592, '#' };
         outline_sw = t8::Glyph { 0x2592, '#' };
         break;
-      case OutlineType::UTF8_BlockLight:
+      case OutlineType::Unicode_BlockLight:
         outline_n = t8::Glyph { 0x2591, '#' };
         outline_s = t8::Glyph { 0x2591, '#' };
         outline_w = t8::Glyph { 0x2591, '#' };
@@ -288,7 +311,7 @@ namespace t8x
         outline_nw = t8::Glyph { 0x2591, '#' };
         outline_sw = t8::Glyph { 0x2591, '#' };
         break;
-      case OutlineType::UTF8_Masonry:
+      case OutlineType::Unicode_Masonry:
         outline_n = t8::Glyph { 0x252C, '=' };
         outline_s = t8::Glyph { 0x2534, '=' };
         outline_w = t8::Glyph { 0x251C, 'H' };
@@ -302,7 +325,7 @@ namespace t8x
         outline_w2 = t8::Glyph { 0x2524, 'H' };
         outline_e2 = t8::Glyph { 0x251C, 'H' };
         break;
-      case OutlineType::UTF8_Checker:
+      case OutlineType::Unicode_Checker:
         outline_n = t8::Glyph { 0x2580, 'M' };
         outline_s = t8::Glyph { 0x2584, 'W' };
         outline_w = t8::Glyph { 0x258C, 'H' };
@@ -316,7 +339,7 @@ namespace t8x
         outline_w2 = t8::Glyph { 0x2590, 'H' };
         outline_e2 = t8::Glyph { 0x258C, 'H' };
         break;
-      case OutlineType::UTF8_Temple:
+      case OutlineType::Unicode_Temple:
         outline_n = t8::Glyph { 0x20B8, 'I' };
         outline_s = t8::Glyph { 0x27C2, 'I' };
         outline_w = t8::Glyph { 0x27DD, 'H' };
