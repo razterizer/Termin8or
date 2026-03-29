@@ -126,7 +126,7 @@ namespace t8x
     Line, Hash,
     Masonry, Masonry2, Masonry3, Masonry4, Temple, // Rogue-like styles.
     Unicode_SingleLine, Unicode_SingleLineRounded,
-    Unicode_SingleLineThick, Unicode_SingleLineThickRounded,
+    Unicode_SingleLineThick, Unicode_SingleLineThicker,
     Unicode_DoubleLine,
     Unicode_BlockDark, Unicode_BlockNormal, Unicode_BlockLight,
     Unicode_Masonry, Unicode_Checker, Unicode_Temple, // Rogue-like styles.
@@ -261,15 +261,15 @@ namespace t8x
         outline_nw = t8::Glyph { 0x250F, '+' };
         outline_sw = t8::Glyph { 0x2517, '+' };
         break;
-      case OutlineType::Unicode_SingleLineThickRounded:
-        outline_n = t8::Glyph { 0x2501, '-' };
-        outline_s = t8::Glyph { 0x2501, '-' };
-        outline_w = t8::Glyph { 0x2503, '|' };
-        outline_e = t8::Glyph { 0x2503, '|' };
-        outline_se = t8::Glyph { 0x2688, '+' };
-        outline_ne = t8::Glyph { 0x2688, '+' };
-        outline_nw = t8::Glyph { 0x2688, '+' };
-        outline_sw = t8::Glyph { 0x2688, '+' };
+      case OutlineType::Unicode_SingleLineThicker:
+        outline_n = t8::Glyph { 0x2580, '-' };
+        outline_s = t8::Glyph { 0x2584, '-' };
+        outline_w = t8::Glyph { 0x258C, '|' };
+        outline_e = t8::Glyph { 0x2590, '|' };
+        outline_se = t8::Glyph { 0x259F, '+' };
+        outline_ne = t8::Glyph { 0x259C, '+' };
+        outline_nw = t8::Glyph { 0x259B, '+' };
+        outline_sw = t8::Glyph { 0x2599, '+' };
         break;
       case OutlineType::Unicode_DoubleLine:
         outline_n = t8::Glyph { 0x2550, '=' };
