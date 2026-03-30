@@ -1373,9 +1373,8 @@ namespace t8x
       : TextBox<StrT>(text, master_adj)
     {}
     
-    void set_tab_selection(int tab, int sub_tab = 0)
+    void clear_selections()
     {
-      // Clear widgets
       button_group.clear_selections();
       for (auto& tfp : text_fields)
         tfp.second->set_selected(false);
@@ -1386,6 +1385,12 @@ namespace t8x
       }
       for (auto& cpp : color_pickers)
         cpp.second->set_selected(false);
+    }
+    
+    void set_tab_selection(int tab, int sub_tab = 0)
+    {
+      // Clear widgets
+      clear_selections();
       
       // Select a widget
       if (button_group.try_tab_select(tab))
