@@ -539,7 +539,8 @@ namespace t8x
     int recent_count = 0;
     
     t8::Glyph current_glyph;
-    mutable std::vector<t8::StyledString> current_glyph_disp_str; // Cached representation of current_glyph for display.
+    mutable std::vector<t8::StyledString> current_glyph_disp_str_long; // Cached representation of current_glyph for display.
+    mutable std::vector<t8::StyledString> current_glyph_disp_str_short; // Cached representation of current_glyph for display.
     
     template<typename CharT>
     std::vector<t8::StyledString> format_glyph_long(const t8::Glyph& g, bool has_preferred) const
@@ -618,9 +619,14 @@ namespace t8x
       return current_glyph;
     }
     
-    const std::vector<t8::StyledString>& get_glyph_str() const
+    const std::vector<t8::StyledString>& get_glyph_str_long() const
     {
-      return current_glyph_disp_str;
+      return current_glyph_disp_str_long;
+    }
+    
+    const std::vector<t8::StyledString>& get_glyph_str_short() const
+    {
+      return current_glyph_disp_str_short;
     }
     
     void update(char curr_key, SpecialKey curr_special_key)
@@ -658,7 +664,8 @@ namespace t8x
       
       //sh.write_buffer("Recent Glyphs:", pos, Color)
       
-      current_glyph_disp_str = format_glyph_long<CharT>(current_glyph, !cp_field.empty());
+      current_glyph_disp_str_long = format_glyph_long<CharT>(current_glyph, !cp_field.empty());
+      current_glyph_disp_str_short = format_glyph_short<CharT>(current_glyph);
       
       // /////
       
@@ -674,7 +681,7 @@ namespace t8x
       };
       
       cg_lbl.draw(sh, pos + RC { 0, 0 });
-      f_write_buffer_ss(current_glyph_disp_str, pos + RC { 0, cg_lbl.width() + 1 });
+      f_write_buffer_ss(current_glyph_disp_str_long, pos + RC { 0, cg_lbl.width() + 1 });
       
       rg_lbl.draw(sh, pos + RC { 1, 0 });
       {
@@ -711,7 +718,8 @@ namespace t8x
     void clear()
     {
       current_glyph.clear();
-      current_glyph_disp_str.clear();
+      current_glyph_disp_str_long.clear();
+      current_glyph_disp_str_short.clear();
       cp_field.clear_input();
       fb_field.clear_input();
     }
