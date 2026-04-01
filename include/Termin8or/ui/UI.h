@@ -542,55 +542,6 @@ namespace t8x
     mutable std::vector<t8::StyledString> current_glyph_disp_str_long; // Cached representation of current_glyph for display.
     mutable std::vector<t8::StyledString> current_glyph_disp_str_short; // Cached representation of current_glyph for display.
     
-    template<typename CharT>
-    std::vector<t8::StyledString> format_glyph_long(const t8::Glyph& g, bool has_preferred) const
-    {
-      std::string str_preferred;
-      std::string str_fallback;
-      int width_preferred = 0;
-      int width_fallback = 0;
-      if constexpr (std::is_same_v<CharT, char>)
-      {
-        if (g.preferred == t8::Glyph::none32)
-          str_preferred = "";
-        else
-          str_preferred = "0x" + str::int2hex(g.preferred);
-        str_fallback = g.fallback == t8::Glyph::none ? "" : std::string(1, g.fallback);
-        width_preferred = str::lenI(str_preferred);
-      }
-      else if constexpr (std::is_same_v<CharT, char32_t>)
-      {
-        bool can_render_preferred = t8::term::can_render_single_column_cp_cached(g.preferred);
-        if (!has_preferred)
-          str_preferred = "";
-        else if (can_render_preferred)
-          str_preferred = g.encode_single_width_glyph<CharT>();
-        else
-          str_preferred = "0x" + str::int2hex(g.preferred);
-        str_fallback = g.fallback == t8::Glyph::none ? "" : std::string(1, g.fallback);
-        width_preferred = str_preferred.empty() ? 0 : (can_render_preferred ? 1 : str::lenI(str_preferred));
-      }
-      width_fallback = str::lenI(str_fallback);
-      
-      return {
-        { "[", brck_style, 1 },
-        { str_preferred, lbl_style, width_preferred },
-        { "|", brck_style, 1 },
-        { str_fallback, lbl_style, width_fallback },
-        { "]", brck_style, 1 }
-      };
-    }
-    
-    template<typename CharT>
-    std::vector<t8::StyledString> format_glyph_short(const t8::Glyph& g) const
-    {
-      auto sstr = format_glyph_long<CharT>(g, g.preferred != t8::Glyph::none32);
-      stlutils::erase_at(sstr, 2);
-      if (sstr[1].text.starts_with("0x"))
-        sstr[1].text = "#";
-      return sstr;
-    }
-    
   public:
     GlyphPicker(PromptStyle tf_style, Style label_style, Style hex_prefix_style, Style bracket_style,
                 int tab, char clear_ch = '_', bool sel = false)
@@ -664,24 +615,13 @@ namespace t8x
       
       //sh.write_buffer("Recent Glyphs:", pos, Color)
       
-      current_glyph_disp_str_long = format_glyph_long<CharT>(current_glyph, !cp_field.empty());
-      current_glyph_disp_str_short = format_glyph_short<CharT>(current_glyph);
+      current_glyph_disp_str_long = current_glyph.format_long<CharT>(!cp_field.empty(), false, lbl_style, lbl_style, brck_style);
+      current_glyph_disp_str_short = current_glyph.format_short<CharT>(false, lbl_style, lbl_style, brck_style);
       
       // /////
       
-      auto f_write_buffer_ss = [&](const std::vector<t8::StyledString>& ss_vec, const RC& pos) -> int
-      {
-        int h_pos = 0;
-        for (const auto& ss : ss_vec)
-        {
-          sh.write_buffer(ss.text, pos + RC { 0, h_pos }, ss.style);
-          h_pos += ss.width;
-        }
-        return h_pos;
-      };
-      
       cg_lbl.draw(sh, pos + RC { 0, 0 });
-      f_write_buffer_ss(current_glyph_disp_str_long, pos + RC { 0, cg_lbl.width() + 1 });
+      sh.write_buffer(current_glyph_disp_str_long, pos + RC { 0, cg_lbl.width() + 1 });
       
       rg_lbl.draw(sh, pos + RC { 1, 0 });
       {
@@ -691,8 +631,8 @@ namespace t8x
           const auto& rg = recent_glyphs[g_idx];
           if (rg.preferred != t8::Glyph::none32)
           {
-            auto ss_vec = format_glyph_short<CharT>(rg);
-            rg_col_start = f_write_buffer_ss(ss_vec, pos + RC { 1, rg_col_start });
+            auto ss_vec = rg.format_short<CharT>(false, lbl_style, lbl_style, brck_style);
+            rg_col_start = sh.write_buffer(ss_vec, pos + RC { 1, rg_col_start });
           }
         }
       }

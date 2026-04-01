@@ -7,6 +7,7 @@
 
 #pragma once
 #include "TermHelper.h"
+#include "StyledString.h"
 
 
 namespace t8
@@ -233,6 +234,75 @@ namespace t8
     {
       return t8::term::encode_single_width_glyph<CharT>(preferred, fallback);
     }
+    
+    template<typename CharT>
+    std::vector<t8::StyledString> format_long(bool has_preferred,
+                                              bool uncanonicalize_fallback,
+                                              const Style& preferred_style,
+                                              const Style& fallback_style,
+                                              const Style& bracket_style) const
+    {
+      std::string str_preferred;
+      std::string str_fallback;
+      int width_preferred = 0;
+      int width_fallback = 0;
+      if constexpr (std::is_same_v<CharT, char>)
+      {
+        if (preferred == none32)
+          str_preferred = "";
+        else
+          str_preferred = "0x" + str::int2hex(preferred);
+        str_fallback = fallback == none ? "" : std::string(1, fallback);
+        width_preferred = str::lenI(str_preferred);
+      }
+      else if constexpr (std::is_same_v<CharT, char32_t>)
+      {
+        bool can_render_preferred = t8::term::can_render_single_column_cp_cached(preferred);
+        if (!has_preferred)
+          str_preferred = "";
+        else if (can_render_preferred)
+          str_preferred = encode_single_width_glyph<CharT>();
+        else
+          str_preferred = "0x" + str::int2hex(preferred);
+        str_fallback = fallback == none ? "" : std::string(1, fallback);
+        width_preferred = str_preferred.empty() ? 0 : (can_render_preferred ? 1 : str::lenI(str_preferred));
+      }
+      width_fallback = str::lenI(str_fallback);
+      
+      if (uncanonicalize_fallback && fallback != none && static_cast<char32_t>(fallback) == preferred)
+      {
+        return {
+          { "[", bracket_style, 1 },
+          { str_preferred, preferred_style, width_preferred },
+          { "|", bracket_style, 1 },
+          { "]", bracket_style, 1 }
+        };
+      }
+      
+      return {
+        { "[", bracket_style, 1 },
+        { str_preferred, preferred_style, width_preferred },
+        { "|", bracket_style, 1 },
+        { str_fallback, fallback_style, width_fallback },
+        { "]", bracket_style, 1 }
+      };
+    }
+    
+    template<typename CharT>
+    std::vector<t8::StyledString> format_short(bool uncanonicalize_fallback,
+                                               const Style& preferred_style,
+                                               const Style& fallback_style,
+                                               const Style& bracket_style) const
+    {
+      auto sstr = format_long<CharT>(preferred != none32,
+                                     uncanonicalize_fallback,
+                                     preferred_style, fallback_style, bracket_style);
+      stlutils::erase_at(sstr, 2);
+      if (sstr[1].text.starts_with("0x"))
+        sstr[1].text = "#";
+      return sstr;
+    }
+    
   };
   
 }
