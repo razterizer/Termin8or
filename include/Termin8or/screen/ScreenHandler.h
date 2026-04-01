@@ -222,6 +222,22 @@ namespace t8
         write_buffer(sb.text_lines[r_idx], r + r_idx, c, fg_color, bg_color);
     }
     
+    int write_buffer(const std::vector<StyledString>& ss_vec, int r, int c)
+    {
+      int h_pos = 0;
+      for (const auto& ss : ss_vec)
+      {
+        write_buffer(ss.text, r, c + h_pos, ss.style);
+        h_pos += ss.width;
+      }
+      return h_pos;
+    }
+    
+    int write_buffer(const std::vector<StyledString>& ss_vec, const RC& pos)
+    {
+      return write_buffer(ss_vec, pos.r, pos.c);
+    }
+    
     void add_ordered_text(const OrderedText& text)
     {
       ordered_texts.emplace_back(text);
