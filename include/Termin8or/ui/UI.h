@@ -1600,15 +1600,25 @@ namespace t8x
       int r_len = panel_size.r;
       int c_len = panel_size.c;
       
-      for (const auto& ot : override_textels_pre)
+      for (const auto& [tp, style, glyph] : override_textels_pre)
       {
-        const auto& tp = std::get<0>(ot);
         if (math::in_range(tp.r, 0, r_len, Range::ClosedOpen) &&
             math::in_range(tp.c, 0, c_len, Range::ClosedOpen))
         {
-          sh.write_buffer(std::get<2>(ot),
+          sh.write_buffer(glyph,
                           pos.r + tp.r, pos.c + tp.c,
-                          std::get<1>(ot));
+                          style);
+        }
+      }
+      
+      for (const auto& [tp, ss_vec] : override_ss_textels_pre)
+      {
+        auto width = stlutils::sum<int>(ss_vec, [](const auto& ss) { return ss.width; });
+        if (math::in_range(tp.r, 0, r_len, Range::ClosedOpen) &&
+            math::in_range(tp.c, 0, c_len - width, Range::Closed))
+        {
+          sh.write_buffer(ss_vec,
+                          pos.r + tp.r, pos.c + tp.c);
         }
       }
                   
