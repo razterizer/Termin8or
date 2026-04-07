@@ -1256,6 +1256,7 @@ namespace t8x
   class Dialog : public TextBox<StrT>
   {
     std::vector<std::tuple<RC, Style, t8::Glyph>> override_textels_pre;
+    std::vector<std::pair<RC, std::vector<t8::StyledString>>> override_ss_textels_pre;
     ButtonGroup button_group; // Buttons have their own reserved row two rows down.
     std::vector<std::pair<RC, std::unique_ptr<Label>>> labels;
     std::vector<std::pair<RC, std::unique_ptr<TextField>>> text_fields;
