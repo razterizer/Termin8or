@@ -539,8 +539,8 @@ namespace t8x
     int recent_count = 0;
     
     t8::Glyph current_glyph;
-    mutable std::vector<t8::StyledString> current_glyph_disp_str_long; // Cached representation of current_glyph for display.
-    mutable std::vector<t8::StyledString> current_glyph_disp_str_short; // Cached representation of current_glyph for display.
+    mutable std::vector<t8::StyledString> current_glyph_disp_sstr_long; // Cached representation of current_glyph for display.
+    mutable std::vector<t8::StyledString> current_glyph_disp_sstr_short; // Cached representation of current_glyph for display.
     
   public:
     GlyphPicker(PromptStyle tf_style, Style label_style, Style hex_prefix_style, Style bracket_style,
@@ -570,14 +570,14 @@ namespace t8x
       return current_glyph;
     }
     
-    const std::vector<t8::StyledString>& get_glyph_str_long() const
+    const std::vector<t8::StyledString>& get_glyph_sstr_long() const
     {
-      return current_glyph_disp_str_long;
+      return current_glyph_disp_sstr_long;
     }
     
-    const std::vector<t8::StyledString>& get_glyph_str_short() const
+    const std::vector<t8::StyledString>& get_glyph_sstr_short() const
     {
-      return current_glyph_disp_str_short;
+      return current_glyph_disp_sstr_short;
     }
     
     void update(char curr_key, SpecialKey curr_special_key)
@@ -615,13 +615,13 @@ namespace t8x
       
       //sh.write_buffer("Recent Glyphs:", pos, Color)
       
-      current_glyph_disp_str_long = current_glyph.format_long<CharT>(!cp_field.empty(), false, lbl_style, lbl_style, brck_style);
-      current_glyph_disp_str_short = current_glyph.format_short<CharT>(false, lbl_style, lbl_style, brck_style);
+      current_glyph_disp_sstr_long = current_glyph.format_long<CharT>(!cp_field.empty(), false, lbl_style, lbl_style, brck_style);
+      current_glyph_disp_sstr_short = current_glyph.format_short<CharT>(false, lbl_style, lbl_style, brck_style);
       
       // /////
       
       cg_lbl.draw(sh, pos + RC { 0, 0 });
-      sh.write_buffer(current_glyph_disp_str_long, pos + RC { 0, cg_lbl.width() + 1 });
+      sh.write_buffer(current_glyph_disp_sstr_long, pos + RC { 0, cg_lbl.width() + 1 });
       
       rg_lbl.draw(sh, pos + RC { 1, 0 });
       {
@@ -658,8 +658,8 @@ namespace t8x
     void clear()
     {
       current_glyph.clear();
-      current_glyph_disp_str_long.clear();
-      current_glyph_disp_str_short.clear();
+      current_glyph_disp_sstr_long.clear();
+      current_glyph_disp_sstr_short.clear();
       cp_field.clear_input();
       fb_field.clear_input();
     }
