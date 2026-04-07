@@ -1499,6 +1499,14 @@ namespace t8x
         return it->second->set_glyph(g);
     }
     
+    std::vector<t8::StyledString> get_glyph_picker_disp_sstr(int tab, bool short_format) const
+    {
+      auto it = stlutils::find_if(glyph_pickers, [tab](const auto& gpp) { return gpp.second->get_tab_order() == tab; });
+      if (it != glyph_pickers.end())
+        return short_format ? it->second->get_disp_sstr_short() : it->second->get_disp_sstr_long();
+      return {};
+    }
+    
     void reset_glyph_picker(int tab)
     {
       auto it = stlutils::find_if(glyph_pickers, [tab](const auto& gpp) { return gpp.second->get_tab_order() == tab; });
