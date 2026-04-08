@@ -1256,7 +1256,7 @@ namespace t8x
   class Dialog : public TextBox<StrT>
   {
     std::vector<std::tuple<RC, Style, t8::Glyph>> override_textels_pre;
-    std::vector<std::pair<RC, std::vector<t8::StyledString>>> override_ss_textels_pre;
+    std::vector<std::pair<RC, std::vector<t8::StyledString>>> override_sstr_vecs_pre;
     ButtonGroup button_group; // Buttons have their own reserved row two rows down.
     std::vector<std::pair<RC, std::unique_ptr<Label>>> labels;
     std::vector<std::pair<RC, std::unique_ptr<TextField>>> text_fields;
@@ -1378,14 +1378,14 @@ namespace t8x
         set_textel_pre(local_pos + RC { 0, i }, str[i], fg_color, bg_color);
     }
     
-    void set_textel_sstr_pre(const RC& local_pos, const std::vector<t8::StyledString>& sstr_vec)
+    void set_sstr_vec_pre(const RC& local_pos, const std::vector<t8::StyledString>& sstr_vec)
     {
-      auto it = stlutils::find_if(override_ss_textels_pre,
+      auto it = stlutils::find_if(override_sstr_vecs_pre,
                                   [&local_pos](const auto& otp) { return otp.first == local_pos; });
-      if (it != override_ss_textels_pre.end())
+      if (it != override_sstr_vecs_pre.end())
         it->second = sstr_vec;
       else
-        override_ss_textels_pre.emplace_back(local_pos, sstr_vec);
+        override_sstr_vecs_pre.emplace_back(local_pos, sstr_vec);
     }
     
     Button& emplace_button(const std::string& txt, ButtonStyle btn_style, ButtonFrame btn_frame, int tab = 0, bool sel = false)
@@ -1611,7 +1611,7 @@ namespace t8x
         }
       }
       
-      for (const auto& [tp, ss_vec] : override_ss_textels_pre)
+      for (const auto& [tp, ss_vec] : override_sstr_vecs_pre)
       {
         auto width = stlutils::sum<int>(ss_vec, [](const auto& ss) { return ss.width; });
         if (math::in_range(tp.r, 0, r_len, Range::ClosedOpen) &&
