@@ -7,6 +7,7 @@
 
 #pragma once
 #include "Styles.h"
+#include <Core/StlUtils.h>
 #include <string>
 
 
@@ -21,5 +22,10 @@ namespace t8
   };
   
   using StyledStringVec = std::vector<StyledString>;
+  
+  inline int get_sstr_vec_width(const StyledStringVec& ss_vec)
+  {
+    return stlutils::sum<int>(ss_vec, [](const auto& ss) { return ss.width; });
+  }
   
 }
