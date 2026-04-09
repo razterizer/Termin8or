@@ -258,7 +258,7 @@ namespace t8
       else if constexpr (std::is_same_v<CharT, char32_t>)
       {
         bool can_render_preferred = t8::term::can_render_single_column_cp_cached(preferred);
-        if (!has_preferred)
+        if (!has_preferred || preferred == none32)
           str_preferred = "";
         else if (can_render_preferred)
           str_preferred = encode_single_width_glyph<CharT>();
