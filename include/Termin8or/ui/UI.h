@@ -1378,6 +1378,11 @@ namespace t8x
         set_textel_pre(local_pos + RC { 0, i }, str[i], fg_color, bg_color);
     }
     
+    void clear_textel_pre(const RC& local_pos)
+    {
+      stlutils::erase_if(override_textels_pre, [&local_pos](const auto& otp) { return std::get<0>(otp) == local_pos; });
+    }
+    
     void set_sstr_vec_pre(const RC& local_pos, const std::vector<t8::StyledString>& sstr_vec)
     {
       auto it = stlutils::find_if(override_sstr_vecs_pre,
@@ -1386,6 +1391,11 @@ namespace t8x
         it->second = sstr_vec;
       else
         override_sstr_vecs_pre.emplace_back(local_pos, sstr_vec);
+    }
+    
+    void clear_sstr_vec_pre(const RC& local_pos)
+    {
+      stlutils::erase_if(override_sstr_vecs_pre, [&local_pos](const auto& otp) { return std::get<0>(otp) == local_pos; });
     }
     
     Button& emplace_button(const std::string& txt, ButtonStyle btn_style, ButtonFrame btn_frame, int tab = 0, bool sel = false)
