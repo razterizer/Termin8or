@@ -1613,7 +1613,7 @@ namespace t8x
       
       for (const auto& [tp, ss_vec] : override_sstr_vecs_pre)
       {
-        auto width = stlutils::sum<int>(ss_vec, [](const auto& ss) { return ss.width; });
+        auto width = t8::get_sstr_vec_width(ss_vec);
         if (math::in_range(tp.r, 0, r_len, Range::ClosedOpen) &&
             math::in_range(tp.c, 0, c_len - width, Range::Closed))
         {
