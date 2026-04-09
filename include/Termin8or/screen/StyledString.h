@@ -20,4 +20,6 @@ namespace t8
     int width = 0;
   };
   
+  using StyledStringVec = std::vector<StyledString>;
+  
 }
