@@ -608,6 +608,17 @@ namespace t8
       ::term::emit_text(m_term_mode, sv_utf8, sv_bytes_for_legacy);
     }
     
+    inline void debug_wcwidth(char32_t cp)
+    {
+      static locale_t loc = newlocale(LC_CTYPE_MASK, "", nullptr);
+      wchar_t wc = static_cast<wchar_t>(cp);
+      std::cout << "thread=" << std::this_thread::get_id()
+      << " global=" << (setlocale(LC_CTYPE, nullptr) ?: "(null)")
+      << " cp=0x" << std::hex << static_cast<unsigned>(cp)
+      << " wcwidth_l=" << std::dec << wcwidth_l(wc, loc)
+      << '\n';
+    }
+    
     // We assume single column and rely on encoder fallback.
     inline bool may_be_single_column(char32_t cp)
     {
@@ -626,6 +637,7 @@ namespace t8
       return cp <= 0x10FFFF;
 #else
       init_locale();
+      //debug_wcwidth(cp);
       wchar_t wc = static_cast<wchar_t>(cp);
       int w = ::wcwidth(wc);
       return w == 1; //w <= 1;
