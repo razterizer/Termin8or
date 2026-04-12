@@ -42,6 +42,7 @@ namespace t8x
     Color screen_bg_color_default = Color16::Default;
     Color screen_bg_color_title = Color16::Default;
     Color screen_bg_color_instructions = Color16::Default;
+    Color empty_fg_color = Color16::Default;
     
     std::optional<t8::Color> screen_bg_color_paused = std::nullopt;
     t8::Style pause_info_style { t8::Color16::White, t8::Color16::DarkCyan };
@@ -363,6 +364,7 @@ namespace t8x
     void request_exit() { exit_requested = true; }
     
     void set_screen_bg_color_default(Color bg_color) { m_params.screen_bg_color_default = bg_color; }
+    void set_screen_empty_fg_color(Color fg_color) { m_params.empty_fg_color = fg_color; }
     
   private:
     void pre_quit()
@@ -591,7 +593,7 @@ namespace t8x
       
       if (!m_params.suppress_tty_output)
       {
-        sh.print_screen_buffer(bg_color, m_params.draw_policy);
+        sh.print_screen_buffer(bg_color, m_params.empty_fg_color, m_params.draw_policy);
         //sh.print_screen_buffer_chars();
         //sh.print_screen_buffer_fg_colors();
         //sh.print_screen_buffer_bg_colors();

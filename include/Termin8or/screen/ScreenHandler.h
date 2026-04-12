@@ -500,19 +500,19 @@ namespace t8
     int get_num_full_redraws() const { return num_full_redraws; }
     int get_num_partial_redraws() const { return num_partial_redraws; }
     
-    void print_screen_buffer(Color clear_bg_color, DrawPolicy draw_policy = DrawPolicy::MEASURE_SELECT)
+    void print_screen_buffer(Color clear_bg_color, Color empty_fg_color = Color16::Default, DrawPolicy draw_policy = DrawPolicy::MEASURE_SELECT)
     {
-      auto f_full_redraw = [this](Color clear_bg_color)
+      auto f_full_redraw = [this](Color clear_bg_color, Color empty_fg_color)
       {
-        print_screen_buffer_full(clear_bg_color);
+        print_screen_buffer_full(clear_bg_color, empty_fg_color);
         update_prev_buffers(clear_bg_color); // Otherwise prev_screen_buffer will go stale and next partial draw will treat many cells as dirty.
         num_full_redraws++;
       };
     
-      auto f_partial_redraw = [this](Color clear_bg_color)
+      auto f_partial_redraw = [this](Color clear_bg_color, Color empty_fg_color)
       {
         diff_buffers(clear_bg_color);
-        print_screen_buffer_partial(clear_bg_color);
+        print_screen_buffer_partial(clear_bg_color, empty_fg_color);
         update_prev_buffers(clear_bg_color);
         return_cursor();
         std::cout.flush();
@@ -522,18 +522,18 @@ namespace t8
       switch (draw_policy)
       {
         case DrawPolicy::FULL:
-          f_full_redraw(clear_bg_color);
+          f_full_redraw(clear_bg_color, empty_fg_color);
           break;
         case DrawPolicy::PARTIAL:
-          f_partial_redraw(clear_bg_color);
+          f_partial_redraw(clear_bg_color, empty_fg_color);
           break;
         case DrawPolicy::THRESHOLD_SELECT:
         {
           auto dirty_fraction = stlutils::count(dirty_flag_buffer, true) / static_cast<float>(NR*NC);
           if (dirty_fraction > dirty_fraction_threshold)
-            f_full_redraw(clear_bg_color);
+            f_full_redraw(clear_bg_color, empty_fg_color);
           else
-            f_partial_redraw(clear_bg_color);
+            f_partial_redraw(clear_bg_color, empty_fg_color);
           break;
         }
         case DrawPolicy::MEASURE_SELECT:
@@ -544,13 +544,13 @@ namespace t8
             if (measure_mode == 0)
             {
               benchmark::tic(t8_ScreenHandler_redraw_timer);
-              f_full_redraw(clear_bg_color);
+              f_full_redraw(clear_bg_color, empty_fg_color);
               measured_delay_ms_full = benchmark::toc(t8_ScreenHandler_redraw_timer);
             }
             else if (measure_mode == 1)
             {
               benchmark::tic(t8_ScreenHandler_redraw_timer);
-              f_partial_redraw(clear_bg_color);
+              f_partial_redraw(clear_bg_color, empty_fg_color);
               measured_delay_ms_partial = benchmark::toc(t8_ScreenHandler_redraw_timer);
             }
             measure_mode = 1 - measure_mode;
@@ -559,9 +559,9 @@ namespace t8
           if (!measured)
           {
             if (measured_delay_ms_partial <= measured_delay_ms_full)
-              f_partial_redraw(clear_bg_color);
+              f_partial_redraw(clear_bg_color, empty_fg_color);
             else
-              f_full_redraw(clear_bg_color);
+              f_full_redraw(clear_bg_color, empty_fg_color);
           }
           break;
         }
@@ -569,7 +569,7 @@ namespace t8
       frame++;
     }
     
-    void print_screen_buffer_full(Color clear_bg_color) const
+    void print_screen_buffer_full(Color clear_bg_color, Color empty_fg_color) const
     {
       Text::OutputStringSeq<CharT> colored_str;
       colored_str.resize(NR*(NC + 1));
@@ -580,17 +580,20 @@ namespace t8
         {
           int idx = index(r, c);
           const auto& cell = screen_buffer[idx];
+          auto fg_col = cell.fg;
+          if (fg_col == Color16::Transparent || fg_col == Color16::Transparent2)
+            fg_col = empty_fg_color;
           auto bg_col = cell.bg;
           if (bg_col == Color16::Transparent || bg_col == Color16::Transparent2)
             bg_col = clear_bg_color;
-          colored_str[i++] = { cell.ch, cell.fg, bg_col };
+          colored_str[i++] = { cell.ch, fg_col, bg_col };
         }
         colored_str[i++] = { static_cast<CharT>('\n'), Color16::Default, Color16::Default };
       }
       m_text->emit_sequential(colored_str);
     }
     
-    void print_screen_buffer_partial(Color clear_bg_color) const
+    void print_screen_buffer_partial(Color clear_bg_color, Color empty_fg_color) const
     {
       std::vector<Text::OutputStringChunk<CharT>> colored_str_chunks;
       colored_str_chunks.reserve(math::roundI(num_chunks_prev * 1.2f));
@@ -606,10 +609,13 @@ namespace t8
             if (chunk.text.empty())
               chunk.pos = { r, c };
             const auto& cell = screen_buffer[idx];
+            auto fg_col = cell.fg;
+            if (fg_col == Color16::Transparent || fg_col == Color16::Transparent2)
+              fg_col = empty_fg_color;
             auto bg_col = cell.bg;
             if (bg_col == Color16::Transparent || bg_col == Color16::Transparent2)
               bg_col = clear_bg_color;
-            chunk.text.emplace_back(cell.ch, cell.fg, bg_col);
+            chunk.text.emplace_back(cell.ch, fg_col, bg_col);
           }
           else if (!chunk.text.empty())
           {
