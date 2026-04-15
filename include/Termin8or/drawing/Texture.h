@@ -150,8 +150,9 @@ namespace t8
   
   enum class TxGlyphEncoding
   {
-    AsciiOnly,                  // 1 byte per cell.
-    UnicodePreferredAndFallback // Store preferred + fallback if any.
+    AsciiOnly,                          // 1 byte per cell.
+    EnforceUnicodePreferredAndFallback,          // Store preferred + fallback always.
+    TryUnicodePreferredAndFallbackElseAsciiOnly, // Store preferred + fallback if any preferred > 0x7F exists.
   };
   
   struct Texture
@@ -480,6 +481,14 @@ namespace t8
       
       // Set the lowest supported version.
       ver = compute_minimal_version();
+      
+      if (ver < 30)
+      {
+        if (encoding_mode == TxGlyphEncoding::TryUnicodePreferredAndFallbackElseAsciiOnly)
+          encoding_mode = TxGlyphEncoding::AsciiOnly;
+        else if (encoding_mode == TxGlyphEncoding::EnforceUnicodePreferredAndFallback)
+          ver = 30;
+      }
       
       int maj_ver = ver / 10;
       int min_ver = ver % 10;
