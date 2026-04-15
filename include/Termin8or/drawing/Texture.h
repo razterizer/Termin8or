@@ -150,7 +150,7 @@ namespace t8
   
   enum class TxGlyphEncoding
   {
-    AsciiOnly,                          // 1 byte per cell.
+    AsciiOnly,                                   // 1 byte per cell.
     EnforceUnicodePreferredAndFallback,          // Store preferred + fallback always.
     TryUnicodePreferredAndFallbackElseAsciiOnly, // Store preferred + fallback if any preferred > 0x7F exists.
   };
