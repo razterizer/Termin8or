@@ -560,7 +560,7 @@ namespace t8x
                  tab, clear_ch, sel)
     {}
   
-    void set_glyph(t8::Glyph& g)
+    void set_glyph(const t8::Glyph& g)
     {
       current_glyph = g;
     }
