@@ -1576,11 +1576,15 @@ namespace t8x
     {
       if (curr_special_key == SpecialKey::Tab)
       {
-        // 0.0 -> 1.0 : Label(0), GlyphPicker(1), Label(2)
+        // Label(-1), TextField(0), Label(-1), GlyphPicker(1), TextField(2) :
+        // 0.0 -> 1.0
         // 1.0 -> 1.1
         // 1.1 -> 2.0
+        // GlyphPicker(0), Label(-1), ColorPicker(1)
+        // 0.0 -> 0.1
+        // 0.1 -> 1.0
         auto it = stlutils::find_if(all_widgets, [&](const auto* widget) { return widget->get_tab_order() == tab_idx; });
-        if (it != all_widgets.end())
+        if (it != all_widgets.end() && (*it)->get_tab_order() != -1)
         {
           sub_tab_idx = (sub_tab_idx + 1) % (*it)->num_components();
           if (sub_tab_idx == 0)
