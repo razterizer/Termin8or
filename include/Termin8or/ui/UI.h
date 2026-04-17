@@ -1432,9 +1432,10 @@ namespace t8x
     }
     
     Label& emplace_label(const RC& pos,
-                         const std::string& label_text, Style label_style,
-                         int tab = 0, bool sel = false)
+                         const std::string& label_text, Style label_style)
     {
+      int tab = -1;
+      bool sel = false;
       auto uptr = std::make_unique<Label>(label_text, label_style, tab, sel);
       auto* rptr = uptr.get();
       labels.emplace_back(pos, std::move(uptr));
