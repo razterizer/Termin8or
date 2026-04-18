@@ -480,14 +480,22 @@ namespace t8
       std::vector<std::string> lines;
       
       // Set the lowest supported version.
-      ver = compute_minimal_version();
+      ver = compute_minimal_version(21);
       
-      if (ver < 30)
+      bool unicode = has_non_ascii_glyphs();
+      switch (encoding_mode)
       {
-        if (encoding_mode == TxGlyphEncoding::TryUnicodePreferredAndFallbackElseAsciiOnly)
-          encoding_mode = TxGlyphEncoding::AsciiOnly;
-        else if (encoding_mode == TxGlyphEncoding::EnforceUnicodePreferredAndFallback)
+        case TxGlyphEncoding::AsciiOnly:
+          break;
+        case TxGlyphEncoding::TryUnicodePreferredAndFallbackElseAsciiOnly:
+          if (!unicode)
+            encoding_mode = TxGlyphEncoding::AsciiOnly;
+          else
+            ver = 30;
+          break;
+        case TxGlyphEncoding::EnforceUnicodePreferredAndFallback:
           ver = 30;
+          break;
       }
       
       int maj_ver = ver / 10;
@@ -613,46 +621,43 @@ namespace t8
     }
     
   private:
-    int compute_minimal_version() const
+    bool has_8bit_colors() const
+    {
+      for (auto col : fg_colors)
+        if (!col.is_color16())
+          return true;
+      for (auto col : bg_colors)
+        if (!col.is_color16())
+          return true;
+      return false;
+    }
+    
+    bool has_empty_materials() const
+    {
+      for (auto mat : materials)
+        if (mat == texture::mat_none)
+          return true;
+      return false;
+    }
+    
+    bool has_non_ascii_glyphs() const
+    {
+      for (const auto& g : glyphs)
+        if (g.preferred > 0x7F)
+          return true;
+      return false;
+    }
+  
+    int compute_minimal_version(int max_ver = math::get_max<int>()) const
     {
       int minimal_ver = 10;
-      if (minimal_ver < 20)
-      {
-        for (auto col : fg_colors)
-          if (!col.is_color16())
-          {
-            minimal_ver = 20;
-            break;
-          }
-      }
-      if (minimal_ver < 20)
-      {
-        for (auto col : bg_colors)
-          if (!col.is_color16())
-          {
-            minimal_ver = 20;
-            break;
-          }
-      }
+      if (minimal_ver < 20 && 20 <= max_ver && has_8bit_colors())
+        minimal_ver = 20;
       // VER 2.1: material "none" is serialized as '-' (stored internally as 255).
-      if (minimal_ver < 21)
-      {
-        for (auto mat : materials)
-          if (mat == texture::mat_none)
-          {
-            minimal_ver = 21;
-            break;
-          }
-      }
-      if (minimal_ver < 21)
-      {
-        for (const auto& g : glyphs)
-          if (g.preferred > 0x7F)
-          {
-            minimal_ver = 30;
-            break;
-          }
-      }
+      if (minimal_ver < 21 && 21 <= max_ver && has_empty_materials())
+        minimal_ver = 21;
+      if (minimal_ver < 30 && 30 <= max_ver && has_non_ascii_glyphs())
+        minimal_ver = 30;
       return minimal_ver;
     }
   };
