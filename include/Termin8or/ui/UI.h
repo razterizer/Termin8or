@@ -491,7 +491,7 @@ namespace t8x
       caret = static_cast<int>(len);
     }
     
-    void clear_input()
+    void clear()
     {
       input = str::rep_char(clear_char, field_width);
       caret = 0;
@@ -662,8 +662,8 @@ namespace t8x
       current_glyph.clear();
       current_glyph_disp_sstr_long.clear();
       current_glyph_disp_sstr_short.clear();
-      cp_field.clear_input();
-      fb_field.clear_input();
+      cp_field.clear();
+      fb_field.clear();
     }
     
     bool empty() const
@@ -1470,11 +1470,11 @@ namespace t8x
         return it->second->set_input(str);
     }
     
-    void clear_text_field_input(int tab)
+    void clear_text_field(int tab)
     {
       auto it = stlutils::find_if(text_fields, [tab](const auto& tfp) { return tfp.second->get_tab_order() == tab; });
       if (it != text_fields.end())
-        return it->second->clear_input();
+        return it->second->clear();
     }
     
     bool text_field_empty(int tab)
@@ -1520,7 +1520,7 @@ namespace t8x
       return {};
     }
     
-    void reset_glyph_picker(int tab)
+    void clear_glyph_picker(int tab)
     {
       auto it = stlutils::find_if(glyph_pickers, [tab](const auto& gpp) { return gpp.second->get_tab_order() == tab; });
       if (it != glyph_pickers.end())
@@ -1565,7 +1565,7 @@ namespace t8x
         return it->second->set_color(color);
     }
     
-    void reset_color_picker(int tab)
+    void clear_color_picker(int tab)
     {
       auto it = stlutils::find_if(color_pickers, [tab](const auto& cpp) { return cpp.second->get_tab_order() == tab; });
       if (it != color_pickers.end())
