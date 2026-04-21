@@ -563,8 +563,16 @@ namespace t8x
     void set_glyph(const t8::Glyph& g)
     {
       current_glyph = g;
-      cp_field.set_input(str::int2hex(g.preferred));
-      fb_field.set_input(std::string(1, g.fallback));
+      
+      if (g.preferred == t8::Glyph::none32)
+        cp_field.clear();
+      else
+        cp_field.set_input(str::int2hex(g.preferred));
+      
+      if (g.fallback == t8::Glyph::none)
+        fb_field.clear();
+      else
+        fb_field.set_input(std::string(1, g.fallback));
     }
     
     t8::Glyph get_glyph() const
