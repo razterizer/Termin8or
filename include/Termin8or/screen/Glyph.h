@@ -46,6 +46,24 @@ namespace t8
         fallback = static_cast<char>(preferred);
     }
     
+    bool try_canonicalize_from_fallback()
+    {
+      bool has_cp = preferred != none32;
+      bool has_fb = fallback != none;
+      
+      if (!has_cp && has_fb)
+      {
+        unsigned char ufb = static_cast<unsigned char>(fallback);
+        
+        if (ufb <= 0x7F)
+        {
+          preferred = static_cast<char32_t>(ufb);
+          return true;
+        }
+      }
+      return false;
+    }
+    
     inline bool empty() const noexcept
     {
       return preferred == none32;
