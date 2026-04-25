@@ -26,20 +26,23 @@ namespace t8
       : preferred(pref)
       , fallback(fb)
     {
+      bool has_cp = preferred != none32;
+      bool has_fb = fallback != none;
+    
       // 1) No fallback without preferred.
-      assert(!(preferred == none32 && fallback != none)
+      assert(!(!has_cp && has_fb)
              && "ERROR in Glyph(char32_t, char) : Fallback without preferred.");
       
       // 2) Fallback must be ASCII if present.
-      assert(!(fallback != none && static_cast<unsigned char>(fallback) > 0x7F)
+      assert(!(has_fb && static_cast<unsigned char>(fallback) > 0x7F)
              && "ERROR in Glyph(char32_t, char) : Fallback must be ASCII (<=0x7F).");
       
       // 3) Preferred must be ASCII if fallback is not present.
-      assert(!(preferred != none32 && preferred > 0x7F && fallback == none)
+      assert(!(has_cp && preferred > 0x7F && !has_fb)
              && "ERROR in Glyph(char32_t, char) : Preferred cannot be non-ASCII while fallback is unset.");
              
       // Canonicalize ASCII glyphs.
-      if (preferred != none32 && preferred <= 0x7F)
+      if (has_cp && preferred <= 0x7F)
         fallback = static_cast<char>(preferred);
     }
     
