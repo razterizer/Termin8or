@@ -1351,6 +1351,10 @@ namespace t8x
       // Clear widgets
       clear_selections();
       
+      // Set current indices
+      tab_idx = tab;
+      sub_tab_idx = sub_tab;
+      
       // Select a widget
       if (button_group.try_tab_select(tab))
         return;
