@@ -1408,6 +1408,11 @@ namespace t8x
       stlutils::erase_if(override_sstr_vecs_pre, [&local_pos](const auto& otp) { return std::get<0>(otp) == local_pos; });
     }
     
+    void clear_all_sstr_vec_pre()
+    {
+      override_sstr_vecs_pre.clear();
+    }
+    
     Button& emplace_button(const std::string& txt, ButtonStyle btn_style, ButtonFrame btn_frame, int tab = 0, bool sel = false)
     {
       auto* rptr = button_group.emplace(txt, btn_style, btn_frame, tab, sel);
