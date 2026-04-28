@@ -271,6 +271,8 @@ namespace t8
       {
         if (preferred == none32)
           str_preferred = "";
+        else if (preferred < 0x7F)
+          str_preferred = std::string(1, static_cast<char>(preferred));
         else
           str_preferred = "0x" + str::int2hex(preferred);
         str_fallback = fallback == none ? "" : std::string(1, fallback);
