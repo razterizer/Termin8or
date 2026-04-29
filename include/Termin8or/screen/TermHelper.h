@@ -610,6 +610,7 @@ namespace t8
     
     inline void debug_wcwidth(char32_t cp)
     {
+#ifndef _WIN32
       static locale_t loc = newlocale(LC_CTYPE_MASK, "", nullptr);
       wchar_t wc = static_cast<wchar_t>(cp);
       std::cout << "thread=" << std::this_thread::get_id()
@@ -617,6 +618,7 @@ namespace t8
       << " cp=0x" << std::hex << static_cast<unsigned>(cp)
       << " wcwidth_l=" << std::dec << wcwidth_l(wc, loc)
       << '\n';
+#endif
     }
     
     // We assume single column and rely on encoder fallback.
