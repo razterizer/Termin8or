@@ -281,14 +281,15 @@ namespace t8
       else if constexpr (std::is_same_v<CharT, char32_t>)
       {
         bool can_render_preferred = t8::term::can_render_single_column_cp_cached(preferred);
+        bool can_encode_unicode = can_render_preferred && (preferred < 0x7F || !t8::term::force_ascii_fallback);
         if (!has_preferred || preferred == none32)
           str_preferred = "";
-        else if (can_render_preferred)
+        else if (can_encode_unicode)
           str_preferred = encode_single_width_glyph<CharT>();
         else
           str_preferred = "0x" + str::int2hex(preferred);
         str_fallback = fallback == none ? "" : std::string(1, fallback);
-        width_preferred = str_preferred.empty() ? 0 : (can_render_preferred ? 1 : str::lenI(str_preferred));
+        width_preferred = str_preferred.empty() ? 0 : (can_encode_unicode ? 1 : str::lenI(str_preferred));
       }
       width_fallback = str::lenI(str_fallback);
       
