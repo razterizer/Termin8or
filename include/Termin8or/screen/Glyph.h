@@ -71,10 +71,7 @@ namespace t8
     
     bool try_canonicalize_from_fallback()
     {
-      bool has_cp = preferred != none32;
-      bool has_fb = fallback != none;
-      
-      if (!has_cp && has_fb)
+      if (fails_1_fallback_wo_preferred(*this))
       {
         unsigned char ufb = static_cast<unsigned char>(fallback);
         
