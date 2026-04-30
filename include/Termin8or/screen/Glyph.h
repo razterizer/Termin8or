@@ -111,9 +111,7 @@ namespace t8
       auto glyph = *this;
       glyph.try_canonicalize_from_fallback();
       
-      return !fails_1_fallback_wo_preferred(glyph)
-          && !fails_2_existing_fallback_isnt_ascii(glyph)
-          && !fails_3_existing_preferred_isnt_ascii_wo_fallback(glyph);
+      return glyph.valid();
     }
     
     inline void clear()
