@@ -711,7 +711,14 @@ namespace t8x
     
     void push_recent()
     {
-      recent_glyphs[recent_head] = current_glyph;
+      const auto glyph = get_canonicalized_glyph();
+      if (glyph.fully_empty())
+        return;
+      if (!glyph.valid_after_canonicalization())
+        return;
+      if (stlutils::contains(recent_glyphs, glyph))
+        return;
+      recent_glyphs[recent_head] = glyph;
       recent_head = (recent_head + 1) % stlutils::sizeI(recent_glyphs);
       recent_count = std::min(recent_count + 1, stlutils::sizeI(recent_glyphs));
     }
