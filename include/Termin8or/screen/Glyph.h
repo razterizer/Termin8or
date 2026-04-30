@@ -143,6 +143,8 @@ namespace t8
     // p == '?' && f == none => "?" => p == '?', f == '?'
     std::string str(bool legacy_ascii_only = false) const
     {
+      assert(valid());
+      
       std::string ret;
       auto fb_u = static_cast<unsigned char>(fallback);
       if (legacy_ascii_only)
