@@ -99,6 +99,13 @@ namespace t8
       return empty() && empty_fallback();
     }
     
+    inline bool valid() const noexcept
+    {
+      return !fails_1_fallback_wo_preferred(*this)
+          && !fails_2_existing_fallback_isnt_ascii(*this)
+          && !fails_3_existing_preferred_isnt_ascii_wo_fallback(*this);
+    }
+    
     bool valid_after_canonicalization() const
     {
       auto glyph = *this;
