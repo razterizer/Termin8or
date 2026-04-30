@@ -1427,6 +1427,11 @@ namespace t8x
       stlutils::erase_if(override_textels_pre, [&local_pos](const auto& otp) { return std::get<0>(otp) == local_pos; });
     }
     
+    void clear_all_textel_pre()
+    {
+      override_textels_pre.clear();
+    }
+    
     void set_sstr_vec_pre(const RC& local_pos, const std::vector<t8::StyledString>& sstr_vec)
     {
       auto it = stlutils::find_if(override_sstr_vecs_pre,
