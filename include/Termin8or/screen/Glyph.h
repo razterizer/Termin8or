@@ -181,7 +181,7 @@ namespace t8
     
     // legacy_ascii_only == false
     // "[]" => p == none32, f == none
-    // "[A]" => p == A, f == none
+    // "[A]" => p == A, f == A (canonicalized p -> f like the constructor)
     // "[2603]" => error
     // "[A,A]" => p == A, f == A (not outputed by str() though)
     // "[A,2603]" => error
