@@ -542,6 +542,13 @@ namespace t8x
     mutable std::vector<t8::StyledString> current_glyph_disp_sstr_long; // Cached representation of current_glyph for display.
     mutable std::vector<t8::StyledString> current_glyph_disp_sstr_short; // Cached representation of current_glyph for display.
     
+    t8::Glyph get_canonicalized_glyph() const
+    {
+      auto glyph = current_glyph;
+      glyph.try_canonicalize_from_fallback();
+      return glyph;
+    }
+    
   public:
     GlyphPicker(PromptStyle tf_style, Style label_style, Style hex_prefix_style, Style bracket_style,
                 int tab, char clear_ch = '_', bool sel = false)
