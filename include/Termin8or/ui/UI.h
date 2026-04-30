@@ -486,6 +486,7 @@ namespace t8x
     
     void set_input(const std::string& str)
     {
+      input = str::rep_char(clear_char, field_width);
       auto len = std::min(input.length(), str.length());
       input.replace(0, len, str.substr(0, len));
       caret = static_cast<int>(len);
