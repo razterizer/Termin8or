@@ -687,6 +687,11 @@ namespace t8x
       return get_canonicalized_glyph().fully_empty();
     }
     
+    bool valid() const
+    {
+      return current_glyph.valid_after_canonicalization();
+    }
+    
     virtual int num_components() const override { return 3; }
     
     virtual void set_component_focus(int sub_tab, bool selected) override
