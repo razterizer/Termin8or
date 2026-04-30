@@ -632,8 +632,9 @@ namespace t8x
       
       //sh.write_buffer("Recent Glyphs:", pos, Color)
       
-      current_glyph_disp_sstr_long = current_glyph.format_long<CharT>(!cp_field.empty(), false, lbl_style, lbl_style, brck_style);
-      current_glyph_disp_sstr_short = current_glyph.format_short<CharT>(false, lbl_style, lbl_style, brck_style);
+      const auto disp_glyph = get_canonicalized_glyph();
+      current_glyph_disp_sstr_long = disp_glyph.format_long<CharT>(!disp_glyph.empty(), true, lbl_style, lbl_style, brck_style);
+      current_glyph_disp_sstr_short = disp_glyph.format_short<CharT>(true, lbl_style, lbl_style, brck_style);
       
       // /////
       
