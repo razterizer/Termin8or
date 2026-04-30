@@ -269,7 +269,7 @@ namespace t8
           if (tok0.length() > 1)
             return error("A unicode code point > 0x7F must be followed by an ASCII (<= 0x7F) character!");
           f_set_preferred(tok0);
-          fallback = static_cast<char>(preferred); // Normalize ASCII.
+          fallback = static_cast<char>(preferred); // Canonicalize ASCII.
           pos += static_cast<int>(toks_len);
           return success();
         }
