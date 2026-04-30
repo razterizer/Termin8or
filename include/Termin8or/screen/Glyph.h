@@ -141,6 +141,10 @@ namespace t8
     // Round trips legacy_ascii_only == true:
     // p == none32 && f == none => "?" => p == '?', f == '?'
     // p == '?' && f == none => "?" => p == '?', f == '?'
+    //
+    // Glyph {none32, 'a'} is draft state; canonicalize before serializing.
+    //
+    // Serialize valid/canonical glyph.
     std::string str(bool legacy_ascii_only = false) const
     {
       assert(valid());
