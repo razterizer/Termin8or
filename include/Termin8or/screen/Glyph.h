@@ -73,6 +73,16 @@ namespace t8
       return preferred == none32;
     }
     
+    inline bool empty_fallback() const noexcept
+    {
+      return fallback == none;
+    }
+
+    inline bool fully_empty() const noexcept
+    {
+      return empty() && empty_fallback();
+    }
+    
     inline void clear()
     {
       preferred = none32;
