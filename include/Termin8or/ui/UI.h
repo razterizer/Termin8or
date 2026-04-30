@@ -687,6 +687,13 @@ namespace t8x
       return get_canonicalized_glyph().fully_empty();
     }
     
+    // Manual validation matrix:
+    // []         => reject as empty.
+    // [|a]       => accept, canonicalize to [a|].
+    // [a|a]/[a|] => accept.
+    // [2603|]    => reject; Unicode glyphs need ASCII fallback.
+    // [2603|*]   => accept.
+    // Recents    => no empty, no duplicates, canonicalized entries only.
     bool valid() const
     {
       return current_glyph.valid_after_canonicalization();
