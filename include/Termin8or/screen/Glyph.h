@@ -83,6 +83,20 @@ namespace t8
       return empty() && empty_fallback();
     }
     
+    bool valid_after_canonicalization() const
+    {
+      auto glyph = *this;
+      glyph.try_canonicalize_from_fallback();
+      
+      const bool has_cp = glyph.preferred != none32;
+      const bool has_fb = glyph.fallback != none;
+      const auto fb_u = static_cast<unsigned char>(glyph.fallback);
+      
+      return !(!has_cp && has_fb)
+          && !(has_fb && fb_u > 0x7F)
+          && !(has_cp && glyph.preferred > 0x7F && !has_fb);
+    }
+    
     inline void clear()
     {
       preferred = none32;
