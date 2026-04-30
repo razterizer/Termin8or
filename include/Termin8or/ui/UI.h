@@ -1582,6 +1582,14 @@ namespace t8x
       return true; // Treat as empty if unable to find matching glyph picker.
     }
     
+    bool glyph_picker_valid(int tab)
+    {
+      auto it = stlutils::find_if(glyph_pickers, [tab](const auto& gpp) { return gpp.second->get_tab_order() == tab; });
+      if (it != glyph_pickers.end())
+        return it->second->valid();
+      return false;
+    }
+    
     ColorPicker& emplace_color_picker(const RC& pos,
                                       Color fg_sel, Color fg_sel_hilite,
                                       const ColorPickerParams& cp_params,
