@@ -223,7 +223,10 @@ namespace t8
       auto substr = str.substr(pos);
       if (legacy_ascii_only)
       {
-        auto tok = std::string(1, substr[0]);
+        auto ch = static_cast<unsigned char>(substr[0]);
+        if (ch > 0x7F)
+          return false;
+        auto tok = std::string(1, static_cast<char>(ch));
         f_set_preferred(tok);
         f_set_fallback(tok);
         pos++;
