@@ -240,6 +240,12 @@ namespace t8
         return false;
       };
       
+      auto success = [this]()
+      {
+        assert(valid_after_canonicalization());
+        return true;
+      };
+      
       if (substr.starts_with("["))
       {
         auto end_idx = substr.find("]");
