@@ -1847,6 +1847,18 @@ namespace t8x
       TextBox<std::string>::sb.text_lines.clear();
       init();
     }
+    
+    virtual RC measure_panel_size() const override
+    {
+      auto panel_size = TextBox<std::string>::measure_panel_size();
+      
+      // Row dimension is already set via TextBoxDebug::init().
+      
+      for (size_t p_idx = 0; p_idx < TextBox<std::string>::N; ++p_idx)
+        math::maximize(panel_size.c, str::lenI(params[p_idx]->str()));
+      
+      return panel_size;
+    }
   };
 
 }
