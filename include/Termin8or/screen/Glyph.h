@@ -21,6 +21,28 @@ namespace t8
     char32_t preferred = none32;
     char fallback = none;
     
+  private:
+    static bool fails_1_fallback_wo_preferred(const Glyph& g) noexcept
+    {
+      bool has_cp = g.preferred != none32;
+      bool has_fb = g.fallback != none;
+      return !has_cp && has_fb;
+    }
+    
+    static bool fails_2_existing_fallback_isnt_ascii(const Glyph& g) noexcept
+    {
+      bool has_fb = g.fallback != none;
+      return has_fb && static_cast<unsigned char>(g.fallback) > 0x7F;
+    }
+    
+    static bool fails_3_existing_preferred_isnt_ascii_wo_fallback(const Glyph& g) noexcept
+    {
+      bool has_cp = g.preferred != none32;
+      bool has_fb = g.fallback != none;
+      return has_cp && g.preferred > 0x7F && !has_fb;
+    }
+  
+  public:
     Glyph() = default;
     
     Glyph(char32_t pref, char fb = none)
@@ -29,24 +51,21 @@ namespace t8
     {
       if (preferred == static_cast<char32_t>(none))
         preferred = none32;
-    
-      bool has_cp = preferred != none32;
-      bool has_fb = fallback != none;
-    
+        
       // 1) No fallback without preferred.
-      assert(!(!has_cp && has_fb)
+      assert(!fails_1_fallback_wo_preferred(*this)
              && "ERROR in Glyph(char32_t, char) : Fallback without preferred.");
       
       // 2) Fallback must be ASCII if present.
-      assert(!(has_fb && static_cast<unsigned char>(fallback) > 0x7F)
+      assert(!fails_2_existing_fallback_isnt_ascii(*this)
              && "ERROR in Glyph(char32_t, char) : Fallback must be ASCII (<=0x7F).");
       
       // 3) Preferred must be ASCII if fallback is not present.
-      assert(!(has_cp && preferred > 0x7F && !has_fb)
+      assert(!fails_3_existing_preferred_isnt_ascii_wo_fallback(*this)
              && "ERROR in Glyph(char32_t, char) : Preferred cannot be non-ASCII while fallback is unset.");
              
       // Canonicalize ASCII glyphs.
-      if (has_cp && preferred <= 0x7F)
+      if (preferred != none32 && preferred <= 0x7F)
         fallback = static_cast<char>(preferred);
     }
     
@@ -88,13 +107,9 @@ namespace t8
       auto glyph = *this;
       glyph.try_canonicalize_from_fallback();
       
-      const bool has_cp = glyph.preferred != none32;
-      const bool has_fb = glyph.fallback != none;
-      const auto fb_u = static_cast<unsigned char>(glyph.fallback);
-      
-      return !(!has_cp && has_fb)
-          && !(has_fb && fb_u > 0x7F)
-          && !(has_cp && glyph.preferred > 0x7F && !has_fb);
+      return !fails_1_fallback_wo_preferred(glyph)
+          && !fails_2_existing_fallback_isnt_ascii(glyph)
+          && !fails_3_existing_preferred_isnt_ascii_wo_fallback(glyph);
     }
     
     inline void clear()
