@@ -584,7 +584,7 @@ namespace t8x
     
     t8::Glyph get_glyph() const
     {
-      return current_glyph;
+      return get_canonicalized_glyph();
     }
     
     const std::vector<t8::StyledString>& get_glyph_sstr_long() const
