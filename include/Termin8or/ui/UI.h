@@ -684,7 +684,7 @@ namespace t8x
     
     bool empty() const
     {
-      return current_glyph.empty();
+      return get_canonicalized_glyph().fully_empty();
     }
     
     virtual int num_components() const override { return 3; }
