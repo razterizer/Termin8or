@@ -13,6 +13,15 @@
 namespace t8
 {
   
+  // Canonicalization here means that if preferred is ASCII,
+  //   then fallback will be set to be the same value as preferred.
+  // In try_canonicalize_from_fallback() the order goes the other way, meaning
+  //   that if preferred == none32 and fallback is ASCII,
+  //   then preferred will instead be assigned the value of fallback.
+  // Uncanonicalization is only for the display strings and means that
+  //   if preferred and fallback are the same, the fallback is hidden and
+  //   only preferred is displayed.
+  
   struct Glyph
   {
     static const char32_t none32 = term::none32;
