@@ -1015,6 +1015,8 @@ namespace t8x
   template<typename StrT = std::string>
   class TextBox
   {
+    bool allow_panel_size_caching = false;
+  
   protected:
     str::StringBox<StrT> sb;
     size_t N = 0;
@@ -1094,7 +1096,7 @@ namespace t8x
     
     RC fetch_panel_size()
     {
-      if (!cached_panel_size.has_value())
+      if (!cached_panel_size.has_value() || !allow_panel_size_caching)
       {
         N = sb.size();
         len_max = 0;
@@ -1114,8 +1116,9 @@ namespace t8x
   public:
     virtual ~TextBox() = default;
     TextBox() = default;
-    TextBox(str::Adjustment master_adj)
-      : master_adjustment(master_adj)
+    TextBox(str::Adjustment master_adj, bool cache_panel_size)
+      : allow_panel_size_caching(cache_panel_size)
+      , master_adjustment(master_adj)
     {}
     TextBox(size_t num_lines, str::Adjustment master_adj = str::Adjustment::Left)
       : sb(num_lines)
@@ -1785,10 +1788,12 @@ namespace t8x
     }
     
   public:
-    TextBoxDebug() = default;
+    TextBoxDebug()
+      : TextBox<std::string>(str::Adjustment::Left, false)
+    {}
     
     TextBoxDebug(str::Adjustment master_adj)
-      : TextBox<std::string>(master_adj)
+      : TextBox<std::string>(master_adj, false)
     {}
   
     template<typename T>
