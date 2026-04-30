@@ -254,7 +254,7 @@ namespace t8
           pos += 2;
           preferred = none32;
           fallback = none;
-          return true;
+          return success();
         }
         if (end_idx == std::string::npos)
           return error("Unable to find matching end bracket \"]\"!");
@@ -271,7 +271,7 @@ namespace t8
           f_set_preferred(tok0);
           fallback = static_cast<char>(preferred); // Normalize ASCII.
           pos += static_cast<int>(toks_len);
-          return true;
+          return success();
         }
         else if (tokens.size() == 2)
         {
@@ -291,7 +291,7 @@ namespace t8
             fallback = static_cast<char>(preferred);
           }
           pos += static_cast<int>(toks_len);
-          return true;
+          return success();
         }
         else
           return error("Wrong number of tokens within bracketed glyph scope!");
