@@ -27,6 +27,9 @@ namespace t8
       : preferred(pref)
       , fallback(fb)
     {
+      if (preferred == static_cast<char32_t>(none))
+        preferred = none32;
+    
       bool has_cp = preferred != none32;
       bool has_fb = fallback != none;
     
