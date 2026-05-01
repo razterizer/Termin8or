@@ -535,9 +535,9 @@ namespace t8x
     std::string fb_str_prev;
     
     std::array<t8::Glyph, 4> recent_glyphs;
-    int sel_recent_idx = -1;
-    int recent_head = 0;
-    int recent_count = 0;
+    int sel_recent_idx = -1; // Current selection in newest-first display order.
+    int recent_head = 0; // Next storage slot to write in the ring buffer.
+    int recent_count = 0; // How many entries have been added so far.
     
     t8::Glyph current_glyph;
     mutable std::vector<t8::StyledString> current_glyph_disp_sstr_long; // Cached representation of current_glyph for display.
