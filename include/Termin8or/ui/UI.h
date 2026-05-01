@@ -550,6 +550,16 @@ namespace t8x
       return glyph;
     }
     
+    void move_recent_selection(int offs_idx)
+    {
+      if (recent_count == 0)
+      {
+        sel_recent_idx = -1;
+        return;
+      }
+      sel_recent_idx = math::clamp(sel_recent_idx + offs_idx, 0, recent_count - 1);
+    }
+    
     void set_glyph_inputs(const t8::Glyph& g)
     {
       if (g.preferred == t8::Glyph::none32)
