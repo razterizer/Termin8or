@@ -681,6 +681,8 @@ namespace t8x
       current_glyph_disp_sstr_short.clear();
       cp_field.clear();
       fb_field.clear();
+      cp_str_prev.clear();
+      fb_str_prev.clear();
     }
     
     bool empty() const
