@@ -620,6 +620,16 @@ namespace t8x
       if (!is_selected())
         return;
         
+      if (sel_recent_idx != -1)
+      {
+        if (curr_special_key == SpecialKey::Left)
+          move_recent_selection(-1);
+        else if (curr_special_key == SpecialKey::Right)
+          move_recent_selection(+1);
+        else if (curr_key == ' ')
+          set_glyph(recent_glyphs[sel_recent_idx]);
+      }
+        
       if (cp_field.is_selected())
       {
         cp_field.update(curr_key, curr_special_key);
