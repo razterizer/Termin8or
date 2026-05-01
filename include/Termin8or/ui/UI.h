@@ -672,14 +672,19 @@ namespace t8x
       rg_lbl.draw(sh, pos + RC { 1, 0 });
       {
         int rg_col_start = rg_lbl.width() + 1;
-        for (int g_idx = 0; g_idx < 4; ++g_idx)
+        int rg_col_offs = 0;
+        for (int g_idx = 0; g_idx < recent_count; ++g_idx)
         {
           const auto& rg = recent_glyphs[g_idx];
-          if (rg.preferred != t8::Glyph::none32)
+          auto glyph_style = lbl_style;
+          auto bracket_style = brck_style;
+          if (g_idx == sel_recent_idx)
           {
-            auto ss_vec = rg.format_short<CharT>(false, lbl_style, lbl_style, brck_style);
-            rg_col_start = sh.write_buffer(ss_vec, pos + RC { 1, rg_col_start });
+            glyph_style.bg_color = prmpt_style.bg_color_cursor;
+            bracket_style.bg_color = prmpt_style.bg_color_cursor;
           }
+          auto ss_vec = rg.format_short<CharT>(true, glyph_style, glyph_style, bracket_style);
+          rg_col_offs = sh.write_buffer(ss_vec, pos + RC { 1, rg_col_start + rg_col_offs });
         }
       }
       
