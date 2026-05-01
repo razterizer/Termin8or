@@ -550,6 +550,22 @@ namespace t8x
       return glyph;
     }
     
+    void set_glyph_inputs(const t8::Glyph& g)
+    {
+      if (g.preferred == t8::Glyph::none32)
+        cp_field.clear();
+      else
+        cp_field.set_input(str::int2hex(g.preferred));
+      
+      if (g.fallback == t8::Glyph::none)
+        fb_field.clear();
+      else
+        fb_field.set_input(std::string(1, g.fallback));
+      
+      cp_str_prev = cp_field.get_input();
+      fb_str_prev = fb_field.get_input();
+    }
+    
   public:
     GlyphPicker(PromptStyle tf_style, Style label_style, Style hex_prefix_style, Style bracket_style,
                 int tab, char clear_ch = '_', bool sel = false)
@@ -571,16 +587,7 @@ namespace t8x
     void set_glyph(const t8::Glyph& g)
     {
       current_glyph = g;
-      
-      if (g.preferred == t8::Glyph::none32)
-        cp_field.clear();
-      else
-        cp_field.set_input(str::int2hex(g.preferred));
-      
-      if (g.fallback == t8::Glyph::none)
-        fb_field.clear();
-      else
-        fb_field.set_input(std::string(1, g.fallback));
+      set_glyph_inputs(g);
     }
     
     t8::Glyph get_glyph() const
