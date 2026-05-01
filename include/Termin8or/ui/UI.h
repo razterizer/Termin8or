@@ -713,7 +713,9 @@ namespace t8x
     
     virtual void set_component_focus(int sub_tab, bool selected) override
     {
-      if (sub_tab == 1)
+      if (sub_tab == 0)
+        sel_recent_idx = selected && recent_count > 0 ? std::max(0, sel_recent_idx) : -1;
+      else if (sub_tab == 1)
         cp_field.set_selected(selected);
       else if (sub_tab == 2)
         fb_field.set_selected(selected);
