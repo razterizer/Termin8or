@@ -746,6 +746,13 @@ namespace t8x
         fb_field.set_selected(selected);
     }
     
+    // Recent glyphs newest-first MRU mechanics.
+    // push A -> [A]
+    // push B -> [B, A]
+    // push C -> [C, B, A]
+    // push D -> [D, C, B, A]
+    // push E -> [E, D, C, B]   // A falls off.
+    // push C -> [C, E, D, B]   // C promoted, no duplicate.
     void push_recent()
     {
       const auto glyph = get_canonicalized_glyph();
@@ -754,6 +761,9 @@ namespace t8x
       if (!glyph.valid())
         return;
       
+      // Attempting to find the index to an already existing item matching curr glyph.
+      // [D, C, B, A] | push E -> [E, D, C, B] : existing_idx = -1
+      // [E, D, C, B] | push C -> [C, E, D, B] : existing_idx = 2
       int existing_idx = -1;
       for (int recent_idx = 0; recent_idx < recent_count; ++recent_idx)
       {
@@ -764,19 +774,29 @@ namespace t8x
         }
       }
       
+      // Calculating the number of glyphs in the list to move, clamped to the length of the list.
+      // [D, C, B, A] | push E -> [E, D, C, B] : move_count = 3
+      // [E, D, C, B] | push C -> [C, E, D, B] : move_count = 2
       const int move_count = existing_idx == -1
         ? std::min(recent_count, stlutils::sizeI(recent_glyphs) - 1)
         : existing_idx;
       
-      // Move older glyphs towards the back.
+      // Moving older glyphs towards the back.
+      // [D, C, B, A] -> [D, C, B, B] -> [D, C, C, B] -> [D, D, C, B]
+      // [E, D, C, B] -> [E, D, D, B] -> [E, E, D, B]
       for (int recent_idx = move_count; recent_idx > 0; --recent_idx)
         recent_glyphs[recent_idx] = recent_glyphs[recent_idx - 1];
       
+      // Inserting the new glyph.
+      // [E*, D, C, B]
+      // [C*, E, D, B]
       recent_glyphs[0] = glyph;
       
+      // Bumping recent count clamped to the length of the list.
       if (existing_idx == -1)
         recent_count = std::min(recent_count + 1, stlutils::sizeI(recent_glyphs));
       
+      // Reset selection index to 0 if we already have a selection.
       if (sel_recent_idx != -1)
         sel_recent_idx = 0;
     }
