@@ -114,4 +114,56 @@ namespace t8::ansi
     return true;
   }
   
+  // ESC[m         -> params empty, apply_ansi_sgr_params() resets
+  // ESC[0m        -> {0}
+  // ESC[31m       -> {31}
+  // ESC[31;44m    -> {31, 44}
+  // ESC[38;5;123m -> {38, 5, 123}
+  inline bool parse_ansi_sgr_params(const std::string& str,
+                                    int& pos,
+                                    std::vector<int>& params)
+  {
+    params.clear();
+    
+    int i = pos;
+    int str_len = str::lenI(str);
+    if (i + 1 >= str_len)
+      return false;
+    
+    if (str[i] != '\033' || str[i + 1] != '[')
+      return false;
+    
+    // I could've used str::tokenize() here, but this manual parser is more robust.
+
+    i += 2;
+    
+    std::string token;
+    while (i < str_len)
+    {
+      char ch = str[i];
+      
+      if (str::is_digit(ch))
+        token.push_back(ch);
+      else if (ch == ';')
+      {
+        params.emplace_back(token.empty() ? 0 : std::stoi(token));
+        token.clear();
+      }
+      else if (ch == 'm')
+      {
+        if (!token.empty())
+          params.emplace_back(std::stoi(token));
+        
+        pos = i + 1;
+        return true;
+      }
+      else
+        return false;
+      
+      ++i;
+    }
+    
+    return false;
+  }
+  
 }
