@@ -155,6 +155,13 @@ namespace t8
     TryUnicodePreferredAndFallbackElseAsciiOnly, // Store preferred + fallback if any preferred > 0x7F exists.
   };
   
+  enum class TextureFileFormat
+  {
+    Auto,
+    Tx,
+    Ansi,
+  };
+  
   struct Texture
   {
     static const int compatible_version_until_and_including = 30;
