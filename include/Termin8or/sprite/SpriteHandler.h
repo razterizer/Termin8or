@@ -176,11 +176,14 @@ namespace t8x
       texture->materials.resize(area);
     }
     
-    bool load_frame(int anim_frame, const std::string& file_path)
+    bool load_frame(int anim_frame,
+                    const std::string& file_path,
+                    t8::TextureFileFormat format = t8::TextureFileFormat::Auto,
+                    bool verbose = true)
     {
       auto* texture = fetch_frame(anim_frame);
       texture->clear();
-      texture->load(file_path);
+      texture->load(file_path, format, verbose);
       if (texture->size != size)
       {
         std::cerr << "ERROR in BitmapSprite::load_frame() : Loaded sprite frame doesn't have the same size as the sprite itself." << std::endl;
@@ -189,10 +192,13 @@ namespace t8x
       return true;
     }
     
-    void save_frame(int anim_frame, const std::string& file_path)
+    void save_frame(int anim_frame,
+                    const std::string& file_path,
+                    t8::TextureFileFormat format = t8::TextureFileFormat::Auto,
+                    t8::TxGlyphEncoding encoding_mode = t8::TxGlyphEncoding::AsciiOnly)
     {
       auto* texture = fetch_frame(anim_frame);
-      texture->save(file_path);
+      texture->save(file_path, format, encoding_mode);
     }
     
     virtual void clone_frame(int anim_frame, int from_anim_frame) override
