@@ -775,7 +775,7 @@ namespace t8x
       recent_glyphs[0] = glyph;
       
       if (existing_idx == -1)
-      recent_count = std::min(recent_count + 1, stlutils::sizeI(recent_glyphs));
+        recent_count = std::min(recent_count + 1, stlutils::sizeI(recent_glyphs));
       
       if (sel_recent_idx != -1)
         sel_recent_idx = 0;
