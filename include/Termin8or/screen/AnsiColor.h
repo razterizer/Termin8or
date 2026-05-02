@@ -62,10 +62,10 @@ namespace t8::ansi
   // 38;5;123 -> fg = color index 123
   // 48;5;123 -> bg = color index 123
   inline bool apply_ansi_sgr_params(const std::vector<int>& params,
-                             Color& fg,
-                             Color& bg,
-                             Color default_fg = Color16::Default,
-                             Color default_bg = Color16::Transparent2)
+                                    Color& fg,
+                                    Color& bg,
+                                    Color default_fg = Color16::Default,
+                                    Color default_bg = Color16::Transparent2)
   {
     if (params.empty())
     {
@@ -74,10 +74,11 @@ namespace t8::ansi
       return true;
     }
     
-    int rgb6_fg_state = 0;
-    int rgb6_bg_state = 0;
-    for (int p : params)
+    const int N = stlutils::sizeI(params);
+    for (int i = 0; i < N; ++i)
     {
+      int p = params[i];
+      
       if (p == 0)
       {
         fg = default_fg;
@@ -95,26 +96,19 @@ namespace t8::ansi
         bg = Color { p - 40 };
       else if (100 <= p && p <= 107)
         bg = Color { p - 100 + 8 };
-      else if (p == 38)
-        rgb6_fg_state = 1;
-      else if (p == 48)
-        rgb6_bg_state = 1;
-      else if (p == 5)
+      else if (p == 38 && i + 1 < N && params[i + 1] == 5)
       {
-        if (rgb6_fg_state == 1)
-          rgb6_fg_state = 2;
-        else if (rgb6_bg_state == 1)
-          rgb6_bg_state = 2;
+        int idx = i + 2 < N ? params[i + 2] : -1;
+        if (0 <= idx && idx <= 255)
+          fg = Color { idx };
+        i += 2;
       }
-      else if (rgb6_fg_state == 2)
+      else if (p == 48 && i + 1 < N && params[i + 1] == 5)
       {
-        fg = Color { p };
-        rgb6_fg_state = 0;
-      }
-      else if (rgb6_bg_state == 2)
-      {
-        bg = Color { p };
-        rgb6_bg_state = 0;
+        int idx = i + 2 < N ? params[i + 2] : -1;
+        if (0 <= idx && idx <= 255)
+          bg = Color { idx };
+        i += 2;
       }
     }
     return true;
