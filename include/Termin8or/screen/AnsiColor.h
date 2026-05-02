@@ -61,7 +61,7 @@ namespace t8::ansi
   // 44  -> bg = blue
   // 38;5;123 -> fg = color index 123
   // 48;5;123 -> bg = color index 123
-  bool apply_ansi_sgr_params(const std::vector<int>& params,
+  inline bool apply_ansi_sgr_params(const std::vector<int>& params,
                              Color& fg,
                              Color& bg,
                              Color default_fg = Color16::Default,
