@@ -11,6 +11,7 @@
 #include "../screen/Color.h"
 #include "../screen/Styles.h"
 #include <Core/TextIO.h>
+#include <Core/FolderHelper.h>
 #include <Core/StringHelper.h>
 #include <sstream>
 
@@ -335,6 +336,195 @@ namespace t8
       return get_textel_material(pos.r, pos.c);
     }
     
+    bool load(const std::string& file_path, bool verbose)
+    {
+      return load(file_path, TextureFileFormat::Auto, verbose);
+    }
+    
+    bool load(const std::string& file_path,
+              TextureFileFormat format = TextureFileFormat::Auto,
+              bool verbose = true)
+    {
+      auto resolved_format = format == TextureFileFormat::Auto ?
+        deduce_file_format(file_path) : format;
+    
+      Texture parsed;
+      
+      bool ok = false;
+      switch (resolved_format)
+      {
+        case TextureFileFormat::Auto:
+          return false;
+        case TextureFileFormat::Tx:
+          ok = parsed.load_tx(file_path, verbose);
+          break;
+        case TextureFileFormat::Ansi:
+          ok = parsed.load_ansi(file_path, verbose);
+          break;
+      }
+      
+      if (!ok)
+        return false;
+      
+      *this = std::move(parsed);
+      return true;
+    }
+    
+    bool save(const std::string& file_path, TxGlyphEncoding encoding_mode)
+    {
+      return save(file_path, TextureFileFormat::Auto, encoding_mode);
+    }
+    
+    bool save(const std::string& file_path,
+              TextureFileFormat format = TextureFileFormat::Auto,
+              TxGlyphEncoding encoding_mode = TxGlyphEncoding::AsciiOnly)
+    {
+      auto resolved_format = format == TextureFileFormat::Auto ?
+        deduce_file_format(file_path) : format;
+    
+      switch (resolved_format)
+      {
+        case TextureFileFormat::Auto:
+          return false;
+        case TextureFileFormat::Tx:
+          return save_tx(file_path, encoding_mode);
+        case TextureFileFormat::Ansi:
+          return save_ansi(file_path);
+      }
+      
+      return false;
+    }
+    
+    // +-+
+    // | |
+    // +-+
+    // zero_area_is_one_char = false (default):
+    // r_len = 3, c_len = 3
+    // zero_area_is_one_char = true:
+    // r_len = 2, c_len = 2
+    // So that:
+    // zero_area_is_one_char = true:
+    // r_len = 0, c_len = 0
+    // +
+    
+    Texture subset(const Rectangle& bb_subset, bool zero_area_is_one_char = false)
+    {
+      auto bb = bb_subset; //
+      if (zero_area_is_one_char)
+      {
+        bb.r_len++;
+        bb.c_len++;
+      }
+      
+      Texture sub_texture(bb.size());
+      for (int r_src = bb.top(); r_src <= bb.bottom(); ++r_src)
+      {
+        if (!check_range_r(r_src))
+          continue;
+        auto r_dst = r_src - bb.r;
+        for (int c_src = bb.left(); c_src <= bb.right(); ++c_src)
+        {
+          if (!check_range_c(c_src))
+            continue;
+          auto c_dst = c_src - bb.c;
+          int idx_src = r_src * size.c + c_src;
+          int idx_dst = r_dst * sub_texture.size.c + c_dst;
+          sub_texture.glyphs[idx_dst] = glyphs[idx_src];
+          sub_texture.fg_colors[idx_dst] = fg_colors[idx_src];
+          sub_texture.bg_colors[idx_dst] = bg_colors[idx_src];
+          sub_texture.materials[idx_dst] = materials[idx_src];
+        }
+      }
+      
+      return sub_texture;
+    }
+    
+    bool empty() const { return size.r == 0 && size.c == 0; }
+    
+    void clear()
+    {
+      size = { -1, -1 };
+      area = 0;
+      glyphs.clear();
+      fg_colors.clear();
+      bg_colors.clear();
+      materials.clear();
+    }
+    
+    bool check_range_r(int r) const noexcept
+    {
+      if (math::in_range(r, 0, size.r, Range::ClosedOpen))
+        return true;
+      return false;
+    }
+    
+    bool check_range_c(int c) const noexcept
+    {
+      if (math::in_range(c, 0, size.c, Range::ClosedOpen))
+        return true;
+      return false;
+    }
+    
+    bool check_range(int r, int c) const noexcept
+    {
+      if (!check_range_r(r))
+        return false;
+      if (!check_range_c(c))
+        return false;
+      return true;
+    }
+    
+  private:
+    bool has_8bit_colors() const
+    {
+      for (auto col : fg_colors)
+        if (!col.is_color16())
+          return true;
+      for (auto col : bg_colors)
+        if (!col.is_color16())
+          return true;
+      return false;
+    }
+    
+    bool has_empty_materials() const
+    {
+      for (auto mat : materials)
+        if (mat == texture::mat_none)
+          return true;
+      return false;
+    }
+    
+    bool has_non_ascii_glyphs() const
+    {
+      for (const auto& g : glyphs)
+        if (g.preferred > 0x7F)
+          return true;
+      return false;
+    }
+  
+    int compute_minimal_version(int max_ver = math::get_max<int>()) const
+    {
+      int minimal_ver = 10;
+      if (minimal_ver < 20 && 20 <= max_ver && has_8bit_colors())
+        minimal_ver = 20;
+      // VER 2.1: material "none" is serialized as '-' (stored internally as 255).
+      if (minimal_ver < 21 && 21 <= max_ver && has_empty_materials())
+        minimal_ver = 21;
+      if (minimal_ver < 30 && 30 <= max_ver && has_non_ascii_glyphs())
+        minimal_ver = 30;
+      return minimal_ver;
+    }
+    
+    static TextureFileFormat deduce_file_format(const std::string& file_path)
+    {
+      auto ext = str::to_lower(folder::split_filename_ext(file_path).second);
+      if (ext == "ans" || ext == "ansi")
+        return TextureFileFormat::Ansi;
+      if (ext == "tx")
+        return TextureFileFormat::Tx;
+      return TextureFileFormat::Auto;
+    }
+  
     // File format:
     // size, chars, fg-colors, bg-colors, materials.
     //-------------
@@ -356,7 +546,7 @@ namespace t8
     // 01030110222
     // 44544344222
     
-    bool load(const std::string& file_path, bool verbose = true)
+    bool load_tx(const std::string& file_path, bool verbose = true)
     {
       std::vector<std::string> lines;
       
@@ -482,7 +672,7 @@ namespace t8
       return true;
     }
     
-    bool save(const std::string& file_path, TxGlyphEncoding encoding_mode = TxGlyphEncoding::AsciiOnly)
+    bool save_tx(const std::string& file_path, TxGlyphEncoding encoding_mode = TxGlyphEncoding::AsciiOnly)
     {
       std::vector<std::string> lines;
       
@@ -548,124 +738,14 @@ namespace t8
       return TextIO::write_file(file_path, lines);
     }
     
-    // +-+
-    // | |
-    // +-+
-    // zero_area_is_one_char = false (default):
-    // r_len = 3, c_len = 3
-    // zero_area_is_one_char = true:
-    // r_len = 2, c_len = 2
-    // So that:
-    // zero_area_is_one_char = true:
-    // r_len = 0, c_len = 0
-    // +
-    
-    Texture subset(const Rectangle& bb_subset, bool zero_area_is_one_char = false)
+    bool load_ansi(const std::string& file_path, bool verbose = true)
     {
-      auto bb = bb_subset; //
-      if (zero_area_is_one_char)
-      {
-        bb.r_len++;
-        bb.c_len++;
-      }
-      
-      Texture sub_texture(bb.size());
-      for (int r_src = bb.top(); r_src <= bb.bottom(); ++r_src)
-      {
-        if (!check_range_r(r_src))
-          continue;
-        auto r_dst = r_src - bb.r;
-        for (int c_src = bb.left(); c_src <= bb.right(); ++c_src)
-        {
-          if (!check_range_c(c_src))
-            continue;
-          auto c_dst = c_src - bb.c;
-          int idx_src = r_src * size.c + c_src;
-          int idx_dst = r_dst * sub_texture.size.c + c_dst;
-          sub_texture.glyphs[idx_dst] = glyphs[idx_src];
-          sub_texture.fg_colors[idx_dst] = fg_colors[idx_src];
-          sub_texture.bg_colors[idx_dst] = bg_colors[idx_src];
-          sub_texture.materials[idx_dst] = materials[idx_src];
-        }
-      }
-      
-      return sub_texture;
-    }
-    
-    bool empty() const { return size.r == 0 && size.c == 0; }
-    
-    void clear()
-    {
-      size = { -1, -1 };
-      area = 0;
-      glyphs.clear();
-      fg_colors.clear();
-      bg_colors.clear();
-      materials.clear();
-    }
-    
-    bool check_range_r(int r) const noexcept
-    {
-      if (math::in_range(r, 0, size.r, Range::ClosedOpen))
-        return true;
       return false;
     }
     
-    bool check_range_c(int c) const noexcept
+    bool save_ansi(const std::string& file_path)
     {
-      if (math::in_range(c, 0, size.c, Range::ClosedOpen))
-        return true;
       return false;
-    }
-    
-    bool check_range(int r, int c) const noexcept
-    {
-      if (!check_range_r(r))
-        return false;
-      if (!check_range_c(c))
-        return false;
-      return true;
-    }
-    
-  private:
-    bool has_8bit_colors() const
-    {
-      for (auto col : fg_colors)
-        if (!col.is_color16())
-          return true;
-      for (auto col : bg_colors)
-        if (!col.is_color16())
-          return true;
-      return false;
-    }
-    
-    bool has_empty_materials() const
-    {
-      for (auto mat : materials)
-        if (mat == texture::mat_none)
-          return true;
-      return false;
-    }
-    
-    bool has_non_ascii_glyphs() const
-    {
-      for (const auto& g : glyphs)
-        if (g.preferred > 0x7F)
-          return true;
-      return false;
-    }
-  
-    int compute_minimal_version(int max_ver = math::get_max<int>()) const
-    {
-      int minimal_ver = 10;
-      if (minimal_ver < 20 && 20 <= max_ver && has_8bit_colors())
-        minimal_ver = 20;
-      // VER 2.1: material "none" is serialized as '-' (stored internally as 255).
-      if (minimal_ver < 21 && 21 <= max_ver && has_empty_materials())
-        minimal_ver = 21;
-      if (minimal_ver < 30 && 30 <= max_ver && has_non_ascii_glyphs())
-        minimal_ver = 30;
-      return minimal_ver;
     }
   };
 
