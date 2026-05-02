@@ -14,7 +14,7 @@
 namespace t8::ansi
 {
   
-  inline std::string get_color_string(Color text_color, Color bg_color = Color16::Default)
+  inline std::string colors_to_ansi_sgr_string(Color text_color, Color bg_color = Color16::Default)
   {
     std::string fg, bg;
     

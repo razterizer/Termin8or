@@ -145,7 +145,7 @@ namespace t8
       
       std::string output;
       output.reserve(text.size() + 32);
-      output += ansi::get_color_string(text_color, bg_color);
+      output += ansi::colors_to_ansi_sgr_string(text_color, bg_color);
       output += text;
       output += "\033[0m";
       term::emit_text(output);
@@ -173,7 +173,7 @@ namespace t8
       // ANSI-capable: build escape + char + reset.
       std::string output;
       output.reserve(32);
-      output += ansi::get_color_string(text_color, bg_color);
+      output += ansi::colors_to_ansi_sgr_string(text_color, bg_color);
       output.push_back(c);
       output += "\033[0m";
       term::emit_text(output);
@@ -194,7 +194,7 @@ namespace t8
       
       std::string output;
       output.reserve(glyph.size() + 32);
-      output += ansi::get_color_string(text_color, bg_color);
+      output += ansi::colors_to_ansi_sgr_string(text_color, bg_color);
       output += glyph;
       output += "\033[0m";
       term::emit_text(output);
@@ -272,7 +272,7 @@ namespace t8
       for (const auto& [ch, fg_color, bg_color] : text)
       {
         const bool is_nl = (ch == static_cast<CharT>('\n'));
-        output += ansi::get_color_string(fg_color, is_nl ? Color16::Default : bg_color);
+        output += ansi::colors_to_ansi_sgr_string(fg_color, is_nl ? Color16::Default : bg_color);
         
         if constexpr (std::is_same_v<CharT, char>)
           output.push_back(static_cast<char>(ch));
@@ -371,7 +371,7 @@ namespace t8
         for (const auto& [ch, fg, bg] : chunk.text)
         {
           assert(ch != '\n');
-          output += ansi::get_color_string(fg, bg);
+          output += ansi::colors_to_ansi_sgr_string(fg, bg);
           if constexpr (std::is_same_v<CharT, char>)
             output.push_back(static_cast<char>(ch));
           else if constexpr (std::is_same_v<CharT, char32_t>)
