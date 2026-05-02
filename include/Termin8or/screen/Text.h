@@ -1,5 +1,6 @@
 #pragma once
 #include "Color.h"
+#include "AnsiColor.h"
 #include "ScreenCommandsBasic.h"
 #include "Glyph.h"
 #include "../geom/RC.h"
@@ -103,45 +104,6 @@ namespace t8
       term::m_term_mode = ::term::init_terminal_mode(65001);
     }
     
-    static std::string get_color_string(Color text_color, Color bg_color = Color16::Default)
-    {
-      std::string fg, bg;
-    
-      int text_color_idx = text_color.get_index();
-      if (-1 <= text_color_idx) // Color16::Default = -1
-      {
-        fg = "\033[";
-        if (text_color == Color16::Default)
-          fg += "39";
-        else if (0 <= text_color_idx && text_color_idx <= 7)
-          fg += std::to_string(30 + text_color_idx);
-        else if (8 <= text_color_idx && text_color_idx <= 15)
-          fg += std::to_string(90 + (text_color_idx - 8));
-        else if (16 <= text_color_idx)
-          fg += "38;5;" + std::to_string(text_color_idx); // 256-color extended mode (6^3 rgb + 24 gray)
-          
-        fg += "m";
-      }
-      
-      int bg_color_idx = bg_color.get_index();
-      if (-1 <= bg_color_idx) // Color16::Default = -1
-      {
-        bg = "\033[";
-        if (bg_color == Color16::Default)
-          bg += "49";
-        else if (0 <= bg_color_idx && bg_color_idx <= 7)
-          bg += std::to_string(40 + bg_color_idx);
-        else if (8 <= bg_color_idx && bg_color_idx <= 15)
-          bg += std::to_string(100 + (bg_color_idx - 8));
-        else if (16 <= bg_color_idx)
-          bg += "48;5;" + std::to_string(bg_color_idx); // 256-color extended mode (6^3 rgb + 24 gray)
-        
-        bg += "m";
-      }
-      
-      return fg + bg;
-    }
-    
 #ifdef _WIN32
     static int get_color_win_non_wt_console(Color color)
     {
@@ -183,7 +145,7 @@ namespace t8
       
       std::string output;
       output.reserve(text.size() + 32);
-      output += get_color_string(text_color, bg_color);
+      output += ansi::get_color_string(text_color, bg_color);
       output += text;
       output += "\033[0m";
       term::emit_text(output);
@@ -211,7 +173,7 @@ namespace t8
       // ANSI-capable: build escape + char + reset.
       std::string output;
       output.reserve(32);
-      output += get_color_string(text_color, bg_color);
+      output += ansi::get_color_string(text_color, bg_color);
       output.push_back(c);
       output += "\033[0m";
       term::emit_text(output);
@@ -232,7 +194,7 @@ namespace t8
       
       std::string output;
       output.reserve(glyph.size() + 32);
-      output += get_color_string(text_color, bg_color);
+      output += ansi::get_color_string(text_color, bg_color);
       output += glyph;
       output += "\033[0m";
       term::emit_text(output);
@@ -310,7 +272,7 @@ namespace t8
       for (const auto& [ch, fg_color, bg_color] : text)
       {
         const bool is_nl = (ch == static_cast<CharT>('\n'));
-        output += get_color_string(fg_color, is_nl ? Color16::Default : bg_color);
+        output += ansi::get_color_string(fg_color, is_nl ? Color16::Default : bg_color);
         
         if constexpr (std::is_same_v<CharT, char>)
           output.push_back(static_cast<char>(ch));
@@ -409,7 +371,7 @@ namespace t8
         for (const auto& [ch, fg, bg] : chunk.text)
         {
           assert(ch != '\n');
-          output += get_color_string(fg, bg);
+          output += ansi::get_color_string(fg, bg);
           if constexpr (std::is_same_v<CharT, char>)
             output.push_back(static_cast<char>(ch));
           else if constexpr (std::is_same_v<CharT, char32_t>)
