@@ -740,7 +740,31 @@ namespace t8
     
     bool load_ansi(const std::string& file_path, bool verbose = true)
     {
-      return false;
+      std::vector<std::string> lines;
+      bool ret = TextIO::read_file(file_path, lines);
+      if (!ret)
+        return false;
+      
+      int num_rows = static_cast<int>(lines.size());
+      int num_cols = 0;
+      for (const auto& l : lines)
+        math::maximize(num_cols, str::lenI(l));
+
+      size = { num_rows, num_cols };
+      area = size.r * size.c;
+      glyphs.assign(area, ' ');
+      fg_colors.assign(area, Color16::Default);
+      bg_colors.assign(area, Color16::Transparent2);
+      materials.assign(area, texture::mat_none);
+      
+      for (int r = 0; r < size.r; ++r)
+      {
+        const auto& l = lines[r];
+        for (int c = 0; c < str::lenI(l); ++c)
+          glyphs[index(r, c)] = l[c];
+      }
+      
+      return true;
     }
     
     bool save_ansi(const std::string& file_path)
