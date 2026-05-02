@@ -53,4 +53,63 @@ namespace t8::ansi
     return fg + bg;
   }
   
+  // 0   -> fg = Default, bg = Default
+  // 39  -> fg = Default
+  // 49  -> bg = Default
+  // 31  -> fg = red
+  // 44  -> bg = blue
+  // 38;5;123 -> fg = color index 123
+  // 48;5;123 -> bg = color index 123
+  bool apply_ansi_sgr_params(const std::vector<int>& params,
+                             Color& fg,
+                             Color& bg,
+                             Color default_fg = Color16::Default,
+                             Color default_bg = Color16::Transparent2)
+  {
+    int rgb6_fg_state = 0;
+    int rgb6_bg_state = 0;
+    for (int p : params)
+    {
+      if (p == 0)
+      {
+        fg = default_fg;
+        bg = default_bg;
+      }
+      else if (p == 39)
+        fg = default_fg;
+      else if (p == 49)
+        bg = default_bg;
+      else if (30 <= p && p <= 37)
+        fg = Color { p - 30 };
+      else if (90 <= p && p <= 97)
+        fg = Color { p - 90 + 8 };
+      else if (40 <= p && p <= 47)
+        bg = Color { p - 40 };
+      else if (100 <= p && p <= 107)
+        bg = Color { p - 100 + 8 };
+      else if (p == 38)
+        rgb6_fg_state = 1;
+      else if (p == 48)
+        rgb6_bg_state = 1;
+      else if (p == 5)
+      {
+        if (rgb6_fg_state == 1)
+          rgb6_fg_state = 2;
+        else if (rgb6_bg_state == 1)
+          rgb6_bg_state = 2;
+      }
+      else if (rgb6_fg_state == 2)
+      {
+        fg = Color { p };
+        rgb6_fg_state = 0;
+      }
+      else if (rgb6_bg_state == 2)
+      {
+        bg = Color { p };
+        rgb6_bg_state = 0;
+      }
+    }
+    return true;
+  }
+  
 }
