@@ -9,6 +9,7 @@
 
 #include "Color.h"
 #include <string>
+#include <vector>
 
 
 namespace t8::ansi
