@@ -521,7 +521,7 @@ namespace t8x
     // fb_ : fallback
     // cg_ : current glyph
     // rg_ : recent glyphs
-    PromptStyle prmpt_style;
+    Color rg_sel_bg_color;
     Style lbl_style;
     Style brck_style;
     Label rg_lbl;
@@ -577,9 +577,10 @@ namespace t8x
     
   public:
     GlyphPicker(PromptStyle tf_style, Style label_style, Style hex_prefix_style, Style bracket_style,
+                Color recent_glyph_sel_bg_color,
                 int tab, char clear_ch = '_', bool sel = false)
       : Widget(tab, sel)
-      , prmpt_style(tf_style)
+      , rg_sel_bg_color(recent_glyph_sel_bg_color)
       , lbl_style(label_style)
       , brck_style(bracket_style)
       , rg_lbl("Recent Glyphs:", label_style)
@@ -679,8 +680,8 @@ namespace t8x
           auto bracket_style = brck_style;
           if (g_idx == sel_recent_idx)
           {
-            glyph_style.bg_color = prmpt_style.bg_color_cursor;
-            bracket_style.bg_color = prmpt_style.bg_color_cursor;
+            glyph_style.bg_color = rg_sel_bg_color;
+            bracket_style.bg_color = rg_sel_bg_color;
           }
           auto ss_vec = rg.format_short<CharT>(true, glyph_style, glyph_style, bracket_style);
           rg_col_offs = sh.write_buffer(ss_vec, pos + RC { 1, rg_col_start + rg_col_offs });
@@ -1616,9 +1617,11 @@ namespace t8x
     
     GlyphPicker& emplace_glyph_picker(const RC& pos,
                                       PromptStyle tf_style, Style label_style, Style hex_prefix_style, Style bracket_style,
+                                      Color recent_glyph_sel_bg_color,
                                       int tab, char clear_ch = '_', bool sel = false)
     {
-      auto uptr = std::make_unique<GlyphPicker>(tf_style, label_style, hex_prefix_style, bracket_style, tab, clear_ch, sel);
+      auto uptr = std::make_unique<GlyphPicker>(tf_style, label_style, hex_prefix_style, bracket_style,
+                                                recent_glyph_sel_bg_color, tab, clear_ch, sel);
       auto* rptr = uptr.get();
       glyph_pickers.emplace_back(pos, std::move(uptr));
       all_widgets.emplace_back(rptr);
