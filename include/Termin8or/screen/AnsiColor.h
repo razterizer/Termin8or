@@ -66,6 +66,13 @@ namespace t8::ansi
                              Color default_fg = Color16::Default,
                              Color default_bg = Color16::Transparent2)
   {
+    if (params.empty())
+    {
+      fg = default_fg;
+      bg = default_bg;
+      return true;
+    }
+    
     int rgb6_fg_state = 0;
     int rgb6_bg_state = 0;
     for (int p : params)
