@@ -619,7 +619,7 @@ namespace t8x
     {
       if (!is_selected())
         return;
-        
+      
       if (sel_recent_idx != -1)
       {
         if (curr_special_key == SpecialKey::Left)
@@ -751,13 +751,34 @@ namespace t8x
       const auto glyph = get_canonicalized_glyph();
       if (glyph.fully_empty())
         return;
-      if (!glyph.valid_after_canonicalization())
+      if (!glyph.valid())
         return;
-      if (stlutils::contains(recent_glyphs, glyph))
-        return;
-      recent_glyphs[recent_head] = glyph;
-      recent_head = (recent_head + 1) % stlutils::sizeI(recent_glyphs);
+      
+      int existing_idx = -1;
+      for (int recent_idx = 0; recent_idx < recent_count; ++recent_idx)
+      {
+        if (recent_glyphs[recent_idx] == glyph)
+        {
+          existing_idx = recent_idx;
+          break;
+        }
+      }
+      
+      const int move_count = existing_idx == -1
+        ? std::min(recent_count, stlutils::sizeI(recent_glyphs) - 1)
+        : existing_idx;
+      
+      // Move older glyphs towards the back.
+      for (int recent_idx = move_count; recent_idx > 0; --recent_idx)
+        recent_glyphs[recent_idx] = recent_glyphs[recent_idx - 1];
+      
+      recent_glyphs[0] = glyph;
+      
+      if (existing_idx == -1)
       recent_count = std::min(recent_count + 1, stlutils::sizeI(recent_glyphs));
+      
+      if (sel_recent_idx != -1)
+        sel_recent_idx = 0;
     }
   };
   
