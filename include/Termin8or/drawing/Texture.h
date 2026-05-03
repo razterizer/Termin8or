@@ -739,17 +739,65 @@ namespace t8
       return TextIO::write_file(file_path, lines);
     }
     
-    bool load_ansi(const std::string& file_path, bool verbose = true)
+    bool load_ansi(const std::string& file_path,
+                   bool verbose = true,
+                   Color ansi_default_fg = Color16::Default,
+                   Color ansi_default_bg = Color16::Transparent2)
     {
       std::vector<std::string> lines;
       bool ret = TextIO::read_file(file_path, lines);
       if (!ret)
         return false;
       
-      int num_rows = static_cast<int>(lines.size());
+      struct Cell
+      {
+        Glyph glyph;
+        Color fg = Color16::Default;
+        Color bg = Color16::Transparent2;
+      };
+      
+      std::vector<std::vector<Cell>> rows;
+      
+      Color fg = ansi_default_fg;
+      Color bg = ansi_default_bg;
+      
+      for (const auto& line : lines)
+      {
+        auto& row = rows.emplace_back();
+        
+        for (int i = 0; i < str::lenI(line); )
+        {
+          if (line[i] == '\033')
+          {
+            std::vector<int> params;
+            int next = i;
+            if (ansi::parse_ansi_sgr_params(line, next, params))
+            {
+              ansi::apply_ansi_sgr_params(params, fg, bg,
+                                          ansi_default_fg,
+                                          ansi_default_bg);
+              i = next;
+              continue;
+            }
+            
+            if (verbose)
+              std::cerr << "ERROR in Texture::load_ansi() : Unsupported ANSI escape sequence.\n";
+            return false;
+          }
+          
+          Cell cell;
+          cell.glyph = Glyph { static_cast<char32_t>(static_cast<unsigned char>(line[i])) };
+          cell.fg = fg;
+          cell.bg = bg;
+          row.emplace_back(cell);
+          ++i;
+        }
+      }
+      
+      int num_rows = stlutils::sizeI(rows);
       int num_cols = 0;
-      for (const auto& l : lines)
-        math::maximize(num_cols, str::lenI(l));
+      for (const auto& row : rows)
+        math::maximize(num_cols, stlutils::sizeI(row));
 
       size = { num_rows, num_cols };
       area = size.r * size.c;
@@ -758,11 +806,16 @@ namespace t8
       bg_colors.assign(area, Color16::Transparent2);
       materials.assign(area, texture::mat_none);
       
-      for (int r = 0; r < size.r; ++r)
+      for (int r = 0; r < num_rows; ++r)
       {
-        const auto& l = lines[r];
-        for (int c = 0; c < str::lenI(l); ++c)
-          glyphs[index(r, c)] = l[c];
+        int nc = stlutils::sizeI(rows[r]);
+        for (int c = 0; c < nc; ++c)
+        {
+          int idx = index(r, c);
+          glyphs[idx] = rows[r][c].glyph;
+          fg_colors[idx] = rows[r][c].fg;
+          bg_colors[idx] = rows[r][c].bg;
+        }
       }
       
       return true;
