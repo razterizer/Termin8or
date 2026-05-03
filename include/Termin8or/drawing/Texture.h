@@ -724,7 +724,11 @@ namespace t8
         if (fallback == Glyph::none)
         {
           if (verbose)
-            std::cerr << "ERROR in Texture::create_glyph_from_ansi() : Missing fallback for Unicode glyph.\n";
+          {
+            std::cerr << "ERROR in Texture::create_glyph_from_ansi() : Missing fallback for Unicode glyph: U+"
+                      << std::hex << std::uppercase << static_cast<uint32_t>(ch32)
+                      << std::dec << std::nouppercase << ".\n";
+          }
           return false;
         }
         
