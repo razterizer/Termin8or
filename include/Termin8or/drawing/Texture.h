@@ -961,6 +961,11 @@ namespace t8
       if (!ret)
         return false;
       
+      // Normalizes DOS/Windows CRLF lines to plain content lines.
+      for (auto& line : lines)
+        if (!line.empty() && line.back() == '\r')
+          line.pop_back();
+      
       const std::string empty_str_row;
       
       std::vector<std::string> fb_lines;
