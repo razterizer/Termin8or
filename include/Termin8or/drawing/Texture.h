@@ -539,16 +539,18 @@ namespace t8
     {
       switch (cp)
       {
-        case U'█': return '#';
-        case U'▓': return '#';
-        case U'▒': return ':';
-        case U'░': return '.';
-        case U'─': return '-';
-        case U'│': return '|';
-        case U'┌':
-        case U'┐':
-        case U'└':
-        case U'┘':
+        case 0x2588: return '#'; // █ Full block
+        case 0x2593: return '#'; // ▓ Dark shade
+        case 0x2592: return ':'; // ▒ Medium shade
+        case 0x2591: return '.'; // ░ Light shade
+          
+        case 0x2500: return '-'; // ─ Box drawings light horizontal
+        case 0x2502: return '|'; // │ Box drawings light vertical
+          
+        case 0x250C: // ┌ Box drawings light down and right
+        case 0x2510: // ┐ Box drawings light down and left
+        case 0x2514: // └ Box drawings light up and right
+        case 0x2518: // ┘ Box drawings light up and left
           return '+';
       }
       return Glyph::none;
