@@ -588,23 +588,122 @@ namespace t8
           // Double box drawing.
         case 0x2550: return '='; // ═
         case 0x2551: return '|'; // ║
+        case 0x2552: return '+'; // ╒
+        case 0x2553: return '+'; // ╓
         case 0x2554: return '+'; // ╔
+        case 0x2555: return '+'; // ╕
+        case 0x2556: return '+'; // ╖
         case 0x2557: return '+'; // ╗
+        case 0x2558: return '+'; // ╘
+        case 0x2559: return '+'; // ╙
         case 0x255A: return '+'; // ╚
+        case 0x255B: return '+'; // ╛
+        case 0x255C: return '+'; // ╜
         case 0x255D: return '+'; // ╝
+        case 0x255E: return '+'; // ╞
+        case 0x255F: return '+'; // ╟
         case 0x2560: return '+'; // ╠
+        case 0x2561: return '+'; // ╡
+        case 0x2562: return '+'; // ╢
         case 0x2563: return '+'; // ╣
+        case 0x2564: return '+'; // ╤
+        case 0x2565: return '+'; // ╥
         case 0x2566: return '+'; // ╦
+        case 0x2567: return '+'; // ╧
+        case 0x2568: return '+'; // ╨
         case 0x2569: return '+'; // ╩
+        case 0x256A: return '+'; // ╪
+        case 0x256B: return '+'; // ╫
         case 0x256C: return '+'; // ╬
           
           // Common symbols.
+        case 0x00A0: return ' '; // Non-breaking space
         case 0x2022: return '*'; // • Bullet
         case 0x00B7: return '.'; // · Middle dot
         case 0x2219: return '.'; // ∙ Bullet operator
         case 0x25A0: return '#'; // ■ Black square
         case 0x25AA: return '#'; // ▪ Black small square
         case 0x25AB: return '#'; // ▫ White small square
+        case 0x00AC: return '-'; // ¬ Not sign
+        case 0x00B0: return 'o'; // ° Degree sign
+        case 0x00B1: return '+'; // ± Plus-minus sign
+        case 0x00B2: return '2'; // ² Superscript two
+        case 0x00BC: return '1'; // ¼ Vulgar fraction one quarter
+        case 0x00BD: return '1'; // ½ Vulgar fraction one half
+        case 0x00D7: return 'x'; // × Multiplication sign
+        case 0x00F7: return '/'; // ÷ Division sign
+        case 0x0192: return 'f'; // ƒ Latin small letter f with hook
+        case 0x207F: return 'n'; // ⁿ Superscript latin small letter n
+        case 0x221A: return 'v'; // √ Square root
+        case 0x221E: return '8'; // ∞ Infinity
+        case 0x2229: return 'n'; // ∩ Intersection
+        case 0x2248: return '~'; // ≈ Almost equal to
+        case 0x2261: return '='; // ≡ Identical to
+        case 0x2264: return '<'; // ≤ Less-than or equal to
+        case 0x2265: return '>'; // ≥ Greater-than or equal to
+        case 0x2310: return '-'; // ⌐ Reversed not sign
+        case 0x2320: return '('; // ⌠ Top half integral
+        case 0x2321: return ')'; // ⌡ Bottom half integral
+          
+          // CP437 accented letters, approximated for ASCII fallback mode.
+        case 0x00AA: return 'a'; // ª Feminine ordinal indicator
+        case 0x00BA: return 'o'; // º Masculine ordinal indicator
+        case 0x00A1: return '!'; // ¡ Inverted exclamation mark
+        case 0x00A3: return 'L'; // £ Pound sign
+        case 0x00AB: return '<'; // « Left-pointing double angle quotation mark
+        case 0x00BB: return '>'; // » Right-pointing double angle quotation mark
+        case 0x00BF: return '?'; // ¿ Inverted question mark
+        case 0x00B5: return 'u'; // µ Micro sign
+        case 0x00C4: return 'A'; // Ä
+        case 0x00C5: return 'A'; // Å
+        case 0x00C6: return 'A'; // Æ
+        case 0x00C7: return 'C'; // Ç
+        case 0x00C9: return 'E'; // É
+        case 0x00D1: return 'N'; // Ñ
+        case 0x00D6: return 'O'; // Ö
+        case 0x00D8: return 'O'; // Ø
+        case 0x00DC: return 'U'; // Ü
+        case 0x00DF: return 'B'; // ß
+        case 0x00E0: return 'a'; // à
+        case 0x00E1: return 'a'; // á
+        case 0x00E2: return 'a'; // â
+        case 0x00E4: return 'a'; // ä
+        case 0x00E5: return 'a'; // å
+        case 0x00E6: return 'a'; // æ
+        case 0x00E7: return 'c'; // ç
+        case 0x00E8: return 'e'; // è
+        case 0x00E9: return 'e'; // é
+        case 0x00EA: return 'e'; // ê
+        case 0x00EB: return 'e'; // ë
+        case 0x00EC: return 'i'; // ì
+        case 0x00ED: return 'i'; // í
+        case 0x00EE: return 'i'; // î
+        case 0x00EF: return 'i'; // ï
+        case 0x00F1: return 'n'; // ñ
+        case 0x00F2: return 'o'; // ò
+        case 0x00F3: return 'o'; // ó
+        case 0x00F4: return 'o'; // ô
+        case 0x00F6: return 'o'; // ö
+        case 0x00F8: return 'o'; // ø
+        case 0x00F9: return 'u'; // ù
+        case 0x00FA: return 'u'; // ú
+        case 0x00FB: return 'u'; // û
+        case 0x00FC: return 'u'; // ü
+        case 0x00FF: return 'y'; // ÿ
+          
+          // CP437 Greek/math letters, approximated for ASCII fallback mode.
+        case 0x0393: return 'G'; // Γ
+        case 0x0398: return 'O'; // Θ
+        case 0x03A3: return 'S'; // Σ
+        case 0x03A6: return 'O'; // Φ
+        case 0x03A9: return 'O'; // Ω
+        case 0x03B1: return 'a'; // α
+        case 0x03B4: return 'd'; // δ
+        case 0x03B5: return 'e'; // ε
+        case 0x03C0: return 'p'; // π
+        case 0x03C3: return 's'; // σ
+        case 0x03C4: return 't'; // τ
+        case 0x03C6: return 'o'; // φ
       }
       return Glyph::none;
     }
