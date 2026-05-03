@@ -529,6 +529,24 @@ namespace t8
       return TextureFileFormat::Auto;
     }
   
+    static char ansi_fallback_for_unicode(char32_t cp)
+    {
+      switch (cp)
+      {
+        case U'█': return '#';
+        case U'▓': return '#';
+        case U'▒': return ':';
+        case U'░': return '.';
+        case U'─': return '-';
+        case U'│': return '|';
+        case U'┌':
+        case U'┐':
+        case U'└':
+        case U'┘':
+          return '+';
+      }
+      return Glyph::none;
+    }
     // File format:
     // size, chars, fg-colors, bg-colors, materials.
     //-------------
