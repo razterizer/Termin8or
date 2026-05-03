@@ -862,11 +862,11 @@ namespace t8
       
       std::vector<std::string> fb_lines;
       auto fb_filepath = folder::join_filename_ext({ file_path, "fb" });
-      TextIO::read_file(fb_filepath, fb_lines);
+      TextIO::read_file(fb_filepath, fb_lines, 2);
       
       std::vector<std::string> mat_lines;
       auto mat_filepath = folder::join_filename_ext({ file_path, "mat" });
-      TextIO::read_file(mat_filepath, mat_lines);
+      TextIO::read_file(mat_filepath, mat_lines, 2);
         
       struct Cell
       {
