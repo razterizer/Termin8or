@@ -351,6 +351,7 @@ namespace t8
     bool load(const std::string& file_path,
               TextureFileFormat format = TextureFileFormat::Auto,
               bool verbose = true,
+              AnsiGlyphEncoding ansi_glyph_encoding = AnsiGlyphEncoding::UTF8,
               Color ansi_default_fg = Color16::Default,
               Color ansi_default_bg = Color16::Transparent2)
     {
@@ -369,6 +370,7 @@ namespace t8
           break;
         case TextureFileFormat::Ansi:
           ok = parsed.load_ansi(file_path, verbose,
+                                ansi_glyph_encoding,
                                 ansi_default_fg, ansi_default_bg);
           break;
       }
@@ -847,6 +849,7 @@ namespace t8
     
     bool load_ansi(const std::string& file_path,
                    bool verbose = true,
+                   AnsiGlyphEncoding glyph_encoding = AnsiGlyphEncoding::UTF8, // Use Auto option as default later.
                    Color ansi_default_fg = Color16::Default,
                    Color ansi_default_bg = Color16::Transparent2)
     {
@@ -912,25 +915,41 @@ namespace t8
             return false;
           }
           
-          if (utf8::decode_next_utf8_char32(line, ch32, byte_idx))
+          bool decoded = false;
+          
+          if (glyph_encoding == AnsiGlyphEncoding::UTF8)
           {
-            Cell cell;
-            int c = stlutils::sizeI(row);
-            const auto fb = c < str::lenI(fb_row) ? fb_row[c] : Glyph::none;
-            if (!create_glyph_from_ansi(ch32, fb, cell.glyph, verbose))
-            {
-              if (verbose)
-                std::cerr << "ERROR in Texture::load_ansi() : Unable to create glyph object from ANSI file unicode bytes.\n";
-              return false;
-            }
-            cell.mat = texture::str_to_mat(mat_row, mat_pos);
-            cell.fg = fg;
-            cell.bg = bg;
-            row.emplace_back(cell);
+            decoded = utf8::decode_next_utf8_char32(line, ch32, byte_idx);
             i = static_cast<int>(byte_idx);
           }
-          else
+          else if (glyph_encoding == AnsiGlyphEncoding::CP437)
+          {
+            unsigned char b = static_cast<unsigned char>(line[i]);
+            auto cp = utf8::cp437_to_unicode(b);
+            if (cp.has_value())
+            {
+              ch32 = cp.value();
+              ++i;
+              decoded = true;
+            }
+          }
+          
+          if (!decoded)
             return false;
+          
+          Cell cell;
+          int c = stlutils::sizeI(row);
+          const auto fb = c < str::lenI(fb_row) ? fb_row[c] : Glyph::none;
+          if (!create_glyph_from_ansi(ch32, fb, cell.glyph, verbose))
+          {
+            if (verbose)
+              std::cerr << "ERROR in Texture::load_ansi() : Unable to create glyph object from ANSI file unicode bytes.\n";
+            return false;
+          }
+          cell.mat = texture::str_to_mat(mat_row, mat_pos);
+          cell.fg = fg;
+          cell.bg = bg;
+          row.emplace_back(cell);
         }
         
         r++;
