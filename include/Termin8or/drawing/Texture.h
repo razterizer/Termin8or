@@ -607,13 +607,19 @@ namespace t8
       return Glyph::none;
     }
     
-    static bool create_glyph_from_ansi(char32_t ch32, Glyph& g, bool verbose = true)
+    static bool create_glyph_from_ansi(char32_t ch32, char fb, Glyph& g, bool verbose = true)
     {
       if (ch32 <= 0x7F)
         g = Glyph { ch32 };
       else
       {
-        char fallback = ansi_fallback_for_unicode(ch32);
+        if (fb != Glyph::none && static_cast<unsigned char>(fb) > 0x7F)
+        {
+          if (verbose)
+            std::cerr << "ERROR in Texture::create_glyph_from_ansi() : Encountered a malformed fallback char.\n";
+          return false;
+        }
+        char fallback = fb != Glyph::none ? fb : ansi_fallback_for_unicode(ch32);
         if (fallback == Glyph::none)
         {
           if (verbose)
@@ -848,6 +854,11 @@ namespace t8
       bool ret = TextIO::read_file(file_path, lines);
       if (!ret)
         return false;
+      
+      const std::string empty_fb_row;
+      std::vector<std::string> fb_lines;
+      auto fb_filepath = folder::join_filename_ext({ file_path, "fb" });
+      TextIO::read_file(fb_filepath, fb_lines);
         
       struct Cell
       {
@@ -861,9 +872,12 @@ namespace t8
       Color fg = ansi_default_fg;
       Color bg = ansi_default_bg;
       
+      int r = 0;
       for (const auto& line : lines)
       {
         auto& row = rows.emplace_back();
+        
+        const auto& fb_row = r < stlutils::sizeI(fb_lines) ? fb_lines[r] : empty_fb_row;
         
         size_t byte_idx = 0;
         char32_t ch32 = utf8::none;
@@ -893,7 +907,9 @@ namespace t8
           if (utf8::decode_next_utf8_char32(line, ch32, byte_idx))
           {
             Cell cell;
-            if (!create_glyph_from_ansi(ch32, cell.glyph, verbose))
+            int c = stlutils::sizeI(row);
+            const auto fb = c < str::lenI(fb_row) ? fb_row[c] : Glyph::none;
+            if (!create_glyph_from_ansi(ch32, fb, cell.glyph, verbose))
             {
               if (verbose)
                 std::cerr << "ERROR in Texture::load_ansi() : Unable to create glyph object from ANSI file unicode bytes.\n";
@@ -907,6 +923,8 @@ namespace t8
           else
             return false;
         }
+        
+        r++;
       }
       
       int num_rows = stlutils::sizeI(rows);
