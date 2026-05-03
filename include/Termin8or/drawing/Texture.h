@@ -539,19 +539,70 @@ namespace t8
     {
       switch (cp)
       {
+          // Blocks and shades.
         case 0x2588: return '#'; // █ Full block
-        case 0x2593: return '#'; // ▓ Dark shade
-        case 0x2592: return ':'; // ▒ Medium shade
+        case 0x2589: return '#'; // ▉ Left seven eighths block
+        case 0x258A: return '#'; // ▊ Left three quarters block
+        case 0x258B: return '#'; // ▋ Left five eighths block
+        case 0x258C: return '|'; // ▌ Left half block
+        case 0x258D: return '|'; // ▍ Left three eighths block
+        case 0x258E: return '|'; // ▎ Left one quarter block
+        case 0x258F: return '|'; // ▏ Left one eighth block
+          
+        case 0x2590: return '|'; // ▐ Right half block
         case 0x2591: return '.'; // ░ Light shade
+        case 0x2592: return ':'; // ▒ Medium shade
+        case 0x2593: return '#'; // ▓ Dark shade
           
-        case 0x2500: return '-'; // ─ Box drawings light horizontal
-        case 0x2502: return '|'; // │ Box drawings light vertical
+        case 0x2580: return '-'; // ▀ Upper half block
+        case 0x2584: return '_'; // ▄ Lower half block
           
-        case 0x250C: // ┌ Box drawings light down and right
-        case 0x2510: // ┐ Box drawings light down and left
-        case 0x2514: // └ Box drawings light up and right
-        case 0x2518: // ┘ Box drawings light up and left
-          return '+';
+          // Light box drawing.
+        case 0x2500: return '-'; // ─
+        case 0x2502: return '|'; // │
+        case 0x250C: return '+'; // ┌
+        case 0x2510: return '+'; // ┐
+        case 0x2514: return '+'; // └
+        case 0x2518: return '+'; // ┘
+        case 0x251C: return '+'; // ├
+        case 0x2524: return '+'; // ┤
+        case 0x252C: return '+'; // ┬
+        case 0x2534: return '+'; // ┴
+        case 0x253C: return '+'; // ┼
+          
+          // Heavy box drawing.
+        case 0x2501: return '-'; // ━
+        case 0x2503: return '|'; // ┃
+        case 0x250F: return '+'; // ┏
+        case 0x2513: return '+'; // ┓
+        case 0x2517: return '+'; // ┗
+        case 0x251B: return '+'; // ┛
+        case 0x2523: return '+'; // ┣
+        case 0x252B: return '+'; // ┫
+        case 0x2533: return '+'; // ┳
+        case 0x253B: return '+'; // ┻
+        case 0x254B: return '+'; // ╋
+          
+          // Double box drawing.
+        case 0x2550: return '='; // ═
+        case 0x2551: return '|'; // ║
+        case 0x2554: return '+'; // ╔
+        case 0x2557: return '+'; // ╗
+        case 0x255A: return '+'; // ╚
+        case 0x255D: return '+'; // ╝
+        case 0x2560: return '+'; // ╠
+        case 0x2563: return '+'; // ╣
+        case 0x2566: return '+'; // ╦
+        case 0x2569: return '+'; // ╩
+        case 0x256C: return '+'; // ╬
+          
+          // Common symbols.
+        case 0x2022: return '*'; // • Bullet
+        case 0x00B7: return '.'; // · Middle dot
+        case 0x2219: return '.'; // ∙ Bullet operator
+        case 0x25A0: return '#'; // ■ Black square
+        case 0x25AA: return '#'; // ▪ Black small square
+        case 0x25AB: return '#'; // ▫ White small square
       }
       return Glyph::none;
     }
