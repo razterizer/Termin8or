@@ -344,7 +344,9 @@ namespace t8
     
     bool load(const std::string& file_path,
               TextureFileFormat format = TextureFileFormat::Auto,
-              bool verbose = true)
+              bool verbose = true,
+              Color ansi_default_fg = Color16::Default,
+              Color ansi_default_bg = Color16::Transparent2)
     {
       auto resolved_format = format == TextureFileFormat::Auto ?
         deduce_file_format(file_path) : format;
@@ -360,7 +362,8 @@ namespace t8
           ok = parsed.load_tx(file_path, verbose);
           break;
         case TextureFileFormat::Ansi:
-          ok = parsed.load_ansi(file_path, verbose);
+          ok = parsed.load_ansi(file_path, verbose,
+                                ansi_default_fg, ansi_default_bg);
           break;
       }
       
@@ -748,7 +751,7 @@ namespace t8
       bool ret = TextIO::read_file(file_path, lines);
       if (!ret)
         return false;
-      
+        
       struct Cell
       {
         Glyph glyph;
