@@ -806,8 +806,13 @@ namespace t8
       {
         auto& row = rows.emplace_back();
         
+        size_t byte_idx = 0;
+        char32_t ch32 = utf8::none;
+        
         for (int i = 0; i < str::lenI(line); )
         {
+          byte_idx = static_cast<size_t>(i);
+          
           if (line[i] == '\033')
           {
             std::vector<int> params;
@@ -826,12 +831,22 @@ namespace t8
             return false;
           }
           
+          if (utf8::decode_next_utf8_char32(line, ch32, byte_idx))
+          {
           Cell cell;
-          cell.glyph = Glyph { static_cast<char32_t>(static_cast<unsigned char>(line[i])) };
+            if (!create_glyph_from_ansi(ch32, cell.glyph, verbose))
+            {
+              if (verbose)
+                std::cerr << "ERROR in Texture::load_ansi() : Unable to create glyph object from ANSI file unicode bytes.\n";
+              return false;
+            }
           cell.fg = fg;
           cell.bg = bg;
           row.emplace_back(cell);
-          ++i;
+            i = static_cast<int>(byte_idx);
+          }
+          else
+            return false;
         }
       }
       
