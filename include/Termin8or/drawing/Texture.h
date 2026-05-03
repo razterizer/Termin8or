@@ -164,6 +164,12 @@ namespace t8
     Ansi,
   };
   
+  enum class AnsiGlyphEncoding
+  {
+    UTF8,
+    CP437,
+  };
+  
   struct Texture
   {
     static const int compatible_version_until_and_including = 30;
@@ -528,7 +534,7 @@ namespace t8
         return TextureFileFormat::Tx;
       return TextureFileFormat::Auto;
     }
-  
+    
     static char ansi_fallback_for_unicode(char32_t cp)
     {
       switch (cp)
@@ -833,16 +839,16 @@ namespace t8
           
           if (utf8::decode_next_utf8_char32(line, ch32, byte_idx))
           {
-          Cell cell;
+            Cell cell;
             if (!create_glyph_from_ansi(ch32, cell.glyph, verbose))
             {
               if (verbose)
                 std::cerr << "ERROR in Texture::load_ansi() : Unable to create glyph object from ANSI file unicode bytes.\n";
               return false;
             }
-          cell.fg = fg;
-          cell.bg = bg;
-          row.emplace_back(cell);
+            cell.fg = fg;
+            cell.bg = bg;
+            row.emplace_back(cell);
             i = static_cast<int>(byte_idx);
           }
           else
