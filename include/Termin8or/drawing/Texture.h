@@ -547,6 +547,26 @@ namespace t8
       }
       return Glyph::none;
     }
+    
+    static bool create_glyph_from_ansi(char32_t ch32, Glyph& g, bool verbose = true)
+    {
+      if (ch32 <= 0x7F)
+        g = Glyph { ch32 };
+      else
+      {
+        char fallback = ansi_fallback_for_unicode(ch32);
+        if (fallback == Glyph::none)
+        {
+          if (verbose)
+            std::cerr << "ERROR in Texture::create_glyph_from_ansi() : Missing fallback for Unicode glyph.\n";
+          return false;
+        }
+        
+        g = Glyph { ch32, fallback };
+      }
+      return true;
+    }
+  
     // File format:
     // size, chars, fg-colors, bg-colors, materials.
     //-------------
