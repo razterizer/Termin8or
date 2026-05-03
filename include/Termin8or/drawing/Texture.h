@@ -855,16 +855,22 @@ namespace t8
       if (!ret)
         return false;
       
-      const std::string empty_fb_row;
+      const std::string empty_str_row;
+      
       std::vector<std::string> fb_lines;
       auto fb_filepath = folder::join_filename_ext({ file_path, "fb" });
       TextIO::read_file(fb_filepath, fb_lines);
+      
+      std::vector<std::string> mat_lines;
+      auto mat_filepath = folder::join_filename_ext({ file_path, "mat" });
+      TextIO::read_file(mat_filepath, mat_lines);
         
       struct Cell
       {
         Glyph glyph;
         Color fg = Color16::Default;
         Color bg = Color16::Transparent2;
+        uint8_t mat = texture::mat_none;
       };
       
       std::vector<std::vector<Cell>> rows;
@@ -877,10 +883,12 @@ namespace t8
       {
         auto& row = rows.emplace_back();
         
-        const auto& fb_row = r < stlutils::sizeI(fb_lines) ? fb_lines[r] : empty_fb_row;
+        const auto& fb_row = r < stlutils::sizeI(fb_lines) ? fb_lines[r] : empty_str_row;
+        const auto& mat_row = r < stlutils::sizeI(mat_lines) ? mat_lines[r] : empty_str_row;
         
         size_t byte_idx = 0;
         char32_t ch32 = utf8::none;
+        int mat_pos = 0;
         
         for (int i = 0; i < str::lenI(line); )
         {
@@ -915,6 +923,7 @@ namespace t8
                 std::cerr << "ERROR in Texture::load_ansi() : Unable to create glyph object from ANSI file unicode bytes.\n";
               return false;
             }
+            cell.mat = texture::str_to_mat(mat_row, mat_pos);
             cell.fg = fg;
             cell.bg = bg;
             row.emplace_back(cell);
@@ -948,6 +957,7 @@ namespace t8
           glyphs[idx] = rows[r][c].glyph;
           fg_colors[idx] = rows[r][c].fg;
           bg_colors[idx] = rows[r][c].bg;
+          materials[idx] = rows[r][c].mat;
         }
       }
       
