@@ -250,4 +250,55 @@ namespace t8::ansi
     return false;
   }
   
+  // ESC[H       -> move cursor to row 1, col 1.
+  // ESC[row;colH -> move cursor to row, col. Coordinates are 1-based.
+  // ESC[f       -> same as ESC[H.
+  // ESC[row;colf -> same as ESC[row;colH.
+  inline bool parse_ansi_cursor_position(const std::string& str,
+                                         int& pos,
+                                         int& row,
+                                         int& col)
+  {
+    int i = pos;
+    int str_len = str::lenI(str);
+    if (i + 1 >= str_len)
+      return false;
+    
+    if (str[i] != '\033' || str[i + 1] != '[')
+      return false;
+    
+    i += 2;
+    
+    std::vector<int> params;
+    std::string token;
+    while (i < str_len)
+    {
+      char ch = str[i];
+      
+      if (str::is_digit(ch))
+        token.push_back(ch);
+      else if (ch == ';')
+      {
+        params.emplace_back(token.empty() ? 0 : std::stoi(token));
+        token.clear();
+      }
+      else if (ch == 'H' || ch == 'f')
+      {
+        if (!token.empty())
+          params.emplace_back(std::stoi(token));
+        
+        row = params.empty() || params[0] <= 0 ? 1 : params[0];
+        col = params.size() < 2 || params[1] <= 0 ? 1 : params[1];
+        pos = i + 1;
+        return true;
+      }
+      else
+        return false;
+      
+      ++i;
+    }
+    
+    return false;
+  }
+  
 }
