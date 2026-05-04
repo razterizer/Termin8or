@@ -212,4 +212,42 @@ namespace t8::ansi
     return false;
   }
   
+  inline bool parse_ansi_erase(const std::string& str,
+                               int& pos,
+                               char& target,
+                               int& mode)
+  {
+    int i = pos;
+    int str_len = str::lenI(str);
+    if (i + 1 >= str_len)
+      return false;
+    
+    if (str[i] != '\033' || str[i + 1] != '[')
+      return false;
+    
+    i += 2;
+    
+    std::string token;
+    while (i < str_len)
+    {
+      char ch = str[i];
+      
+      if (str::is_digit(ch))
+        token.push_back(ch);
+      else if (ch == 'J' || ch == 'K')
+      {
+        target = ch;
+        mode = token.empty() ? 0 : std::stoi(token);
+        pos = i + 1;
+        return true;
+      }
+      else
+        return false;
+      
+      ++i;
+    }
+    
+    return false;
+  }
+  
 }
