@@ -1083,11 +1083,20 @@ namespace t8
             if (verbose)
             {
               std::cerr << "ERROR in Texture::load_ansi() : Unsupported ANSI escape sequence";
-              if (i + 2 < len_line)
+              if (i + 1 < len_line && line[i + 1] == '[')
               {
-                char ch = line[i + 2];
-                std::string seq = term::is_printable_ascii(ch) ? std::string(1, ch) : "0x" + str::int2hex(ch);
-                std::cerr << ": \\033[" << seq << ".";
+                std::cerr << ": \\033[";
+                for (int j = i + 2; j < len_line; ++j)
+                {
+                  char ch = line[j];
+                  if (term::is_printable_ascii(ch))
+                    std::cerr << ch;
+                  else
+                    std::cerr << "0x" << str::int2hex(ch);
+                  if ('@' <= ch && ch <= '~')
+                    break;
+                }
+                std::cerr << ".";
               }
               std::cerr << "\n";
             }
