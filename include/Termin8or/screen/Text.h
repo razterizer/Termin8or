@@ -1,6 +1,6 @@
 #pragma once
 #include "Color.h"
-#include "AnsiColor.h"
+#include "Ansi.h"
 #include "ScreenCommandsBasic.h"
 #include "Glyph.h"
 #include "../geom/RC.h"
