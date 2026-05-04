@@ -1013,7 +1013,7 @@ namespace t8
         cell.bg = bg;
         return cell;
       };
-        
+      
       auto f_ensure_cursor_cell = [&](int r, int c)
       {
         while (stlutils::sizeI(rows) <= r)
