@@ -966,6 +966,18 @@ namespace t8
         if (!line.empty() && line.back() == '\r')
           line.pop_back();
       
+      const int Nl = stlutils::sizeI(lines);
+      for (int i = 0; i < Nl; ++i)
+      {
+        auto eof_pos = lines[i].find('\x1A');
+        if (eof_pos != std::string::npos)
+        {
+          lines[i].erase(eof_pos);
+          lines.resize(lines[i].empty() ? i : i + 1);
+          break;
+        }
+      }
+      
       const std::string empty_str_row;
       
       std::vector<std::string> fb_lines;
