@@ -1030,6 +1030,24 @@ namespace t8
               continue;
             }
             
+            int cursor_forward = 0;
+            next = i;
+            if (ansi::parse_ansi_cursor_forward(line, next, cursor_forward))
+            {
+              for (int k = 0; k < cursor_forward; ++k)
+              {
+                Cell cell;
+                cell.glyph = Glyph { U' ' };
+                cell.fg = fg;
+                cell.bg = bg;
+                cell.mat = texture::str_to_mat(mat_row, mat_pos);
+                row.emplace_back(cell);
+              }
+              
+              i = next;
+              continue;
+            }
+            
             if (verbose)
               std::cerr << "ERROR in Texture::load_ansi() : Unsupported ANSI escape sequence.\n";
             return false;
