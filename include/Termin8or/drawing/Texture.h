@@ -705,6 +705,9 @@ namespace t8
         case 0x03C3: return 's'; // σ
         case 0x03C4: return 't'; // τ
         case 0x03C6: return 'o'; // φ
+        
+          // Special glyphs.
+        case 0xFFFD: return '?'; // �
       }
       return Glyph::none;
     }
