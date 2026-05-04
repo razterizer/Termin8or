@@ -166,44 +166,6 @@ namespace t8::ansi
     return false;
   }
   
-  // ESC[C  -> move cursor forward by 1 visible cell.
-  // ESC[nC -> move cursor forward by n visible cells.
-  inline bool parse_ansi_cursor_forward(const std::string& str,
-                                        int& pos,
-                                        int& count)
-  {
-    int i = pos;
-    int str_len = str::lenI(str);
-    if (i + 1 >= str_len)
-      return false;
-    
-    if (str[i] != '\033' || str[i + 1] != '[')
-      return false;
-    
-    i += 2;
-    
-    std::string token;
-    while (i < str_len)
-    {
-      char ch = str[i];
-      
-      if (str::is_digit(ch))
-        token.push_back(ch);
-      else if (ch == 'C')
-      {
-        count = token.empty() ? 1 : std::stoi(token);
-        pos = i + 1;
-        return true;
-      }
-      else
-        return false;
-      
-      ++i;
-    }
-    
-    return false;
-  }
-  
   // ESC[A  -> move cursor up by 1 visible cell row.
   // ESC[nA -> move cursor up by n visible cell rows.
   // ESC[B  -> move cursor down by 1 visible cell row.
