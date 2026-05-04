@@ -1055,7 +1055,14 @@ namespace t8
           
           bool decoded = false;
           
-          if (glyph_encoding == AnsiGlyphEncoding::UTF8)
+          unsigned char b = static_cast<unsigned char>(line[i]);
+          if (b < 0x20)
+          {
+            ch32 = U' ';
+            ++i;
+            decoded = true;
+          }
+          else if (glyph_encoding == AnsiGlyphEncoding::UTF8)
           {
             decoded = utf8::decode_next_utf8_char32(line, ch32, byte_idx);
             i = static_cast<int>(byte_idx);
