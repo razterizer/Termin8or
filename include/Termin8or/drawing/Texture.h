@@ -1005,19 +1005,40 @@ namespace t8
       Color fg = ansi_default_fg;
       Color bg = ansi_default_bg;
       
-      int r = 0;
+      auto f_make_blank_cell = [&]()
+      {
+        Cell cell;
+        cell.glyph = Glyph { U' ' };
+        cell.fg = fg;
+        cell.bg = bg;
+        return cell;
+      };
+        
+      auto f_ensure_cursor_cell = [&](int r, int c)
+      {
+        while (stlutils::sizeI(rows) <= r)
+          rows.emplace_back();
+        
+        auto& row = rows[r];
+        while (stlutils::sizeI(row) <= c)
+          row.emplace_back(f_make_blank_cell());
+      };
+      
+      int cursor_r = 0;
+      int cursor_c = 0;
+      int input_r = 0;
+      const int num_input_rows = stlutils::sizeI(lines);
       for (const auto& line : lines)
       {
-        auto& row = rows.emplace_back();
-        
-        const auto& fb_row = r < stlutils::sizeI(fb_lines) ? fb_lines[r] : empty_str_row;
-        const auto& mat_row = r < stlutils::sizeI(mat_lines) ? mat_lines[r] : empty_str_row;
+        const auto& fb_row = input_r < stlutils::sizeI(fb_lines) ? fb_lines[input_r] : empty_str_row;
+        const auto& mat_row = input_r < stlutils::sizeI(mat_lines) ? mat_lines[input_r] : empty_str_row;
         
         size_t byte_idx = 0;
         char32_t ch32 = utf8::none;
         int mat_pos = 0;
         
-        for (int i = 0; i < str::lenI(line); )
+        int len_line = str::lenI(line);
+        for (int i = 0; i < len_line; )
         {
           byte_idx = static_cast<size_t>(i);
           
@@ -1034,18 +1055,25 @@ namespace t8
               continue;
             }
             
-            int cursor_forward = 0;
+            char cursor_dir = '\0';
+            int cursor_count = 0;
             next = i;
-            if (ansi::parse_ansi_cursor_forward(line, next, cursor_forward))
+            if (ansi::parse_ansi_cursor_move(line, next, cursor_dir, cursor_count))
             {
-              for (int k = 0; k < cursor_forward; ++k)
+              switch (cursor_dir)
               {
-                Cell cell;
-                cell.glyph = Glyph { U' ' };
-                cell.fg = fg;
-                cell.bg = bg;
-                cell.mat = texture::str_to_mat(mat_row, mat_pos);
-                row.emplace_back(cell);
+                case 'A':
+                  cursor_r = std::max(0, cursor_r - cursor_count);
+                  break;
+                case 'B':
+                  cursor_r += cursor_count;
+                  break;
+                case 'C':
+                  cursor_c += cursor_count;
+                  break;
+                case 'D':
+                  cursor_c = std::max(0, cursor_c - cursor_count);
+                  break;
               }
               
               i = next;
@@ -1096,8 +1124,7 @@ namespace t8
             return false;
           
           Cell cell;
-          int c = stlutils::sizeI(row);
-          const auto fb = c < str::lenI(fb_row) ? fb_row[c] : Glyph::none;
+          const auto fb = mat_pos < str::lenI(fb_row) ? fb_row[mat_pos] : Glyph::none;
           if (!create_glyph_from_ansi(ch32, fb, cell.glyph, verbose))
           {
             if (verbose)
@@ -1107,10 +1134,18 @@ namespace t8
           cell.mat = texture::str_to_mat(mat_row, mat_pos);
           cell.fg = fg;
           cell.bg = bg;
-          row.emplace_back(cell);
+          
+          f_ensure_cursor_cell(cursor_r, cursor_c);
+          rows[cursor_r][cursor_c] = cell;
+          ++cursor_c;
         }
         
-        r++;
+        ++input_r;
+        if (input_r < num_input_rows)
+        {
+          ++cursor_r;
+          cursor_c = 0;
+        }
       }
       
       int num_rows = stlutils::sizeI(rows);
