@@ -166,6 +166,7 @@ namespace t8
   
   enum class AnsiGlyphEncoding
   {
+    Auto,
     UTF8,
     CP437,
   };
