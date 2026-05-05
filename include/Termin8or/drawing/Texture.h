@@ -1086,6 +1086,7 @@ namespace t8
                   break;
                 case 'C':
                   cursor_c += cursor_count;
+                  f_wrap_cursor();
                   break;
                 case 'D':
                   cursor_c = std::max(0, cursor_c - cursor_count);
