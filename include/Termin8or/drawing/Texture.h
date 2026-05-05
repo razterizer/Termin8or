@@ -1098,11 +1098,11 @@ namespace t8
                   rows.emplace_back();
                 rows[cursor_r].resize(cursor_c);
               }
-
+              
               i = next;
               continue;
             }
-
+            
             int cursor_row = 1;
             int cursor_col = 1;
             next = i;
