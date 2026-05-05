@@ -1198,6 +1198,7 @@ namespace t8
           f_ensure_cursor_cell(cursor_r, cursor_c);
           rows[cursor_r][cursor_c] = cell;
           ++cursor_c;
+          f_wrap_cursor();
         }
         
         ++input_r;
