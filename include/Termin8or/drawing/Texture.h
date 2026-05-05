@@ -1030,6 +1030,9 @@ namespace t8
       
       int cursor_r = 0;
       int cursor_c = 0;
+      int saved_cursor_r = 0;
+      int saved_cursor_c = 0;
+      bool has_saved_cursor = false;
       auto f_wrap_cursor = [&]()
       {
         if (!ansi_auto_wrap)
@@ -1107,12 +1110,33 @@ namespace t8
                 rows.clear();
                 cursor_r = 0;
                 cursor_c = 0;
+                has_saved_cursor = false;
               }
               else if (erase_target == 'K' && erase_mode == 2)
               {
                 while (stlutils::sizeI(rows) <= cursor_r)
                   rows.emplace_back();
                 rows[cursor_r].resize(cursor_c);
+              }
+              
+              i = next;
+              continue;
+            }
+            
+            char cursor_save_restore = '\0';
+            next = i;
+            if (ansi::parse_ansi_cursor_save_restore(line, next, cursor_save_restore))
+            {
+              if (cursor_save_restore == 's')
+              {
+                saved_cursor_r = cursor_r;
+                saved_cursor_c = cursor_c;
+                has_saved_cursor = true;
+              }
+              else if (has_saved_cursor)
+              {
+                cursor_r = saved_cursor_r;
+                cursor_c = saved_cursor_c;
               }
               
               i = next;
