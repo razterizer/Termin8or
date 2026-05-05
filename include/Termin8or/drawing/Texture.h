@@ -1005,6 +1005,8 @@ namespace t8
       Color fg = ansi_default_fg;
       Color bg = ansi_default_bg;
       constexpr int ansi_terminal_width = 80;
+      const int num_long_lines = stlutils::count_if(lines,
+        [](const auto& line) { return ansi_terminal_width < str::lenI(line); });
       
       auto f_make_blank_cell = [&]()
       {
