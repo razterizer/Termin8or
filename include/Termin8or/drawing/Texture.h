@@ -1127,6 +1127,7 @@ namespace t8
                     std::cerr << ch;
                   else
                     std::cerr << "0x" << str::int2hex(ch);
+                  
                   if ('@' <= ch && ch <= '~')
                     break;
                 }
