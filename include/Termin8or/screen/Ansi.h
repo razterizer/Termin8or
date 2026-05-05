@@ -301,4 +301,27 @@ namespace t8::ansi
     return false;
   }
   
+  // ESC[s -> save cursor position.
+  // ESC[u -> restore cursor position.
+  inline bool parse_ansi_cursor_save_restore(const std::string& str,
+                                             int& pos,
+                                             char& command)
+  {
+    int i = pos;
+    int str_len = str::lenI(str);
+    if (i + 2 >= str_len)
+      return false;
+    
+    if (str[i] != '\033' || str[i + 1] != '[')
+      return false;
+    
+    char ch = str[i + 2];
+    if (ch != 's' && ch != 'u')
+      return false;
+    
+    command = ch;
+    pos = i + 3;
+    return true;
+  }
+  
 }
