@@ -1004,6 +1004,7 @@ namespace t8
       
       Color fg = ansi_default_fg;
       Color bg = ansi_default_bg;
+      constexpr int ansi_terminal_width = 80;
       
       auto f_make_blank_cell = [&]()
       {
