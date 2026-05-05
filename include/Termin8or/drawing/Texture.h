@@ -1030,6 +1030,18 @@ namespace t8
       
       int cursor_r = 0;
       int cursor_c = 0;
+      auto f_wrap_cursor = [&]()
+      {
+        if (!ansi_auto_wrap)
+          return;
+        
+        if (cursor_c < ansi_terminal_width)
+          return;
+        
+        cursor_r += cursor_c / ansi_terminal_width;
+        cursor_c = cursor_c % ansi_terminal_width;
+      };
+      
       int input_r = 0;
       const int num_input_rows = stlutils::sizeI(lines);
       for (const auto& line : lines)
