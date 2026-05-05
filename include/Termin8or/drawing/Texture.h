@@ -1080,7 +1080,7 @@ namespace t8
               i = next;
               continue;
             }
-
+            
             char erase_target = '\0';
             int erase_mode = 0;
             next = i;
