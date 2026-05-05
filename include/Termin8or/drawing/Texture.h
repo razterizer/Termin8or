@@ -1101,6 +1101,17 @@ namespace t8
               i = next;
               continue;
             }
+
+            int cursor_row = 1;
+            int cursor_col = 1;
+            next = i;
+            if (ansi::parse_ansi_cursor_position(line, next, cursor_row, cursor_col))
+            {
+              cursor_r = cursor_row - 1;
+              cursor_c = cursor_col - 1;
+              i = next;
+              continue;
+            }
             
             if (verbose)
             {
