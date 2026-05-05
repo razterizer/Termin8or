@@ -1007,6 +1007,7 @@ namespace t8
       constexpr int ansi_terminal_width = 80;
       const int num_long_lines = stlutils::count_if(lines,
         [](const auto& line) { return ansi_terminal_width < str::lenI(line); });
+      const bool ansi_auto_wrap = num_long_lines == 1 && stlutils::sizeI(lines) <= 2;
       
       auto f_make_blank_cell = [&]()
       {
