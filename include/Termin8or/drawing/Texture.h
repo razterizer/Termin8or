@@ -1079,6 +1079,28 @@ namespace t8
               i = next;
               continue;
             }
+
+            char erase_target = '\0';
+            int erase_mode = 0;
+            next = i;
+            if (ansi::parse_ansi_erase(line, next, erase_target, erase_mode))
+            {
+              if (erase_target == 'J' && erase_mode == 2)
+              {
+                rows.clear();
+                cursor_r = 0;
+                cursor_c = 0;
+              }
+              else if (erase_target == 'K' && erase_mode == 2)
+              {
+                while (stlutils::sizeI(rows) <= cursor_r)
+                  rows.emplace_back();
+                rows[cursor_r].resize(cursor_c);
+              }
+
+              i = next;
+              continue;
+            }
             
             if (verbose)
             {
