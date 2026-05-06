@@ -64,6 +64,7 @@ namespace t8::ansi
   inline bool apply_ansi_sgr_params(const std::vector<int>& params,
                                     Color& fg,
                                     Color& bg,
+                                    bool& bright_fg,
                                     Color default_fg = Color16::Default,
                                     Color default_bg = Color16::Transparent2)
   {
@@ -71,6 +72,7 @@ namespace t8::ansi
     {
       fg = default_fg;
       bg = default_bg;
+      bright_fg = false;
       return true;
     }
     
@@ -83,13 +85,23 @@ namespace t8::ansi
       {
         fg = default_fg;
         bg = default_bg;
+        bright_fg = false;
+      }
+      else if (p == 1)
+        bright_fg = true;
+      else if (p == 22)
+        bright_fg = false;
+      else if (p == 39)
+      {
+        fg = default_fg;
+        bright_fg = false;
       }
       else if (p == 39)
         fg = default_fg;
       else if (p == 49)
         bg = default_bg;
       else if (30 <= p && p <= 37)
-        fg = Color { p - 30 };
+        fg = Color { p - 30 + (bright_fg ? 8 : 0) };
       else if (90 <= p && p <= 97)
         fg = Color { p - 90 + 8 };
       else if (40 <= p && p <= 47)
