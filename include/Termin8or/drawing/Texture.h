@@ -1013,8 +1013,8 @@ namespace t8
       {
         Cell cell;
         cell.glyph = Glyph { U' ' };
-        cell.fg = fg;
-        cell.bg = bg;
+        cell.fg = ansi_default_fg;
+        cell.bg = ansi_default_bg;
         return cell;
       };
       
