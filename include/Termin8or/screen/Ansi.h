@@ -88,9 +88,19 @@ namespace t8::ansi
         bright_fg = false;
       }
       else if (p == 1)
+      {
         bright_fg = true;
+        int fg_idx = fg.get_index();
+        if (0 <= fg_idx && fg_idx <= 7)
+          fg = Color { fg_idx + 8 };
+      }
       else if (p == 22)
+      {
         bright_fg = false;
+        int fg_idx = fg.get_index();
+        if (8 <= fg_idx && fg_idx <= 15)
+          fg = Color { fg_idx - 8 };
+      }
       else if (p == 39)
       {
         fg = default_fg;
