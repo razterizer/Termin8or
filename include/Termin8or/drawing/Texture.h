@@ -1033,6 +1033,7 @@ namespace t8
       int saved_cursor_r = 0;
       int saved_cursor_c = 0;
       bool has_saved_cursor = false;
+      bool bright_fg = false;
       auto f_wrap_cursor = [&]()
       {
         if (!ansi_auto_wrap)
@@ -1068,6 +1069,7 @@ namespace t8
             if (ansi::parse_ansi_sgr_params(line, next, params))
             {
               ansi::apply_ansi_sgr_params(params, fg, bg,
+                                          bright_fg,
                                           ansi_default_fg,
                                           ansi_default_bg);
               i = next;
