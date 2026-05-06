@@ -96,8 +96,6 @@ namespace t8::ansi
         fg = default_fg;
         bright_fg = false;
       }
-      else if (p == 39)
-        fg = default_fg;
       else if (p == 49)
         bg = default_bg;
       else if (30 <= p && p <= 37)
