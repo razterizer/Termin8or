@@ -134,30 +134,27 @@ namespace t8::ansi
     return true;
   }
   
-  // ESC[m         -> params empty, apply_ansi_sgr_params() resets
-  // ESC[0m        -> {0}
-  // ESC[31m       -> {31}
-  // ESC[31;44m    -> {31, 44}
-  // ESC[38;5;123m -> {38, 5, 123}
-  inline bool parse_ansi_sgr_params(const std::string& str,
-                                    int& pos,
-                                    std::vector<int>& params)
+  struct AnsiCsiSequence
   {
-    params.clear();
+    std::vector<int> params;
+    char command = '\0';
+  };
+  
+  inline bool parse_ansi_csi_sequence(const std::string& str,
+                                      int& pos,
+                                      AnsiCsiSequence& seq)
+  {
+    seq.params.clear();
+    seq.command = '\0';
     
     int i = pos;
     int str_len = str::lenI(str);
-    if (i + 1 >= str_len)
+    if (i + 1 >= str_len || str[i] != '\033' || str[i + 1] != '[')
       return false;
     
-    if (str[i] != '\033' || str[i + 1] != '[')
-      return false;
-    
-    // I could've used str::tokenize() here, but this manual parser is more robust.
-
     i += 2;
-    
     std::string token;
+    
     while (i < str_len)
     {
       char ch = str[i];
@@ -166,14 +163,15 @@ namespace t8::ansi
         token.push_back(ch);
       else if (ch == ';')
       {
-        params.emplace_back(token.empty() ? 0 : std::stoi(token));
+        seq.params.emplace_back(token.empty() ? 0 : std::stoi(token));
         token.clear();
       }
-      else if (ch == 'm')
+      else if ('@' <= ch && ch <= '~') // Final seqeuence byte found somewhere in this range.
       {
         if (!token.empty())
-          params.emplace_back(std::stoi(token));
+          seq.params.emplace_back(std::stoi(token));
         
+        seq.command = ch;
         pos = i + 1;
         return true;
       }
@@ -183,6 +181,26 @@ namespace t8::ansi
       ++i;
     }
     
+    return false;
+  }
+  
+  // ESC[m         -> params empty, apply_ansi_sgr_params() resets
+  // ESC[0m        -> {0}
+  // ESC[31m       -> {31}
+  // ESC[31;44m    -> {31, 44}
+  // ESC[38;5;123m -> {38, 5, 123}
+  inline bool parse_ansi_sgr_params(const std::string& str,
+                                    int& pos,
+                                    std::vector<int>& params)
+  {
+    AnsiCsiSequence ansi_seq;
+    if (!parse_ansi_csi_sequence(str, pos, ansi_seq))
+      return false;
+    if (ansi_seq.command == 'm')
+    {
+      params = ansi_seq.params;
+      return true;
+    }
     return false;
   }
   
@@ -199,36 +217,16 @@ namespace t8::ansi
                                      char& direction,
                                      int& count)
   {
-    int i = pos;
-    int str_len = str::lenI(str);
-    if (i + 1 >= str_len)
+    AnsiCsiSequence ansi_seq;
+    if (!parse_ansi_csi_sequence(str, pos, ansi_seq))
       return false;
-    
-    if (str[i] != '\033' || str[i + 1] != '[')
-      return false;
-    
-    i += 2;
-    
-    std::string token;
-    while (i < str_len)
+    auto dir = ansi_seq.command;
+    if (dir == 'A' || dir == 'B' || dir == 'C' || dir == 'D')
     {
-      char ch = str[i];
-      
-      if (str::is_digit(ch))
-        token.push_back(ch);
-      else if (ch == 'A' || ch == 'B' || ch == 'C' || ch == 'D')
-      {
-        direction = ch;
-        count = token.empty() ? 1 : std::stoi(token);
-        pos = i + 1;
-        return true;
-      }
-      else
-        return false;
-      
-      ++i;
+      direction = dir;
+      count = ansi_seq.params.empty() ? 1 : ansi_seq.params[0];
+      return true;
     }
-    
     return false;
   }
   
@@ -237,36 +235,16 @@ namespace t8::ansi
                                char& target,
                                int& mode)
   {
-    int i = pos;
-    int str_len = str::lenI(str);
-    if (i + 1 >= str_len)
+    AnsiCsiSequence ansi_seq;
+    if (!parse_ansi_csi_sequence(str, pos, ansi_seq))
       return false;
-    
-    if (str[i] != '\033' || str[i + 1] != '[')
-      return false;
-    
-    i += 2;
-    
-    std::string token;
-    while (i < str_len)
+    auto trg = ansi_seq.command;
+    if (trg == 'J' || trg == 'K')
     {
-      char ch = str[i];
-      
-      if (str::is_digit(ch))
-        token.push_back(ch);
-      else if (ch == 'J' || ch == 'K')
-      {
-        target = ch;
-        mode = token.empty() ? 0 : std::stoi(token);
-        pos = i + 1;
-        return true;
-      }
-      else
-        return false;
-      
-      ++i;
+      target = trg;
+      mode = ansi_seq.params.empty() ? 0 : ansi_seq.params[0];
+      return true;
     }
-    
     return false;
   }
   
@@ -279,45 +257,16 @@ namespace t8::ansi
                                          int& row,
                                          int& col)
   {
-    int i = pos;
-    int str_len = str::lenI(str);
-    if (i + 1 >= str_len)
+    AnsiCsiSequence ansi_seq;
+    if (!parse_ansi_csi_sequence(str, pos, ansi_seq))
       return false;
-    
-    if (str[i] != '\033' || str[i + 1] != '[')
-      return false;
-    
-    i += 2;
-    
-    std::vector<int> params;
-    std::string token;
-    while (i < str_len)
+    auto cmd = ansi_seq.command;
+    if (cmd == 'H' || cmd == 'f')
     {
-      char ch = str[i];
-      
-      if (str::is_digit(ch))
-        token.push_back(ch);
-      else if (ch == ';')
-      {
-        params.emplace_back(token.empty() ? 0 : std::stoi(token));
-        token.clear();
-      }
-      else if (ch == 'H' || ch == 'f')
-      {
-        if (!token.empty())
-          params.emplace_back(std::stoi(token));
-        
-        row = params.empty() || params[0] <= 0 ? 1 : params[0];
-        col = params.size() < 2 || params[1] <= 0 ? 1 : params[1];
-        pos = i + 1;
-        return true;
-      }
-      else
-        return false;
-      
-      ++i;
+      row = ansi_seq.params.empty() || ansi_seq.params[0] <= 0 ? 1 : ansi_seq.params[0];
+      col = ansi_seq.params.size() < 2 || ansi_seq.params[1] <= 0 ? 1 : ansi_seq.params[1];
+      return true;
     }
-    
     return false;
   }
   
@@ -327,21 +276,16 @@ namespace t8::ansi
                                              int& pos,
                                              char& command)
   {
-    int i = pos;
-    int str_len = str::lenI(str);
-    if (i + 2 >= str_len)
+    AnsiCsiSequence ansi_seq;
+    if (!parse_ansi_csi_sequence(str, pos, ansi_seq))
       return false;
-    
-    if (str[i] != '\033' || str[i + 1] != '[')
-      return false;
-    
-    char ch = str[i + 2];
-    if (ch != 's' && ch != 'u')
-      return false;
-    
-    command = ch;
-    pos = i + 3;
-    return true;
+    auto cmd = ansi_seq.command;
+    if (cmd == 's' || cmd == 'u')
+    {
+      command = cmd;
+      return true;
+    }
+    return false;
   }
   
 }
