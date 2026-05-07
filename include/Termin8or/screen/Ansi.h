@@ -166,7 +166,7 @@ namespace t8::ansi
         seq.params.emplace_back(token.empty() ? 0 : std::stoi(token));
         token.clear();
       }
-      else if ('@' <= ch && ch <= '~') // Final seqeuence byte found somewhere in this range.
+      else if ('@' <= ch && ch <= '~') // Final sequence byte found somewhere in this range.
       {
         if (!token.empty())
           seq.params.emplace_back(std::stoi(token));
