@@ -194,11 +194,13 @@ namespace t8::ansi
                                     std::vector<int>& params)
   {
     AnsiCsiSequence ansi_seq;
-    if (!parse_ansi_csi_sequence(str, pos, ansi_seq))
+    int next = pos;
+    if (!parse_ansi_csi_sequence(str, next, ansi_seq))
       return false;
     if (ansi_seq.command == 'm')
     {
       params = ansi_seq.params;
+      pos = next;
       return true;
     }
     return false;
@@ -218,13 +220,15 @@ namespace t8::ansi
                                      int& count)
   {
     AnsiCsiSequence ansi_seq;
-    if (!parse_ansi_csi_sequence(str, pos, ansi_seq))
+    int next = pos;
+    if (!parse_ansi_csi_sequence(str, next, ansi_seq))
       return false;
     auto dir = ansi_seq.command;
     if (dir == 'A' || dir == 'B' || dir == 'C' || dir == 'D')
     {
       direction = dir;
       count = ansi_seq.params.empty() ? 1 : ansi_seq.params[0];
+      pos = next;
       return true;
     }
     return false;
@@ -236,13 +240,15 @@ namespace t8::ansi
                                int& mode)
   {
     AnsiCsiSequence ansi_seq;
-    if (!parse_ansi_csi_sequence(str, pos, ansi_seq))
+    int next = pos;
+    if (!parse_ansi_csi_sequence(str, next, ansi_seq))
       return false;
     auto trg = ansi_seq.command;
     if (trg == 'J' || trg == 'K')
     {
       target = trg;
       mode = ansi_seq.params.empty() ? 0 : ansi_seq.params[0];
+      pos = next;
       return true;
     }
     return false;
@@ -258,13 +264,15 @@ namespace t8::ansi
                                          int& col)
   {
     AnsiCsiSequence ansi_seq;
-    if (!parse_ansi_csi_sequence(str, pos, ansi_seq))
+    int next = pos;
+    if (!parse_ansi_csi_sequence(str, next, ansi_seq))
       return false;
     auto cmd = ansi_seq.command;
     if (cmd == 'H' || cmd == 'f')
     {
       row = ansi_seq.params.empty() || ansi_seq.params[0] <= 0 ? 1 : ansi_seq.params[0];
       col = ansi_seq.params.size() < 2 || ansi_seq.params[1] <= 0 ? 1 : ansi_seq.params[1];
+      pos = next;
       return true;
     }
     return false;
@@ -277,12 +285,14 @@ namespace t8::ansi
                                              char& command)
   {
     AnsiCsiSequence ansi_seq;
-    if (!parse_ansi_csi_sequence(str, pos, ansi_seq))
+    int next = pos;
+    if (!parse_ansi_csi_sequence(str, next, ansi_seq))
       return false;
     auto cmd = ansi_seq.command;
     if (cmd == 's' || cmd == 'u')
     {
       command = cmd;
+      pos = next;
       return true;
     }
     return false;
