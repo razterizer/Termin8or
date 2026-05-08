@@ -1304,6 +1304,32 @@ namespace t8
     
     bool save_ansi(const std::string& file_path)
     {
+      std::vector<std::string> lines;
+      
+      Color curr_fg = Color16::Default;
+      Color curr_bg = Color16::Transparent2;
+      
+      for (int r = 0; r < size.r; ++r)
+      {
+        auto& line = lines.emplace_back();
+        for (int c = 0; c < size.c; ++c)
+        {
+          auto idx = index(r, c);
+          auto fg = fg_colors[idx];
+          auto bg = bg_colors[idx];
+          
+          if (fg != curr_fg || bg != curr_bg)
+          {
+            line += ansi::colors_to_ansi_sgr_string(fg, bg);
+            curr_fg = fg;
+            curr_bg = bg;
+          }
+          
+          line += glyphs[idx].encode_single_width_glyph<char32_t>();
+        }
+        curr_fg = Color16::Default;
+        curr_bg = Color16::Transparent2;
+      }
       return false;
     }
   };
