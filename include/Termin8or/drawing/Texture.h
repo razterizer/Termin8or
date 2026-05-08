@@ -1327,6 +1327,9 @@ namespace t8
           
           line += glyphs[idx].encode_single_width_glyph<char32_t>();
         }
+        
+        line += "\033[0m";
+        
         curr_fg = Color16::Default;
         curr_bg = Color16::Transparent2;
       }
