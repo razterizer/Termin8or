@@ -531,7 +531,7 @@ namespace t8
     static TextureFileFormat deduce_file_format(const std::string& file_path)
     {
       auto ext = str::to_lower(folder::split_filename_ext(file_path).second);
-      if (ext == "ans" || ext == "ansi")
+      if (ext == "ans" || ext == "ansi" || ext == "utf8ans")
         return TextureFileFormat::Ansi;
       if (ext == "tx")
         return TextureFileFormat::Tx;
