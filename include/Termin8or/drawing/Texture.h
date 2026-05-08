@@ -986,24 +986,22 @@ namespace t8
       if (!ret)
         return false;
       
-      // BOM (Byte Order Mark).
-      // UTF-8 : EF BB BF
+      if (has_utf8_bom(lines))
+      {
+        strip_utf8_bom(lines);
+        
+        if (glyph_encoding == AnsiGlyphEncoding::Auto)
+          glyph_encoding = AnsiGlyphEncoding::UTF8;
+        else if (glyph_encoding == AnsiGlyphEncoding::CP437)
+          std::cerr << "WARNING in Texture::load_ansi() : Attempting to load an UTF-8 encoded ANSI file with CP437 encoding!\n";
+      }
       if (glyph_encoding == AnsiGlyphEncoding::Auto)
       {
-        glyph_encoding = AnsiGlyphEncoding::CP437;
-        
-        if (!lines.empty() && lines[0].size() >= 3)
-        {
-          const unsigned char b0 = static_cast<unsigned char>(lines[0][0]);
-          const unsigned char b1 = static_cast<unsigned char>(lines[0][1]);
-          const unsigned char b2 = static_cast<unsigned char>(lines[0][2]);
-          
-          if (b0 == 0xEF && b1 == 0xBB && b2 == 0xBF)
-          {
-            lines[0].erase(0, 3);
-            glyph_encoding = AnsiGlyphEncoding::UTF8;
-          }
-        }
+        auto ext = str::to_lower(folder::split_filename_ext(file_path).second);
+        if (ext == "utf8ans")
+          glyph_encoding = AnsiGlyphEncoding::UTF8;
+        else
+          glyph_encoding = AnsiGlyphEncoding::CP437;
       }
       
       // Normalizes DOS/Windows CRLF lines to plain content lines.
