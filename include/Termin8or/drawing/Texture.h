@@ -352,7 +352,7 @@ namespace t8
     bool load(const std::string& file_path,
               TextureFileFormat format = TextureFileFormat::Auto,
               bool verbose = true,
-              AnsiGlyphEncoding ansi_glyph_encoding = AnsiGlyphEncoding::UTF8,
+              AnsiGlyphEncoding ansi_glyph_encoding = AnsiGlyphEncoding::Auto,
               Color ansi_default_fg = Color16::Default,
               Color ansi_default_bg = Color16::Transparent2)
     {
@@ -956,7 +956,7 @@ namespace t8
     
     bool load_ansi(const std::string& file_path,
                    bool verbose = true,
-                   AnsiGlyphEncoding glyph_encoding = AnsiGlyphEncoding::UTF8, // Use Auto option as default later.
+                   AnsiGlyphEncoding glyph_encoding = AnsiGlyphEncoding::Auto,
                    Color ansi_default_fg = Color16::Default,
                    Color ansi_default_bg = Color16::Transparent2)
     {
@@ -964,6 +964,26 @@ namespace t8
       bool ret = TextIO::read_file(file_path, lines);
       if (!ret)
         return false;
+      
+      // BOM (Byte Order Mark).
+      // UTF-8 : EF BB BF
+      if (glyph_encoding == AnsiGlyphEncoding::Auto)
+      {
+        glyph_encoding = AnsiGlyphEncoding::CP437;
+        
+        if (!lines.empty() && lines[0].size() >= 3)
+        {
+          const unsigned char b0 = static_cast<unsigned char>(lines[0][0]);
+          const unsigned char b1 = static_cast<unsigned char>(lines[0][1]);
+          const unsigned char b2 = static_cast<unsigned char>(lines[0][2]);
+          
+          if (b0 == 0xEF && b1 == 0xBB && b2 == 0xBF)
+          {
+            lines[0].erase(0, 3);
+            glyph_encoding = AnsiGlyphEncoding::UTF8;
+          }
+        }
+      }
       
       // Normalizes DOS/Windows CRLF lines to plain content lines.
       for (auto& line : lines)
