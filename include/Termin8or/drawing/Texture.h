@@ -1333,7 +1333,9 @@ namespace t8
         curr_fg = Color16::Default;
         curr_bg = Color16::Transparent2;
       }
-      return false;
+      
+      return TextIO::write_file(file_path, lines);
+      return true;
     }
   };
 
