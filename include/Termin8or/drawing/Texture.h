@@ -969,6 +969,12 @@ namespace t8
       }
       return false;
     }
+    
+    void strip_utf8_bom(std::vector<std::string>& lines)
+    {
+      lines[0].erase(0, 3);
+    }
+    
     bool load_ansi(const std::string& file_path,
                    bool verbose = true,
                    AnsiGlyphEncoding glyph_encoding = AnsiGlyphEncoding::Auto,
