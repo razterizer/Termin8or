@@ -992,7 +992,7 @@ namespace t8
         
         if (glyph_encoding == AnsiGlyphEncoding::Auto)
           glyph_encoding = AnsiGlyphEncoding::UTF8;
-        else if (glyph_encoding == AnsiGlyphEncoding::CP437)
+        else if (glyph_encoding == AnsiGlyphEncoding::CP437 && verbose)
           std::cerr << "WARNING in Texture::load_ansi() : Attempting to load an UTF-8 encoded ANSI file with CP437 encoding!\n";
       }
       if (glyph_encoding == AnsiGlyphEncoding::Auto)
