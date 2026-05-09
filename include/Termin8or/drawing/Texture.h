@@ -747,6 +747,27 @@ namespace t8
       }
       return true;
     }
+    
+    // BOM (Byte Order Mark).
+    // UTF-8 : EF BB BF
+    bool has_utf8_bom(const std::vector<std::string>& lines)
+    {
+      if (!lines.empty() && lines[0].size() >= 3)
+      {
+        const unsigned char b0 = static_cast<unsigned char>(lines[0][0]);
+        const unsigned char b1 = static_cast<unsigned char>(lines[0][1]);
+        const unsigned char b2 = static_cast<unsigned char>(lines[0][2]);
+        
+        if (b0 == 0xEF && b1 == 0xBB && b2 == 0xBF)
+          return true;
+      }
+      return false;
+    }
+    
+    void strip_utf8_bom(std::vector<std::string>& lines)
+    {
+      lines[0].erase(0, 3);
+    }
   
     // File format:
     // size, chars, fg-colors, bg-colors, materials.
@@ -959,27 +980,6 @@ namespace t8
       }
       
       return TextIO::write_file(file_path, lines);
-    }
-    
-    // BOM (Byte Order Mark).
-    // UTF-8 : EF BB BF
-    bool has_utf8_bom(const std::vector<std::string>& lines)
-    {
-      if (!lines.empty() && lines[0].size() >= 3)
-      {
-        const unsigned char b0 = static_cast<unsigned char>(lines[0][0]);
-        const unsigned char b1 = static_cast<unsigned char>(lines[0][1]);
-        const unsigned char b2 = static_cast<unsigned char>(lines[0][2]);
-        
-        if (b0 == 0xEF && b1 == 0xBB && b2 == 0xBF)
-          return true;
-      }
-      return false;
-    }
-    
-    void strip_utf8_bom(std::vector<std::string>& lines)
-    {
-      lines[0].erase(0, 3);
     }
     
     bool load_ansi(const std::string& file_path,
