@@ -1141,6 +1141,7 @@ namespace t8
         
         size_t byte_idx = 0;
         char32_t ch32 = utf8::none;
+        int fb_pos = 0;
         int mat_pos = 0;
         
         int len_line = str::lenI(line);
@@ -1296,7 +1297,8 @@ namespace t8
             return false;
           
           Cell cell;
-          const auto fb = mat_pos < str::lenI(fb_row) ? fb_row[mat_pos] : Glyph::none;
+          const auto fb = fb_pos < str::lenI(fb_row) ? fb_row[fb_pos] : Glyph::none;
+          ++fb_pos;
           if (!create_glyph_from_ansi(ch32, fb, cell.glyph, verbose))
           {
             if (verbose)
