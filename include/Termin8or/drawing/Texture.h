@@ -993,22 +993,40 @@ namespace t8
       if (!ret)
         return false;
       
-      if (has_utf8_bom(lines))
+      // Cases:
+      // :w (warning), :c (correct).
+      // *.ans, *.ansi (no BOM): Auto->CP437:c, UTF8:w, CP437:c
+      // *.ans, *.ansi (has BOM): Auto->UTF8:c, UTF8:c, CP437:w
+      // *.utf8ans (no BOM): Auto->UTF8:c, UTF8:c, CP437:w
+      // *.utf8ans (has BOM): Auto->UTF8:c, UTF8:c, CP437:w (via BOM/CP437 conflict, not extension).
+      auto ext = get_file_ext(file_path);
+      bool utf8_bom = has_utf8_bom(lines);
+      if (utf8_bom)
       {
         strip_utf8_bom(lines);
         
         if (glyph_encoding == AnsiGlyphEncoding::Auto)
           glyph_encoding = AnsiGlyphEncoding::UTF8;
         else if (glyph_encoding == AnsiGlyphEncoding::CP437 && verbose)
-          std::cerr << "WARNING in Texture::load_ansi() : Attempting to load an UTF-8 encoded ANSI file with CP437 encoding!\n";
+          std::cerr << "WARNING in Texture::load_ansi() : Attempting to load a UTF-8 encoded ANSI file with CP437 encoding!\n";
       }
+      
       if (glyph_encoding == AnsiGlyphEncoding::Auto)
       {
-        auto ext = get_file_ext(file_path);
         if (ext == "utf8ans")
           glyph_encoding = AnsiGlyphEncoding::UTF8;
-        else
+        else // *.ans, *.ansi.
           glyph_encoding = AnsiGlyphEncoding::CP437;
+      }
+      else if (glyph_encoding == AnsiGlyphEncoding::UTF8 && !utf8_bom)
+      {
+        if (verbose && (ext == "ans" || ext == "ansi"))
+          std::cerr << "WARNING in Texture::load_ansi() : Attempting to load an ANSI file in UTF-8 encoding without UTF-8 BOM!\n";
+      }
+      else if (glyph_encoding == AnsiGlyphEncoding::CP437 && !utf8_bom)
+      {
+        if (verbose && ext == "utf8ans")
+          std::cerr << "WARNING in Texture::load_ansi() : Attempting to load a UTF-8 ANSI (*.utf8ans) file in CP437 encoding!\n";
       }
       
       // Normalizes DOS/Windows CRLF lines to plain content lines.
