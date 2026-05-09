@@ -750,7 +750,7 @@ namespace t8
     
     // BOM (Byte Order Mark).
     // UTF-8 : EF BB BF
-    bool has_utf8_bom(const std::vector<std::string>& lines)
+    static bool has_utf8_bom(const std::vector<std::string>& lines)
     {
       if (!lines.empty() && lines[0].size() >= 3)
       {
@@ -764,7 +764,7 @@ namespace t8
       return false;
     }
     
-    void strip_utf8_bom(std::vector<std::string>& lines)
+    static void strip_utf8_bom(std::vector<std::string>& lines)
     {
       lines[0].erase(0, 3);
     }
