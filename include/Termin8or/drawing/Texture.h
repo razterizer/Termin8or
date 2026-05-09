@@ -768,6 +768,22 @@ namespace t8
     {
       lines[0].erase(0, 3);
     }
+    
+    static void add_utf8_bom(std::vector<std::string>& lines)
+    {
+      const char b0 = static_cast<char>(0xEF);
+      const char b1 = static_cast<char>(0xBB);
+      const char b2 = static_cast<char>(0xBF);
+      std::string bstr;
+      bstr.push_back(b0);
+      bstr.push_back(b1);
+      bstr.push_back(b2);
+      
+      if (lines.empty())
+        lines.emplace_back().insert(0, bstr);
+      else
+        lines[0].insert(0, bstr);
+    }
   
     // File format:
     // size, chars, fg-colors, bg-colors, materials.
