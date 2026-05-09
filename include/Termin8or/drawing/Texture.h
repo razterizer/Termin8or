@@ -1438,9 +1438,10 @@ namespace t8
         curr_bg = ansi_default_bg;
       }
       
-      TextIO::write_file(fb_filepath, fb_lines, verbose ? 2 : 1);
-      TextIO::write_file(mat_filepath, mat_lines, verbose ? 2 : 1);
-      return TextIO::write_file(file_path, lines);
+      auto ret_fb = TextIO::write_file(fb_filepath, fb_lines, verbose ? 2 : 1);
+      auto ret_mat = TextIO::write_file(mat_filepath, mat_lines, verbose ? 2 : 1);
+      auto ret_main = TextIO::write_file(file_path, lines);
+      return ret_fb && ret_mat && ret_main;
     }
   };
 
