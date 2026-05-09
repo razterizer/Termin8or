@@ -1380,12 +1380,21 @@ namespace t8
           break;
       }
       
+      std::vector<std::string> fb_lines;
+      auto fb_filepath = folder::join_filename_ext({ file_path, "fb" });
+      
+      std::vector<std::string> mat_lines;
+      auto mat_filepath = folder::join_filename_ext({ file_path, "mat" });
+      
       Color curr_fg = ansi_default_fg;
       Color curr_bg = ansi_default_bg;
       
       for (int r = 0; r < size.r; ++r)
       {
         auto& line = lines.emplace_back();
+        auto& fb_line = fb_lines.emplace_back();
+        auto& mat_line = mat_lines.emplace_back();
+        
         for (int c = 0; c < size.c; ++c)
         {
           auto idx = index(r, c);
@@ -1416,6 +1425,9 @@ namespace t8
             else if (verbose)
               std::cerr << "ERROR in Texture::save_ansi() : Unable to encode glyph " << g.str(true) << " in CP437 encoding!\n";
           }
+          
+          fb_line.push_back(g.fallback);
+          mat_line += texture::mat_to_str(materials[idx]);
         }
         
         line += "\033[0m";
@@ -1424,6 +1436,8 @@ namespace t8
         curr_bg = ansi_default_bg;
       }
       
+      TextIO::write_file(fb_filepath, fb_lines, verbose ? 2 : 1);
+      TextIO::write_file(mat_filepath, mat_lines, verbose ? 2 : 1);
       return TextIO::write_file(file_path, lines);
     }
   };
