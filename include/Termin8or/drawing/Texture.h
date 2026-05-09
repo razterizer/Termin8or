@@ -383,9 +383,9 @@ namespace t8
       return true;
     }
     
-    bool save(const std::string& file_path, TxGlyphEncoding encoding_mode)
+    bool save(const std::string& file_path, bool verbose, TxGlyphEncoding encoding_mode)
     {
-      return save(file_path, TextureFileFormat::Auto, encoding_mode);
+      return save(file_path, TextureFileFormat::Auto, verbose, encoding_mode);
     }
     
     bool save(const std::string& file_path,
