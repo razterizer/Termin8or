@@ -1365,10 +1365,10 @@ namespace t8
       switch (ansi_glyph_encoding)
       {
         case AnsiGlyphEncoding::Auto:
-          if (ext == "ans" || ext == "ansi")
-            ansi_glyph_encoding = AnsiGlyphEncoding::CP437;
-          else if (ext == "utf8ans")
+          if (ext == "utf8ans")
             ansi_glyph_encoding = AnsiGlyphEncoding::UTF8;
+          else
+            ansi_glyph_encoding = AnsiGlyphEncoding::CP437;
           break;
         case AnsiGlyphEncoding::UTF8:
           if (ext == "ans" || ext == "ansi")
