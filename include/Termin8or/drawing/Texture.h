@@ -528,9 +528,15 @@ namespace t8
       return minimal_ver;
     }
     
+    // Retrieves file extennsion in lower case.
+    static std::string get_file_ext(const std::string& file_path)
+    {
+      return str::to_lower(folder::split_filename_ext(file_path).second);
+    }
+    
     static TextureFileFormat deduce_file_format(const std::string& file_path)
     {
-      auto ext = str::to_lower(folder::split_filename_ext(file_path).second);
+      auto ext = get_file_ext(file_path);
       if (ext == "ans" || ext == "ansi" || ext == "utf8ans")
         return TextureFileFormat::Ansi;
       if (ext == "tx")
@@ -997,7 +1003,7 @@ namespace t8
       }
       if (glyph_encoding == AnsiGlyphEncoding::Auto)
       {
-        auto ext = str::to_lower(folder::split_filename_ext(file_path).second);
+        auto ext = get_file_ext(file_path);
         if (ext == "utf8ans")
           glyph_encoding = AnsiGlyphEncoding::UTF8;
         else
