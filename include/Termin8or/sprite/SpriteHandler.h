@@ -195,10 +195,11 @@ namespace t8x
     void save_frame(int anim_frame,
                     const std::string& file_path,
                     t8::TextureFileFormat format = t8::TextureFileFormat::Auto,
+                    bool verbose = true,
                     t8::TxGlyphEncoding encoding_mode = t8::TxGlyphEncoding::AsciiOnly)
     {
       auto* texture = fetch_frame(anim_frame);
-      texture->save(file_path, format, encoding_mode);
+      texture->save(file_path, format, verbose, encoding_mode);
     }
     
     virtual void clone_frame(int anim_frame, int from_anim_frame) override
