@@ -1425,7 +1425,6 @@ namespace t8
       }
       
       return TextIO::write_file(file_path, lines);
-      return true;
     }
   };
 
