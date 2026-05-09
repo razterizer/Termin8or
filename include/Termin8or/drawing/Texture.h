@@ -390,7 +390,8 @@ namespace t8
     
     bool save(const std::string& file_path,
               TextureFileFormat format = TextureFileFormat::Auto,
-              TxGlyphEncoding encoding_mode = TxGlyphEncoding::AsciiOnly)
+              TxGlyphEncoding encoding_mode = TxGlyphEncoding::AsciiOnly,
+              AnsiGlyphEncoding ansi_glyph_encoding = AnsiGlyphEncoding::Auto)
     {
       auto resolved_format = format == TextureFileFormat::Auto ?
         deduce_file_format(file_path) : format;
@@ -402,7 +403,7 @@ namespace t8
         case TextureFileFormat::Tx:
           return save_tx(file_path, encoding_mode);
         case TextureFileFormat::Ansi:
-          return save_ansi(file_path);
+          return save_ansi(file_path, ansi_glyph_encoding);
       }
       
       return false;
@@ -1308,8 +1309,18 @@ namespace t8
       return true;
     }
     
-    bool save_ansi(const std::string& file_path)
+    bool save_ansi(const std::string& file_path,
+                   AnsiGlyphEncoding ansi_glyph_encoding = AnsiGlyphEncoding::Auto)
     {
+      if (ansi_glyph_encoding == AnsiGlyphEncoding::Auto)
+      {
+        auto ext = get_file_ext(file_path);
+        if (ext == "ans" || "ansi")
+          ansi_glyph_encoding = AnsiGlyphEncoding::CP437;
+        else if (ext == "utf8ans")
+          ansi_glyph_encoding = AnsiGlyphEncoding::UTF8;
+      }
+    
       std::vector<std::string> lines;
       
       Color curr_fg = Color16::Default;
