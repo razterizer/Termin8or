@@ -392,7 +392,9 @@ namespace t8
               TextureFileFormat format = TextureFileFormat::Auto,
               bool verbose = true,
               TxGlyphEncoding encoding_mode = TxGlyphEncoding::AsciiOnly,
-              AnsiGlyphEncoding ansi_glyph_encoding = AnsiGlyphEncoding::Auto)
+              AnsiGlyphEncoding ansi_glyph_encoding = AnsiGlyphEncoding::Auto,
+              Color ansi_default_fg = Color16::Default,
+              Color ansi_default_bg = Color16::Transparent2)
     {
       auto resolved_format = format == TextureFileFormat::Auto ?
         deduce_file_format(file_path) : format;
@@ -405,7 +407,9 @@ namespace t8
           return save_tx(file_path, encoding_mode);
         case TextureFileFormat::Ansi:
           return save_ansi(file_path, verbose,
-                           ansi_glyph_encoding);
+                           ansi_glyph_encoding,
+                           ansi_default_fg,
+                           ansi_default_bg);
       }
       
       return false;
@@ -1347,7 +1351,9 @@ namespace t8
     
     bool save_ansi(const std::string& file_path,
                    bool verbose = true,
-                   AnsiGlyphEncoding ansi_glyph_encoding = AnsiGlyphEncoding::Auto)
+                   AnsiGlyphEncoding ansi_glyph_encoding = AnsiGlyphEncoding::Auto,
+                   Color ansi_default_fg = Color16::Default,
+                   Color ansi_default_bg = Color16::Transparent2)
     {
       std::vector<std::string> lines;
       
@@ -1374,8 +1380,8 @@ namespace t8
           break;
       }
       
-      Color curr_fg = Color16::Default;
-      Color curr_bg = Color16::Transparent2;
+      Color curr_fg = ansi_default_fg;
+      Color curr_bg = ansi_default_bg;
       
       for (int r = 0; r < size.r; ++r)
       {
@@ -1398,8 +1404,8 @@ namespace t8
         
         line += "\033[0m";
         
-        curr_fg = Color16::Default;
-        curr_bg = Color16::Transparent2;
+        curr_fg = ansi_default_fg;
+        curr_bg = ansi_default_bg;
       }
       
       return TextIO::write_file(file_path, lines);
