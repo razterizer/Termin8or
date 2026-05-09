@@ -1406,7 +1406,7 @@ namespace t8
           {
             auto ch_pref = static_cast<char>(static_cast<unsigned char>(g.preferred));
             auto ch_fb = g.fallback;
-            auto cp = utf8::cp437_to_unicode(g.preferred);
+            auto cp = utf8::unicode_to_cp437(g.preferred);
             if (cp.has_value())
               line.push_back(static_cast<char>(cp.value()));
             else if (!g.empty() && term::is_printable_ascii(ch_pref))
