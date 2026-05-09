@@ -1399,7 +1399,23 @@ namespace t8
             curr_bg = bg;
           }
           
-          line += glyphs[idx].encode_single_width_glyph<char32_t>();
+          const auto& g = glyphs[idx];
+          if (ansi_glyph_encoding == AnsiGlyphEncoding::UTF8)
+            line += g.encode_single_width_glyph<char32_t>();
+          else if (ansi_glyph_encoding == AnsiGlyphEncoding::CP437)
+          {
+            auto ch_pref = static_cast<char>(static_cast<unsigned char>(g.preferred));
+            auto ch_fb = g.fallback;
+            auto cp = utf8::cp437_to_unicode(g.preferred);
+            if (cp.has_value())
+              line.push_back(static_cast<char>(cp.value()));
+            else if (!g.empty() && term::is_printable_ascii(ch_pref))
+              line.push_back(ch_pref);
+            else if (!g.empty_fallback() && term::is_printable_ascii(ch_fb))
+              line.push_back(ch_fb);
+            else if (verbose)
+              std::cerr << "ERROR in Texture::save_ansi() : Unable to encode glyph " << g.str(true) << " in CP437 encoding!\n";
+          }
         }
         
         line += "\033[0m";
