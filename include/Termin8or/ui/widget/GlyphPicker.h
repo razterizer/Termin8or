@@ -15,6 +15,7 @@
 #include "../../screen/ScreenHandler.h"
 #include "../../screen/Glyph.h"
 #include "../../screen/StyledString.h"
+#include "../../screen/TermHelper.h"
 #include <string>
 #include <array>
 
@@ -186,7 +187,11 @@ namespace t8x
       if (fb_hex_field.is_selected())
       {
         fb_hex_field.update(curr_key, curr_special_key);
-        fb_field.set_input(std::string(1, static_cast<char>(str::hex2int(fb_hex_field.get_input()))));
+        auto hex_ch = static_cast<char>(str::hex2int(fb_hex_field.get_input()));
+        if (t8::term::is_printable_ascii(hex_ch))
+          fb_field.set_input(std::string(1, hex_ch));
+        else
+          fb_field.clear();
         f_handle_fb_field();
       }
       if (fb_field.is_selected())
