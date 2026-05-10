@@ -54,7 +54,7 @@ namespace t8x
     Label cp_lbl;
     Label fb_lbl;
     Label hex_prefix_lbl;
-    TextField cp_field; // preferred (UTF-8)
+    TextField cp_hex_field; // preferred (UTF-8)
     TextField fb_field; // fallback (ASCII)
     std::string cp_str_prev;
     std::string fb_str_prev;
@@ -87,16 +87,16 @@ namespace t8x
     void set_glyph_inputs(const t8::Glyph& g)
     {
       if (g.preferred == t8::Glyph::none32)
-        cp_field.clear();
+        cp_hex_field.clear();
       else
-        cp_field.set_input(str::int2hex(g.preferred));
+        cp_hex_field.set_input(str::int2hex(g.preferred));
       
       if (g.fallback == t8::Glyph::none)
         fb_field.clear();
       else
         fb_field.set_input(std::string(1, g.fallback));
       
-      cp_str_prev = cp_field.get_input();
+      cp_str_prev = cp_hex_field.get_input();
       fb_str_prev = fb_field.get_input();
     }
     
@@ -113,7 +113,7 @@ namespace t8x
       , cp_lbl("Preferred (Unicode):", label_style)
       , fb_lbl("Fallback (ASCII):", label_style)
       , hex_prefix_lbl("0x", hex_prefix_style)
-      , cp_field(6, TextFieldMode::Hex, tf_style,
+      , cp_hex_field(6, TextFieldMode::Hex, tf_style,
                  tab, clear_ch, sel)
       , fb_field(1, TextFieldMode::PrintableAscii, tf_style,
                  tab, clear_ch, sel)
@@ -155,14 +155,14 @@ namespace t8x
           set_glyph(recent_glyphs[sel_recent_idx]);
       }
         
-      if (cp_field.is_selected())
+      if (cp_hex_field.is_selected())
       {
-        cp_field.update(curr_key, curr_special_key);
-        if (cp_field.empty())
+        cp_hex_field.update(curr_key, curr_special_key);
+        if (cp_hex_field.empty())
           current_glyph.preferred = t8::Glyph::none32;
-        else if (cp_str_prev != cp_field.get_input())
-          current_glyph.preferred = str::hex2int(cp_field.get_input());
-        cp_str_prev = cp_field.get_input();
+        else if (cp_str_prev != cp_hex_field.get_input())
+          current_glyph.preferred = str::hex2int(cp_hex_field.get_input());
+        cp_str_prev = cp_hex_field.get_input();
       }
       if (fb_field.is_selected())
       {
@@ -215,7 +215,7 @@ namespace t8x
       
       cp_lbl.draw(sh, pos + RC { 2, 0 });
       hex_prefix_lbl.draw(sh, pos + RC { 2, cp_lbl.width() + 1 });
-      cp_field.draw(sh, pos + RC { 2, cp_lbl.width() + 1 + hex_prefix_lbl.width() }, anim_ctr);
+      cp_hex_field.draw(sh, pos + RC { 2, cp_lbl.width() + 1 + hex_prefix_lbl.width() }, anim_ctr);
       
       fb_lbl.draw(sh, pos + RC { 3, 0 });
       fb_field.draw(sh, pos + RC { 3, cp_lbl.width() + 1 + hex_prefix_lbl.width() }, anim_ctr);
@@ -223,7 +223,7 @@ namespace t8x
     
     virtual int width() const override
     {
-      return cp_lbl.width() + 1 + hex_prefix_lbl.width() + cp_field.width();
+      return cp_lbl.width() + 1 + hex_prefix_lbl.width() + cp_hex_field.width();
     }
     
     virtual int height() const override
@@ -236,7 +236,7 @@ namespace t8x
       current_glyph.clear();
       current_glyph_disp_sstr_long.clear();
       current_glyph_disp_sstr_short.clear();
-      cp_field.clear();
+      cp_hex_field.clear();
       fb_field.clear();
       cp_str_prev.clear();
       fb_str_prev.clear();
@@ -266,7 +266,7 @@ namespace t8x
       if (sub_tab == 0)
         sel_recent_idx = selected && recent_count > 0 ? std::max(0, sel_recent_idx) : -1;
       else if (sub_tab == 1)
-        cp_field.set_selected(selected);
+        cp_hex_field.set_selected(selected);
       else if (sub_tab == 2)
         fb_field.set_selected(selected);
     }
