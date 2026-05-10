@@ -46,6 +46,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		070041BB2FB0C2B50099D5E4 /* Widget.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Widget.h; sourceTree = "<group>"; };
+		070041BC2FB0C2F80099D5E4 /* Button.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Button.h; sourceTree = "<group>"; };
+		070041BD2FB0C4F60099D5E4 /* ButtonGroup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ButtonGroup.h; sourceTree = "<group>"; };
+		070041BE2FB0C5E60099D5E4 /* Label.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Label.h; sourceTree = "<group>"; };
+		070041BF2FB0C6BD0099D5E4 /* TextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextField.h; sourceTree = "<group>"; };
+		070041C02FB0C7DE0099D5E4 /* GlyphPicker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GlyphPicker.h; sourceTree = "<group>"; };
+		070041C12FB0C8CF0099D5E4 /* ColorPicker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColorPicker.h; sourceTree = "<group>"; };
+		070041C22FB0CA000099D5E4 /* TextBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextBox.h; sourceTree = "<group>"; };
+		070041C32FB0CB280099D5E4 /* Dialog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Dialog.h; sourceTree = "<group>"; };
+		070041C42FB0CC730099D5E4 /* TextBoxDebug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextBoxDebug.h; sourceTree = "<group>"; };
 		071CC3CA290465B3007B4B98 /* libTermin8or.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libTermin8or.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		07233B4D2ED6A56F0022B60B /* ScreenScaling_examples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenScaling_examples.h; sourceTree = "<group>"; };
 		07233B4E2EDBA71C0022B60B /* RGBA.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGBA.h; sourceTree = "<group>"; };
@@ -127,6 +137,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		070041BA2FB0C24C0099D5E4 /* widget */ = {
+			isa = PBXGroup;
+			children = (
+				070041BB2FB0C2B50099D5E4 /* Widget.h */,
+				070041BC2FB0C2F80099D5E4 /* Button.h */,
+				070041BD2FB0C4F60099D5E4 /* ButtonGroup.h */,
+				070041BE2FB0C5E60099D5E4 /* Label.h */,
+				070041BF2FB0C6BD0099D5E4 /* TextField.h */,
+				070041C02FB0C7DE0099D5E4 /* GlyphPicker.h */,
+				070041C12FB0C8CF0099D5E4 /* ColorPicker.h */,
+				070041C22FB0CA000099D5E4 /* TextBox.h */,
+				070041C32FB0CB280099D5E4 /* Dialog.h */,
+				070041C42FB0CC730099D5E4 /* TextBoxDebug.h */,
+			);
+			path = widget;
+			sourceTree = "<group>";
+		};
 		071CC3C1290465B3007B4B98 = {
 			isa = PBXGroup;
 			children = (
@@ -230,6 +257,7 @@
 		07BDBA912E741C14002ACC96 /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				070041BA2FB0C24C0099D5E4 /* widget */,
 				07BDBA8F2E741C14002ACC96 /* MessageHandler.h */,
 				07BDBA902E741C14002ACC96 /* UI.h */,
 			);
