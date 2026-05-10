@@ -1405,7 +1405,7 @@ namespace t8
           
           if (fg != curr_fg || bg != curr_bg)
           {
-            line += ansi::colors_to_ansi_sgr_string(fg, bg);
+            line += ansi::colors_to_ansi_sgr_string(fg, bg, ansi_default_fg, ansi_default_bg);
             curr_fg = fg;
             curr_bg = bg;
           }
