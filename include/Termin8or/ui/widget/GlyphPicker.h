@@ -54,7 +54,8 @@ namespace t8x
     Label cp_lbl;
     Label fb_lbl;
     Label hex_prefix_lbl;
-    TextField cp_hex_field; // preferred (UTF-8)
+    TextField cp_hex_field; // preferred in hex (UTF-8)
+    TextField fb_hex_field; // fallback in hex (ASCII)
     TextField fb_field; // fallback (ASCII)
     std::string cp_str_prev;
     std::string fb_str_prev;
@@ -92,9 +93,15 @@ namespace t8x
         cp_hex_field.set_input(str::int2hex(g.preferred));
       
       if (g.fallback == t8::Glyph::none)
+      {
+        fb_hex_field.clear();
         fb_field.clear();
+      }
       else
+      {
+        fb_hex_field.set_input(str::int2hex(g.fallback));
         fb_field.set_input(std::string(1, g.fallback));
+      }
       
       cp_str_prev = cp_hex_field.get_input();
       fb_str_prev = fb_field.get_input();
@@ -114,6 +121,8 @@ namespace t8x
       , fb_lbl("Fallback (ASCII):", label_style)
       , hex_prefix_lbl("0x", hex_prefix_style)
       , cp_hex_field(6, TextFieldMode::Hex, tf_style,
+                 tab, clear_ch, sel)
+      , fb_hex_field(2, TextFieldMode::Hex, tf_style,
                  tab, clear_ch, sel)
       , fb_field(1, TextFieldMode::PrintableAscii, tf_style,
                  tab, clear_ch, sel)
@@ -164,14 +173,29 @@ namespace t8x
           current_glyph.preferred = str::hex2int(cp_hex_field.get_input());
         cp_str_prev = cp_hex_field.get_input();
       }
-      if (fb_field.is_selected())
+      
+      auto f_handle_fb_field = [&]()
       {
-        fb_field.update(curr_key, curr_special_key);
         if (fb_field.empty())
           current_glyph.fallback = t8::Glyph::none;
         else if (fb_str_prev != fb_field.get_input())
           current_glyph.fallback = fb_field.get_input()[0];
         fb_str_prev = fb_field.get_input();
+      };
+      
+      if (fb_hex_field.is_selected())
+      {
+        fb_hex_field.update(curr_key, curr_special_key);
+        fb_field.set_input(std::string(1, static_cast<char>(str::hex2int(fb_hex_field.get_input()))));
+        f_handle_fb_field();
+      }
+      if (fb_field.is_selected())
+      {
+        fb_field.update(curr_key, curr_special_key);
+        auto str = fb_field.get_input();
+        if (!str.empty())
+          fb_hex_field.set_input(str::int2hex(str[0]));
+        f_handle_fb_field();
       }
     }
     
@@ -218,7 +242,9 @@ namespace t8x
       cp_hex_field.draw(sh, pos + RC { 2, cp_lbl.width() + 1 + hex_prefix_lbl.width() }, anim_ctr);
       
       fb_lbl.draw(sh, pos + RC { 3, 0 });
-      fb_field.draw(sh, pos + RC { 3, cp_lbl.width() + 1 + hex_prefix_lbl.width() }, anim_ctr);
+      hex_prefix_lbl.draw(sh, pos + RC { 3, cp_lbl.width() + 1 });
+      fb_hex_field.draw(sh, pos + RC { 3, cp_lbl.width() + 1 + hex_prefix_lbl.width() }, anim_ctr);
+      fb_field.draw(sh, pos + RC { 3, cp_lbl.width() + 1 + hex_prefix_lbl.width() + 3 + fb_hex_field.width() }, anim_ctr);
     }
     
     virtual int width() const override
@@ -237,6 +263,7 @@ namespace t8x
       current_glyph_disp_sstr_long.clear();
       current_glyph_disp_sstr_short.clear();
       cp_hex_field.clear();
+      fb_hex_field.clear();
       fb_field.clear();
       cp_str_prev.clear();
       fb_str_prev.clear();
@@ -259,7 +286,7 @@ namespace t8x
       return current_glyph.valid_after_canonicalization();
     }
     
-    virtual int num_components() const override { return 3; }
+    virtual int num_components() const override { return 4; }
     
     virtual void set_component_focus(int sub_tab, bool selected) override
     {
@@ -268,6 +295,8 @@ namespace t8x
       else if (sub_tab == 1)
         cp_hex_field.set_selected(selected);
       else if (sub_tab == 2)
+        fb_hex_field.set_selected(selected);
+      else if (sub_tab == 3)
         fb_field.set_selected(selected);
     }
     
