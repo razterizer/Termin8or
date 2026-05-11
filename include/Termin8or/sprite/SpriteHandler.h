@@ -144,6 +144,8 @@ namespace t8x
     
     Texture* fetch_frame(int anim_frame)
     {
+      if (anim_frame < 0)
+        return nullptr;
       while (stlutils::sizeI(texture_frames) <= anim_frame)
         texture_frames.emplace_back(std::make_unique<Texture>());
       return texture_frames[anim_frame].get();
@@ -167,6 +169,8 @@ namespace t8x
     void create_frame(int anim_frame)
     {
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return;
       texture->clear();
       texture->area = area;
       texture->size = size;
@@ -182,8 +186,14 @@ namespace t8x
                     bool verbose = true)
     {
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+      {
+        std::cerr << "ERROR in BitmapSprite::load_frame() : Unable to load frame: " << anim_frame << "." << std::endl;
+        return false;
+      }
       texture->clear();
-      texture->load(file_path, format, verbose);
+      if (!texture->load(file_path, format, verbose))
+        return false;
       if (texture->size != size)
       {
         std::cerr << "ERROR in BitmapSprite::load_frame() : Loaded sprite frame doesn't have the same size as the sprite itself." << std::endl;
@@ -192,24 +202,32 @@ namespace t8x
       return true;
     }
     
-    void save_frame(int anim_frame,
+    bool save_frame(int anim_frame,
                     const std::string& file_path,
                     t8::TextureFileFormat format = t8::TextureFileFormat::Auto,
                     bool verbose = true,
                     t8::TxGlyphEncoding encoding_mode = t8::TxGlyphEncoding::AsciiOnly)
     {
       auto* texture = fetch_frame(anim_frame);
-      texture->save(file_path, format, verbose, encoding_mode);
+      if (texture == nullptr)
+      {
+        std::cerr << "ERROR in BitmapSprite::save_frame() : Unable to save frame: " << anim_frame << "." << std::endl;
+        return false;
+      }
+      return texture->save(file_path, format, verbose, encoding_mode);
     }
     
     virtual void clone_frame(int anim_frame, int from_anim_frame) override
     {
+      if (anim_frame < 0 || from_anim_frame < 0)
+        return;
       const auto N = stlutils::sizeI(texture_frames);
       if (from_anim_frame < N)
       {
         if (anim_frame >= N)
         {
           auto* texture_from = fetch_frame(from_anim_frame);
+          assert(texture_from != nullptr);
           fetch_frame(anim_frame);
           texture_frames[anim_frame] = std::make_unique<Texture>(*texture_from);
         }
@@ -227,75 +245,96 @@ namespace t8x
       return nullptr;
     }
     
-    void set_frame(int anim_frame, const Texture& texture)
+    bool set_frame(int anim_frame, const Texture& texture)
     {
       auto* texture_dst = fetch_frame(anim_frame);
+      if (texture_dst == nullptr)
+        return false;
       *texture_dst = texture;
+      return true;
     }
     
     // #FIXME: Perhaps move these varyadic functions to Texture for more versatility.
     
     template<typename... Glyphs>
-    void set_sprite_glyphs(int anim_frame, Glyphs... g)
+    bool set_sprite_glyphs(int anim_frame, Glyphs... g)
     {
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return false;
       set_sprite_data(texture->glyphs, g...);
+      return true;
     }
     
     template<typename... Glyphs>
-    void set_sprite_glyphs(int anim_frame, const Rectangle& bb, Glyphs... g)
+    bool set_sprite_glyphs(int anim_frame, const Rectangle& bb, Glyphs... g)
     {
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return false;
       set_sprite_data(texture->glyphs, bb, g...);
+      return true;
     }
     
     template<typename... Glyphs>
-    void set_sprite_glyphs_vert(int anim_frame, int r0, int r1, int c, Glyphs... g)
+    bool set_sprite_glyphs_vert(int anim_frame, int r0, int r1, int c, Glyphs... g)
     {
       Rectangle bb { r0, c, r1 - r0 + 1, 1 };
-      set_sprite_glyphs(anim_frame, bb, g...);
+      return set_sprite_glyphs(anim_frame, bb, g...);
     }
     
     template<typename... Glyphs>
-    void set_sprite_glyphs_horiz(int anim_frame, int r, int c0, int c1, Glyphs... g)
+    bool set_sprite_glyphs_horiz(int anim_frame, int r, int c0, int c1, Glyphs... g)
     {
       Rectangle bb { r, c0, 1, c1 - c0 + 1 };
-      set_sprite_glyphs(anim_frame, bb, g...);
+      return set_sprite_glyphs(anim_frame, bb, g...);
     }
     
-    void set_sprite_glyph(int anim_frame, int r, int c, const t8::Glyph& g)
+    bool set_sprite_glyph(int anim_frame, int r, int c, const t8::Glyph& g)
     {
       auto* texture = fetch_frame(anim_frame);
-      if (texture != nullptr)
-        texture->set_textel_glyph(r, c, g);
+      if (texture == nullptr)
+        return false;
+      texture->set_textel_glyph(r, c, g);
+      return true;
     }
     
-    void fill_sprite_glyphs(int anim_frame, const t8::Glyph& g)
+    bool fill_sprite_glyphs(int anim_frame, const t8::Glyph& g)
     {
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return false;
       texture->glyphs.assign(area, g);
+      return true;
     }
     
-    void fill_sprite_glyphs(int anim_frame, const Rectangle& bb, const t8::Glyph& g)
+    bool fill_sprite_glyphs(int anim_frame, const Rectangle& bb, const t8::Glyph& g)
     {
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return false;
       fill_sprite_data(texture->glyphs, bb, g);
+      return true;
     }
     
-    void fill_sprite_glyphs_vert(int anim_frame, int r0, int r1, int c, const t8::Glyph& g)
+    bool fill_sprite_glyphs_vert(int anim_frame, int r0, int r1, int c, const t8::Glyph& g)
     {
       auto* texture = fetch_frame(anim_frame);
-      if (texture != nullptr)
-        for (int r = r0; r <= r1; ++r)
-          texture->set_textel_glyph(r, c, g);
+      if (texture == nullptr)
+        return false;
+      for (int r = r0; r <= r1; ++r)
+        texture->set_textel_glyph(r, c, g);
+      return true;
     }
     
-    void fill_sprite_glyphs_horiz(int anim_frame, int r, int c0, int c1, const t8::Glyph& g)
+    bool fill_sprite_glyphs_horiz(int anim_frame, int r, int c0, int c1, const t8::Glyph& g)
     {
       auto* texture = fetch_frame(anim_frame);
-      if (texture != nullptr)
-        for (int c = c0; c <= c1; ++c)
-          texture->set_textel_glyph(r, c, g);
+      if (texture == nullptr)
+        return false;
+      for (int c = c0; c <= c1; ++c)
+        texture->set_textel_glyph(r, c, g);
+      return true;
     }
     
     // Set sprite characters from an ASCII string for each row.
@@ -303,6 +342,8 @@ namespace t8x
     bool set_sprite_chars_from_strings(int anim_frame, Strings... rows)
     {
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return false;
       
       std::array<std::string, sizeof...(rows)> row_array = { rows... };
       
@@ -333,6 +374,8 @@ namespace t8x
     bool set_sprite_fg_colors(int anim_frame, Colors... fg_color)
     {
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return false;
       return set_sprite_data(texture->fg_colors, fg_color...);
     }
     
@@ -340,62 +383,78 @@ namespace t8x
     bool set_sprite_fg_colors(int anim_frame, const Rectangle& bb, Colors... fg_color)
     {
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return false;
       return set_sprite_data(texture->fg_colors, bb, fg_color...);
     }
     
     template<typename... Colors>
-    void set_sprite_fg_colors_vert(int anim_frame, int r0, int r1, int c, Colors... fg_color)
+    bool set_sprite_fg_colors_vert(int anim_frame, int r0, int r1, int c, Colors... fg_color)
     {
       Rectangle bb { r0, c, r1 - r0 + 1, 1 };
-      set_sprite_fg_colors(anim_frame, bb, fg_color...);
+      return set_sprite_fg_colors(anim_frame, bb, fg_color...);
     }
     
     template<typename... Colors>
-    void set_sprite_fg_colors_horiz(int anim_frame, int r, int c0, int c1, Colors... fg_color)
+    bool set_sprite_fg_colors_horiz(int anim_frame, int r, int c0, int c1, Colors... fg_color)
     {
       Rectangle bb { r, c0, 1, c1 - c0 + 1 };
-      set_sprite_fg_colors(anim_frame, bb, fg_color...);
+      return set_sprite_fg_colors(anim_frame, bb, fg_color...);
     }
     
-    void set_sprite_fg_color(int anim_frame, int r, int c, Color fg_color)
+    bool set_sprite_fg_color(int anim_frame, int r, int c, Color fg_color)
     {
       auto* texture = fetch_frame(anim_frame);
-      if (texture != nullptr)
-        texture->set_textel_fg_color(r, c, fg_color);
+      if (texture == nullptr)
+        return false;
+      texture->set_textel_fg_color(r, c, fg_color);
+      return true;
     }
     
-    void fill_sprite_fg_colors(int anim_frame, Color fg_color)
+    bool fill_sprite_fg_colors(int anim_frame, Color fg_color)
     {
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return false;
       texture->fg_colors.assign(area, fg_color);
+      return true;
     }
     
-    void fill_sprite_fg_colors(int anim_frame, const Rectangle& bb, Color fg_color)
+    bool fill_sprite_fg_colors(int anim_frame, const Rectangle& bb, Color fg_color)
     {
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return false;
       fill_sprite_data(texture->fg_colors, bb, fg_color);
+      return true;
     }
     
-    void fill_sprite_fg_colors_vert(int anim_frame, int r0, int r1, int c, Color fg_color)
+    bool fill_sprite_fg_colors_vert(int anim_frame, int r0, int r1, int c, Color fg_color)
     {
       auto* texture = fetch_frame(anim_frame);
-      if (texture != nullptr)
-        for (int r = r0; r <= r1; ++r)
-          texture->set_textel_fg_color(r, c, fg_color);
+      if (texture == nullptr)
+        return false;
+      for (int r = r0; r <= r1; ++r)
+        texture->set_textel_fg_color(r, c, fg_color);
+      return true;
     }
     
-    void fill_sprite_fg_colors_horiz(int anim_frame, int r, int c0, int c1, Color fg_color)
+    bool fill_sprite_fg_colors_horiz(int anim_frame, int r, int c0, int c1, Color fg_color)
     {
       auto* texture = fetch_frame(anim_frame);
-      if (texture != nullptr)
-        for (int c = c0; c <= c1; ++c)
-          texture->set_textel_fg_color(r, c, fg_color);
+      if (texture == nullptr)
+        return false;
+      for (int c = c0; c <= c1; ++c)
+        texture->set_textel_fg_color(r, c, fg_color);
+      return true;
     }
     
     template<typename... Colors>
     bool set_sprite_bg_colors(int anim_frame, Colors... bg_color)
     {
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return false;
       return set_sprite_data(texture->bg_colors, bg_color...);
     }
     
@@ -403,62 +462,78 @@ namespace t8x
     bool set_sprite_bg_colors(int anim_frame, const Rectangle& bb, Colors... bg_color)
     {
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return false;
       return set_sprite_data(texture->bg_colors, bb, bg_color...);
     }
     
     template<typename... Colors>
-    void set_sprite_bg_colors_vert(int anim_frame, int r0, int r1, int c, Colors... bg_color)
+    bool set_sprite_bg_colors_vert(int anim_frame, int r0, int r1, int c, Colors... bg_color)
     {
       Rectangle bb { r0, c, r1 - r0 + 1, 1 };
-      set_sprite_bg_colors(anim_frame, bb, bg_color...);
+      return set_sprite_bg_colors(anim_frame, bb, bg_color...);
     }
     
     template<typename... Colors>
-    void set_sprite_bg_colors_horiz(int anim_frame, int r, int c0, int c1, Colors... bg_color)
+    bool set_sprite_bg_colors_horiz(int anim_frame, int r, int c0, int c1, Colors... bg_color)
     {
       Rectangle bb { r, c0, 1, c1 - c0 + 1 };
-      set_sprite_bg_colors(anim_frame, bb, bg_color...);
+      return set_sprite_bg_colors(anim_frame, bb, bg_color...);
     }
     
-    void set_sprite_bg_color(int anim_frame, int r, int c, Color bg_color)
+    bool set_sprite_bg_color(int anim_frame, int r, int c, Color bg_color)
     {
       auto* texture = fetch_frame(anim_frame);
-      if (texture != nullptr)
-        texture->set_textel_bg_color(r, c, bg_color);
+      if (texture == nullptr)
+        return false;
+      texture->set_textel_bg_color(r, c, bg_color);
+      return true;
     }
     
-    void fill_sprite_bg_colors(int anim_frame, Color bg_color)
+    bool fill_sprite_bg_colors(int anim_frame, Color bg_color)
     {
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return false;
       texture->bg_colors.assign(area, bg_color);
+      return true;
     }
     
-    void fill_sprite_bg_colors(int anim_frame, const Rectangle& bb, Color bg_color)
+    bool fill_sprite_bg_colors(int anim_frame, const Rectangle& bb, Color bg_color)
     {
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return false;
       fill_sprite_data(texture->bg_colors, bb, bg_color);
+      return true;
     }
     
-    void fill_sprite_bg_colors_vert(int anim_frame, int r0, int r1, int c, Color bg_color)
+    bool fill_sprite_bg_colors_vert(int anim_frame, int r0, int r1, int c, Color bg_color)
     {
       auto* texture = fetch_frame(anim_frame);
-      if (texture != nullptr)
-        for (int r = r0; r <= r1; ++r)
-          texture->set_textel_bg_color(r, c, bg_color);
+      if (texture == nullptr)
+        return false;
+      for (int r = r0; r <= r1; ++r)
+        texture->set_textel_bg_color(r, c, bg_color);
+      return true;
     }
     
-    void fill_sprite_bg_colors_horiz(int anim_frame, int r, int c0, int c1, Color bg_color)
+    bool fill_sprite_bg_colors_horiz(int anim_frame, int r, int c0, int c1, Color bg_color)
     {
       auto* texture = fetch_frame(anim_frame);
-      if (texture != nullptr)
-        for (int c = c0; c <= c1; ++c)
-          texture->set_textel_bg_color(r, c, bg_color);
+      if (texture == nullptr)
+        return false;
+      for (int c = c0; c <= c1; ++c)
+        texture->set_textel_bg_color(r, c, bg_color);
+      return true;
     }
     
     template<typename... Materials>
     bool set_sprite_materials(int anim_frame, Materials... mat)
     {
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return false;
       return set_sprite_data(texture->materials, mat...);
     }
     
@@ -466,56 +541,70 @@ namespace t8x
     bool set_sprite_materials(int anim_frame, const Rectangle& bb, Materials... mat)
     {
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return false;
       return set_sprite_data(texture->materials, bb, mat...);
     }
     
     template<typename... Materials>
-    void set_sprite_materials_vert(int anim_frame, int r0, int r1, int c, Materials... mat)
+    bool set_sprite_materials_vert(int anim_frame, int r0, int r1, int c, Materials... mat)
     {
       Rectangle bb { r0, c, r1 - r0 + 1, 1 };
-      set_sprite_materials(anim_frame, bb, mat...);
+      return set_sprite_materials(anim_frame, bb, mat...);
     }
     
     template<typename... Materials>
-    void set_sprite_materials_horiz(int anim_frame, int r, int c0, int c1, Materials... mat)
+    bool set_sprite_materials_horiz(int anim_frame, int r, int c0, int c1, Materials... mat)
     {
       Rectangle bb { r, c0, 1, c1 - c0 + 1 };
-      set_sprite_materials(anim_frame, bb, mat...);
+      return set_sprite_materials(anim_frame, bb, mat...);
     }
     
-    void set_sprite_material(int anim_frame, int r, int c, uint8_t mat)
+    bool set_sprite_material(int anim_frame, int r, int c, uint8_t mat)
     {
       auto* texture = fetch_frame(anim_frame);
-      if (texture != nullptr)
-        texture->set_textel_material(r, c, mat);
+      if (texture == nullptr)
+        return false;
+      texture->set_textel_material(r, c, mat);
+      return true;
     }
     
-    void fill_sprite_materials(int anim_frame, uint8_t mat)
+    bool fill_sprite_materials(int anim_frame, uint8_t mat)
     {
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return false;
       texture->materials.assign(area, mat);
+      return true;
     }
     
-    void fill_sprite_materials(int anim_frame, const Rectangle& bb, uint8_t mat)
+    bool fill_sprite_materials(int anim_frame, const Rectangle& bb, uint8_t mat)
     {
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return false;
       fill_sprite_data(texture->materials, bb, mat);
+      return true;
     }
     
-    void fill_sprite_materials_vert(int anim_frame, int r0, int r1, int c, uint8_t mat)
+    bool fill_sprite_materials_vert(int anim_frame, int r0, int r1, int c, uint8_t mat)
     {
       auto* texture = fetch_frame(anim_frame);
-      if (texture != nullptr)
-        for (int r = r0; r <= r1; ++r)
-          texture->set_textel_material(r, c, mat);
+      if (texture == nullptr)
+        return false;
+      for (int r = r0; r <= r1; ++r)
+        texture->set_textel_material(r, c, mat);
+      return true;
     }
     
-    void fill_sprite_materials_horiz(int anim_frame, int r, int c0, int c1, uint8_t mat)
+    bool fill_sprite_materials_horiz(int anim_frame, int r, int c0, int c1, uint8_t mat)
     {
       auto* texture = fetch_frame(anim_frame);
-      if (texture != nullptr)
-        for (int c = c0; c <= c1; ++c)
-          texture->set_textel_material(r, c, mat);
+      if (texture == nullptr)
+        return false;
+      for (int c = c0; c <= c1; ++c)
+        texture->set_textel_material(r, c, mat);
+      return true;
     }
     
     // Replace args mean they replace the attribute if the main argument/attribute was found on that pixel.
@@ -555,7 +644,7 @@ namespace t8x
       return true;
     }
     
-    void flip_ud(int anim_frame)
+    bool flip_ud(int anim_frame)
     {
       auto f_flip_char = [](t8::Textel& txt)
       {
@@ -588,6 +677,8 @@ namespace t8x
       };
       
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return false;
       const int half_height = size.r/2;
       for (int c = 0; c < size.c; ++c)
       {
@@ -602,6 +693,7 @@ namespace t8x
           texture->set_textel(r_inv, c, a);
         }
       }
+      return true;
     }
     
     void flip_ud()
@@ -611,7 +703,7 @@ namespace t8x
         flip_ud(anim_frame);
     }
     
-    void flip_lr(int anim_frame)
+    bool flip_lr(int anim_frame)
     {
       auto f_flip_char = [](t8::Textel& txt)
       {
@@ -646,6 +738,8 @@ namespace t8x
       };
       
       auto* texture = fetch_frame(anim_frame);
+      if (texture == nullptr)
+        return false;
       const int half_width = size.c/2;
       for (int r = 0; r < size.r; ++r)
       {
@@ -660,6 +754,7 @@ namespace t8x
           texture->set_textel(r, c_inv, a);
         }
       }
+      return true;
     }
     
     void flip_lr()
@@ -799,6 +894,8 @@ namespace t8x
     
     VectorFrame* fetch_frame(int anim_frame)
     {
+      if (anim_frame < 0)
+        return nullptr;
       while (stlutils::sizeI(vector_frames) <= anim_frame)
         vector_frames.emplace_back(std::make_unique<VectorFrame>());
       return vector_frames[anim_frame].get();
@@ -884,18 +981,21 @@ namespace t8x
     // So "o" becomes the center of mass instead.
     
     
-    void add_line_segment(int anim_frame, const Vec2& p0, const Vec2& p1, t8::Glyph g, const Style& style, uint8_t mat = 0)
+    bool add_line_segment(int anim_frame, const Vec2& p0, const Vec2& p1, t8::Glyph g, const Style& style, uint8_t mat = 0)
     {
       auto* vector_frame = fetch_frame(anim_frame);
+      if (vector_frame == nullptr)
+        return false;
       auto& line_seg = vector_frame->line_segments.emplace_back();
       line_seg.pos[0] = p0;
       line_seg.pos[1] = p1;
       line_seg.glyph = g;
       line_seg.style = style;
       line_seg.mat = mat;
+      return true;
     }
     
-    void finalize_topology(int anim_frame)
+    bool finalize_topology(int anim_frame)
     {
       struct LineSegData
       {
@@ -907,6 +1007,8 @@ namespace t8x
       float c_snap_dist_sq = 1e-6f;
       
       auto* vector_frame = fetch_frame(anim_frame);
+      if (vector_frame == nullptr)
+        return false;
       //vector_frame->open_polylines.emplace_back(line_seg);
       vector_frame->open_polylines = vector_frame->line_segments;
       auto N = stlutils::sizeI(vector_frame->open_polylines);
@@ -1049,21 +1151,26 @@ namespace t8x
       for (int i = N - 1; i >= 0; --i)
         if (segs_visited[i])
           stlutils::erase_at(vector_frame->open_polylines, i);
+          
+      return true;
     }
     
-    void add_line_segment(int anim_frame, const Vec2& p0, const Vec2& p1, const Style& style, uint8_t mat = 0)
+    bool add_line_segment(int anim_frame, const Vec2& p0, const Vec2& p1, const Style& style, uint8_t mat = 0)
     {
-      add_line_segment(anim_frame, p0, p1, {}, style, mat);
+      return add_line_segment(anim_frame, p0, p1, {}, style, mat);
     }
     
     virtual void clone_frame(int anim_frame, int from_anim_frame) override
     {
+      if (anim_frame < 0 || from_anim_frame < 0)
+        return;
       const auto N = stlutils::sizeI(vector_frames);
       if (from_anim_frame < N)
       {
         if (anim_frame >= N)
         {
           auto* frame_from = fetch_frame(from_anim_frame);
+          assert(frame_from != nullptr);
           fetch_frame(anim_frame);
           vector_frames[anim_frame] = std::make_unique<VectorFrame>(*frame_from);
         }
@@ -1074,10 +1181,13 @@ namespace t8x
         std::cout << "ERROR in clone_frame() : from_anim_frame cannot be larger than or equal to the number of vector frames!" << std::endl;
     }
     
-    void set_frame(int anim_frame, const VectorFrame& frame)
+    bool set_frame(int anim_frame, const VectorFrame& frame)
     {
       auto* frame_dst = fetch_frame(anim_frame);
+      if (frame_dst == nullptr)
+        return false;
       *frame_dst = frame;
+      return true;
     }
     
     VectorFrame* get_curr_sim_frame(int sim_frame) const
