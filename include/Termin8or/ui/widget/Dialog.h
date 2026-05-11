@@ -316,7 +316,7 @@ namespace t8x
     {
       auto it = stlutils::find_if(glyph_pickers, [tab](const auto& gpp) { return gpp.second->get_tab_order() == tab; });
       if (it != glyph_pickers.end())
-        return short_format ? it->second->get_disp_sstr_short() : it->second->get_disp_sstr_long();
+        return short_format ? it->second->get_glyph_sstr_short() : it->second->get_glyph_sstr_long();
       return {};
     }
     
