@@ -321,7 +321,7 @@ namespace t8
     
     uint8_t get_textel_material_raw(const RC& pos) const
     {
-      return get_textel_material(pos.r, pos.c);
+      return get_textel_material_raw(pos.r, pos.c);
     }
     
     void set_textel_material(int r, int c, int mat)
