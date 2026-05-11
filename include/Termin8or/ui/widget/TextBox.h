@@ -245,7 +245,7 @@ namespace t8x
     StrT& operator[](size_t r_idx)
     {
       return sb[r_idx];
-      invalidate_layout();
+      //invalidate_layout(); // We would want this to be called automatically after the reference has been used.
     }
     const StrT& operator[](size_t r_idx) const
     {
