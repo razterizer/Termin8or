@@ -26,7 +26,7 @@ namespace t8
     static constexpr int mat_none = -1;
     
     inline bool has_material_raw(uint8_t m_raw) { return m_raw != raw_mat_none; }
-    //inline bool has_material(int m) { return m != mat_none; }
+    inline bool has_material(int m) { return m != mat_none; }
     
     // Encode to raw mat.
     inline uint8_t encode_raw_material(int m)
