@@ -39,7 +39,7 @@ namespace t8
     // Decode from raw mat.
     inline int decode_raw_material(uint8_t m_raw)
     {
-      return (m_raw == raw_mat_none) ? -1 : static_cast<int>(m_raw);
+      return (m_raw == raw_mat_none) ? mat_none : static_cast<int>(m_raw);
     }
     
     std::string raw_mat_to_str(uint8_t mat)
