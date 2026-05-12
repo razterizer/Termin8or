@@ -51,7 +51,7 @@ namespace t8x
     
     virtual int num_frames() const = 0;
     
-    virtual bool_vector calc_curr_mask(int sim_frame, const std::vector<uint8_t>& mask_materials) = 0;
+    virtual bool_vector calc_curr_mask(int sim_frame, const std::vector<int>& mask_materials) = 0;
     
     virtual bool calc_cm() const = 0;
     
@@ -73,7 +73,7 @@ namespace t8x
         std::cerr << "ERROR in BitmapSprite::set_sprite_data() : Number of arguments must match sprite size." << std::endl;
         return false;
       }
-      target = {static_cast<T>(args)...}; // Unpack and assign to the target vector
+      target = { static_cast<T>(args)... }; // Unpack and assign to the target vector
       return true;
     }
     
@@ -87,7 +87,7 @@ namespace t8x
         std::cerr << "ERROR in BitmapSprite::set_sprite_data() : Number of arguments must match sprite size and or bounding box size." << std::endl;
         return false;
       }
-      std::vector<T> source = {static_cast<T>(args)...}; // Unpack and assign to the target vector
+      std::vector<T> source = { static_cast<T>(args)... }; // Unpack and assign to the target vector
       auto N_trg = stlutils::sizeI(target);
       auto N_src = stlutils::sizeI(source);
       
@@ -110,6 +110,23 @@ namespace t8x
       }
       
       return true;
+    }
+    
+    template<typename... Materials>
+    bool set_sprite_material_data(std::vector<uint8_t>& target, Materials... mat)
+    {
+      return set_sprite_data(target,
+                             t8::texture::encode_raw_material(static_cast<int>(mat))...);
+    }
+    
+    template<typename... Materials>
+    bool set_sprite_material_data(std::vector<uint8_t>& target,
+                                  const Rectangle& bb,
+                                  Materials... mat)
+    {
+      return set_sprite_data(target,
+                             bb,
+                             t8::texture::encode_raw_material(static_cast<int>(mat))...);
     }
     
     template<typename T>
@@ -177,7 +194,7 @@ namespace t8x
       texture->glyphs.resize(area);
       texture->fg_colors.resize(area);
       texture->bg_colors.resize(area);
-      texture->materials.resize(area);
+      texture->materials_raw.resize(area);
     }
     
     bool load_frame(int anim_frame,
@@ -534,7 +551,7 @@ namespace t8x
       auto* texture = fetch_frame(anim_frame);
       if (texture == nullptr)
         return false;
-      return set_sprite_data(texture->materials, mat...);
+      return set_sprite_material_data(texture->materials_raw, mat...);
     }
     
     template<typename... Materials>
@@ -543,7 +560,7 @@ namespace t8x
       auto* texture = fetch_frame(anim_frame);
       if (texture == nullptr)
         return false;
-      return set_sprite_data(texture->materials, bb, mat...);
+      return set_sprite_material_data(texture->materials_raw, bb, mat...);
     }
     
     template<typename... Materials>
@@ -560,7 +577,7 @@ namespace t8x
       return set_sprite_materials(anim_frame, bb, mat...);
     }
     
-    bool set_sprite_material(int anim_frame, int r, int c, uint8_t mat)
+    bool set_sprite_material(int anim_frame, int r, int c, int mat)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture == nullptr)
@@ -569,25 +586,25 @@ namespace t8x
       return true;
     }
     
-    bool fill_sprite_materials(int anim_frame, uint8_t mat)
+    bool fill_sprite_materials(int anim_frame, int mat)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture == nullptr)
         return false;
-      texture->materials.assign(area, mat);
+      texture->materials_raw.assign(area, t8::texture::encode_raw_material(mat));
       return true;
     }
     
-    bool fill_sprite_materials(int anim_frame, const Rectangle& bb, uint8_t mat)
+    bool fill_sprite_materials(int anim_frame, const Rectangle& bb, int mat)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture == nullptr)
         return false;
-      fill_sprite_data(texture->materials, bb, mat);
+      fill_sprite_data(texture->materials_raw, bb, t8::texture::encode_raw_material(mat));
       return true;
     }
     
-    bool fill_sprite_materials_vert(int anim_frame, int r0, int r1, int c, uint8_t mat)
+    bool fill_sprite_materials_vert(int anim_frame, int r0, int r1, int c, int mat)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture == nullptr)
@@ -597,7 +614,7 @@ namespace t8x
       return true;
     }
     
-    bool fill_sprite_materials_horiz(int anim_frame, int r, int c0, int c1, uint8_t mat)
+    bool fill_sprite_materials_horiz(int anim_frame, int r, int c0, int c1, int mat)
     {
       auto* texture = fetch_frame(anim_frame);
       if (texture == nullptr)
@@ -616,7 +633,7 @@ namespace t8x
                    std::optional<t8::Glyph> g, std::optional<t8::Glyph> g_replace,
                    std::optional<Color> fg_color, std::optional<Color> fg_color_replace,
                    std::optional<Color> bg_color, std::optional<Color> bg_color_replace,
-                   std::optional<uint8_t> mat, std::optional<uint8_t> mat_replace)
+                   std::optional<int> mat, std::optional<int> mat_replace)
     {
       auto* texture = get_curr_sim_frame(sim_frame);
       if (texture == nullptr)
@@ -630,6 +647,12 @@ namespace t8x
         else
           dst = src.value_or(dst);
       };
+      auto f_encode_optional_raw_mat = [](std::optional<int> m) -> std::optional<uint8_t>
+      {
+        if (m.has_value())
+          return t8::texture::encode_raw_material(m.value());
+        return std::nullopt;
+      };
       for (const auto& pt : points)
       {
         auto r = math::roundI(pt.r) - pos.r;
@@ -638,7 +661,7 @@ namespace t8x
         f_set_attribute(textel.glyph, g, g_replace);
         f_set_attribute(textel.fg_color, fg_color, fg_color_replace);
         f_set_attribute(textel.bg_color, bg_color, bg_color_replace);
-        f_set_attribute(textel.mat, mat, mat_replace);
+        f_set_attribute(textel.mat_raw, f_encode_optional_raw_mat(mat), f_encode_optional_raw_mat(mat_replace));
         texture->set_textel(r, c, textel);
       }
       return true;
@@ -811,15 +834,15 @@ namespace t8x
       return { static_cast<float>(pos.r) + size.r * 0.5f, static_cast<float>(pos.c) + size.c * 0.5f };
     }
     
-    virtual bool_vector calc_curr_mask(int sim_frame, const std::vector<uint8_t>& mask_materials) override
+    virtual bool_vector calc_curr_mask(int sim_frame, const std::vector<int>& mask_materials) override
     {
       const auto* texture = get_curr_sim_frame(sim_frame);
       if (texture == nullptr)
         return {};
-      const auto num_mats = stlutils::sizeI(texture->materials);
+      const auto num_mats = stlutils::sizeI(texture->materials_raw);
       bool_vector mask(num_mats);
       for (int mat_idx = 0; mat_idx < num_mats; ++mat_idx)
-        mask[mat_idx] = stlutils::contains(mask_materials, texture->materials[mat_idx]);
+        mask[mat_idx] = stlutils::contains(mask_materials, t8::texture::decode_raw_material(texture->materials_raw[mat_idx]));
       return mask;
     }
     
@@ -870,7 +893,7 @@ namespace t8x
       std::array<Vec2, 2> pos;
       t8::Glyph glyph = 0;
       Style style;
-      uint8_t mat = 0;
+      int mat = 0;
     };
     
     struct VectorFrame
@@ -981,7 +1004,7 @@ namespace t8x
     // So "o" becomes the center of mass instead.
     
     
-    bool add_line_segment(int anim_frame, const Vec2& p0, const Vec2& p1, t8::Glyph g, const Style& style, uint8_t mat = 0)
+    bool add_line_segment(int anim_frame, const Vec2& p0, const Vec2& p1, t8::Glyph g, const Style& style, int mat = 0)
     {
       auto* vector_frame = fetch_frame(anim_frame);
       if (vector_frame == nullptr)
@@ -1155,7 +1178,7 @@ namespace t8x
       return true;
     }
     
-    bool add_line_segment(int anim_frame, const Vec2& p0, const Vec2& p1, const Style& style, uint8_t mat = 0)
+    bool add_line_segment(int anim_frame, const Vec2& p0, const Vec2& p1, const Style& style, int mat = 0)
     {
       return add_line_segment(anim_frame, p0, p1, {}, style, mat);
     }
@@ -1367,7 +1390,7 @@ namespace t8x
       return to_Vec2(pos); // Assuming you designed the sprite around the centroid / CoM.
     }
     
-    virtual bool_vector calc_curr_mask(int sim_frame, const std::vector<uint8_t>& mask_materials) override
+    virtual bool_vector calc_curr_mask(int sim_frame, const std::vector<int>& mask_materials) override
     {
       const auto* vector_frame = get_curr_sim_frame(sim_frame);
       if (vector_frame == nullptr)

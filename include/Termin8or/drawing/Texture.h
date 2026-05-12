@@ -22,28 +22,32 @@ namespace t8
   
   namespace texture
   {
-    static constexpr uint8_t mat_none = 255;
+    static constexpr uint8_t raw_mat_none = 255;
+    //static constexpr int mat_none = -1;
     
-    inline bool has_material(uint8_t m) { return m != mat_none; }
+    inline bool has_material_raw(uint8_t m) { return m != raw_mat_none; }
+    //inline bool has_material(int m) { return m != mat_none; }
     
-    inline uint8_t encode_material(int m)
+    // Encode to raw mat.
+    inline uint8_t encode_raw_material(int m)
     {
-      if (m < 0) return mat_none;
+      if (m < 0) return raw_mat_none;
       if (m > 254) return 254; // Or maybe assert instead?
       return static_cast<uint8_t>(m);
     }
     
-    inline int decode_material(uint8_t m)
+    // Decode from raw mat.
+    inline int decode_raw_material(uint8_t m)
     {
-      return (m == mat_none) ? -1 : static_cast<int>(m);
+      return (m == raw_mat_none) ? -1 : static_cast<int>(m);
     }
     
-    std::string mat_to_str(uint8_t mat)
+    std::string raw_mat_to_str(uint8_t mat)
     {
       constexpr uint8_t span09 = 1 + (9 - 0);     // 10, 0-9
       constexpr uint8_t spanAZ = 1 + ('Z' - 'A'); // 26, A-Z, a-z
       constexpr uint8_t page_span = span09 + 2*spanAZ; // 62
-      if (mat >= mat_none)
+      if (mat >= raw_mat_none)
         return "-";
         
       static constexpr std::array<std::string_view, 5> prefix_list { "", ".", ",", ":", ";" };
@@ -65,13 +69,13 @@ namespace t8
       return str_ret;
     }
     
-    uint8_t str_to_mat(std::string_view sv, int& pos)
+    uint8_t str_to_raw_mat(std::string_view sv, int& pos)
     {
       constexpr uint8_t span09 = 1 + (9 - 0);     // 10, 0-9
       constexpr uint8_t spanAZ = 1 + ('Z' - 'A'); // 26, A-Z, a-z
       constexpr uint8_t page_span = span09 + 2*spanAZ; // 62
       if (sv.length() <= static_cast<size_t>(pos))
-        return mat_none;
+        return raw_mat_none;
         
       //char ch_prefix = 0;
       char ch = sv[pos];
@@ -79,7 +83,7 @@ namespace t8
       if (ch == '-')
       {
         pos++;
-        return texture::mat_none;
+        return texture::raw_mat_none;
       }
       
       static constexpr std::array<char, 4> prefix_list { '.', ',', ':', ';' };
@@ -90,7 +94,7 @@ namespace t8
       if (0 <= idx_prefix)
       {
         if (sv.length() <= static_cast<size_t>(pos + 1))
-          return mat_none;
+          return raw_mat_none;
         //ch_prefix = sv[pos];
         ch = sv[pos + 1];
         dp = 2;
@@ -103,8 +107,8 @@ namespace t8
         {
           pos += dp;
           int mat = (ch - ch_start) + offset;
-          if (mat >= mat_none)
-            material = mat_none;
+          if (mat >= raw_mat_none)
+            material = raw_mat_none;
           else
             material = static_cast<uint8_t>(mat);
           return true;
@@ -112,7 +116,7 @@ namespace t8
         return false;
       };
       
-      uint8_t mat = mat_none;
+      uint8_t mat = raw_mat_none;
       if (f_check_range('0', '9', mat_page_offs, mat))
         return mat;
       if (f_check_range('A', 'Z', mat_page_offs + span09, mat))
@@ -120,7 +124,7 @@ namespace t8
       if (f_check_range('a', 'z', mat_page_offs + span09 + spanAZ, mat))
         return mat;
       
-      return mat_none;
+      return raw_mat_none;
     }
   }
 
@@ -130,7 +134,7 @@ namespace t8
     Glyph glyph = ' ';
     Color fg_color = Color16::Default;
     Color bg_color = Color16::Transparent2;
-    uint8_t mat = texture::mat_none;
+    uint8_t mat_raw = texture::raw_mat_none;
     
     Style get_style() const { return { fg_color, bg_color }; }
     void set_style(const Style& style)
@@ -139,14 +143,17 @@ namespace t8
       bg_color = style.bg_color;
     }
     
-    std::string mat_to_str() const { return texture::mat_to_str(mat); }
+    std::string raw_mat_to_str() const { return texture::raw_mat_to_str(mat_raw); }
+    
+    int decode_raw_mat() const { return texture::decode_raw_material(mat_raw); }
+    void encode_raw_mat(int mat) { mat_raw = texture::encode_raw_material(mat); }
     
     bool operator==(const Textel& other) const
     {
       return this->glyph == other.glyph
         && this->fg_color == other.fg_color
         && this->bg_color == other.bg_color
-        && this->mat == other.mat;
+        && this->mat_raw == other.mat_raw;
     }
   };
   
@@ -180,7 +187,7 @@ namespace t8
     std::vector<Glyph> glyphs;
     std::vector<Color> fg_colors;
     std::vector<Color> bg_colors;
-    std::vector<uint8_t> materials;
+    std::vector<uint8_t> materials_raw;
     
     Texture() = default;
     Texture(const RC& tex_size)
@@ -189,7 +196,7 @@ namespace t8
       , glyphs(area, ' ')
       , fg_colors(area, Color16::Default)
       , bg_colors(area, Color16::Transparent2)
-      , materials(area, texture::mat_none)
+      , materials_raw(area, texture::raw_mat_none)
     {}
     Texture(int tex_rows, int tex_cols)
       : size({ tex_rows, tex_cols })
@@ -197,7 +204,7 @@ namespace t8
       , glyphs(area, ' ')
       , fg_colors(area, Color16::Default)
       , bg_colors(area, Color16::Transparent2)
-      , materials(area, texture::mat_none)
+      , materials_raw(area, texture::raw_mat_none)
     {}
     Texture(const Texture& other)
       : size(other.size)
@@ -205,12 +212,12 @@ namespace t8
       , glyphs(other.glyphs)
       , fg_colors(other.fg_colors)
       , bg_colors(other.bg_colors)
-      , materials(other.materials)
+      , materials_raw(other.materials_raw)
     {}
     
-    void init_materials(uint8_t mat)
+    void init_raw_materials(uint8_t raw_mat)
     {
-      stlutils::memset(materials, mat);
+      stlutils::memset(materials_raw, raw_mat);
     }
     
     inline int index(int r, int c) const noexcept
@@ -227,7 +234,7 @@ namespace t8
       tex.glyph = glyphs[idx];
       tex.fg_color = fg_colors[idx];
       tex.bg_color = bg_colors[idx];
-      tex.mat = materials[idx];
+      tex.mat_raw = materials_raw[idx];
       return tex;
     }
     
@@ -244,7 +251,7 @@ namespace t8
       glyphs[idx] = textel.glyph;
       fg_colors[idx] = textel.fg_color;
       bg_colors[idx] = textel.bg_color;
-      materials[idx] = textel.mat;
+      materials_raw[idx] = textel.mat_raw;
     }
     
     void set_textel(const RC& pos, const Textel& textel)
@@ -300,11 +307,11 @@ namespace t8
       set_textel_bg_color(pos.r, pos.c, bg_color);
     }
     
-    void set_textel_material_raw(int r, int c, uint8_t mat)
+    void set_textel_material_raw(int r, int c, uint8_t mat_raw)
     {
       if (!check_range(r, c))
         return;
-      materials[index(r, c)] = mat;
+      materials_raw[index(r, c)] = mat_raw;
     }
     
     void set_textel_material_raw(const RC& pos, uint8_t mat)
@@ -315,8 +322,8 @@ namespace t8
     uint8_t get_textel_material_raw(int r, int c) const
     {
       if (!check_range(r, c))
-        return texture::mat_none;
-      return materials[index(r, c)];
+        return texture::raw_mat_none;
+      return materials_raw[index(r, c)];
     }
     
     uint8_t get_textel_material_raw(const RC& pos) const
@@ -326,7 +333,7 @@ namespace t8
     
     void set_textel_material(int r, int c, int mat)
     {
-      set_textel_material_raw(r,c, texture::encode_material(mat));
+      set_textel_material_raw(r,c, texture::encode_raw_material(mat));
     }
     
     void set_textel_material(const RC& pos, int mat)
@@ -336,7 +343,7 @@ namespace t8
     
     int get_textel_material(int r, int c) const
     {
-      return texture::decode_material(get_textel_material_raw(r, c));
+      return texture::decode_raw_material(get_textel_material_raw(r, c));
     }
     
     int get_textel_material(const RC& pos) const
@@ -452,7 +459,7 @@ namespace t8
           sub_texture.glyphs[idx_dst] = glyphs[idx_src];
           sub_texture.fg_colors[idx_dst] = fg_colors[idx_src];
           sub_texture.bg_colors[idx_dst] = bg_colors[idx_src];
-          sub_texture.materials[idx_dst] = materials[idx_src];
+          sub_texture.materials_raw[idx_dst] = materials_raw[idx_src];
         }
       }
       
@@ -468,7 +475,7 @@ namespace t8
       glyphs.clear();
       fg_colors.clear();
       bg_colors.clear();
-      materials.clear();
+      materials_raw.clear();
     }
     
     bool check_range_r(int r) const noexcept
@@ -508,8 +515,8 @@ namespace t8
     
     bool has_empty_materials() const
     {
-      for (auto mat : materials)
-        if (mat == texture::mat_none)
+      for (auto raw_mat : materials_raw)
+        if (raw_mat == texture::raw_mat_none)
           return true;
       return false;
     }
@@ -860,7 +867,7 @@ namespace t8
               glyphs.resize(area, ' ');
               fg_colors.resize(area, Color16::Default);
               bg_colors.resize(area, Color16::Transparent2);
-              materials.resize(area, texture::mat_none);
+              materials_raw.resize(area, texture::raw_mat_none);
             }
             r++;
           }
@@ -925,7 +932,7 @@ namespace t8
           {
             int l_idx = 0;
             for (int c = 0; c < size.c; ++c)
-              materials[index(r, c)] = texture::str_to_mat(l, l_idx);
+              materials_raw[index(r, c)] = texture::str_to_raw_mat(l, l_idx);
             r++;
           }
           else if (r > 0)
@@ -997,7 +1004,7 @@ namespace t8
       {
         std::string curr_line;
         for (int c = 0; c < size.c; ++c)
-          curr_line += texture::mat_to_str(materials[index(r, c)]);
+          curr_line += texture::raw_mat_to_str(materials_raw[index(r, c)]);
         lines.emplace_back(curr_line);
       }
       
@@ -1083,7 +1090,7 @@ namespace t8
         Glyph glyph;
         Color fg = Color16::Default;
         Color bg = Color16::Transparent2;
-        uint8_t mat = texture::mat_none;
+        uint8_t mat_raw = texture::raw_mat_none;
       };
       
       std::vector<std::vector<Cell>> rows;
@@ -1305,7 +1312,7 @@ namespace t8
               std::cerr << "ERROR in Texture::load_ansi() : Unable to create glyph object from ANSI file unicode bytes.\n";
             return false;
           }
-          cell.mat = texture::str_to_mat(mat_row, mat_pos);
+          cell.mat_raw = texture::str_to_raw_mat(mat_row, mat_pos);
           cell.fg = fg;
           cell.bg = bg;
           
@@ -1333,7 +1340,7 @@ namespace t8
       glyphs.assign(area, ' ');
       fg_colors.assign(area, Color16::Default);
       bg_colors.assign(area, Color16::Transparent2);
-      materials.assign(area, texture::mat_none);
+      materials_raw.assign(area, texture::raw_mat_none);
       
       for (int r = 0; r < num_rows; ++r)
       {
@@ -1344,7 +1351,7 @@ namespace t8
           glyphs[idx] = rows[r][c].glyph;
           fg_colors[idx] = rows[r][c].fg;
           bg_colors[idx] = rows[r][c].bg;
-          materials[idx] = rows[r][c].mat;
+          materials_raw[idx] = rows[r][c].mat_raw;
         }
       }
       
@@ -1429,7 +1436,7 @@ namespace t8
           }
           
           fb_line.push_back(g.fallback);
-          mat_line += texture::mat_to_str(materials[idx]);
+          mat_line += texture::raw_mat_to_str(materials_raw[idx]);
         }
         
         line += "\033[0m";
