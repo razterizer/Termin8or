@@ -292,6 +292,86 @@ namespace t8x
     
     virtual ~GameEngine() = default;
     
+    int run()
+    {
+      if (exit_requested)
+        return requested_exit_code;
+        
+      init();
+      
+      generate_data();
+      
+      if (exit_requested)
+      {
+        pre_quit(); // Finishes what init() started.
+        return requested_exit_code;
+      }
+      
+      // RT-Loop
+      t8::clear_screen();
+      on_enter_game_loop();
+      auto update_func = std::bind(&GameEngine::engine_update, this);
+      Delay::update_loop(real_fps, update_func);
+      pre_quit(); // Finishes what init() started.
+      on_exit_game_loop();
+      
+      return requested_exit_code;
+    }
+    
+    float get_real_fps() const { return real_fps; }
+    void set_real_fps(float fps_val)
+    {
+      if (keyboard != nullptr)
+        keyboard->set_held_buffer_size_from_fps(fps_val);
+      anim_ctr_data[0].anim_count_per_frame_count = math::roundI(fps_val / 5);
+      real_fps = fps_val;
+    }
+    int get_sim_delay_us() const { return sim_delay; }
+    // Used for dynamics and stuff.
+    void set_sim_delay_us(float delay_us)
+    {
+      sim_delay = math::roundI(delay_us);
+      sim_dt_s = static_cast<float>(sim_delay) / 1e6f;
+    }
+    
+    void set_state_game_over() { show_game_over = true; }
+    void set_state_you_won() { show_you_won = true; }
+    
+    void request_exit(int exit_code = EXIT_SUCCESS)
+    {
+      exit_requested = true;
+      requested_exit_code = exit_code;
+    }
+    
+    void set_screen_bg_color_default(Color bg_color) { m_params.screen_bg_color_default = bg_color; }
+    void set_screen_empty_fg_color(Color fg_color) { m_params.empty_fg_color = fg_color; }
+    
+  private:
+    // Finishes what init() started.
+    void pre_quit()
+    {
+      float dur_s = 0.f;
+      if (m_params.enable_benchmark)
+        dur_s = 1e-3f * benchmark::toc(tictoc_game_engine);
+    
+      t8::end_screen(sh);
+      
+      if (m_params.enable_terminal_window_resize)
+        if (term_win_rows > 0 && term_win_cols > 0)
+          t8::resize_terminal_window(term_win_rows, term_win_cols);
+          
+      if (m_params.enable_benchmark && 0.f < dur_s)
+      {
+        auto avg_fps = frame_ctr / dur_s;
+        std::cout << "Goal FPS = " << real_fps << std::endl;
+        std::cout << "Average FPS = " << avg_fps << std::endl;
+        std::cout << "# Full Redraws = " << sh.get_num_full_redraws() << std::endl;
+        std::cout << "# Partial Redraws = " << sh.get_num_partial_redraws() << std::endl;
+      }
+      
+      on_quit();
+    }
+    
     void init()
     {
       if (exit_requested)
@@ -329,74 +409,6 @@ namespace t8x
     }
     
     virtual void generate_data() = 0;
-    
-    int run()
-    {
-      if (exit_requested)
-        return requested_exit_code;
-      
-      // RT-Loop
-      t8::clear_screen();
-      on_enter_game_loop();
-      auto update_func = std::bind(&GameEngine::engine_update, this);
-      Delay::update_loop(real_fps, update_func);
-      on_exit_game_loop();
-      
-      return requested_exit_code;
-    }
-    
-    float get_real_fps() const { return real_fps; }
-    void set_real_fps(float fps_val)
-    {
-      if (keyboard != nullptr)
-        keyboard->set_held_buffer_size_from_fps(fps_val);
-      anim_ctr_data[0].anim_count_per_frame_count = math::roundI(fps_val / 5);
-      real_fps = fps_val;
-    }
-    int get_sim_delay_us() const { return sim_delay; }
-    // Used for dynamics and stuff.
-    void set_sim_delay_us(float delay_us)
-    {
-      sim_delay = math::roundI(delay_us);
-      sim_dt_s = static_cast<float>(sim_delay) / 1e6f;
-    }
-    
-    void set_state_game_over() { show_game_over = true; }
-    void set_state_you_won() { show_you_won = true; }
-    
-    void request_exit(int exit_code = EXIT_SUCCESS)
-    {
-      exit_requested = true;
-      requested_exit_code = exit_code;
-    }
-    
-    void set_screen_bg_color_default(Color bg_color) { m_params.screen_bg_color_default = bg_color; }
-    void set_screen_empty_fg_color(Color fg_color) { m_params.empty_fg_color = fg_color; }
-    
-  private:
-    void pre_quit()
-    {
-      float dur_s = 0.f;
-      if (m_params.enable_benchmark)
-        dur_s = 1e-3f * benchmark::toc(tictoc_game_engine);
-    
-      t8::end_screen(sh);
-      
-      if (m_params.enable_terminal_window_resize)
-        if (term_win_rows > 0 && term_win_cols > 0)
-          t8::resize_terminal_window(term_win_rows, term_win_cols);
-          
-      if (m_params.enable_benchmark && 0.f < dur_s)
-      {
-        auto avg_fps = frame_ctr / dur_s;
-        std::cout << "Goal FPS = " << real_fps << std::endl;
-        std::cout << "Average FPS = " << avg_fps << std::endl;
-        std::cout << "# Full Redraws = " << sh.get_num_full_redraws() << std::endl;
-        std::cout << "# Partial Redraws = " << sh.get_num_partial_redraws() << std::endl;
-      }
-      
-      on_quit();
-    }
     
     bool engine_update()
     {
@@ -437,10 +449,7 @@ namespace t8x
       }
       
       if (!m_params.enable_quit_confirm_screen && quit)
-      {
-        pre_quit();
         return false;
-      }
       else if (show_quit_confirm && !show_hiscores && !show_input_hiscore)
       {
         bg_color = m_params.screen_bg_color_quit_confirm.value_or(bg_color);
@@ -464,10 +473,7 @@ namespace t8x
         if (special_key == t8::SpecialKey::Enter)
         {
           if (quit_confirm_button == YesNoButtons::Yes)
-          {
-            pre_quit();
             return false;
-          }
           else
             show_quit_confirm = false;
         }
@@ -584,10 +590,7 @@ namespace t8x
                         m_params.hiscores_info_style);
           
           if (key == ' ' || quit)
-          {
-            pre_quit();
             return false;
-          }
         }
         else if (paused)
         {
@@ -638,7 +641,7 @@ namespace t8x
       }
       
       if (t8x::log_finished)
-        exit(EXIT_SUCCESS);
+        return false;
       
       return true;
     }
