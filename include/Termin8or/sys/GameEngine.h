@@ -203,6 +203,7 @@ namespace t8x
     std::unique_ptr<t8::StreamKeyboard> keyboard;
     
     bool exit_requested = false;
+    int requested_exit_code = EXIT_SUCCESS;
     
     unsigned int get_curr_rnd_seed() const { return curr_rnd_seed; }
     void set_curr_rnd_seed(unsigned int new_seed)
@@ -329,10 +330,10 @@ namespace t8x
     
     virtual void generate_data() = 0;
     
-    void run()
+    int run()
     {
       if (exit_requested)
-        return;
+        return requested_exit_code;
       
       // RT-Loop
       t8::clear_screen();
@@ -340,6 +341,8 @@ namespace t8x
       auto update_func = std::bind(&GameEngine::engine_update, this);
       Delay::update_loop(real_fps, update_func);
       on_exit_game_loop();
+      
+      return requested_exit_code;
     }
     
     float get_real_fps() const { return real_fps; }
@@ -361,7 +364,11 @@ namespace t8x
     void set_state_game_over() { show_game_over = true; }
     void set_state_you_won() { show_you_won = true; }
     
-    void request_exit() { exit_requested = true; }
+    void request_exit(int exit_code = EXIT_SUCCESS)
+    {
+      exit_requested = true;
+      requested_exit_code = exit_code;
+    }
     
     void set_screen_bg_color_default(Color bg_color) { m_params.screen_bg_color_default = bg_color; }
     void set_screen_empty_fg_color(Color fg_color) { m_params.empty_fg_color = fg_color; }
