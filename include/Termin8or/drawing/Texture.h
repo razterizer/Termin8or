@@ -1330,7 +1330,6 @@ namespace t8
           }
           else if (glyph_encoding == AnsiGlyphEncoding::CP437)
           {
-            unsigned char b = static_cast<unsigned char>(line[i]);
             auto cp = utf8::cp437_to_unicode(b);
             if (cp.has_value())
             {
