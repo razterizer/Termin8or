@@ -728,6 +728,43 @@ namespace t8
         
           // Special glyphs.
         case 0xFFFD: return '?'; // �
+        
+          // Low CP437 bytes.
+        case 0x263A: return '@'; // ☺ smiling face
+        case 0x263B: return '@'; // ☻ inverse smiling face
+        case 0x2665: return 'v'; // ♥ heart
+        case 0x2666: return '*'; // ♦ diamond
+        case 0x2663: return '&'; // ♣ club
+        case 0x2660: return '^'; // ♠ spade
+        //case 0x2022: return '*'; // • bullet
+        case 0x25D8: return 'o'; // ◘ inverse bullet
+        case 0x25CB: return 'o'; // ○ white circle
+        case 0x25D9: return 'o'; // ◙ inverse white circle
+        case 0x2642: return 'M'; // ♂ male sign
+        case 0x2640: return 'F'; // ♀ female sign
+        case 0x266A: return '~'; // ♪ eighth note
+        case 0x266B: return '~'; // ♫ beamed eighth notes
+        case 0x263C: return '*'; // ☼ white sun
+        
+        case 0x25BA: return '>'; // ► black right-pointing pointer
+        case 0x25C4: return '<'; // ◄ black left-pointing pointer
+        case 0x2195: return '|'; // ↕ up-down arrow
+        case 0x203C: return '!'; // ‼ double exclamation mark
+        case 0x00B6: return 'P'; // ¶ pilcrow sign
+        case 0x00A7: return 'S'; // § section sign
+        case 0x25AC: return '-'; // ▬ black rectangle
+        case 0x21A8: return '|'; // ↨ up-down arrow with base
+        case 0x2191: return '^'; // ↑ up arrow
+        case 0x2193: return 'v'; // ↓ down arrow
+        case 0x2192: return '>'; // → right arrow
+        case 0x2190: return '<'; // ← left arrow
+        case 0x221F: return 'L'; // ∟ right angle
+        case 0x2194: return '-'; // ↔ left-right arrow
+        case 0x25B2: return '^'; // ▲ black up-pointing triangle
+        case 0x25BC: return 'v'; // ▼ black down-pointing triangle
+        
+        case 0x2302: return 'H'; // ⌂ house
+
       }
       return Glyph::none;
     }
