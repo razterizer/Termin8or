@@ -771,11 +771,11 @@ namespace t8
     
     static bool create_glyph_from_ansi(char32_t ch32, char fb, Glyph& g, bool verbose = true)
     {
-      if (ch32 <= 0x7F)
+      if (term::is_printable_ascii(ch32))
         g = Glyph { ch32 };
       else
       {
-        if (fb != Glyph::none && static_cast<unsigned char>(fb) > 0x7F)
+        if (fb != Glyph::none && !term::is_printable_ascii(static_cast<unsigned char>(fb)))
         {
           if (verbose)
             std::cerr << "ERROR in Texture::create_glyph_from_ansi() : Encountered a malformed fallback char.\n";
