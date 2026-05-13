@@ -19,7 +19,7 @@ namespace t8x
   std::ifstream rep_file;
   bool log_finished = false;
   
-  void setup_logging(LogMode log_mode, const std::string& log_path, const std::string& xcode_log_path, const std::string& log_filename, unsigned int& curr_rnd_seed)
+  bool setup_logging(LogMode log_mode, const std::string& log_path, const std::string& xcode_log_path, const std::string& log_filename, unsigned int& curr_rnd_seed)
   {
     std::string log_filepath;
     const char* xcode_env = nullptr;
@@ -45,7 +45,7 @@ namespace t8x
         if (!rep_file.is_open())
         {
           std::cerr << "Error opening log file \"" + log_filepath + "\"!" << std::endl;
-          exit(EXIT_FAILURE);
+          return false;
         }
         std::string line;
         if (std::getline(rep_file, line))
@@ -57,9 +57,10 @@ namespace t8x
         //rep_file >> curr_rnd_seed;
         break;
     }
+    return true;
   }
   
-  void update_log_stream(LogMode log_mode, t8::KeyPressDataPair& kpdp, t8::StreamKeyboard* keyboard, const int frame_count)
+  bool update_log_stream(LogMode log_mode, t8::KeyPressDataPair& kpdp, t8::StreamKeyboard* keyboard, const int frame_count)
   {
     if (log_mode == LogMode::Replay)
     {
@@ -72,7 +73,7 @@ namespace t8x
         if (log_frame_count != frame_count)
         {
           std::cerr << "REPLAY ERROR : Expected frame number " << frame_count << " but received frame number " << log_frame_count << ". Exiting!" << std::endl;
-          exit(EXIT_FAILURE);
+          return false;
         }
         std::string log_key_transient = "";
         std::string log_key_held = "";
@@ -135,5 +136,6 @@ namespace t8x
         rec_file.flush();
       }
     }
+    return true;
   }
 }
