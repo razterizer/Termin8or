@@ -123,6 +123,11 @@ namespace t8
       disableRawMode();
     }
     
+    bool is_raw_mode_enabled() const
+    {
+      return raw_mode_enabled;
+    }
+    
     // Reads a key and returns either a SpecialKey or a regular character.
     KeyPressDataPair readKey()
     {
