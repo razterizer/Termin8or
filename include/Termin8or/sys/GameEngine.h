@@ -315,7 +315,7 @@ namespace t8x
         on_exit_game_loop();
       }
       
-      pre_quit(); // Finishes what init() started.
+      finish();
       return requested_exit_code;
     }
     
@@ -348,8 +348,7 @@ namespace t8x
     void set_screen_empty_fg_color(Color fg_color) { m_params.empty_fg_color = fg_color; }
     
   private:
-    // Finishes what init() started.
-    void pre_quit()
+    void finish()
     {
       float dur_s = 0.f;
       if (m_params.enable_benchmark && initialized_benchmark)
