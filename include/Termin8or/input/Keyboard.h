@@ -184,29 +184,29 @@ namespace t8
     }
     
   private:
-    void disableRawMode()
+    bool disableRawMode()
     {
+      if (!raw_mode_enabled)
+        return true;
 #ifdef _WIN32
       // Restore the original console mode.
       if (!SetConsoleMode(hStdin, fdwSaveOldMode))
       {
         std::cerr << "Error in SetConsoleMode()!" << std::endl;
-        exit(EXIT_FAILURE);
+        return false;
       }
 #else
-      if (raw_mode_enabled)
+      if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1)
       {
-        if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1)
-        {
-          std::cerr << "Error in tcsetattr()!" << std::endl;
-          exit(EXIT_FAILURE);
-        }
-        raw_mode_enabled = false;
+        std::cerr << "Error in tcsetattr()!" << std::endl;
+        return false;
       }
 #endif
+      raw_mode_enabled = false;
+      return true;
     }
 
-    void enableRawMode()
+    bool enableRawMode()
     {
 #ifdef _WIN32
       // Get the handle to the input buffer.
@@ -214,14 +214,14 @@ namespace t8
       if (hStdin == INVALID_HANDLE_VALUE)
       {
         std::cerr << "Error in GetStdHandle()!" << std::endl;
-        exit(EXIT_FAILURE);
+        return false;
       }
 
       // Save the current input mode.
       if (!GetConsoleMode(hStdin, &fdwSaveOldMode))
       {
         std::cerr << "Error in GetConsoleMode()!" << std::endl;
-        exit(EXIT_FAILURE);
+        return false;
       }
 
       // Modify the input mode to enable raw mode.
@@ -230,7 +230,7 @@ namespace t8
       if (!SetConsoleMode(hStdin, fdwMode))
       {
         std::cerr << "Error in SetConsoleMode()!" << std::endl;
-        exit(EXIT_FAILURE);
+        return false;
       }
       
       // Perform any additional configuration needed for raw mode in Windows.
@@ -240,13 +240,13 @@ namespace t8
       {
         std::cerr << "Warning: stdin is not a TTY. Raw mode disabled." << std::endl;
         raw_mode_enabled = false;
-        return;
+        return false;
       }
 
       if (tcgetattr(STDIN_FILENO, &orig_termios) == -1)
       {
         std::cerr << "Error in tcgetattr()!" << std::endl;
-        exit(EXIT_FAILURE);
+        return false;
       }
 
       struct termios raw = orig_termios;
@@ -259,11 +259,11 @@ namespace t8
       if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1)
       {
         std::cerr << "Error in tcsetattr()!" << std::endl;
-        exit(EXIT_FAILURE);
+        return false;
       }
-
-      raw_mode_enabled = true;
 #endif
+      raw_mode_enabled = true;
+      return true;
     }
     
     KeyPressData parseKey()
