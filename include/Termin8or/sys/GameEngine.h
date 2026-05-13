@@ -88,6 +88,11 @@ namespace t8x
   template<int NR = 30, int NC = 80, typename CharT = char>
   class GameEngine
   {
+    bool initialized_keyboard = false;
+    bool initialized_screen = false;
+    bool initialized_terminal_window_resize = false;
+    bool initialized_benchmark = false;
+  
     bool paused = false;
     bool show_title = true;
     bool show_instructions = false;
@@ -294,27 +299,23 @@ namespace t8x
     
     int run()
     {
-      if (exit_requested)
-        return requested_exit_code;
-        
-      init();
+      if (!exit_requested)
+        init();
       
-      generate_data();
+      if (!exit_requested)
+        generate_data();
       
-      if (exit_requested)
+      if (!exit_requested)
       {
-        pre_quit(); // Finishes what init() started.
-        return requested_exit_code;
+        // RT-Loop
+        t8::clear_screen();
+        on_enter_game_loop();
+        auto update_func = std::bind(&GameEngine::engine_update, this);
+        Delay::update_loop(real_fps, update_func);
+        on_exit_game_loop();
       }
       
-      // RT-Loop
-      t8::clear_screen();
-      on_enter_game_loop();
-      auto update_func = std::bind(&GameEngine::engine_update, this);
-      Delay::update_loop(real_fps, update_func);
       pre_quit(); // Finishes what init() started.
-      on_exit_game_loop();
-      
       return requested_exit_code;
     }
     
@@ -351,16 +352,20 @@ namespace t8x
     void pre_quit()
     {
       float dur_s = 0.f;
-      if (m_params.enable_benchmark)
+      if (m_params.enable_benchmark && initialized_benchmark)
         dur_s = 1e-3f * benchmark::toc(tictoc_game_engine);
-    
-      t8::end_screen(sh);
+        
+      if (initialized_keyboard)
+        keyboard.reset();
+
+      if (initialized_screen)
+        t8::end_screen(sh);
       
-      if (m_params.enable_terminal_window_resize)
+      if (m_params.enable_terminal_window_resize && initialized_terminal_window_resize)
         if (term_win_rows > 0 && term_win_cols > 0)
           t8::resize_terminal_window(term_win_rows, term_win_cols);
           
-      if (m_params.enable_benchmark && 0.f < dur_s)
+      if (m_params.enable_benchmark && initialized_benchmark && 0.f < dur_s)
       {
         auto avg_fps = frame_ctr / dur_s;
         std::cout << "Goal FPS = " << real_fps << std::endl;
@@ -380,10 +385,17 @@ namespace t8x
       if (!m_params.suppress_tty_input)
       {
         keyboard = std::make_unique<t8::StreamKeyboard>();
+        if (!keyboard->is_raw_mode_enabled())
+        {
+          request_exit(EXIT_FAILURE);
+          return;
+        }
         keyboard->set_held_buffer_size_from_fps(real_fps);
+        initialized_keyboard = true;
       }
       
       t8::begin_screen(sh);
+      initialized_screen = true;
       
       if (m_params.enable_terminal_window_resize)
       {
@@ -393,16 +405,24 @@ namespace t8x
         math::maximize(new_rows, NR + 1);
         math::maximize(new_cols, NC);
         t8::resize_terminal_window(new_rows, new_cols);
+        initialized_terminal_window_resize = true;
       }
       
       //nodelay(stdscr, TRUE);
       
       curr_rnd_seed = rnd::srand_time();
       
-      t8x::setup_logging(m_params.log_mode, get_exe_folder(), m_params.xcode_log_path, m_params.log_filename, curr_rnd_seed);
+      if (!t8x::setup_logging(m_params.log_mode, get_exe_folder(), m_params.xcode_log_path, m_params.log_filename, curr_rnd_seed))
+      {
+        request_exit(EXIT_FAILURE);
+        return;
+      }
       
       if (m_params.enable_benchmark)
+      {
         benchmark::tic(tictoc_game_engine);
+        initialized_benchmark = true;
+      }
       
       if (time_inited.once())
         real_start_time_s = std::chrono::steady_clock::now();
@@ -428,7 +448,11 @@ namespace t8x
         t8::return_cursor();
       sh.clear();
       
-      t8x::update_log_stream(m_params.log_mode, kpdp, keyboard.get(), get_frame_count());
+      if (!t8x::update_log_stream(m_params.log_mode, kpdp, keyboard.get(), get_frame_count()))
+      {
+        request_exit(EXIT_FAILURE);
+        return false;
+      }
       auto key = t8::get_char_key(kpdp.transient);
       auto lo_key = str::to_lower(key);
       auto quit = lo_key == 'q';
