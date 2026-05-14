@@ -14,6 +14,7 @@
 #include <Core/TextIO.h>
 #include <Core/FolderHelper.h>
 #include <Core/StringHelper.h>
+#include <fstream>
 #include <sstream>
 
 
@@ -834,6 +835,122 @@ namespace t8
       else
         lines[0].insert(0, bstr);
     }
+
+    static bool is_sauce_record_at(const std::string& bytes, size_t pos)
+    {
+      // SAUCE part is 128 bytes long:
+      //   [art data][optional 0x1A][SAUCE00 ... 121 bytes sauce data].
+      if (pos + 128 > bytes.size())
+        return false;
+      const std::string sauce_str = "SAUCE00";
+      if (bytes.compare(pos, sauce_str.length(), sauce_str) != 0) // 7 + 121 = 128.
+        return false;
+
+      // 0..6    ID = "SAUCE00"
+      // 7..41   Title
+      // 42..61  Author
+      // 62..81  Group
+      // 82..89  Date
+      // 90..93  FileSize
+      // 94      DataType [0, 8]
+      // 95      FileType
+      // 96..99  TInfo1/TInfo2
+      // ...
+      //
+      // Sanity check that DataType is in the range [0, 8] (usually 1 = Character).
+      // 0 = None
+      // 1 = Character
+      // 2 = Bitmap
+      // 3 = Vector
+      // 4 = Audio
+      // 5 = BinaryText
+      // 6 = XBin
+      // 7 = Archive
+      // 8 = Executable
+      const unsigned char data_type = static_cast<unsigned char>(bytes[pos + 94]);
+      return data_type <= 8;
+    }
+
+    static size_t find_inline_sauce_record_end(const std::string& bytes, size_t pos)
+    {
+      // Sauce record ends either at end of file or after 128 bytes.
+      //   If '\0' not found then return npos.
+      //   If '\0' found after the 128 bytes, then return npos as well.
+      const size_t search_end = std::min(bytes.size(), pos + 128);
+      if (bytes.find('\0', pos) >= search_end)
+        return std::string::npos;
+
+      // On Windows CRLF CRLF marks the end of the file.
+      const std::string CRLFCRLF = "\r\n\r\n";
+      auto end = bytes.find(CRLFCRLF, pos);
+      if (end != std::string::npos && end < search_end)
+        return end + CRLFCRLF.length();
+
+      // Standard POSIX file ending with extra LF.
+      const std::string LFLF = "\n\n";
+      end = bytes.find(LFLF, pos);
+      if (end != std::string::npos && end < search_end)
+        return end + LFLF.length();
+
+      return std::string::npos;
+    }
+
+    static void strip_sauce_records(std::string& bytes)
+    {
+      const std::string sauce_str = "SAUCE00";
+      for (size_t pos = bytes.find(sauce_str);
+           pos != std::string::npos;
+           pos = bytes.find(sauce_str, pos))
+      {
+        if (is_sauce_record_at(bytes, pos))
+          bytes.erase(pos, 128);
+        else if (auto end = find_inline_sauce_record_end(bytes, pos);
+                 end != std::string::npos)
+          bytes.erase(pos, end - pos);
+        else
+          pos += sauce_str.length();
+      }
+    }
+
+    static bool read_ansi_file(const std::string& file_path,
+                               std::vector<std::string>& lines,
+                               int verbosity = 3)
+    {
+      std::ifstream file(file_path, std::ios::binary);
+      if (!file.is_open())
+      {
+        if (verbosity >= 1)
+          std::cerr << "Error: Unable to open file \"" << file_path << "\"!" << std::endl;
+        return false;
+      }
+
+      std::string bytes((std::istreambuf_iterator<char>(file)),
+                         std::istreambuf_iterator<char>());
+      if (bytes.empty())
+      {
+        if (verbosity >= 2)
+          std::cout << "Error: End of file reached." << std::endl;
+        return false;
+      }
+
+      strip_sauce_records(bytes);
+
+      lines.clear();
+      size_t line_start = 0;
+      for (size_t i = 0; i < bytes.size(); ++i)
+      {
+        if (bytes[i] == '\n')
+        {
+          lines.emplace_back(bytes.substr(line_start, i - line_start));
+          line_start = i + 1; // The +1 filters out '\n'.
+        }
+      }
+      // If '\n' not found then add the remaining bytes.
+      if (line_start < bytes.size())
+        lines.emplace_back(bytes.substr(line_start));
+
+      return true;
+    }
   
     // File format:
     // size, chars, fg-colors, bg-colors, materials.
@@ -1055,7 +1172,7 @@ namespace t8
                    Color ansi_default_bg = Color16::Transparent2)
     {
       std::vector<std::string> lines;
-      bool ret = TextIO::read_file(file_path, lines);
+      bool ret = read_ansi_file(file_path, lines);
       if (!ret)
         return false;
       
