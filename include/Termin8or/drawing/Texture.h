@@ -549,10 +549,15 @@ namespace t8
       return str::to_lower(folder::split_filename_ext(file_path).second);
     }
     
+    static bool is_ext_ansi_cp437(const std::string& ext)
+    {
+      return ext == "ans" || ext == "ansi" || ext == "txt" || ext == "diz";
+    }
+    
     static TextureFileFormat deduce_file_format(const std::string& file_path)
     {
       auto ext = get_file_ext(file_path);
-      if (ext == "ans" || ext == "ansi" || ext == "utf8ans" || ext == "txt")
+      if (is_ext_ansi_cp437(ext) || ext == "utf8ans")
         return TextureFileFormat::Ansi;
       if (ext == "tx")
         return TextureFileFormat::Tx;
@@ -1248,7 +1253,7 @@ namespace t8
       }
       else if (glyph_encoding == AnsiGlyphEncoding::UTF8 && !utf8_bom)
       {
-        if (verbose && (ext == "ans" || ext == "ansi" || ext == "txt"))
+        if (verbose && is_ext_ansi_cp437(ext))
           std::cerr << "WARNING in Texture::load_ansi() : Attempting to load an ANSI file in UTF-8 encoding without UTF-8 BOM!\n";
       }
       else if (glyph_encoding == AnsiGlyphEncoding::CP437 && !utf8_bom)
@@ -1582,7 +1587,7 @@ namespace t8
             ansi_glyph_encoding = AnsiGlyphEncoding::CP437;
           break;
         case AnsiGlyphEncoding::UTF8:
-          if (ext == "ans" || ext == "ansi" || ext == "txt")
+          if (is_ext_ansi_cp437(ext))
             add_utf8_bom(lines);
           break;
         case AnsiGlyphEncoding::CP437:
