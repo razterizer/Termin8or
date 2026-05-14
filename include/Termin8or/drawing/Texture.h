@@ -871,6 +871,46 @@ namespace t8
       return data_type <= 8;
     }
 
+    static uint16_t read_sauce_le_uint16(const std::string& bytes, size_t pos)
+    {
+      const auto lo = static_cast<unsigned char>(bytes[pos]);
+      const auto hi = static_cast<unsigned char>(bytes[pos + 1]);
+      return static_cast<uint16_t>(lo | (hi << 8));
+    }
+
+    static bool read_sauce_ansi_size(const std::string& bytes, size_t pos, RC& size)
+    {
+      if (!is_sauce_record_at(bytes, pos))
+        return false;
+
+      // SAUCE character files store width/height in TInfo1/TInfo2.
+      const unsigned char data_type = static_cast<unsigned char>(bytes[pos + 94]);
+      if (data_type != 1)
+        return false;
+
+      const int cols = read_sauce_le_uint16(bytes, pos + 96);
+      const int rows = read_sauce_le_uint16(bytes, pos + 98);
+      if (cols <= 0 && rows <= 0)
+        return false;
+
+      size = { rows, cols };
+      return true;
+    }
+
+    static bool find_sauce_ansi_size(const std::string& bytes, RC& size)
+    {
+      const std::string sauce_str = "SAUCE00";
+      bool found = false;
+      for (size_t pos = bytes.find(sauce_str);
+           pos != std::string::npos;
+           pos = bytes.find(sauce_str, pos + sauce_str.length()))
+      {
+        if (read_sauce_ansi_size(bytes, pos, size))
+          found = true;
+      }
+      return found;
+    }
+
     static size_t find_inline_sauce_record_end(const std::string& bytes, size_t pos)
     {
       // Sauce record ends either at end of file or after 128 bytes.
@@ -914,6 +954,7 @@ namespace t8
 
     static bool read_ansi_file(const std::string& file_path,
                                std::vector<std::string>& lines,
+                               RC* sauce_size = nullptr,
                                int verbosity = 3)
     {
       std::ifstream file(file_path, std::ios::binary);
@@ -932,6 +973,9 @@ namespace t8
           std::cout << "Error: End of file reached." << std::endl;
         return false;
       }
+
+      if (sauce_size != nullptr)
+        find_sauce_ansi_size(bytes, *sauce_size);
 
       strip_sauce_records(bytes);
 
@@ -1172,7 +1216,8 @@ namespace t8
                    Color ansi_default_bg = Color16::Transparent2)
     {
       std::vector<std::string> lines;
-      bool ret = read_ansi_file(file_path, lines);
+      RC sauce_size;
+      bool ret = read_ansi_file(file_path, lines, &sauce_size);
       if (!ret)
         return false;
       
@@ -1252,9 +1297,10 @@ namespace t8
       Color fg = ansi_default_fg;
       Color bg = ansi_default_bg;
       constexpr int ansi_terminal_width = 80;
+      const int ansi_wrap_width = sauce_size.c > 0 ? sauce_size.c : ansi_terminal_width;
       const auto num_long_lines = static_cast<int>(stlutils::count_if(lines,
-        [](const auto& line) { return ansi_terminal_width < str::lenI(line); }));
-      const bool ansi_auto_wrap = num_long_lines == 1 && stlutils::sizeI(lines) <= 2;
+        [ansi_wrap_width](const auto& line) { return ansi_wrap_width < str::lenI(line); }));
+      const bool ansi_auto_wrap = sauce_size.c > 0 || (num_long_lines == 1 && stlutils::sizeI(lines) <= 2);
       
       auto f_make_blank_cell = [&]()
       {
@@ -1286,11 +1332,11 @@ namespace t8
         if (!ansi_auto_wrap)
           return;
         
-        if (cursor_c < ansi_terminal_width)
+        if (cursor_c < ansi_wrap_width)
           return;
         
-        cursor_r += cursor_c / ansi_terminal_width;
-        cursor_c = cursor_c % ansi_terminal_width;
+        cursor_r += cursor_c / ansi_wrap_width;
+        cursor_c = cursor_c % ansi_wrap_width;
       };
       
       int input_r = 0;
