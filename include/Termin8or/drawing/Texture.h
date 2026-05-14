@@ -10,12 +10,6 @@
 #include "../geom/Rectangle.h"
 #include "../screen/Color.h"
 #include "../screen/Styles.h"
-#include "../screen/Ansi.h"
-#include <Core/TextIO.h>
-#include <Core/FolderHelper.h>
-#include <Core/StringHelper.h>
-#include <fstream>
-#include <sstream>
 
 
 namespace t8

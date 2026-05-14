@@ -8,6 +8,7 @@
 #pragma once
 #include "../Texture.h"
 #include <Core/TextIO.h>
+#include <Core/StringHelper.h>
 
 
 namespace t8

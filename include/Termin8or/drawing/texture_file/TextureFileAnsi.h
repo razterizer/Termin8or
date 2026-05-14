@@ -9,7 +9,12 @@
 #pragma once
 #include "TextureFileCommon.h"
 #include "../Texture.h"
+#include "../../screen/Ansi.h"
 #include <Core/TextIO.h>
+#include <Core/StringHelper.h>
+#include <Core/FolderHelper.h>
+#include <fstream>
+#include <sstream>
 
 
 namespace t8
