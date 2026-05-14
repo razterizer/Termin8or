@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		070041C72FB5FD060099D5E4 /* TextureFileTx.h in Headers */ = {isa = PBXBuildFile; fileRef = 070041C62FB5FD000099D5E4 /* TextureFileTx.h */; };
+		070041C92FB5FECF0099D5E4 /* TextureFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 070041C82FB5FECA0099D5E4 /* TextureFile.h */; };
+		070041CC2FB603030099D5E4 /* TextureFileAnsi.h in Headers */ = {isa = PBXBuildFile; fileRef = 070041CB2FB602FB0099D5E4 /* TextureFileAnsi.h */; };
+		070041D02FB603880099D5E4 /* TextureFileCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 070041CF2FB603820099D5E4 /* TextureFileCommon.h */; };
 		07233B4F2EDBA7220022B60B /* RGBA.h in Headers */ = {isa = PBXBuildFile; fileRef = 07233B4E2EDBA71C0022B60B /* RGBA.h */; };
 		0774FE152F0EB17900B4D4FC /* Glyph.h in Headers */ = {isa = PBXBuildFile; fileRef = 0774FE142F0EB17400B4D4FC /* Glyph.h */; };
 		0774FE1D2F1E1CB000B4D4FC /* TermHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 0774FE1C2F1E1CA800B4D4FC /* TermHelper.h */; };
@@ -56,6 +60,10 @@
 		070041C22FB0CA000099D5E4 /* TextBox.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextBox.h; sourceTree = "<group>"; };
 		070041C32FB0CB280099D5E4 /* Dialog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Dialog.h; sourceTree = "<group>"; };
 		070041C42FB0CC730099D5E4 /* TextBoxDebug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextBoxDebug.h; sourceTree = "<group>"; };
+		070041C62FB5FD000099D5E4 /* TextureFileTx.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextureFileTx.h; sourceTree = "<group>"; };
+		070041C82FB5FECA0099D5E4 /* TextureFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextureFile.h; sourceTree = "<group>"; };
+		070041CB2FB602FB0099D5E4 /* TextureFileAnsi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextureFileAnsi.h; sourceTree = "<group>"; };
+		070041CF2FB603820099D5E4 /* TextureFileCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextureFileCommon.h; sourceTree = "<group>"; };
 		071CC3CA290465B3007B4B98 /* libTermin8or.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libTermin8or.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		07233B4D2ED6A56F0022B60B /* ScreenScaling_examples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenScaling_examples.h; sourceTree = "<group>"; };
 		07233B4E2EDBA71C0022B60B /* RGBA.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGBA.h; sourceTree = "<group>"; };
@@ -154,6 +162,16 @@
 			path = widget;
 			sourceTree = "<group>";
 		};
+		070041CA2FB5FEE80099D5E4 /* texture_file */ = {
+			isa = PBXGroup;
+			children = (
+				070041CF2FB603820099D5E4 /* TextureFileCommon.h */,
+				070041CB2FB602FB0099D5E4 /* TextureFileAnsi.h */,
+				070041C62FB5FD000099D5E4 /* TextureFileTx.h */,
+			);
+			path = texture_file;
+			sourceTree = "<group>";
+		};
 		071CC3C1290465B3007B4B98 = {
 			isa = PBXGroup;
 			children = (
@@ -249,6 +267,8 @@
 				07BDBA852E741BEF002ACC96 /* LineData.h */,
 				07BDBA862E741BEF002ACC96 /* Pixel.h */,
 				07BDBA872E741BEF002ACC96 /* Texture.h */,
+				070041C82FB5FECA0099D5E4 /* TextureFile.h */,
+				070041CA2FB5FEE80099D5E4 /* texture_file */,
 			);
 			name = drawing;
 			path = include/Termin8or/drawing;
@@ -391,6 +411,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				070041C92FB5FECF0099D5E4 /* TextureFile.h in Headers */,
 				07BDBA802E741BC1002ACC96 /* Keyboard.h in Headers */,
 				0774FE152F0EB17900B4D4FC /* Glyph.h in Headers */,
 				07BDBA812E741BC1002ACC96 /* KeyboardEnums.h in Headers */,
@@ -403,6 +424,7 @@
 				07BDBA6D2E741B05002ACC96 /* ScreenUtils.h in Headers */,
 				07BDBA6E2E741B05002ACC96 /* ScreenCommands.h in Headers */,
 				07BDBA6F2E741B05002ACC96 /* Text.h in Headers */,
+				070041CC2FB603030099D5E4 /* TextureFileAnsi.h in Headers */,
 				07BDBA702E741B05002ACC96 /* ScreenHandler.h in Headers */,
 				07FE32A82F6E20B4009336E1 /* StyledString.h in Headers */,
 				07BDBAAD2E741CE6002ACC96 /* ParticleSystem.h in Headers */,
@@ -416,10 +438,12 @@
 				07BDBA712E741B05002ACC96 /* ScreenCommandsBasic.h in Headers */,
 				07BDBA722E741B05002ACC96 /* ScreenScaling.h in Headers */,
 				07BDBAA62E741CB6002ACC96 /* SpriteHandler.h in Headers */,
+				070041D02FB603880099D5E4 /* TextureFileCommon.h in Headers */,
 				07BDBA892E741BEF002ACC96 /* Gradient.h in Headers */,
 				0774FE1F2F27523C00B4D4FC /* GlyphString.h in Headers */,
 				0774FE1D2F1E1CB000B4D4FC /* TermHelper.h in Headers */,
 				07BDBA8A2E741BEF002ACC96 /* Texture.h in Headers */,
+				070041C72FB5FD060099D5E4 /* TextureFileTx.h in Headers */,
 				07BDBA8B2E741BEF002ACC96 /* Pixel.h in Headers */,
 				07BDBA8C2E741BEF002ACC96 /* LineData.h in Headers */,
 				07BDBA8D2E741BEF002ACC96 /* Drawing.h in Headers */,
