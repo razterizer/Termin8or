@@ -10,6 +10,7 @@
 #include "screen/ScreenScaling.h"
 #include "screen/ScreenUtils.h"
 #include "drawing/Drawing.h"
+#include "drawing/TextureFile.h"
 
 
 namespace screen_scaling
@@ -31,7 +32,7 @@ namespace screen_scaling
     // //////////////////////////////
     
     t8::Texture texture;
-    texture.load("background.tx");
+    t8::TextureFile::load(texture, "background.tx");
     
     // ///////////////////////////////////////////////////////////
     //                        LET's GO !                        //

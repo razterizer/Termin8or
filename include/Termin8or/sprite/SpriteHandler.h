@@ -7,7 +7,7 @@
 
 #pragma once
 #include "../screen/ScreenHandler.h"
-#include "../drawing/Texture.h"
+#include "../drawing/TextureFile.h"
 #include "../drawing/Drawing.h"
 #include "../geom/AABB.h"
 #include <Core/Vec2.h>
@@ -209,7 +209,7 @@ namespace t8x
         return false;
       }
       texture->clear();
-      if (!texture->load(file_path, format, verbose))
+      if (!t8::TextureFile::load(*texture, file_path, format, verbose))
         return false;
       if (texture->size != size)
       {
@@ -231,7 +231,7 @@ namespace t8x
         std::cerr << "ERROR in BitmapSprite::save_frame() : Unable to save frame: " << anim_frame << "." << std::endl;
         return false;
       }
-      return texture->save(file_path, format, verbose, encoding_mode);
+      return t8::TextureFile::save(*texture, file_path, format, verbose, encoding_mode);
     }
     
     virtual void clone_frame(int anim_frame, int from_anim_frame) override

@@ -9,6 +9,7 @@
 #include "screen/ScreenCommands.h"
 #include "screen/ScreenUtils.h"
 #include "drawing/Drawing.h"
+#include "drawing/TextureFile.h"
 
 
 namespace texture
@@ -28,7 +29,7 @@ namespace texture
     // //////////////////////////////
     
     t8::Texture texture;
-    texture.load("colors.tx");
+    t8::TextureFile::load(texture, "colors.tx");
     
     // ///////////////////////////////////////////////////////////
     //                        LET's GO !                        //
@@ -59,4 +60,3 @@ quit:
   }
 
 }
-
