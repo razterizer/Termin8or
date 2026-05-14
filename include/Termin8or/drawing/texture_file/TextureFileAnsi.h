@@ -26,6 +26,11 @@ namespace t8
     UTF8,
     CP437,
   };
+  
+  inline bool is_ext_ansi_cp437(const std::string& ext)
+  {
+    return ext == "ans" || ext == "ansi" || ext == "txt" || ext == "diz";
+  }
 
   class TextureFileAnsi
   {
