@@ -14,6 +14,7 @@
 #include <Core/Rand.h>
 #include <Core/MathUtils.h>
 #include <Core/FolderHelper.h>
+#include <Core/TextIO.h>
 #include <Core/OneShot.h>
 #include <Core/Benchmark.h>
 #include <chrono>
