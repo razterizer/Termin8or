@@ -1305,7 +1305,39 @@ namespace t8
       const int ansi_wrap_width = sauce_size.c > 0 ? sauce_size.c : ansi_terminal_width;
       const auto num_long_lines = static_cast<int>(stlutils::count_if(lines,
         [ansi_wrap_width](const auto& line) { return ansi_wrap_width < str::lenI(line); }));
-      const bool ansi_auto_wrap = sauce_size.c > 0 || (num_long_lines == 1 && stlutils::sizeI(lines) <= 2);
+
+      // Some old ANSI files split a logical 80-column stream over several
+      //   physical file lines by saving the cursor before CRLF and restoring it
+      //   at the start of the next line. That only renders correctly with wrap.
+      const auto f_has_save_restore_continuation = [&]()
+      {
+        auto f_has_cursor_save_restore_at = [](const std::string& line, int pos, char command)
+        {
+          char parsed_command = '\0';
+          return ansi::parse_ansi_cursor_save_restore(line, pos, parsed_command)
+            && parsed_command == command;
+        };
+        
+        for (int i = 0; i + 1 < stlutils::sizeI(lines); ++i)
+        {
+          const auto& line = lines[i];
+          const auto& next_line = lines[i + 1];
+          
+          // Only treat save as continuation syntax when it is the final code
+          //   on the physical line; saves in the middle are normal cursor state.
+          const int save_pos = line.size() >= 3 ? stlutils::sizeI(line) - 3 : 0;
+          const bool line_ends_with_save = f_has_cursor_save_restore_at(line, save_pos, 's')
+            && save_pos + 3 == stlutils::sizeI(line);
+          const bool next_line_starts_with_restore = f_has_cursor_save_restore_at(next_line, 0, 'u');
+
+          if (line_ends_with_save && next_line_starts_with_restore)
+            return true;
+        }
+        return false;
+      }();
+      const bool ansi_auto_wrap = sauce_size.c > 0
+        || f_has_save_restore_continuation
+        || (num_long_lines == 1 && stlutils::sizeI(lines) <= 2);
       
       auto f_make_blank_cell = [&]()
       {
