@@ -119,7 +119,7 @@ namespace t8
                   tex.ver = ver_parsed;
                 else
                 {
-                  std::cerr << "ERROR in Texture::load_tx() : Incompatible texture version: version = " + tokens[1] << '\n';
+                  std::cerr << "ERROR in TextureFileAnsi::load_tx() : Incompatible texture version: version = " + tokens[1] << '\n';
                   return false;
                 }
               }
@@ -145,7 +145,7 @@ namespace t8
           }
           else if (r > 2)
           {
-            std::cerr << "ERROR in Texture::load_tx() : Incorrect number of header lines.\n";
+            std::cerr << "ERROR in TextureFileAnsi::load_tx() : Incorrect number of header lines.\n";
           }
         }
         else if (section == 1)
