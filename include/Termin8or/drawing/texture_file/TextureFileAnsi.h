@@ -415,7 +415,7 @@ namespace t8
         if (fb != Glyph::none && !term::is_printable_ascii(static_cast<unsigned char>(fb)))
         {
           if (verbose)
-            std::cerr << "ERROR in Texture::create_glyph_from_ansi() : Encountered a malformed fallback char.\n";
+            std::cerr << "ERROR in TextureFileAnsi::create_glyph_from_ansi() : Encountered a malformed fallback char.\n";
           return false;
         }
         char fallback = fb != Glyph::none ? fb : ansi_fallback_for_unicode(ch32);
@@ -423,7 +423,7 @@ namespace t8
         {
           if (verbose)
           {
-            std::cerr << "ERROR in Texture::create_glyph_from_ansi() : Missing fallback for Unicode glyph: U+"
+            std::cerr << "ERROR in TextureFileAnsi::create_glyph_from_ansi() : Missing fallback for Unicode glyph: U+"
                       << std::hex << std::uppercase << static_cast<uint32_t>(ch32)
                       << std::dec << std::nouppercase << ".\n";
           }
@@ -444,7 +444,7 @@ namespace t8
       if (!file.is_open())
       {
         if (verbosity >= 1)
-          std::cerr << "Error: Unable to open file \"" << file_path << "\"!" << std::endl;
+          std::cerr << "ERROR in TextureFileAnsi::read_ansi_file() : Unable to open file \"" << file_path << "\"!" << std::endl;
         return false;
       }
 
@@ -453,7 +453,7 @@ namespace t8
       if (bytes.empty())
       {
         if (verbosity >= 2)
-          std::cout << "Error: End of file reached." << std::endl;
+          std::cerr << "ERROR in TextureFileAnsi::read_ansi_file() : End of file reached." << std::endl;
         return false;
       }
 
@@ -522,7 +522,7 @@ namespace t8
         if (glyph_encoding == AnsiLoadGlyphEncoding::Auto)
           glyph_encoding = AnsiLoadGlyphEncoding::UTF8;
         else if (glyph_encoding == AnsiLoadGlyphEncoding::CP437 && verbose)
-          std::cerr << "WARNING in Texture::load_ansi() : Attempting to load a UTF-8 encoded ANSI file with CP437 encoding!\n";
+          std::cerr << "WARNING in TextureFileAnsi::load_ansi() : Attempting to load a UTF-8 encoded ANSI file with CP437 encoding!\n";
       }
       
       if (glyph_encoding == AnsiLoadGlyphEncoding::Auto)
@@ -535,12 +535,12 @@ namespace t8
       else if (glyph_encoding == AnsiLoadGlyphEncoding::UTF8 && !utf8_bom)
       {
         if (verbose && is_ext_ansi_cp437(ext))
-          std::cerr << "WARNING in Texture::load_ansi() : Attempting to load an ANSI file in UTF-8 encoding without UTF-8 BOM!\n";
+          std::cerr << "WARNING in TextureFileAnsi::load_ansi() : Attempting to load an ANSI file in UTF-8 encoding without UTF-8 BOM!\n";
       }
       else if (glyph_encoding == AnsiLoadGlyphEncoding::CP437 && !utf8_bom)
       {
         if (verbose && ext == "utf8ans")
-          std::cerr << "WARNING in Texture::load_ansi() : Attempting to load a UTF-8 ANSI (*.utf8ans) file in CP437 encoding!\n";
+          std::cerr << "WARNING in TextureFileAnsi::load_ansi() : Attempting to load a UTF-8 ANSI (*.utf8ans) file in CP437 encoding!\n";
       }
       
       // Normalizes DOS/Windows CRLF lines to plain content lines.
@@ -770,7 +770,7 @@ namespace t8
             
             if (verbose)
             {
-              std::cerr << "ERROR in Texture::load_ansi() : Unsupported ANSI escape sequence";
+              std::cerr << "ERROR in TextureFileAnsi::load_ansi() : Unsupported ANSI escape sequence";
               if (i + 1 < len_line && line[i + 1] == '[')
               {
                 std::cerr << ": \\033[";
@@ -829,7 +829,7 @@ namespace t8
           if (!create_glyph_from_ansi(ch32, fb, cell.glyph, verbose))
           {
             if (verbose)
-              std::cerr << "ERROR in Texture::load_ansi() : Unable to create glyph object from ANSI file unicode bytes.\n";
+              std::cerr << "ERROR in TextureFileAnsi::load_ansi() : Unable to create glyph object from ANSI file unicode bytes.\n";
             return false;
           }
           cell.mat_raw = texture::str_to_raw_mat(mat_row, mat_pos);
@@ -922,12 +922,12 @@ namespace t8
           {
             utf8_bom = true;
             if (!is_ext_ansi_cp437(ext) && verbose)
-              std::cerr << "WARNING in texture::save_ansi() : Attempting to save a UTF-8 ANSI file to a file with an unsupported extension!\n";
+              std::cerr << "WARNING in TextureFileAnsi::save_ansi() : Attempting to save a UTF-8 ANSI file to a file with an unsupported extension!\n";
           }
           break;
         case AnsiSaveGlyphEncoding::CP437:
           if (ext == "utf8ans" && verbose)
-            std::cerr << "WARNING in Texture::save_ansi() : Attempting to save a UTF-8 ANSI (*.utf8ans) file in CP437 encoding!\n";
+            std::cerr << "WARNING in TextureFileAnsi::save_ansi() : Attempting to save a UTF-8 ANSI (*.utf8ans) file in CP437 encoding!\n";
           break;
       }
       
@@ -981,7 +981,7 @@ namespace t8
             else
             {
               if (verbose)
-                std::cerr << "ERROR in Texture::save_ansi() : Unable to encode glyph " << g.str(true) << " in UTF-8 encoding!\n";
+                std::cerr << "ERROR in TextureFileAnsi::save_ansi() : Unable to encode glyph " << g.str(true) << " in UTF-8 encoding!\n";
               encoding_ok = false;
             }
           }
@@ -1001,7 +1001,7 @@ namespace t8
             else
             {
               if (verbose)
-                std::cerr << "ERROR in Texture::save_ansi() : Unable to encode glyph " << g.str(true) << " in CP437 encoding!\n";
+                std::cerr << "ERROR in TextureFileAnsi::save_ansi() : Unable to encode glyph " << g.str(true) << " in CP437 encoding!\n";
               encoding_ok = false;
             }
           }
