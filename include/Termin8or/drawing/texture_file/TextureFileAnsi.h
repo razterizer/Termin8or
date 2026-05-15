@@ -26,6 +26,14 @@ namespace t8
     UTF8,
     CP437,
   };
+
+  enum class AnsiSaveGlyphEncoding
+  {
+    AutoPreserveGlyphs,  // CP437 if lossless, else UTF8 + BOM. If *.utf8ans, always UTF8.
+    AutoPreferCP437,     // CP437, using fallback for non-CP437 glyphs. If *.utf8ans, always UTF8.
+    UTF8,                // Explicit UTF8. No BOM for *.utf8ans, otherwise BOM.
+    CP437,               // Explicit CP437. Errors if preferred CPs cannot be converted to CP437.
+  };
   
   inline bool is_ext_ansi_cp437(const std::string& ext)
   {
@@ -872,7 +880,7 @@ namespace t8
     
     static bool save_ansi(const Texture& tex, const std::string& file_path,
                           bool verbose = true,
-                          AnsiGlyphEncoding ansi_glyph_encoding = AnsiGlyphEncoding::Auto,
+                          AnsiSaveGlyphEncoding ansi_glyph_encoding = AnsiSaveGlyphEncoding::AutoPreserveGlyphs,
                           Color ansi_default_fg = Color16::Default,
                           Color ansi_default_bg = Color16::Transparent2)
     {
@@ -885,17 +893,29 @@ namespace t8
       // *.utf8ans: Auto->UTF8, UTF8:c, CP437:w
       switch (ansi_glyph_encoding)
       {
-        case AnsiGlyphEncoding::Auto:
+        case AnsiSaveGlyphEncoding::AutoPreserveGlyphs:
           if (ext == "utf8ans")
-            ansi_glyph_encoding = AnsiGlyphEncoding::UTF8;
-          else
-            ansi_glyph_encoding = AnsiGlyphEncoding::CP437;
+            ansi_glyph_encoding = AnsiSaveGlyphEncoding::UTF8;
+          else if (is_ext_ansi_cp437(ext))
+          {
+            if (has_non_cp437_convertible_glyphs_preferred(tex))
+            {
+              add_utf8_bom(lines);
+              ansi_glyph_encoding = AnsiSaveGlyphEncoding::UTF8;
+            }
+            else
+              ansi_glyph_encoding = AnsiSaveGlyphEncoding::CP437;
+          }
           break;
-        case AnsiGlyphEncoding::UTF8:
+        case AnsiSaveGlyphEncoding::AutoPreferCP437:
+          if (ext == "utf8ans")
+            ansi_glyph_encoding = AnsiSaveGlyphEncoding::UTF8;
+          break;
+        case AnsiSaveGlyphEncoding::UTF8:
           if (is_ext_ansi_cp437(ext))
             add_utf8_bom(lines);
           break;
-        case AnsiGlyphEncoding::CP437:
+        case AnsiSaveGlyphEncoding::CP437:
           if (ext == "utf8ans" && verbose)
             std::cerr << "WARNING in Texture::save_ansi() : Attempting to save a UTF-8 ANSI (*.utf8ans) file in CP437 encoding!\n";
           break;
@@ -930,9 +950,10 @@ namespace t8
           }
           
           const auto& g = tex.glyphs[idx];
-          if (ansi_glyph_encoding == AnsiGlyphEncoding::UTF8)
+          if (ansi_glyph_encoding == AnsiSaveGlyphEncoding::UTF8)
             line += g.encode_single_width_glyph<char32_t>();
-          else if (ansi_glyph_encoding == AnsiGlyphEncoding::CP437)
+          else if (ansi_glyph_encoding == AnsiSaveGlyphEncoding::CP437 ||
+                   ansi_glyph_encoding == AnsiSaveGlyphEncoding::AutoPreferCP437)
           {
             auto ch_pref = static_cast<char>(static_cast<unsigned char>(g.preferred));
             auto ch_fb = g.fallback;
@@ -941,7 +962,8 @@ namespace t8
               line.push_back(static_cast<char>(cp.value()));
             else if (!g.empty() && term::is_printable_ascii(ch_pref))
               line.push_back(ch_pref);
-            else if (!g.empty_fallback() && term::is_printable_ascii(ch_fb))
+            else if (!g.empty_fallback() && term::is_printable_ascii(ch_fb) &&
+                     ansi_glyph_encoding == AnsiSaveGlyphEncoding::AutoPreferCP437)
               line.push_back(ch_fb);
             else if (verbose)
               std::cerr << "ERROR in Texture::save_ansi() : Unable to encode glyph " << g.str(true) << " in CP437 encoding!\n";

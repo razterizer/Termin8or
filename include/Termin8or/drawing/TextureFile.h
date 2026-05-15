@@ -83,7 +83,7 @@ namespace t8
                      TextureFileFormat format = TextureFileFormat::Auto,
                      bool verbose = true,
                      TxGlyphEncoding encoding_mode = TxGlyphEncoding::AsciiOnly,
-                     AnsiGlyphEncoding ansi_glyph_encoding = AnsiGlyphEncoding::Auto,
+                     AnsiSaveGlyphEncoding ansi_glyph_encoding = AnsiSaveGlyphEncoding::AutoPreserveGlyphs,
                      Color ansi_default_fg = Color16::Default,
                      Color ansi_default_bg = Color16::Transparent2)
     {
