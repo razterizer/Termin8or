@@ -967,7 +967,18 @@ namespace t8
           
           const auto& g = tex.glyphs[idx];
           if (ansi_glyph_encoding == AnsiSaveGlyphEncoding::UTF8)
-            line += g.encode_single_width_glyph<char32_t>();
+          {
+            const bool valid_unicode = !g.empty()
+                                    && g.preferred <= 0x10FFFF
+                                    && !(0xD800 <= g.preferred && g.preferred <= 0xDFFF);
+            
+            if (valid_unicode)
+              line += utf8::encode_char32_utf8(g.preferred);
+            else if (!g.empty_fallback() && term::is_printable_ascii(g.fallback))
+              line.push_back(g.fallback);
+            else
+              line.push_back('?'); // or log/error, depending on policy.
+          }
           else if (ansi_glyph_encoding == AnsiSaveGlyphEncoding::CP437 ||
                    ansi_glyph_encoding == AnsiSaveGlyphEncoding::AutoPreferCP437)
           {
