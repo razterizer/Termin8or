@@ -471,6 +471,20 @@ namespace t8
       return true;
     }
     
+    static bool has_non_cp437_convertible_glyphs_preferred(const Texture& tex)
+    {
+      for (auto& g : tex.glyphs)
+      {
+        if (g.empty())
+          continue;
+        if (term::is_printable_ascii(g.preferred))
+          continue;
+        if (!utf8::unicode_to_cp437(g.preferred).has_value())
+          return true;
+      }
+      return false;
+    }
+    
   public:
     
     static bool load_ansi(Texture& tex, const std::string& file_path,
