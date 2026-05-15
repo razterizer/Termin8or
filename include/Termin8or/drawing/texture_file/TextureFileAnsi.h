@@ -485,8 +485,6 @@ namespace t8
       {
         if (g.empty())
           continue;
-        if (term::is_printable_ascii(g.preferred))
-          continue;
         if (!utf8::unicode_to_cp437(g.preferred).has_value())
           return true;
       }
@@ -988,13 +986,10 @@ namespace t8
           else if (ansi_glyph_encoding == AnsiSaveGlyphEncoding::CP437 ||
                    ansi_glyph_encoding == AnsiSaveGlyphEncoding::AutoPreferCP437)
           {
-            auto ch_pref = static_cast<char>(static_cast<unsigned char>(g.preferred));
             auto ch_fb = g.fallback;
             auto cp = utf8::unicode_to_cp437(g.preferred);
             if (cp.has_value())
               line.push_back(static_cast<char>(cp.value()));
-            else if (!g.empty() && term::is_printable_ascii(ch_pref))
-              line.push_back(ch_pref);
             else if (!g.empty_fallback() && term::is_printable_ascii(ch_fb) &&
                      ansi_glyph_encoding == AnsiSaveGlyphEncoding::AutoPreferCP437)
               line.push_back(ch_fb);
