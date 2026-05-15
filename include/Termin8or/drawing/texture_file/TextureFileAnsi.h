@@ -992,7 +992,7 @@ namespace t8
             else if (!g.empty_fallback() && term::is_printable_ascii(ch_fb) &&
                      ansi_glyph_encoding == AnsiSaveGlyphEncoding::AutoPreferCP437)
               line.push_back(ch_fb);
-            else if (verbose)
+            else
               std::cerr << "ERROR in Texture::save_ansi() : Unable to encode glyph " << g.str(true) << " in CP437 encoding!\n";
           }
           
