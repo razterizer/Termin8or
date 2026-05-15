@@ -907,6 +907,11 @@ namespace t8
             else
               ansi_glyph_encoding = AnsiSaveGlyphEncoding::CP437;
           }
+          else
+          {
+            std::cerr << "ERROR in TextureFileAnsi::save_ansi() : Unknown file extension. Unable to save Texture." << std::endl;
+            return false;
+          }
           break;
         case AnsiSaveGlyphEncoding::AutoPreferCP437:
           if (ext == "utf8ans")
