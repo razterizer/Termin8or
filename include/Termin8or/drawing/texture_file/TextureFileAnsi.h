@@ -919,7 +919,11 @@ namespace t8
           break;
         case AnsiSaveGlyphEncoding::UTF8:
           if (ext != "utf8ans")
+          {
             utf8_bom = true;
+            if (!is_ext_ansi_cp437(ext) && verbose)
+              std::cerr << "WARNING in texture::save_ansi() : Attempting to save a UTF-8 ANSI file to a file with an unsupported extension!\n";
+          }
           break;
         case AnsiSaveGlyphEncoding::CP437:
           if (ext == "utf8ans" && verbose)
