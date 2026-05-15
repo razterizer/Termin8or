@@ -43,7 +43,7 @@ namespace t8
     static bool load(Texture& tex, const std::string& file_path,
                      TextureFileFormat format = TextureFileFormat::Auto,
                      bool verbose = true,
-                     AnsiGlyphEncoding ansi_glyph_encoding = AnsiGlyphEncoding::Auto,
+                     AnsiLoadGlyphEncoding ansi_glyph_encoding = AnsiLoadGlyphEncoding::Auto,
                      Color ansi_default_fg = Color16::Default,
                      Color ansi_default_bg = Color16::Transparent2)
     {

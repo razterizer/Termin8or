@@ -20,7 +20,7 @@
 namespace t8
 {
 
-  enum class AnsiGlyphEncoding
+  enum class AnsiLoadGlyphEncoding
   {
     Auto,
     UTF8,
@@ -475,7 +475,7 @@ namespace t8
     
     static bool load_ansi(Texture& tex, const std::string& file_path,
                           bool verbose = true,
-                          AnsiGlyphEncoding glyph_encoding = AnsiGlyphEncoding::Auto,
+                          AnsiLoadGlyphEncoding glyph_encoding = AnsiLoadGlyphEncoding::Auto,
                           Color ansi_default_fg = Color16::Default,
                           Color ansi_default_bg = Color16::Transparent2)
     {
@@ -497,20 +497,20 @@ namespace t8
       {
         strip_utf8_bom(lines);
         
-        if (glyph_encoding == AnsiGlyphEncoding::Auto)
-          glyph_encoding = AnsiGlyphEncoding::UTF8;
-        else if (glyph_encoding == AnsiGlyphEncoding::CP437 && verbose)
+        if (glyph_encoding == AnsiLoadGlyphEncoding::Auto)
+          glyph_encoding = AnsiLoadGlyphEncoding::UTF8;
+        else if (glyph_encoding == AnsiLoadGlyphEncoding::CP437 && verbose)
           std::cerr << "WARNING in Texture::load_ansi() : Attempting to load a UTF-8 encoded ANSI file with CP437 encoding!\n";
       }
       
-      if (glyph_encoding == AnsiGlyphEncoding::Auto)
+      if (glyph_encoding == AnsiLoadGlyphEncoding::Auto)
       {
         if (ext == "utf8ans")
-          glyph_encoding = AnsiGlyphEncoding::UTF8;
+          glyph_encoding = AnsiLoadGlyphEncoding::UTF8;
         else // *.ans, *.ansi.
-          glyph_encoding = AnsiGlyphEncoding::CP437;
+          glyph_encoding = AnsiLoadGlyphEncoding::CP437;
       }
-      else if (glyph_encoding == AnsiGlyphEncoding::UTF8 && !utf8_bom)
+      else if (glyph_encoding == AnsiLoadGlyphEncoding::UTF8 && !utf8_bom)
       {
         if (verbose && is_ext_ansi_cp437(ext))
           std::cerr << "WARNING in Texture::load_ansi() : Attempting to load an ANSI file in UTF-8 encoding without UTF-8 BOM!\n";
