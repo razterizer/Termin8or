@@ -940,6 +940,8 @@ namespace t8
       Color curr_fg = ansi_default_fg;
       Color curr_bg = ansi_default_bg;
       
+      bool encoding_ok = true;
+      
       for (int r = 0; r < tex.size.r; ++r)
       {
         auto& line = lines.emplace_back();
@@ -977,7 +979,11 @@ namespace t8
             else if (!g.empty_fallback() && term::is_printable_ascii(g.fallback))
               line.push_back(g.fallback);
             else
-              line.push_back('?'); // or log/error, depending on policy.
+            {
+              if (verbose)
+                std::cerr << "ERROR in Texture::save_ansi() : Unable to encode glyph " << g.str(true) << " in UTF-8 encoding!\n";
+              encoding_ok = false;
+            }
           }
           else if (ansi_glyph_encoding == AnsiSaveGlyphEncoding::CP437 ||
                    ansi_glyph_encoding == AnsiSaveGlyphEncoding::AutoPreferCP437)
@@ -993,7 +999,11 @@ namespace t8
                      ansi_glyph_encoding == AnsiSaveGlyphEncoding::AutoPreferCP437)
               line.push_back(ch_fb);
             else
-              std::cerr << "ERROR in Texture::save_ansi() : Unable to encode glyph " << g.str(true) << " in CP437 encoding!\n";
+            {
+              if (verbose)
+                std::cerr << "ERROR in Texture::save_ansi() : Unable to encode glyph " << g.str(true) << " in CP437 encoding!\n";
+              encoding_ok = false;
+            }
           }
           
           fb_line.push_back(g.fallback);
@@ -1005,6 +1015,9 @@ namespace t8
         curr_fg = ansi_default_fg;
         curr_bg = ansi_default_bg;
       }
+      
+      if (!encoding_ok)
+        return false;
       
       auto ret_fb = TextIO::write_file(fb_filepath, fb_lines, verbose ? 2 : 1);
       auto ret_mat = TextIO::write_file(mat_filepath, mat_lines, verbose ? 2 : 1);
