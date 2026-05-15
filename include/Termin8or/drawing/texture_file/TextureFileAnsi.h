@@ -918,7 +918,7 @@ namespace t8
             ansi_glyph_encoding = AnsiSaveGlyphEncoding::UTF8;
           break;
         case AnsiSaveGlyphEncoding::UTF8:
-          if (is_ext_ansi_cp437(ext))
+          if (ext != "utf8ans")
             utf8_bom = true;
           break;
         case AnsiSaveGlyphEncoding::CP437:
