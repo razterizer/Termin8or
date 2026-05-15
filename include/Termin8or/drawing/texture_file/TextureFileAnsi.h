@@ -887,6 +887,7 @@ namespace t8
       std::vector<std::string> lines;
       
       auto ext = get_file_ext(file_path);
+      bool utf8_bom = false;
       // Cases:
       // :w (warning), :c (correct).
       // *.ans, *.ansi: Auto->CP437, UTF8->BOM:c, CP437:c
@@ -900,7 +901,7 @@ namespace t8
           {
             if (has_non_cp437_convertible_glyphs_preferred(tex))
             {
-              add_utf8_bom(lines);
+              utf8_bom = true;
               ansi_glyph_encoding = AnsiSaveGlyphEncoding::UTF8;
             }
             else
@@ -913,7 +914,7 @@ namespace t8
           break;
         case AnsiSaveGlyphEncoding::UTF8:
           if (is_ext_ansi_cp437(ext))
-            add_utf8_bom(lines);
+            utf8_bom = true;
           break;
         case AnsiSaveGlyphEncoding::CP437:
           if (ext == "utf8ans" && verbose)
@@ -935,6 +936,12 @@ namespace t8
         auto& line = lines.emplace_back();
         auto& fb_line = fb_lines.emplace_back();
         auto& mat_line = mat_lines.emplace_back();
+        
+        if (utf8_bom)
+        {
+          add_utf8_bom(lines);
+          utf8_bom = false;
+        }
         
         for (int c = 0; c < tex.size.c; ++c)
         {
