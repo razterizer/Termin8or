@@ -92,7 +92,7 @@ namespace t8
       
       bool ret = TextIO::read_file(file_path, lines);
       if (!ret)
-          return false;
+        return false;
       
       int section = 0;
       int r = 0;
