@@ -529,7 +529,7 @@ namespace t8
         if (verbose && is_ext_ansi_cp437(ext))
           std::cerr << "WARNING in Texture::load_ansi() : Attempting to load an ANSI file in UTF-8 encoding without UTF-8 BOM!\n";
       }
-      else if (glyph_encoding == AnsiGlyphEncoding::CP437 && !utf8_bom)
+      else if (glyph_encoding == AnsiLoadGlyphEncoding::CP437 && !utf8_bom)
       {
         if (verbose && ext == "utf8ans")
           std::cerr << "WARNING in Texture::load_ansi() : Attempting to load a UTF-8 ANSI (*.utf8ans) file in CP437 encoding!\n";
@@ -787,7 +787,7 @@ namespace t8
           bool decoded = false;
           
           unsigned char b = static_cast<unsigned char>(line[i]);
-          if (glyph_encoding == AnsiGlyphEncoding::UTF8)
+          if (glyph_encoding == AnsiLoadGlyphEncoding::UTF8)
           {
             if (b < 0x20)
             {
@@ -801,7 +801,7 @@ namespace t8
               i = static_cast<int>(byte_idx);
             }
           }
-          else if (glyph_encoding == AnsiGlyphEncoding::CP437)
+          else if (glyph_encoding == AnsiLoadGlyphEncoding::CP437)
           {
             auto cp = utf8::cp437_to_unicode(b);
             if (cp.has_value())
