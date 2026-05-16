@@ -281,6 +281,12 @@ namespace t8x
         return it->second->clear();
     }
     
+    void clear_all_text_fields()
+    {
+      for (auto& tf : text_fields)
+        tf.second->clear();
+    }
+    
     bool text_field_empty(int tab)
     {
       auto it = stlutils::find_if(text_fields, [tab](const auto& tfp) { return tfp.second->get_tab_order() == tab; });
