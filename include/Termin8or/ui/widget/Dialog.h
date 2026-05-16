@@ -398,6 +398,12 @@ namespace t8x
         return it->second->clear();
     }
     
+    void clear_all_color_pickers()
+    {
+      for (auto& cp : color_pickers)
+        cp.second->clear();
+    }
+    
     void update(char curr_key, SpecialKey curr_special_key)
     {
       if (curr_special_key == SpecialKey::Tab)
