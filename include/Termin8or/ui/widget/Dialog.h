@@ -339,6 +339,12 @@ namespace t8x
         return it->second->clear();
     }
     
+    void clear_all_glyph_pickers()
+    {
+      for (auto& gp : glyph_pickers)
+        gp.second->clear();
+    }
+    
     bool glyph_picker_empty(int tab)
     {
       auto it = stlutils::find_if(glyph_pickers, [tab](const auto& gpp) { return gpp.second->get_tab_order() == tab; });
