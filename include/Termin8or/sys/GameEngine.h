@@ -133,6 +133,8 @@ namespace t8x
     
     YesNoButtons quit_confirm_button = YesNoButtons::No;
     
+    bool allow_quitting = true;
+    
     std::vector<HiScoreItem> hiscore_list;
     int score = 0;
     HiScoreItem curr_score_item;
@@ -258,6 +260,13 @@ namespace t8x
     void enable_quit_confirm_screen(bool enable)
     {
       m_params.enable_quit_confirm_screen = enable;
+    }
+    
+    // Make sure to restore to set_allow_quitting(true) some time in your app
+    //   or else it can be very frustrating for the user.
+    void set_allow_quitting(bool enable)
+    {
+      allow_quitting = enable;
     }
     
     // Callbacks
@@ -455,7 +464,7 @@ namespace t8x
       }
       auto key = t8::get_char_key(kpdp.transient);
       auto lo_key = str::to_lower(key);
-      auto quit = lo_key == 'q';
+      auto quit = lo_key == 'q' && allow_quitting;
       auto pause = lo_key == 'p';
       
       if (quit)
