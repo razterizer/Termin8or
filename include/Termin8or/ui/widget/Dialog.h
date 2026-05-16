@@ -145,6 +145,12 @@ namespace t8x
           return;
     }
     
+    void get_tab_selection(int& tab, int& sub_tab)
+    {
+      tab = tab_idx;
+      sub_tab = sub_tab_idx;
+    }
+    
     void set_textel_pre(const RC& local_pos, const t8::Glyph& g, Color fg_color, Color bg_color)
     {
       //stlutils::emplace_back_if_not(override_textels_pre,
