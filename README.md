@@ -284,3 +284,11 @@ material data can be stored in sidecar files next to the ANSI file:
 
 * `<file>.fb` : ASCII fallback glyphs for Unicode glyphs.
 * `<file>.mat` : Texture material IDs.
+
+## Additional Information
+
+* [Glyphs](docs/GLYPHS.md)
+* [Textures](docs/TEXTURES.md)
+* [TX File Format Specification](docs/TX_FORMAT.md)
+* [ANSI](docs/ANSI.md)
+* [Migration Notes for the Unicode-Supported API](docs/MIGRATION_UTF8.md)
