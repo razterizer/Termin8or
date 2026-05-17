@@ -108,22 +108,22 @@ There are now two namespaces: `t8` and `t8x`. `t8` contain the core features and
 
 ### Geometry
 
-* `geom/RC.h` (`t8`) : Row/column coordinates used by screens, textures and bounding boxes.
-* `geom/Rectangle.h` (`t8`) : Rectangle helper for screen regions and bounding boxes.
-* `geom/AABB.h` (`t8x`) : Templated AABB helper used by broad-phase collision detection.
+* `geom/RC.h` (`t8`) : Row/column coordinates struct used for screen position, texture coordinates and such.
+* `geom/Rectangle.h` (`t8`) : Rectangle struct for screen regions and bounding boxes.
+* `geom/AABB.h` (`t8x`) : Templated AABB helper (used by broad-phase collision detection).
 
 ### Screen, Text And Glyphs
 
-* `screen/Color.h` (`t8`) : 256-color ANSI palette plus special colors `Default`, `Transparent` and `Transparent2`.
-* `screen/Styles.h` (`t8`) : `Style` and related helpers for grouping foreground and background colors.
+* `screen/Color.h` (`t8`) : 256-color ANSI palette plus special colors `Default` (-1), `Transparent` (-2) and `Transparent2` (-3). The colors are divided into: 3 special colors, 16 4-bit colors, 6^3 rgb color cube (rgb6) and 24 gray scale shades (gray24) (colors indices in range [-3, 255]). The two transparency colours / modes allows you to overlay text using the same colors that are already present in a given location in the screen buffer (see `ScreenHandler.h`).
+* `screen/Styles.h` (`t8`) : `Style` and related helper structs for grouping foreground and background colors.
 * `screen/Glyph.h` (`t8`) : Unicode-aware glyph value. A glyph can have a preferred Unicode codepoint and an ASCII fallback.
-* `screen/GlyphString.h` (`t8`) : String-like container of `Glyph` values.
-* `screen/StyledString.h` (`t8`) : Small helper for strings with color/style metadata.
-* `screen/TermHelper.h` (`t8::term`) : Terminal capability helpers for locale setup, single-column glyph checks, Unicode encoding and ASCII fallback resolution.
+* `screen/GlyphString.h` (`t8`) : String-like container of `Glyph` values. Can be used as template argument for some classes and structs such as `TextBox`, `Dialog`, `MessageHandler` and `ParticleGradientGroup` (by default, these use `std::string`).
+* `screen/StyledString.h` (`t8`) : Small helper struct for strings with color/style metadata. This struct works like an intermediate clustered string based on `std::string` that may or may not contain `UTF-8` encoded glyphs, so it's not as pure as `GlyphString` or just `std::string` in that regard.
+* `screen/TermHelper.h` (`t8::term`) : Terminal capability helpers for locale setup, single-column glyph checks, Unicode encoding and ASCII fallback resolution. It has a `force_ascii_fallback` state that allows you to force only ASCII output in runtime (set on top level by `ScreenHandler` via the `AsciiFallbackPolicy` enum class).
 * `screen/Ansi.h` (`t8::ansi`) : ANSI SGR color generation/parsing and small CSI parsers used by ANSI texture loading.
-* `screen/Text.h` (`t8`) : Low-level text output implementation for ANSI terminals and Windows console paths.
-* `screen/ScreenHandler.h` (`t8`) : Screen buffer, transparency handling and frame output. Supports `char` and `char32_t` code paths.
-* `screen/ScreenScaling.h` (`t8x`) : Screen/texture scaling helpers.
+* `screen/Text.h` (`t8`) : Low-level text output implementation for ANSI terminals and Windows console (WIN-API) paths.
+* `screen/ScreenHandler.h` (`t8`) : Handles text output and provides a screen buffer, transparency handling and frame output. It supports `char` and `char32_t` code paths. It offers policies such as `DrawPolicy` and `AsciiFallbackPolicy`. `AsciiFallbackPolicy` allows you to override the `CharT = char32_t` template argument via runtime code path by showing only ASCII characters (`Glyph` preferred first, then fallback).
+* `screen/ScreenScaling.h` (`t8x`) : Class that allows you to scale up/down the screen buffer. Beware that any actual text or ASCII banner will not be readable when scaled up or down!
 * `screen/ScreenCommandsBasic.h` (`t8`) : Low-level terminal commands such as clear, cursor movement and cursor visibility.
 * `screen/ScreenCommands.h` (`t8`) : Higher-level terminal setup/teardown helpers such as `begin_screen()` and `end_screen()`.
 * `screen/ScreenUtils.h` (`t8`, `t8x`) : Drawing helpers for frames, pause screens, confirmations, hiscore input and game-over banners.
@@ -136,40 +136,40 @@ There are now two namespaces: `t8` and `t8x`. `t8` contain the core features and
 * `drawing/texture_file/TextureFileTx.h` (`t8`) : Native `.tx` texture file load/save support.
 * `drawing/texture_file/TextureFileAnsi.h` (`t8`) : ANSI-art load/save support for `.ans`, `.ansi`, `.diz`, `.txt` and `.utf8ans`.
 * `drawing/texture_file/TextureFileCommon.h` (`t8`) : Shared texture file helpers.
-* `drawing/Gradient.h` (`t8x`) : Normalized lookup into a vector of values. Useful for particles and color gradients.
-* `drawing/LineData.h` (`t8x`) : Helper for streaming line-oriented pixel data to `ScreenHandler`.
-* `drawing/Pixel.h` (`t8x`) : Pixel/textel-like helper used by older drawing code.
+* `drawing/Gradient.h` (`t8x`) : Allows you to access a vector of values/objects using a normalized (0 to 1) t parameter. Useful for particles and color gradients.
+* `drawing/LineData.h` (`t8x`) : Helper for streaming line-oriented pixel data to `ScreenHandler`. Depends on `Pixel`. See below.
+* `drawing/Pixel.h` (`t8x`) : Pixel/textel-like helper used by older drawing code. Dependency to `LineData`.
 
 ### Input, UI And Application Helpers
 
-* `input/Keyboard.h` (`t8`) : Non-blocking keyboard polling through `StreamKeyboard`.
+* `input/Keyboard.h` (`t8`) : Non-blocking keyboard polling through `StreamKeyboard`. Function `readKey()` scans keypresses in an un-blocked manner and returns a struct `KeyPressDataPair` containing two objects of type `KeyPressData`; `transient` and `held`. The former being the raw key presses and the latter being the raw key presses buffered in a buffer that has a size proportional to the FPS of the application. These two modes have their pros and cons: Transient mode is more accurate but cannot capture held key presses, held mode on the other hand is great at capturing held keys but due to buffering, it suffers from minor inaccuracies.
 * `input/KeyboardEnums.h` (`t8`) : `SpecialKey` enum and related keyboard symbols.
-* `ui/MessageHandler.h` (`t8x`) : Timed message queue rendered through a text box.
+* `ui/MessageHandler.h` (`t8x`) : The `MessageHandler` class allows you to queue up messages of different severity levels and durations. Messages are displayed via a `TextBox`. It works as a timed message queue.
 * `ui/UI.h` (`t8x`) : Compatibility include for the widget headers.
 * `ui/widget/Widget.h` (`t8x`) : Base widget class.
 * `ui/widget/Button.h` (`t8x`) : Button widget.
 * `ui/widget/ButtonGroup.h` (`t8x`) : Group of selectable buttons.
-* `ui/widget/ColorPicker.h` (`t8x`) : Color picker widget.
-* `ui/widget/Dialog.h` (`t8x`) : Dialog container for labels, text fields, buttons, color pickers and glyph pickers.
-* `ui/widget/GlyphPicker.h` (`t8x`) : Glyph picker with preferred Unicode glyph, ASCII fallback and recent-glyph handling.
 * `ui/widget/Label.h` (`t8x`) : Label widget.
-* `ui/widget/TextBox.h` (`t8x`) : Text box/panel rendering helper.
-* `ui/widget/TextBoxDebug.h` (`t8x`) : Debug-oriented text box for live parameters.
 * `ui/widget/TextField.h` (`t8x`) : Text field widget with numeric, hex, printable ASCII and other input modes.
-* `sys/GameEngine.h` (`t8x`) : Optional frame-loop helper for terminal apps/games. Handles input, logging, pause/quit, animation counters and lifecycle hooks.
-* `sys/Logging.h` (`t8x`) : Record/replay support for random seed, frame numbers and keypresses.
+* `ui/widget/GlyphPicker.h` (`t8x`) : Glyph picker with preferred Unicode glyph, ASCII fallback and recent-glyph handling.
+* `ui/widget/ColorPicker.h` (`t8x`) : Color picker widget.
+* `ui/widget/TextBox.h` (`t8x`) : Text box/panel rendering helper.
+* `ui/widget/Dialog.h` (`t8x`) : Dialog container for labels, text fields, buttons, color pickers and glyph pickers.
+* `ui/widget/TextBoxDebug.h` (`t8x`) : Debug-oriented text box for live parameters.
+* `sys/GameEngine.h` (`t8x`) : A customizable but easy-to-use frame-loop game engine for terminal apps and games (or engine for any real-time terminal-based program). Handles input, logging, pause/quit, animation counters and lifecycle hooks.
+* `sys/Logging.h` (`t8x`) : Allows you to record the current random seed, frame numbers and respective keypresses in your program and then replay it. This makes finding runtime bugs a breeze.
 
 ### Sprites And Physics
 
-* `sprite/SpriteHandler.h` (`t8x`) : Bitmap and vector sprites, sprite animation, vector fills and sprite-frame I/O.
-* `physics/ParticleSystem.h` (`t8x`) : ASCII/terminal-style particle system for effects such as liquid, fire and smoke.
-* `physics/dynamics/RigidBody.h` (`t8x`) : Rigid body representation used by the dynamics system.
+* `sprite/SpriteHandler.h` (`t8x`) : Bitmap and vector sprites (`BitmapSprite` and `VectorSprite`), sprite animation, vector fills and sprite-frame I/O. A sprite can be controlled programmatically or be attached to a `RigidBody` object. Both sprite classes support sprite animations. A vector sprite can be filled for enclosed areas of the sprite. A scan-line algorithm is used for this.
+* `physics/ParticleSystem.h` (`t8x`) : ASCII/terminal-style particle system for effects such as liquid, fire and smoke. See ([SurgSim_Lite](https://github.com/razterizer/SurgSim_Lite), [Pilot_Episode](https://github.com/razterizer/Pilot_Episode) and [DungGine](https://github.com/razterizer/DungGine) for examples).
+* `physics/dynamics/RigidBody.h` (`t8x`) : Rigid body representation used by the dynamics system. You can attach a sprite to it if you want the sprite to be physically dynamic. The sprite also determines the "pixels" that make out the collision surface.
 * `physics/dynamics/DynamicsSystem.h` (`t8x`) : Rigid body update/integration owner.
-* `physics/dynamics/CollisionHandler.h` (`t8x`) : Broad-phase AABB BVH and narrow-phase material/glyph overlap collision detection and response.
+* `physics/dynamics/CollisionHandler.h` (`t8x`) : Broad-phase AABB BVH and narrow-phase material/glyph overlap collision detection and response. Collision response uses an impulse equation as a function of the velocities of the two bodies and their collision normals.
 
 ### Other
 
-* `title/ASCII_Fonts.h` (`t8x`) : API for rendering text using FIGlet fonts and styling it with different colors. Supported FIGlet fonts are:
+* `title/ASCII_Fonts.h` (`t8x`) : API for rendering text using FIGlet fonts and allows for styling the text with different colors. Supported FIGlet fonts are:
   * Larry3D.
   * SMSlant.
   * Avatar.
@@ -276,7 +276,7 @@ So I would say, it's fairly fast.
 Termin8or currently supports:
 
 * `.tx` : Native Termin8or texture format.
-* `.ans`, `.ansi`, `.diz`, `.txt` : ANSI/CP437-style text art.
+* `.ans`, `.ansi`, `.diz`, `.txt` : ANSI/CP437-style text art (or UTF-8 encoded text art if UTF-8 BOM is available).
 * `.utf8ans` : ANSI-style text art where glyph bytes are interpreted as UTF-8.
 
 ANSI import/export supports CP437 and UTF-8/BOM based workflows. Fallback and
