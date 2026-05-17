@@ -17,13 +17,31 @@ This lets Termin8or store richer glyph information without abandoning ASCII comp
 
 `Glyph` can be constructed as empty using the default constructor. Then `preferred = t8::Glyph::none32` and `fallback = t8::Glyph::none`. These are two specialized sentinels. `none32` can only be used with `preferred` and `none` can only be used with `fallback`.
 
-A glyph object can only be in these valid states. All other states are invalid:
-* `{ preferred = none32, fallback = none }`.
-* `{ preferred = ASCII, fallback = none }`.
-* `{ preferred = ASCII, fallback = ASCII }` (preferred must not equal fallback in this case).
-* `{ preferred = Unicode, fallback = ASCII }`.
+A `Glyph` object is valid when it is in one of these states:
+
+* `{ preferred = none32, fallback = none }` : empty glyph.
+* `{ preferred = ASCII, fallback = same ASCII }` : printable ASCII glyph, canonical form.
+* `{ preferred = Unicode > 0x7F, fallback = ASCII }` : Unicode glyph with printable ASCII fallback.
+
+The temporary/draft state `{ preferred = none32, fallback = ASCII }` can occur while editing/parsing user input, but should be canonicalized with `try_canonicalize_from_fallback()` before serialization or use as a final glyph.
+
+Examples:
+* `Glyph(0x2588, '#')` -> `{ preferred = 0x2588, fallback = '#' }`.
+* `Glyph('#')` -> `{ preferred = '#', fallback = '#' }`.
+* `Glyph('#', 'I')` -> `{ preferred = '#', fallback = '#' }`. Auto-canonicalization: preferred -> fallback.
+* `Glyph('#', 0x2588)` -> `"ERROR in Glyph(char32_t, char) : Fallback must be ASCII (<=0x7F)."`.
+* `Glyph(0x2588)` -> `"ERROR in Glyph(char32_t, char) : Preferred cannot be non-ASCII while fallback is unset."`.
+* `Glyph(none32, '#')` -> `"ERROR in Glyph(char32_t, char) : Fallback without preferred."`.
 
 ## Canonicalization
+
+Glyphs are canonicalized automatically when two printable ASCII characters are supplied as constructor arguments. If they differ, then `fallback` will be overwritten by `preferred`, thus ensuring they both contain the same ASCII character.
+
+Canonicalisation can be done manually in the reverse direction by calling `Glyph::try_canonicalize_from_fallback()` which is useful for draft states which can temporarily violate any of the 3 violation rules (see the errors in the examples section above).
+
+If a draft state is `{ preferred = none32, fallback = ASCII }` then after calling `Glyph::try_canonicalize_from_fallback()` will cause `preferred` to be overwritten by `fallback`.
+
+This feature is useful for parsing code and partial user input and is specifically used in Termin8or for partial `GlyphPicker` user input.
 
 ## Encoding and Rendering
 
