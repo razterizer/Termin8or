@@ -45,6 +45,33 @@ This feature is useful for parsing code and partial user input and is specifical
 
 ## Encoding and Rendering
 
+A `Glyph` is not written directly to the terminal. Before rendering, Termin8or resolves it into a single-width output glyph suitable for the current `ScreenHandler<CharT>` path.
+
+For `CharT = char`, output is ASCII-only:
+
+1. If `preferred` is printable ASCII, use `preferred`.
+2. Otherwise, if `fallback` is printable ASCII, use `fallback`.
+3. Otherwise, use a safe replacement, like `' '` or `'?'`.
+
+With `CharT = char`, the `ScreenHandler` behaves just as it did before the Unicode support was added, which is useful for those cases where you want the more simple machinery.
+
+For `CharT = char32_t`, Termin8or first tries to use `preferred` as Unicode. The preferred code point must be valid, supported by the current terminal/font path, and render as a single terminal cell. If it cannot be used safely, Termin8or falls back to the printable ASCII fallback or a safe replacement if not printable.
+
+Termin8or deliberately avoids rendering glyphs that are not single-width. Terminal screen buffers are cell-based, so wide or combining glyphs can corrupt alignment and dirty-region rendering.
+
+There is another, subtler problem: some glyphs are technically treated as single-cell by the terminal, but the font draws them with ink that spills outside the cell. Termin8or currently focuses on filtering out non-single-width glyphs, not on detecting single-cell glyphs with visually overflowing font rendering. The latter depends heavily on terminal, font and platform behavior and is much harder to categorize reliably.
+
+ASCII fallback can also be forced at runtime. This is useful for terminals with limited Unicode support, deterministic ASCII screenshots, debugging, or applications that want to expose an ASCII-only mode. `ScreenHandler` exposes this through `t8::ScreenHandler<CharT>::set_ascii_fallback_policy(AsciiFallbackPolicy policy)`, where `AsciiFallbackPolicy` can be `SYSTEM_CONTROLLED` (default), `FORCE_ASCII`, or `FORCE_ASCII_ONLY_ON_WIN_CMD`. When using `GameEngine`, this can also be set through `GameEngineParams::ascii_fallback_policy`.
+
+### Terminal / OS Font Coverage Checks
+
+Here is an overview of what glyphs are checked for for different operating systems, terminals and fonts.
+
+* Windows [`cmd.exe`]: `Consolas`, `Lucida Console`, `Cascadia Mono`.
+* Windows [`Windows Terminal`]: No font glyph-coverage checks due to the loose relationship between selected font and terminal instance and also because when detecting the font used from the code, the retrieved font info is global and may not be relevant to the currently used instance.
+* MacOS [`Terminal`]: Mainly `SF Mono`, however, it seems other fonts may work just as well as missing glyphs in one font are covered by some other font. I could be wrong though.
+* Linux: No standardized way to check which font is being used or no known way to find glyph coverage via terminal application.
+
 ## String Helpers
 
 ## Parsing and Serialization
