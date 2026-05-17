@@ -64,6 +64,11 @@
 		070041C82FB5FECA0099D5E4 /* TextureFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextureFile.h; sourceTree = "<group>"; };
 		070041CB2FB602FB0099D5E4 /* TextureFileAnsi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextureFileAnsi.h; sourceTree = "<group>"; };
 		070041CF2FB603820099D5E4 /* TextureFileCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextureFileCommon.h; sourceTree = "<group>"; };
+		070041D22FBA1A320099D5E4 /* GLYPHS.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = GLYPHS.md; sourceTree = "<group>"; };
+		070041D32FBA1A470099D5E4 /* TEXTURES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TEXTURES.md; sourceTree = "<group>"; };
+		070041D42FBA1A5C0099D5E4 /* TX_FORMAT.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TX_FORMAT.md; sourceTree = "<group>"; };
+		070041D52FBA1A6B0099D5E4 /* ANSI.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ANSI.md; sourceTree = "<group>"; };
+		070041D62FBA1A970099D5E4 /* MIGRATION_UTF8.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = MIGRATION_UTF8.md; sourceTree = "<group>"; };
 		071CC3CA290465B3007B4B98 /* libTermin8or.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libTermin8or.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		07233B4D2ED6A56F0022B60B /* ScreenScaling_examples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenScaling_examples.h; sourceTree = "<group>"; };
 		07233B4E2EDBA71C0022B60B /* RGBA.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGBA.h; sourceTree = "<group>"; };
@@ -172,12 +177,25 @@
 			path = texture_file;
 			sourceTree = "<group>";
 		};
+		070041D12FBA1A220099D5E4 /* docs */ = {
+			isa = PBXGroup;
+			children = (
+				070041D22FBA1A320099D5E4 /* GLYPHS.md */,
+				070041D32FBA1A470099D5E4 /* TEXTURES.md */,
+				070041D42FBA1A5C0099D5E4 /* TX_FORMAT.md */,
+				070041D52FBA1A6B0099D5E4 /* ANSI.md */,
+				070041D62FBA1A970099D5E4 /* MIGRATION_UTF8.md */,
+			);
+			path = docs;
+			sourceTree = "<group>";
+		};
 		071CC3C1290465B3007B4B98 = {
 			isa = PBXGroup;
 			children = (
 				0739D9BF2BA2229100964E96 /* LICENSE */,
 				0760B6F02B9CEABC0032CACD /* README.md */,
 				0733A6472EC151C40045BCFD /* RELEASE_NOTES.md */,
+				070041D12FBA1A220099D5E4 /* docs */,
 				07FDE9812CA0C72000116BA7 /* workflows */,
 				075AC7742E6C763200D0EE66 /* scripts */,
 				07BDBA772E741B2D002ACC96 /* geom */,
