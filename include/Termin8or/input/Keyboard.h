@@ -356,8 +356,8 @@ namespace t8
     DWORD fdwSaveOldMode { 0 };
 #else
     struct termios orig_termios;
-    bool raw_mode_enabled = false;
 #endif
+    bool raw_mode_enabled = false;
     std::vector<KeyPressData> key_press_buffer;
     int buffer_idx = 0;
   };
