@@ -6,7 +6,7 @@ A `Glyph` is a simple struct that contains a `char32_t preferred` variable for p
 
 The `Glyph` struct can be found in the `include/Termin8or/screen/Glyph.h` header and is inside the `t8` namespace (namespace for core Termin8or features).
 
-`Glyph` objects are designed to work with `t8::ScreenHandler<CharT>` for both supported character paths:
+`Glyph` objects are designed to work with `t8::ScreenHandler<NR, NC, CharT>` for both supported character paths:
 
 - `CharT = char`: output is ASCII-only. Termin8or first uses `preferred` if it is printable ASCII; otherwise it uses the printable ASCII fallback.
 - `CharT = char32_t`: Termin8or tries to render the preferred Unicode code point when it is valid and displayable as a single terminal cell, has coverage for the current font used and it is supported by the terminal/console; otherwise it uses the printable ASCII fallback.
@@ -45,7 +45,7 @@ This feature is useful for parsing code and partial user input and is specifical
 
 ## Encoding and Rendering
 
-A `Glyph` is not written directly to the terminal. Before rendering, Termin8or resolves it into a single-width output glyph suitable for the current `ScreenHandler<CharT>` path.
+A `Glyph` is not written directly to the terminal. Before rendering, Termin8or resolves it into a single-width output glyph suitable for the current `ScreenHandler<NR, NC, CharT>` path.
 
 For `CharT = char`, output is ASCII-only:
 
@@ -61,7 +61,7 @@ Termin8or deliberately avoids rendering glyphs that are not single-width. Termin
 
 There is another, subtler problem: some glyphs are technically treated as single-cell by the terminal, but the font draws them with ink that spills outside the cell. Termin8or currently focuses on filtering out non-single-width glyphs, not on detecting single-cell glyphs with visually overflowing font rendering. The latter depends heavily on terminal, font and platform behavior and is much harder to categorize reliably.
 
-ASCII fallback can also be forced at runtime. This is useful for terminals with limited Unicode support, deterministic ASCII screenshots, debugging, or applications that want to expose an ASCII-only mode. `ScreenHandler` exposes this through `t8::ScreenHandler<CharT>::set_ascii_fallback_policy(AsciiFallbackPolicy policy)`, where `AsciiFallbackPolicy` can be `SYSTEM_CONTROLLED` (default), `FORCE_ASCII`, or `FORCE_ASCII_ONLY_ON_WIN_CMD`. When using `GameEngine`, this can also be set through `GameEngineParams::ascii_fallback_policy`.
+ASCII fallback can also be forced at runtime. This is useful for terminals with limited Unicode support, deterministic ASCII screenshots, debugging, or applications that want to expose an ASCII-only mode. `ScreenHandler` exposes this through `t8::ScreenHandler<NR, NC, CharT>::set_ascii_fallback_policy(AsciiFallbackPolicy policy)`, where `AsciiFallbackPolicy` can be `SYSTEM_CONTROLLED` (default), `FORCE_ASCII`, or `FORCE_ASCII_ONLY_ON_WIN_CMD`. When using `GameEngine`, this can also be set through `GameEngineParams::ascii_fallback_policy`.
 
 ### Terminal / OS Font Coverage Checks
 
@@ -73,6 +73,36 @@ Here is an overview of what glyphs are checked for for different operating syste
 * Linux: No standardized way to check which font is being used or no known way to find glyph coverage via terminal application.
 
 ## String Helpers
+
+Termin8or has one directly glyph-related string struct `GlyphString` and one indirectly glyph-related string struct `StyledString`.
+
+### GlyphString
+
+`GlyphString` is defined in header `include/Termin8or/screen/GlyphString.h` in the namespace `t8`.
+
+This struct lets you construct strings from `Glyph` objects. It provides operators that make mixed ASCII/glyph composition ergonomic.
+
+For example:
+
+```cpp
+using namespace t8::literals;
+
+auto gstr = "HP: "_gs + Glyph { U'♥', 'v' } + " "_gs + std::to_string(hp);
+```
+
+`ScreenHandler<NR, NC, CharT>::write_buffer()` has overloads that accept `GlyphString`.
+
+### StyledString
+
+`StyledString` is defined in header `include/Termin8or/screen/StyledString.h` in the namespace `t8`.
+
+`StyledString` wraps an `std::string` together with a `Style` (fg-color + bg-color) and width information (for tracking of UTF-8 encoded glyphs).
+
+Note that this is not a glyph container; it is styled (possibly) encoded text.
+
+Use `StyledStringVec` for more complex multi-styled strings.
+
+`ScreenHandler<NR, NC, CharT>::write_buffer()` has overloads that accept `StyledStringVec`.
 
 ## Parsing and Serialization
 
