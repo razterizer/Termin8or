@@ -20,8 +20,8 @@ This lets Termin8or store richer glyph information without abandoning ASCII comp
 A `Glyph` object is valid when it is in one of these states:
 
 * `{ preferred = none32, fallback = none }` : empty glyph.
-* `{ preferred = ASCII, fallback = same ASCII }` : printable ASCII glyph, canonical form.
-* `{ preferred = Unicode > 0x7F, fallback = ASCII }` : Unicode glyph with printable ASCII fallback.
+* `{ preferred = printable ASCII, fallback = same printable ASCII }` : printable ASCII glyph, canonical form.
+* `{ preferred = Unicode > 0x7F, fallback = printable ASCII }` : Unicode glyph with printable ASCII fallback.
 
 The temporary/draft state `{ preferred = none32, fallback = ASCII }` can occur while editing/parsing user input, but should be canonicalized with `try_canonicalize_from_fallback()` before serialization or use as a final glyph.
 
@@ -29,13 +29,21 @@ Examples:
 * `Glyph(0x2588, '#')` -> `{ preferred = 0x2588, fallback = '#' }`.
 * `Glyph('#')` -> `{ preferred = '#', fallback = '#' }`.
 * `Glyph('#', 'I')` -> `{ preferred = '#', fallback = '#' }`. Auto-canonicalization: preferred -> fallback.
-* `Glyph('#', 0x2588)` -> `"ERROR in Glyph(char32_t, char) : Fallback must be ASCII (<=0x7F)."`.
+* `Glyph('#', static_cast<char>(0x80))` -> `"ERROR in Glyph(char32_t, char) : Fallback must be ASCII (<=0x7F)."`.
+* `Glyph('#', static_cast<char>(0xC5))` -> `"ERROR ... Fallback must be ASCII (<=0x7F)."`
+* `Glyph('#', none)` -> `{ preferred = '#', fallback = '#' }`. Auto-canonicalization: preferred -> fallback.
 * `Glyph(0x2588)` -> `"ERROR in Glyph(char32_t, char) : Preferred cannot be non-ASCII while fallback is unset."`.
 * `Glyph(none32, '#')` -> `"ERROR in Glyph(char32_t, char) : Fallback without preferred."`.
 
 ## Canonicalization
 
 Glyphs are canonicalized automatically when two printable ASCII characters are supplied as constructor arguments. If they differ, then `fallback` will be overwritten by `preferred`, thus ensuring they both contain the same ASCII character.
+
+For example. All these will end up as `{ preferred = '#', fallback = '#' }`:
+* `Glyph('#')`
+* `Glyph('#', '#')`
+* `Glyph('#', 'I')`
+* `Glyph('#', Glyph::none)`
 
 Canonicalization can also be done manually in the reverse direction by calling `Glyph::try_canonicalize_from_fallback()`. This is useful for the draft state `{ preferred = none32, fallback = ASCII }`, which can occur during parsing or partial user input.
 
@@ -65,12 +73,12 @@ ASCII fallback can also be forced at runtime. This is useful for terminals with 
 
 ### Terminal / OS Font Coverage Checks
 
-Here is an overview of what glyphs are checked for for different operating systems, terminals and fonts.
+Here is an overview of what glyphs are checked for different operating systems, terminals and fonts.
 
 * Windows [`cmd.exe`]: `Consolas`, `Lucida Console`, `Cascadia Mono`.
 * Windows [`Windows Terminal`]: No font glyph-coverage checks due to the loose relationship between selected font and terminal instance and also because when detecting the font used from the code, the retrieved font info is global and may not be relevant to the currently used instance.
-* MacOS [`Terminal`]: Mainly `SF Mono`, however, it seems other fonts may work just as well as missing glyphs in one font are covered by some other font. I could be wrong though.
-* Linux: No standardized way to check which font is being used or no known way to find glyph coverage via terminal application.
+* macOS [`Terminal`]: Mainly `SF Mono`, however, it seems other fonts may work just as well as missing glyphs in one font are covered by some other font. I could be wrong though.
+* Linux: No standardized way to check which font is being used or no known way to find glyph coverage via the terminal application.
 
 ## String Helpers
 
@@ -105,5 +113,4 @@ Use `StyledStringVec` for more complex multi-styled strings.
 `ScreenHandler<NR, NC, CharT>::write_buffer()` has overloads that accept `StyledStringVec`.
 
 ## Parsing and Serialization
-
 
