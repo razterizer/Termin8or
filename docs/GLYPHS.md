@@ -44,9 +44,9 @@ For example, all these will end up as `{ preferred = '#', fallback = '#' }`:
 * `Glyph('#', 'I')`
 * `Glyph('#', Glyph::none)`
 
-Canonicalization can also be done manually in the reverse direction by calling `Glyph::try_canonicalize_from_fallback()`. This is useful for the draft state `{ preferred = none32, fallback = ASCII }`, which can occur during parsing or partial user input.
+Canonicalization can also be done manually in the reverse direction by calling `Glyph::try_canonicalize_from_fallback()`. This is useful for the draft state `{ preferred = none32, fallback = printable ASCII }`, which can occur during parsing or partial user input.
 
-If a draft state is `{ preferred = none32, fallback = ASCII }`, calling `Glyph::try_canonicalize_from_fallback()` copies `fallback` into `preferred`.
+If a draft state is `{ preferred = none32, fallback = printable ASCII }`, calling `Glyph::try_canonicalize_from_fallback()` copies `fallback` into `preferred`.
 
 This feature is useful for parsing code and partial user input and is specifically used in Termin8or for partial `GlyphPicker` user input.
 
