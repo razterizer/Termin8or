@@ -113,3 +113,65 @@ Use `StyledStringVec` for more complex multi-styled strings.
 
 ## Parsing and Serialization
 
+`Glyph` can be serialized to and parsed from strings using the following two functions:
+
+* `std::string str(bool legacy_ascii_only = false) const`
+* `bool parse(const std::string& str, int& pos, bool legacy_ascii_only = false, bool verbose = true)`
+
+This is used by texture file formats and UI/editor code that needs to store glyphs as text.
+
+There are two serialization modes:
+
+* Normal glyph mode.
+* Legacy ASCII-only mode.
+
+### Normal Glyph Mode
+
+Normal mode uses a bracketed representation:
+
+* `[]` : empty glyph.
+* `[A]` : printable ASCII glyph.
+* `[2588,#]` : Unicode glyph with ASCII fallback.
+
+For Unicode glyphs, the preferred code point is written as hexadecimal without a `0x` prefix. The fallback is written after a comma and must be a single printable ASCII character.
+
+Examples:
+
+```cpp
+Glyph().str(false);                 // "[]"
+Glyph('A').str(false);              // "[A]"
+Glyph(0x2588, '#').str(false);      // "[2588,#]"
+```
+
+### Legacy ASCII-Only Mode
+
+Legacy ASCII-only mode stores only one ASCII character:
+
+ASCII glyphs serialize as their ASCII character.
+Unicode glyphs serialize as their fallback.
+Empty glyphs serialize as ?.
+This mode is useful for older texture formats or workflows that cannot store preferred Unicode code points.
+
+Examples:
+
+```cpp
+Glyph('A').str(true);               // "A"
+Glyph(0x2588, '#').str(true);       // "#"
+Glyph().str(true);                  // "?"
+```
+
+### Parsing
+
+Parsing follows the same rules in reverse. Normal mode expects bracketed glyphs:
+
+* `[A]` parses as { preferred = 'A', fallback = 'A' }.
+* `[2588,#]` parses as { preferred = 0x2588, fallback = '#' }.
+* `[2588]` is invalid because non-ASCII preferred code points require a fallback.
+* `[A,B]` is accepted, but canonicalizes to { preferred = 'A', fallback = 'A' }.
+
+Legacy ASCII-only parsing consumes one ASCII byte and produces the corresponding ASCII glyph.
+
+### Roundtrip Notes
+
+Normal glyph mode preserves both the preferred code point and the fallback. Legacy ASCII-only mode does not preserve non-ASCII preferred code points; it only preserves the ASCII fallback. Also note that parsing may canonicalize ASCII glyphs, so serialized output can be cleaner than the original input.
+
