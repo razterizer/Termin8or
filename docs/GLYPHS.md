@@ -23,23 +23,22 @@ A `Glyph` object is valid when it is in one of these states:
 * `{ preferred = printable ASCII, fallback = same printable ASCII }` : printable ASCII glyph, canonical form.
 * `{ preferred = Unicode > 0x7F, fallback = printable ASCII }` : Unicode glyph with printable ASCII fallback.
 
-The temporary/draft state `{ preferred = none32, fallback = ASCII }` can occur while editing/parsing user input, but should be canonicalized with `try_canonicalize_from_fallback()` before serialization or use as a final glyph.
+The temporary/draft state `{ preferred = none32, fallback = printable ASCII }` can occur while editing/parsing user input, but should be canonicalized with `try_canonicalize_from_fallback()` before serialization or use as a final glyph.
 
 Examples:
 * `Glyph(0x2588, '#')` -> `{ preferred = 0x2588, fallback = '#' }`.
 * `Glyph('#')` -> `{ preferred = '#', fallback = '#' }`.
 * `Glyph('#', 'I')` -> `{ preferred = '#', fallback = '#' }`. Auto-canonicalization: preferred -> fallback.
-* `Glyph('#', static_cast<char>(0x80))` -> `"ERROR in Glyph(char32_t, char) : Fallback must be ASCII (<=0x7F)."`.
-* `Glyph('#', static_cast<char>(0xC5))` -> `"ERROR ... Fallback must be ASCII (<=0x7F)."`
-* `Glyph('#', none)` -> `{ preferred = '#', fallback = '#' }`. Auto-canonicalization: preferred -> fallback.
+* `Glyph('#', static_cast<char>(0xC5))` -> `"ERROR in Glyph(char32_t, char) : Fallback must be ASCII (<=0x7F)."`.
+* `Glyph('#', Glyph::none)` -> `{ preferred = '#', fallback = '#' }`. Auto-canonicalization: preferred -> fallback.
 * `Glyph(0x2588)` -> `"ERROR in Glyph(char32_t, char) : Preferred cannot be non-ASCII while fallback is unset."`.
-* `Glyph(none32, '#')` -> `"ERROR in Glyph(char32_t, char) : Fallback without preferred."`.
+* `Glyph(Glyph::none32, '#')` -> `"ERROR in Glyph(char32_t, char) : Fallback without preferred."`.
 
 ## Canonicalization
 
 Glyphs are canonicalized automatically when two printable ASCII characters are supplied as constructor arguments. If they differ, then `fallback` will be overwritten by `preferred`, thus ensuring they both contain the same ASCII character.
 
-For example. All these will end up as `{ preferred = '#', fallback = '#' }`:
+For example, all these will end up as `{ preferred = '#', fallback = '#' }`:
 * `Glyph('#')`
 * `Glyph('#', '#')`
 * `Glyph('#', 'I')`
