@@ -2,61 +2,59 @@
 
 ## Overview
 
-What a `Texture` is: a 2D grid of textels/cells.
+The `Texture` struct can be found in `include/Termin8or/drawing/Texture.h` under the `t8` namespace.
 
-Mention that textures can be used for:
-- drawing reusable terminal art
-- sprite frames
-- UI elements
-- level/map chunks
-- TextUR-authored assets
+Textures can be used for various purposes:
+- Sprites.
+- Offscreen buffer rendering (screen to texture).
+- Animated level/map textures for dungeon decoration in dungeon engine [DungGine](https://github/raztierizer/DungGine).
+- TextUR image storage.
 
 ## Texture Data Model
+
+`Texture` stores cells in a 2D grid layout as flat "SoA" vectors which can be index by row and column coordinates using the function `inline int Texture::index(int r, int c) const noexcept`. Data in the flat vectors are organized by row-major order (i.e. line by line).
 
 A `Texture` stores:
 - `size`
 - `area`
-- `glyphs`
-- `fg_colors`
-- `bg_colors`
-- `materials_raw`
+- `glyphs` per cell.
+- `fg_colors` per cell.
+- `bg_colors` per cell.
+- `materials_raw` per cell (material ID, `t8::texture::raw_mat_none = 0xFF`).
 
-Each cell is a `Textel`-like combination of:
-- `Glyph`
-- foreground `Color`
-- background `Color`
-- material ID
+The data elements for a particular cell can be accessed as a bundle by using the operator `Textel Texture::operator()(int r, int c) const` where `Textel` (textel here is basically another name for cell in the context of `Texture` objects) is a representation of the data like glyph, fg/bg colors and material of a cell in the texture object.
 
-## Textel
+The number of bytes stored by a single textel (texture cell) can be determined by the types of the textel data:
+* `Glyph glyph` : `char32_t` (4) + `char` (1).
+* `Color fg_color` : `int16_t` (2).
+* `Color bg_color` : `int16_t` (2).
+* `uint8_t raw_mat` : `uint8_t` (1).
 
-Explain `Textel`:
-- small cell value object
-- glyph + fg + bg + material
-- useful for editing one cell at a time
-- raw material storage vs decoded material API
+So every textel is `(4 + 1) + 2*2 + 1 = 10 bytes`.
 
 ## Materials
 
-Important section.
+Materials are stored as `uint8_t` bytes in order to utilize the full positive range of the byte. In order to have a marker for "no material" sentinel `t8::texture::raw_mat_none = 0xFF` which means you have 255 available materials excluding this sentinel constant.
 
-Explain:
-- Material IDs are optional.
-- Public/decoded material:
-  - `-1` means no material.
-  - `0..254` are material IDs.
-- Raw material:
-  - stored as `uint8_t`
-  - `255` means no material.
-  - `0..254` are material IDs.
-- Use public decoded APIs unless you specifically need raw storage.
+A raw material is `raw_mat_none` by default.
 
-Mention helpers:
-- `texture::mat_none`
-- `texture::raw_mat_none`
-- `encode_raw_material(int)`
-- `decode_raw_material(uint8_t)`
-- `has_material(int)`
-- `has_raw_material(uint8_t)`
+Raw materials are not used externally though. Instead, to make it easier to use the API there is a public layer `material` where sentinel `t8::texture::mat_none = -1` is used. This sentinel directly translates to `raw_mat_none`. A material is `int` (4 bytes for most compilers/platforms ) which means that when encoding it to a raw material, higher values than 254 are clamped to 254.
+
+The (raw and public) material range is thus in the range `[0, 254]`.
+
+You can use the following functions in `Texture.h` for conversion between these domains:
+
+* `inline uint8_t t8::texture::encode_raw_material(int m)`.
+* `inline int t8::texture::decode_raw_material(uint8_t m_raw)`.
+
+So prefer to use public (decoded) API functions unless you specifically need raw data manipulation.
+
+Materials are mainly used for collision surface generation, but additional uses can be found.
+
+Other useful helpers in `Texture.h` are:
+
+* `inline bool t8::texture::has_raw_material(uint8_t m_raw)`.
+* `inline bool t8::texture::has_material(int m)`.
 
 ## Creating Textures
 
