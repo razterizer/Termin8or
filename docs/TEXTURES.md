@@ -7,12 +7,12 @@ The `Texture` struct can be found in `include/Termin8or/drawing/Texture.h` under
 Textures can be used for various purposes:
 - Sprites.
 - Offscreen buffer rendering (screen to texture).
-- Animated level/map textures for dungeon decoration in dungeon engine [DungGine](https://github/raztierizer/DungGine).
+- Animated level/map textures for dungeon decoration in dungeon engine [DungGine](https://github.com/razterizer/DungGine).
 - TextUR image storage.
 
 ## Texture Data Model
 
-`Texture` stores cells in a 2D grid layout as flat "SoA" vectors which can be index by row and column coordinates using the function `inline int Texture::index(int r, int c) const noexcept`. Data in the flat vectors are organized by row-major order (i.e. line by line).
+`Texture` stores cells in a 2D grid layout as flat "SoA" vectors which can be indexed by row and column coordinates using the function `inline int Texture::index(int r, int c) const noexcept`. Data in the flat vectors are organized by row-major order (i.e. line by line).
 
 A `Texture` stores:
 - `size`
@@ -24,7 +24,7 @@ A `Texture` stores:
 
 The data elements for a particular cell can be accessed as a bundle by using the operator `Textel Texture::operator()(int r, int c) const` where `Textel` (textel here is basically another name for cell in the context of `Texture` objects) is a representation of the data like glyph, fg/bg colors and material of a cell in the texture object.
 
-The number of bytes stored by a single textel (texture cell) can be determined by the types of the textel data:
+The number of bytes (excluding padding) stored by a single textel (texture cell) can be determined by the types of the textel data:
 * `Glyph glyph` : `char32_t` (4) + `char` (1).
 * `Color fg_color` : `int16_t` (2).
 * `Color bg_color` : `int16_t` (2).
@@ -49,6 +49,8 @@ You can use the following functions in `Texture.h` for conversion between these 
 
 So prefer to use public (decoded) API functions unless you specifically need raw data manipulation.
 
+Example: `t8::texture::encode_raw_material(-1) == t8::texture::raw_mat_none // 0xFF (255)`.
+
 Materials are mainly used for collision surface generation, but additional uses can be found.
 
 Other useful helpers in `Texture.h` are:
@@ -69,7 +71,6 @@ Keep examples short.
 ## Loading and Saving
 
 Explain current public API:
-- `Texture::load(...)` / `Texture::save(...)` if those still exist
 - `TextureFile::load(...)` / `TextureFile::save(...)`
 - `TextureFileFormat::Auto`
 - format-specific options for TX / ANSI
