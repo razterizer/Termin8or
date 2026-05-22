@@ -18,7 +18,7 @@ namespace t8
   {
     AsciiOnly,                                   // 1 byte per cell.
     EnforceUnicodePreferredAndFallback,          // Store preferred + fallback always.
-    TryUnicodePreferredAndFallbackElseAsciiOnly, // Store preferred + fallback if any preferred > 0x7F exists.
+    TryUnicodePreferredAndFallbackElseAsciiOnly, // Store preferred + fallback if any preferred is non-printable ASCII.
   };
   
   class TextureFileTx
@@ -45,7 +45,7 @@ namespace t8
     static bool has_non_ascii_glyphs(const Texture& tex)
     {
       for (const auto& g : tex.glyphs)
-        if (g.preferred > 0x7F)
+        if (!term::is_printable_ascii(g.preferred))
           return true;
       return false;
     }
