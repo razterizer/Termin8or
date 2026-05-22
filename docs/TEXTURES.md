@@ -60,28 +60,65 @@ Other useful helpers in `Texture.h` are:
 
 ## Creating Textures
 
-Examples:
-- empty/default texture
-- fixed-size texture
-- fill with glyph/style
-- set individual textel/glyph/color/material
+A default constructed `Texture` is empty. To create a texture with a fixed size, pass an `RC` size to the constructor:
 
-Keep examples short.
+```cpp
+t8::Texture tex { { 10, 20 } };
+```
+
+Individual cells can be edited through the textel setters:
+
+```cpp
+tex.set_textel_glyph(2, 4, t8::Glyph { U'█', '#' });
+tex.set_textel_fg_color(2, 4, t8::Color16::Yellow);
+tex.set_textel_bg_color(2, 4, t8::Color16::Black);
+tex.set_textel_material(2, 4, 3);
+```
 
 ## Loading and Saving
 
-Explain current public API:
-- `TextureFile::load(...)` / `TextureFile::save(...)`
-- `TextureFileFormat::Auto`
-- format-specific options for TX / ANSI
+Texture file I/O is handled through `TextureFile` in `include/Termin8or/drawing/TextureFile.h`.
 
-Mention:
-- `.tx` is native format
-- ANSI formats are supported but lossy/sidecar-aware depending on encoding/material/fallbacks
+```cpp
+t8::Texture tex;
+t8::TextureFile::load(tex, "sprite.tx");
 
-Link:
-- `TX_FORMAT.md`
-- `ANSI.md`
+t8::TextureFile::save(tex, "sprite.tx");
+```
+
+### Argument Options
+
+`enum class t8::TextureFileFormat { Auto, Tx, Ansi }` (in `TextureFile.h`) determines which format the texture will be loaded from or saved to.
+`t8::TextureFileFormat::Auto` (default) deduces the format from the file extension. You can also request a specific format explicitly.
+
+`enum class t8::AnsiLoadGlyphEncoding { Auto, UTF8, CP437 }` (in `TextureFileAnsi.h`) determines which encoding will be used when loading an ansi file.
+`t8::AnsiLoadGlyphEncoding::Auto` (default) deduces the encoding format from either the file extension or the BOM if present. If `*.utf8ans` is used or if there is an UTF-8 BOM at the file header of the ANSI file then UTF-8 encoding will be used, otherwise CP437 encoding will be used.
+
+```cpp
+enum class t8::AnsiSaveGlyphEncoding
+{
+  AutoPreserveGlyphs,  // CP437 if lossless, else UTF8 + BOM. If *.utf8ans, always UTF8.
+  AutoPreferCP437,     // CP437, using fallback for non-CP437 glyphs. If *.utf8ans, always UTF8.
+  UTF8,                // Explicit UTF8. No BOM for *.utf8ans, otherwise BOM.
+  CP437,               // Explicit CP437. Errors if preferred CPs cannot be converted to CP437.
+};
+```
+Similar to `t8::AnsiLoadGlyphEncoding` but with `Auto` split into two options: `AutoPreserveGlyphs` and `AutoPreferCP437`. `AutoPreserveGlyphs` make sure that the preferred glyph code point is preserved, which means that if it's outside of CP437 then the whole file will be saved in UTF-8 instead. `AutoPreferCP437` means the fallback ASCII will be used if unable to preserve the preferred code point as a CP437 code point.
+
+```cpp
+enum class TxGlyphEncoding
+{
+  AsciiOnly,                                   // 1 byte per cell.
+  EnforceUnicodePreferredAndFallback,          // Store preferred + fallback always.
+  TryUnicodePreferredAndFallbackElseAsciiOnly, // Store preferred + fallback if any preferred is non-printable ASCII.
+};
+```
+This is used for determining how to save each glyph when saving to the TX format.
+* `t8::TxGlyphEncoding::AsciiOnly` means that only the fallback ASCII characters will be stored.
+* `t8::TxGlyphEncoding::EnforceUnicodePreferredAndFallback` means that both preferred and fallback will be stored.
+* `t8::TxGlyphEncoding::TryUnicodePreferredAndFallbackElseAsciiOnly` means that if there is any preferred code point that is non-printable-ASCII, then will save in the same way as `t8::EnforceUnicodePreferredAndFallback`, but if all preferred are in printable ASCII then `t8::TxGlyphEncoding::AsciiOnly` will be used instead.
+
+The native format is .tx. ANSI-style formats are also supported, but may require sidecar files to preserve fallback glyphs and material IDs. See [TX_FORMAT.md](TX_FORMAT.md) and [ANSI.md](ANSI.md) for details.
 
 ## Drawing Textures
 
