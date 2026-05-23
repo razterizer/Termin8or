@@ -38,7 +38,7 @@ namespace t8
       return !has_cp && has_fb;
     }
     
-    static bool fails_2_existing_fallback_isnt_ascii(const Glyph& g) noexcept
+    static bool fails_2_existing_fallback_isnt_printable_ascii(const Glyph& g) noexcept
     {
       bool has_fb = g.fallback != none;
       return has_fb && !g.is_fallback_printable_ascii();
@@ -48,9 +48,15 @@ namespace t8
     {
       bool has_cp = g.preferred != none32;
       bool has_fb = g.fallback != none;
-      return has_cp && !g.is_preferred_printable_ascii() && !has_fb;
+      return has_cp && !g.is_preferred_ascii() && !has_fb;
     }
-  
+    
+    static bool fails_4_existing_preferred_is_non_printable_ascii(const Glyph& g) noexcept
+    {
+      bool has_cp = g.preferred != none32;
+      return has_cp && g.is_preferred_ascii() && !g.is_preferred_printable_ascii();
+    }
+    
   public:
     Glyph() = default;
     
@@ -65,13 +71,17 @@ namespace t8
       assert(!fails_1_fallback_wo_preferred(*this)
              && "ERROR in Glyph(char32_t, char) : Fallback without preferred.");
       
-      // 2) Fallback must be ASCII if present.
-      assert(!fails_2_existing_fallback_isnt_ascii(*this)
+      // 2) Fallback must be printable ASCII if present.
+      assert(!fails_2_existing_fallback_isnt_printable_ascii(*this)
              && "ERROR in Glyph(char32_t, char) : Fallback must be printable ASCII ([0x20, 0x7E]).");
       
       // 3) Preferred must be ASCII if fallback is not present.
       assert(!fails_3_existing_preferred_isnt_ascii_wo_fallback(*this)
              && "ERROR in Glyph(char32_t, char) : Preferred cannot be non-ASCII while fallback is unset.");
+             
+      // 4) ASCII preferred must be printable.
+      assert(!fails_4_existing_preferred_is_non_printable_ascii(*this)
+             && "ERROR in Glyph(char32_t, char) : Preferred cannot be non-printable if ASCII.");
              
       // Canonicalize ASCII glyphs.
       if (preferred != none32 && is_preferred_printable_ascii())
@@ -86,6 +96,16 @@ namespace t8
     bool is_fallback_printable_ascii() const
     {
       return is_printable_ascii(static_cast<unsigned char>(fallback));
+    }
+    
+    bool is_preferred_ascii() const
+    {
+      return is_ascii(preferred);
+    }
+    
+    bool is_fallback_ascii() const
+    {
+      return is_ascii(static_cast<unsigned char>(fallback));
     }
     
     bool try_canonicalize_from_fallback()
@@ -126,8 +146,9 @@ namespace t8
     inline bool valid() const noexcept
     {
       return !fails_1_fallback_wo_preferred(*this)
-          && !fails_2_existing_fallback_isnt_ascii(*this)
-          && !fails_3_existing_preferred_isnt_ascii_wo_fallback(*this);
+          && !fails_2_existing_fallback_isnt_printable_ascii(*this)
+          && !fails_3_existing_preferred_isnt_ascii_wo_fallback(*this)
+          && !fails_4_existing_preferred_is_non_printable_ascii(*this);
     }
     
     bool valid_after_canonicalization() const
