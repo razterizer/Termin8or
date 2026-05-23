@@ -25,12 +25,15 @@ A `Glyph` object is valid when it is in one of these states:
 
 The temporary/draft state `{ preferred = none32, fallback = printable ASCII }` can occur while editing/parsing user input, but should be canonicalized with `try_canonicalize_from_fallback()` before serialization or use as a final glyph.
 
+ASCII control characters (`0x00`-`0x1F`) and `0x7F` are not valid `preferred` glyphs, even when a printable fallback is supplied.
+
 Examples:
 * `Glyph(0x2588, '#')` -> `{ preferred = 0x2588, fallback = '#' }`.
 * `Glyph('#')` -> `{ preferred = '#', fallback = '#' }`.
 * `Glyph('#', 'I')` -> `{ preferred = '#', fallback = '#' }`. Auto-canonicalization: preferred -> fallback.
 * `Glyph('#', static_cast<char>(0xC5))` -> `"ERROR in Glyph(char32_t, char) : Fallback must be printable ASCII ([0x20, 0x7E])."`.
 * `Glyph('#', Glyph::none)` -> `{ preferred = '#', fallback = '#' }`. Auto-canonicalization: preferred -> fallback.
+* `Glyph(0x0A, '?')` -> `"ERROR in Glyph(char32_t, char) : Preferred cannot be non-printable if ASCII."`.
 * `Glyph(0x2588)` -> `"ERROR in Glyph(char32_t, char) : Preferred cannot be non-ASCII while fallback is unset."`.
 * `Glyph(Glyph::none32, '#')` -> `"ERROR in Glyph(char32_t, char) : Fallback without preferred."`.
 
@@ -174,4 +177,3 @@ Legacy ASCII-only parsing consumes one ASCII byte and produces the corresponding
 ### Roundtrip Notes
 
 Normal glyph mode preserves both the preferred code point and the fallback. Legacy ASCII-only mode does not preserve non-ASCII preferred code points; it only preserves the ASCII fallback. Also note that parsing may canonicalize ASCII glyphs, so serialized output can be cleaner than the original input.
-
