@@ -11,6 +11,7 @@
 #include "../../input/KeyboardEnums.h"
 #include "../../screen/Styles.h"
 #include "../../screen/ScreenHandler.h"
+#include "../../str/ascii_helpers.h"
 #include <Core/StringHelper.h>
 #include <string>
 
@@ -80,7 +81,7 @@ namespace t8x
         return;
       if (mode == TextFieldMode::All && curr_key != 0)
         add_char(curr_key);
-      else if (mode == TextFieldMode::PrintableAscii && 0x20 <= curr_key && curr_key <= 0x7E)
+      else if (mode == TextFieldMode::PrintableAscii && t8::is_printable_ascii(curr_key))
         add_char(curr_key);
       else if (str::is_digit(curr_key))
       {

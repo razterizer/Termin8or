@@ -188,7 +188,7 @@ namespace t8x
       {
         fb_hex_field.update(curr_key, curr_special_key);
         auto hex_ch = static_cast<char>(str::hex2int(fb_hex_field.get_input()));
-        if (t8::term::is_printable_ascii(hex_ch))
+        if (t8::is_printable_ascii(hex_ch))
           fb_field.set_input(std::string(1, hex_ch));
         else
           fb_field.clear();

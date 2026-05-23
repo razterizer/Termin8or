@@ -41,14 +41,14 @@ namespace t8
     static bool fails_2_existing_fallback_isnt_ascii(const Glyph& g) noexcept
     {
       bool has_fb = g.fallback != none;
-      return has_fb && static_cast<unsigned char>(g.fallback) > 0x7F;
+      return has_fb && !g.is_fallback_printable_ascii();
     }
     
     static bool fails_3_existing_preferred_isnt_ascii_wo_fallback(const Glyph& g) noexcept
     {
       bool has_cp = g.preferred != none32;
       bool has_fb = g.fallback != none;
-      return has_cp && g.preferred > 0x7F && !has_fb;
+      return has_cp && !g.is_preferred_printable_ascii() && !has_fb;
     }
   
   public:
@@ -67,15 +67,25 @@ namespace t8
       
       // 2) Fallback must be ASCII if present.
       assert(!fails_2_existing_fallback_isnt_ascii(*this)
-             && "ERROR in Glyph(char32_t, char) : Fallback must be ASCII (<=0x7F).");
+             && "ERROR in Glyph(char32_t, char) : Fallback must be printable ASCII ([0x20, 0x7E]).");
       
       // 3) Preferred must be ASCII if fallback is not present.
       assert(!fails_3_existing_preferred_isnt_ascii_wo_fallback(*this)
              && "ERROR in Glyph(char32_t, char) : Preferred cannot be non-ASCII while fallback is unset.");
              
       // Canonicalize ASCII glyphs.
-      if (preferred != none32 && preferred <= 0x7F)
+      if (preferred != none32 && is_preferred_printable_ascii())
         fallback = static_cast<char>(preferred);
+    }
+    
+    bool is_preferred_printable_ascii() const
+    {
+      return is_printable_ascii(preferred);
+    }
+    
+    bool is_fallback_printable_ascii() const
+    {
+      return is_printable_ascii(static_cast<unsigned char>(fallback));
     }
     
     bool try_canonicalize_from_fallback()
@@ -84,7 +94,7 @@ namespace t8
       {
         unsigned char ufb = static_cast<unsigned char>(fallback);
         
-        if (ufb <= 0x7F)
+        if (is_printable_ascii(ufb))
         {
           preferred = static_cast<char32_t>(ufb);
           return true;
@@ -94,6 +104,11 @@ namespace t8
     }
     
     inline bool empty() const noexcept
+    {
+      return empty_preferred();
+    }
+    
+    inline bool empty_preferred() const noexcept
     {
       return preferred == none32;
     }
@@ -137,13 +152,13 @@ namespace t8
     
     // legacy_ascii_only == false:
     // p == none32 && f == none => "[]"
-    // p != none32 && p <= 0x7F => "[<p>]"
-    // p != none32 && p > 0x7F  => "[<p_hex>,<f>]" (because of invariant assert 3)
+    // p != none32 && p printable ASCII => "[<p>]"
+    // p != none32 && p not printable ASCII  => "[<p_hex>,<f>]" (because of invariant assert 3)
     //
     // legacy_ascii_only == true:
     // p == none32 && f == none => "?"
-    // p != none32 && p <= 0x7F => "<p>"
-    // p != none32 && p > 0x7F  => "<f>" (because of invariant assert 3)
+    // p != none32 && p printable ASCII => "<p>"
+    // p != none32 && p not printable ASCII  => "<f>" (because of invariant assert 3)
     //
     // Round trips legacy_ascii_only == false:
     // p == 'A' && f == none => "[A]"  => p == 'A', f == 'A'
@@ -159,31 +174,30 @@ namespace t8
       assert(valid());
       
       std::string ret;
-      auto fb_u = static_cast<unsigned char>(fallback);
       if (legacy_ascii_only)
       {
         if (preferred == none32)
           return "?";
           
-        if (preferred <= 0x7F)
+        if (is_preferred_printable_ascii())
           return std::string(1, static_cast<char>(preferred));
           
-        assert(fallback != none && "Glyph::str(): fallback cannot be unset when preferred is > 0x7F");
-        assert(fb_u <= 0x7F && "Glyph::str(): fallback must be <= 0x7F");
+        assert(fallback != none && "Glyph::str(): fallback cannot be unset when preferred isn't printable ASCII!");
+        assert(is_fallback_printable_ascii() && "Glyph::str(): fallback must be printable ASCII!");
         return std::string(1, fallback);
       }
       
       ret.push_back('[');
       if (preferred != none32)
       {
-        if (preferred <= 0x7F)
+        if (is_preferred_printable_ascii())
           ret.push_back(static_cast<char>(preferred));
         else
         {
           ret += str::int2hex(static_cast<uint32_t>(preferred));
           
-          assert(fallback != none && "ERROR in Glyph::str() : Fallback character cannot be unset when preferred is > 0x7F!");
-          assert(fb_u <= 0x7F && "ERROR in Glyph::str() : Fallback character must be <= 0x7F!");
+        assert(fallback != none && "ERROR in Glyph::str() : Fallback character cannot be unset when preferred isn't printable ASCII!");
+          assert(is_fallback_printable_ascii() && "ERROR in Glyph::str() : Fallback character must be printable ASCII!");
           ret.push_back(',');
           ret.push_back(fallback);
         }
@@ -237,7 +251,7 @@ namespace t8
       if (legacy_ascii_only)
       {
         auto ch = static_cast<unsigned char>(substr[0]);
-        if (ch > 0x7F)
+        if (!is_printable_ascii(ch))
           return false;
         auto tok = std::string(1, static_cast<char>(ch));
         f_set_preferred(tok);
@@ -280,7 +294,7 @@ namespace t8
         {
           const auto& tok0 = tokens[0];
           if (tok0.length() > 1)
-            return error("A unicode code point > 0x7F must be followed by an ASCII (<= 0x7F) character!");
+            return error("A non-ASCII unicode code point must be followed by a printable ASCII!");
           f_set_preferred(tok0);
           fallback = static_cast<char>(preferred); // Canonicalize ASCII.
           pos += static_cast<int>(toks_len);
@@ -289,14 +303,13 @@ namespace t8
         else if (tokens.size() == 2)
         {
           f_set_preferred(tokens[0]);
-          if (preferred > 0x7F)
+          if (!is_preferred_printable_ascii())
           {
             if (tokens[1].size() != 1)
               return error("Fallback must be a single ASCII char!");
             f_set_fallback(tokens[1]);
-            auto fb_u = static_cast<unsigned char>(fallback);
-            if (fallback == none || fb_u > 0x7F)
-              return error("Fallback must be ASCII (<=0x7F)!");
+            if (fallback == none || !is_fallback_printable_ascii())
+              return error("Fallback must be printable ASCII!");
           }
           else
           {
@@ -339,7 +352,7 @@ namespace t8
       {
         if (preferred == none32)
           str_preferred = "";
-        else if (preferred < 0x7F)
+        else if (is_preferred_printable_ascii())
           str_preferred = std::string(1, static_cast<char>(preferred));
         else
           str_preferred = "0x" + str::int2hex(preferred);
@@ -349,7 +362,7 @@ namespace t8
       else if constexpr (std::is_same_v<CharT, char32_t>)
       {
         bool can_render_preferred = t8::term::can_render_single_column_cp_cached(preferred);
-        bool can_encode_unicode = can_render_preferred && (preferred < 0x7F || !t8::term::force_ascii_fallback);
+        bool can_encode_unicode = can_render_preferred && (is_preferred_printable_ascii() || !t8::term::force_ascii_fallback);
         if (!has_preferred || preferred == none32)
           str_preferred = "";
         else if (can_encode_unicode)

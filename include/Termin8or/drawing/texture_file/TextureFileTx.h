@@ -45,7 +45,7 @@ namespace t8
     static bool has_non_ascii_glyphs(const Texture& tex)
     {
       for (const auto& g : tex.glyphs)
-        if (!term::is_printable_ascii(g.preferred))
+        if (!g.is_preferred_printable_ascii())
           return true;
       return false;
     }

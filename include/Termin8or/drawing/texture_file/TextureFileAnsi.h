@@ -408,11 +408,11 @@ namespace t8
     
     static bool create_glyph_from_ansi(char32_t ch32, char fb, Glyph& g, bool verbose = true)
     {
-      if (term::is_printable_ascii(ch32))
+      if (is_printable_ascii(ch32))
         g = Glyph { ch32 };
       else
       {
-        if (fb != Glyph::none && !term::is_printable_ascii(static_cast<unsigned char>(fb)))
+        if (fb != Glyph::none && !is_printable_ascii(static_cast<unsigned char>(fb)))
         {
           if (verbose)
             std::cerr << "ERROR in TextureFileAnsi::create_glyph_from_ansi() : Encountered a malformed fallback char.\n";
@@ -775,7 +775,7 @@ namespace t8
                 for (int j = i + 2; j < len_line; ++j)
                 {
                   char ch = line[j];
-                  if (term::is_printable_ascii(ch))
+                  if (is_printable_ascii(ch))
                     std::cerr << ch;
                   else
                     std::cerr << "0x" << str::int2hex(ch);
@@ -974,7 +974,7 @@ namespace t8
             
             if (valid_unicode)
               line += utf8::encode_char32_utf8(g.preferred);
-            else if (!g.empty_fallback() && term::is_printable_ascii(g.fallback))
+            else if (!g.empty_fallback() && g.is_fallback_printable_ascii())
               line.push_back(g.fallback);
             else
             {
@@ -990,7 +990,7 @@ namespace t8
             auto cp = utf8::unicode_to_cp437(g.preferred);
             if (cp.has_value())
               line.push_back(static_cast<char>(cp.value()));
-            else if (!g.empty_fallback() && term::is_printable_ascii(ch_fb) &&
+            else if (!g.empty_fallback() && is_printable_ascii(ch_fb) &&
                      ansi_glyph_encoding == AnsiSaveGlyphEncoding::AutoPreferCP437)
               line.push_back(ch_fb);
             else

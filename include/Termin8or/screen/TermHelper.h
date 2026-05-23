@@ -9,8 +9,8 @@
 #include <Core/Utf8.h>
 #include <Core/System.h>
 #include <Core/Term.h>
-#include <Core/MathUtils.h>
 #include <Core/StlUtils.h>
+#include "../str/ascii_helpers.h"
 #include <array>
 
 
@@ -592,12 +592,6 @@ namespace t8
 
     // /////////////////////////////////////////////////////////////
     
-    template<typename CharT>
-    inline constexpr bool is_printable_ascii(CharT cp) noexcept
-    {
-      return math::in_r_c<CharT>(cp, 0x20, 0x7E);
-    }
-    
     inline bool use_ansi_renderer()
     {
       return ::term::use_ansi_renderer(m_term_mode);
@@ -744,7 +738,7 @@ namespace t8
     {
       auto f_handle_ascii = [preferred, fallback]() -> char
       {
-        if (preferred <= 0x7F)
+        if (is_printable_ascii(preferred))
           return static_cast<char>(preferred);
         if (fallback != none && is_printable_ascii(fallback))
           return fallback;
@@ -779,7 +773,7 @@ namespace t8
     {
       auto f_handle_ascii = [preferred, fallback]() -> std::string
       {
-        if (preferred <= 0x7F)
+        if (is_printable_ascii(preferred))
           return std::string(1, static_cast<char>(preferred));
         if (fallback != none && is_printable_ascii(fallback))
           return std::string(1, fallback);
