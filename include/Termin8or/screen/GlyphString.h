@@ -21,9 +21,6 @@ namespace t8
     static constexpr size_t npos = static_cast<size_t>(-1);
   
     GlyphString() = default;
-    // Consider these for clarity.
-    // GlyphString::from_bytes(std::string_view) (current behavior)
-    // GlyphString::from_utf8(std::string_view) (decode to Glyph(preferred_unicode, ascii_fallback))
     GlyphString(std::string_view sv) = delete;
     GlyphString(const std::string& str) = delete;
     GlyphString(const Glyph& glyph)
