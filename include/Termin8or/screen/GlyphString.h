@@ -180,13 +180,7 @@ namespace t8
       return *this;
     }
     
-    inline GlyphString& operator+=(std::string_view sv)
-    {
-      glyph_vector.reserve(glyph_vector.size() + sv.size());
-      for (unsigned char c : sv)
-        glyph_vector.emplace_back(c, c);
-      return *this;
-    }
+    inline GlyphString& operator+=(std::string_view sv) = delete;
     
     inline GlyphString& operator+=(char c)
     {
@@ -232,13 +226,7 @@ namespace t8
   }
   
   // Append ASCII.
-  inline GlyphString operator+(GlyphString lhs, std::string_view rhs)
-  {
-    lhs.glyph_vector.reserve(lhs.glyph_vector.size() + rhs.size());
-    for (unsigned char c : rhs)
-      lhs.glyph_vector.emplace_back(c, c);
-    return lhs;
-  }
+  inline GlyphString operator+(GlyphString lhs, std::string_view rhs) = delete;
   
   // Append char.
   inline GlyphString operator+(GlyphString lhs, char rhs)
