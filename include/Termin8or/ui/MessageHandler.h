@@ -7,6 +7,7 @@
 
 #pragma once
 #include "../screen/Color.h"
+#include "../screen/GlyphString.h" // Unfortunate cost due to making GlyphString more conversion-strict.
 #include "../ui/widget/TextBox.h"
 #include <execution>
 #include <queue>
@@ -34,12 +35,14 @@ namespace t8x
   template<typename StrT = std::string>
   class MessageHandler
   {
+    using StrVecT = std::vector<StrT>;
+  
     float trg_time = 0.f;
     bool message_empty = true;
-    std::queue<std::pair<std::string, float>> messages_guide;
-    std::queue<std::pair<std::string, float>> messages_warning;
-    std::queue<std::pair<std::string, float>> messages_fatal;
-    std::string curr_message;
+    std::queue<std::pair<StrVecT, float>> messages_guide;
+    std::queue<std::pair<StrVecT, float>> messages_warning;
+    std::queue<std::pair<StrVecT, float>> messages_fatal;
+    StrVecT curr_message;
     MessageHandlerLevel curr_level;
     float curr_duration_s = 1.5f;
     TextBox<StrT> tb;
@@ -72,7 +75,15 @@ namespace t8x
       return !messages_guide.empty() || !messages_warning.empty() || !messages_fatal.empty();
     }
     
-    std::tuple<std::string, MessageHandlerLevel, float> fetch_next_message()
+    StrT make_text(std::string_view sv)
+    {
+      if constexpr (std::is_same_v<StrT, t8::GlyphString>)
+        return t8::GlyphString::from_ascii(sv);
+      else
+        return StrT { std::string { sv } };
+    }
+    
+    std::tuple<StrVecT, MessageHandlerLevel, float> fetch_next_message()
     {
       if (!messages_fatal.empty())
       {
@@ -95,22 +106,27 @@ namespace t8x
         messages_guide.pop();
         return ret;
       }
-      return { "<Invalid Message>", MessageHandlerLevel::Guide, 0.5f };
+      return { { make_text("<Invalid Message>") } , MessageHandlerLevel::Guide, 0.5f };
     }
     
   public:
-    void add_message(float time, const std::string& msg, MessageHandlerLevel lvl, float duration_s = 1.5f)
+    void add_message(float time, const StrT& single_line_msg, MessageHandlerLevel lvl, float duration_s = 1.5f)
+    {
+      add_message_multi_line(time, { single_line_msg }, lvl, duration_s);
+    }
+  
+    void add_message_multi_line(float time, const StrVecT& multi_line_msg, MessageHandlerLevel lvl, float duration_s = 1.5f)
     {
       switch (lvl)
       {
         case MessageHandlerLevel::Guide:
-          messages_guide.push({ msg, duration_s });
+          messages_guide.push({ multi_line_msg, duration_s });
           break;
         case MessageHandlerLevel::Warning:
-          messages_warning.push({ msg, duration_s });
+          messages_warning.push({ multi_line_msg, duration_s });
           break;
         case MessageHandlerLevel::Fatal:
-          messages_fatal.push({ msg, duration_s });
+          messages_fatal.push({ multi_line_msg, duration_s });
           break;
       }
     }
@@ -130,7 +146,7 @@ namespace t8x
       {
         auto fg_color = get_fg_color();
         auto bg_color = get_bg_color();
-        tb.set_text(curr_message, str::Adjustment::Center);
+        tb.set_text(curr_message, {}, {}, str::Adjustment::Center);
         TextBoxDrawingArgsAlign aargs;
         aargs.v_align = args.v_align;
         aargs.h_align = args.h_align;
