@@ -97,7 +97,7 @@ For example:
 ```cpp
 using namespace t8::literals;
 
-auto gstr = "HP: "_gs + Glyph { U'♥', 'v' } + " "_gs + std::to_string(hp);
+auto gstr = "HP: "_gs + Glyph { U'♥', 'v' } + " "_gs + GlyphString::from_number(hp);
 ```
 
 `ScreenHandler<NR, NC, CharT>::write_buffer()` has overloads that accept `GlyphString`.
