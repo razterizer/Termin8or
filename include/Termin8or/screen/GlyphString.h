@@ -40,7 +40,7 @@ namespace t8
       gs.glyph_vector.reserve(sv_ascii.size());
       for (unsigned char c : sv_ascii)
       {
-        assert(is_printable_ascii(c) && "ERROR in GlyphString::from_ascii() : Characters must be printable ASCII!");
+        assert(str::is_printable_ascii(c) && "ERROR in GlyphString::from_ascii() : Characters must be printable ASCII!");
         gs.glyph_vector.emplace_back(c, c);
       }
       return gs;
@@ -48,7 +48,7 @@ namespace t8
     
     static GlyphString from_utf8(std::string_view sv_utf8, char fallback = '?')
     {
-      assert(is_printable_ascii(fallback) && "ERROR in GlyphString::from_utf8() : Fallback must be printable ASCII!");
+      assert(str::is_printable_ascii(fallback) && "ERROR in GlyphString::from_utf8() : Fallback must be printable ASCII!");
       
       GlyphString gs;
       // Slight over-reserving, but I think it ought to be acceptable.
@@ -59,7 +59,7 @@ namespace t8
       char32_t ch32 = utf8::none;
       while (utf8::decode_next_utf8_char32(utf8, ch32, byte_idx))
       {
-        if (is_printable_ascii(ch32))
+        if (str::is_printable_ascii(ch32))
           gs.glyph_vector.emplace_back(ch32, static_cast<char>(ch32));
         else
           gs.glyph_vector.emplace_back(ch32, fallback);

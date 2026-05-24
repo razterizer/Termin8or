@@ -10,7 +10,6 @@
 #include <Core/System.h>
 #include <Core/Term.h>
 #include <Core/StlUtils.h>
-#include "../str/ascii_helpers.h"
 #include <array>
 
 
@@ -726,7 +725,7 @@ namespace t8
         return preferred;
           
       // Fallback (treat fallback as ASCII only).
-      if (fallback != none && is_printable_ascii(fallback))
+      if (fallback != none && str::is_printable_ascii(fallback))
         return static_cast<char32_t>(fallback);
       
       return none32;
@@ -738,9 +737,9 @@ namespace t8
     {
       auto f_handle_ascii = [preferred, fallback]() -> char
       {
-        if (is_printable_ascii(preferred))
+        if (str::is_printable_ascii(preferred))
           return static_cast<char>(preferred);
-        if (fallback != none && is_printable_ascii(fallback))
+        if (fallback != none && str::is_printable_ascii(fallback))
           return fallback;
         return '?';
       };
@@ -773,9 +772,9 @@ namespace t8
     {
       auto f_handle_ascii = [preferred, fallback]() -> std::string
       {
-        if (is_printable_ascii(preferred))
+        if (str::is_printable_ascii(preferred))
           return std::string(1, static_cast<char>(preferred));
-        if (fallback != none && is_printable_ascii(fallback))
+        if (fallback != none && str::is_printable_ascii(fallback))
           return std::string(1, fallback);
         return "?";
       };

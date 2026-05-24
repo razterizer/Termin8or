@@ -90,22 +90,22 @@ namespace t8
     
     bool is_preferred_printable_ascii() const
     {
-      return is_printable_ascii(preferred);
+      return str::is_printable_ascii(preferred);
     }
     
     bool is_fallback_printable_ascii() const
     {
-      return is_printable_ascii(static_cast<unsigned char>(fallback));
+      return str::is_printable_ascii(static_cast<unsigned char>(fallback));
     }
     
     bool is_preferred_ascii() const
     {
-      return is_ascii(preferred);
+      return str::is_ascii(preferred);
     }
     
     bool is_fallback_ascii() const
     {
-      return is_ascii(static_cast<unsigned char>(fallback));
+      return str::is_ascii(static_cast<unsigned char>(fallback));
     }
     
     bool try_canonicalize_from_fallback()
@@ -114,7 +114,7 @@ namespace t8
       {
         unsigned char ufb = static_cast<unsigned char>(fallback);
         
-        if (is_printable_ascii(ufb))
+        if (str::is_printable_ascii(ufb))
         {
           preferred = static_cast<char32_t>(ufb);
           return true;
@@ -272,7 +272,7 @@ namespace t8
       if (legacy_ascii_only)
       {
         auto ch = static_cast<unsigned char>(substr[0]);
-        if (!is_printable_ascii(ch))
+        if (!str::is_printable_ascii(ch))
           return false;
         auto tok = std::string(1, static_cast<char>(ch));
         f_set_preferred(tok);
