@@ -68,6 +68,11 @@ namespace t8
     }
     
     
+    inline void clear() noexcept
+    {
+      glyph_vector.clear();
+    }
+    
     inline bool empty() const noexcept
     {
       return glyph_vector.empty();
