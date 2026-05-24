@@ -24,18 +24,8 @@ namespace t8
     // Consider these for clarity.
     // GlyphString::from_bytes(std::string_view) (current behavior)
     // GlyphString::from_utf8(std::string_view) (decode to Glyph(preferred_unicode, ascii_fallback))
-    GlyphString(std::string_view sv)
-    {
-      glyph_vector.reserve(sv.size());
-      for (unsigned char c : sv)
-        glyph_vector.emplace_back(c, c);
-    }
-    GlyphString(const std::string& str)
-    {
-      glyph_vector.reserve(str.size());
-      for (unsigned char c : str)
-        glyph_vector.emplace_back(c, c);
-    }
+    GlyphString(std::string_view sv) = delete;
+    GlyphString(const std::string& str) = delete;
     GlyphString(const Glyph& glyph)
     {
       glyph_vector.emplace_back(glyph);
@@ -44,6 +34,40 @@ namespace t8
     {
       glyph_vector.emplace_back(c, c);
     }
+    
+    static GlyphString from_ascii(std::string_view sv_ascii)
+    {
+      GlyphString gs;
+      gs.glyph_vector.reserve(sv_ascii.size());
+      for (unsigned char c : sv_ascii)
+      {
+        assert(is_printable_ascii(c) && "ERROR in GlyphString::from_ascii() : Characters must be printable ASCII!");
+        gs.glyph_vector.emplace_back(c, c);
+      }
+      return gs;
+    }
+    
+    static GlyphString from_utf8(std::string_view sv_utf8, char fallback = '?')
+    {
+      assert(is_printable_ascii(fallback) && "ERROR in GlyphString::from_utf8() : Fallback must be printable ASCII!");
+      
+      GlyphString gs;
+      // Slight over-reserving, but I think it ought to be acceptable.
+      gs.glyph_vector.reserve(sv_utf8.size());
+      
+      std::string utf8 { sv_utf8 };
+      size_t byte_idx = 0;
+      char32_t ch32 = utf8::none;
+      while (utf8::decode_next_utf8_char32(utf8, ch32, byte_idx))
+      {
+        if (is_printable_ascii(ch32))
+          gs.glyph_vector.emplace_back(ch32, static_cast<char>(ch32));
+        else
+          gs.glyph_vector.emplace_back(ch32, fallback);
+      }
+      return gs;
+    }
+    
     
     inline bool empty() const noexcept
     {
