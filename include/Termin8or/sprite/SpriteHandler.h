@@ -891,7 +891,7 @@ namespace t8x
     struct LineSeg
     {
       std::array<Vec2, 2> pos;
-      t8::Glyph glyph = 0;
+      t8::Glyph glyph;
       Style style;
       int mat = 0;
     };
