@@ -23,11 +23,11 @@ namespace t8
     GlyphString() = default;
     GlyphString(std::string_view sv) = delete;
     GlyphString(const std::string& str) = delete;
-    GlyphString(const Glyph& glyph)
+    explicit GlyphString(const Glyph& glyph)
     {
       glyph_vector.emplace_back(glyph);
     }
-    GlyphString(char c)
+    explicit GlyphString(char c)
     {
       glyph_vector.emplace_back(c, c);
     }
