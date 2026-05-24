@@ -102,6 +102,9 @@ auto gstr = "HP: "_gs + Glyph { U'♥', 'v' } + " "_gs + GlyphString::from_numbe
 
 `ScreenHandler<NR, NC, CharT>::write_buffer()` has overloads that accept `GlyphString`.
 
+`GlyphString` does not implicitly construct from `std::string` or `std::string_view`.
+Use `_gs` or `GlyphString::from_ascii()` for printable ASCII text, `GlyphString::from_utf8()` for UTF-8 text with fallback, and `GlyphString::from_number()` for numeric values.
+
 ### StyledString
 
 `StyledString` is defined in header `include/Termin8or/screen/StyledString.h` in the namespace `t8`.
