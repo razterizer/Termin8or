@@ -67,6 +67,14 @@ namespace t8
       return gs;
     }
     
+    template<typename T>
+    static GlyphString from_number(T value)
+    {
+      static_assert(std::is_arithmetic_v<T>,
+                    "ERROR in GlyphString::from_number() : T must be arithmetic.");
+      return from_ascii(std::to_string(value));
+    }
+    
     
     inline void clear() noexcept
     {
