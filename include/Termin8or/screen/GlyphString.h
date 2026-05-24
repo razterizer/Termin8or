@@ -206,14 +206,7 @@ namespace t8
     // "_gs" produces an ASCII part (no CharT, no ScreenHandler needed).
     inline GlyphString operator"" _gs(const char* s, size_t n)
     {
-      GlyphString gs;
-      gs.glyph_vector.reserve(n);
-      for (size_t i = 0; i < n; ++i)
-      {
-        auto b = static_cast<unsigned char>(s[i]);
-        gs.glyph_vector.emplace_back(b, b);
-      }
-      return gs;
+      return GlyphString::from_ascii(std::string_view { s, n });
     }
   }
   
