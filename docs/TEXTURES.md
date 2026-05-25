@@ -164,7 +164,8 @@ ANSI files can represent colors and glyphs directly, but Termin8or-specific fall
 
 ## Compatibility Notes
 
-Mention:
-- Older texture files may be ASCII-only.
-- Newer texture files may use bracketed glyphs.
-- Materials changed to raw storage internally but decoded public API should be preferred.
+Older `.tx` files may be ASCII-only. Newer `.tx` files may use bracketed glyph serialization to preserve both the preferred Unicode code point and the ASCII fallback. The loader handles the supported historical versions and initializes missing newer fields where possible.
+
+Materials are stored internally as raw bytes, where `t8::texture::raw_mat_none` marks "no material". Public setters and getters should generally use decoded material values instead, where `t8::texture::mat_none` is the "no material" value.
+
+ANSI files are inherently less Termin8or-specific than `.tx` files. They are useful for importing/exporting ANSI art and for visual roundtrips, but `.tx` remains the native format when you want to preserve the full Termin8or texture model directly.
