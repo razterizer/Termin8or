@@ -132,10 +132,15 @@ The native format is .tx. ANSI-style formats are also supported, but may require
 
 ## Drawing Textures
 
-Explain that textures can be rendered through:
-- `ScreenHandler::write_buffer(...)`
-- drawing helpers like `draw_box_textured(...)`
-- sprites / sprite frames
+Textures are not drawn by a single monolithic "draw texture" function. Instead, texture cells are fed into the normal `ScreenHandler` writing path, usually through higher-level helpers.
+
+Common paths are:
+
+* Drawing textured boxes with helpers such as `draw_box_textured(...)` in `include/Termin8or/drawing/Drawing.h`.
+* Using a `Texture` as a sprite frame through `SpriteHandler` / `BitmapSprite` in `include/Termin8or/sprite/SpriteHandler.h`.
+* Copying screen buffers into textures for offscreen rendering or editor workflows, see `include/Termin8or/screen/ScreenHandler.h`.
+
+The important detail is that texture cells store `Glyph`, foreground color, background color and material data. When the glyph is written to a `ScreenHandler<NR, NC, CharT>` screen buffer, it follows the same Unicode/fallback behavior as any other `Glyph` written directly with `ScreenHandler::write_buffer(...)`.
 
 ## Unicode and Fallbacks
 
