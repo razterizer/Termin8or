@@ -94,6 +94,8 @@ t8::TextureFile::load(tex, "sprite.tx");
 t8::TextureFile::save(tex, "sprite.tx");
 ```
 
+When saving `.tx` files, the default glyph encoding mode is `t8::TxGlyphEncoding::TryUnicodePreferredAndFallbackElseAsciiOnly`. This keeps ASCII-only textures compact, but automatically stores preferred Unicode code points and ASCII fallbacks when any texture glyph needs the richer representation.
+
 ### Argument Options
 
 `enum class t8::TextureFileFormat { Auto, Tx, Ansi }` (in `TextureFile.h`) determines which format the texture will be loaded from or saved to.
