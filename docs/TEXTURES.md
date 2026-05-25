@@ -38,7 +38,7 @@ Compare this with the former `Textel` before the Unicode feature was merged in i
 * `Color16 bg_color` : `int` (often 4).
 * `int mat` : `int` (often 4).
 
-So 13 bytes. So with the new and richer Textel data is actually more compact by 3 bytes!
+In total 13 bytes. So therefore, the new Textel data is not only richer in representation, it is also more compact (by 3 bytes)!
 
 ## Materials
 
