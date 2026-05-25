@@ -116,7 +116,7 @@ enum class TxGlyphEncoding
 This is used for determining how to save each glyph when saving to the TX format.
 * `t8::TxGlyphEncoding::AsciiOnly` means that only the fallback ASCII characters will be stored.
 * `t8::TxGlyphEncoding::EnforceUnicodePreferredAndFallback` means that both preferred and fallback will be stored.
-* `t8::TxGlyphEncoding::TryUnicodePreferredAndFallbackElseAsciiOnly` means that if there is any preferred code point that is non-printable-ASCII, then will save in the same way as `t8::EnforceUnicodePreferredAndFallback`, but if all preferred are in printable ASCII then `t8::TxGlyphEncoding::AsciiOnly` will be used instead.
+* `t8::TxGlyphEncoding::TryUnicodePreferredAndFallbackElseAsciiOnly` (default) means that if there is any preferred code point that is non-printable-ASCII, then will save in the same way as `t8::EnforceUnicodePreferredAndFallback`, but if all preferred are in printable ASCII then `t8::TxGlyphEncoding::AsciiOnly` will be used instead.
 
 The native format is .tx. ANSI-style formats are also supported, but may require sidecar files to preserve fallback glyphs and material IDs. See [TX_FORMAT.md](TX_FORMAT.md) and [ANSI.md](ANSI.md) for details.
 
