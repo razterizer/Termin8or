@@ -144,10 +144,11 @@ The important detail is that texture cells store `Glyph`, foreground color, back
 
 ## Unicode and Fallbacks
 
-Short cross-link to `GLYPHS.md`:
-- textures store `Glyph`, not plain `char`
-- Unicode glyphs need ASCII fallback
-- ASCII-only rendering uses fallback
+Textures store `Glyph` objects, not plain `char` values. This means a texture cell can prefer a Unicode code point while still carrying a printable ASCII fallback for ASCII-only rendering paths.
+
+For example, a texture can store `Glyph { U'█', '#' }`. A `ScreenHandler<NR, NC, char32_t>` can try to render the block glyph directly, while `ScreenHandler<NR, NC, char>` or a forced ASCII fallback mode will use `#`.
+
+For the full glyph validity rules, canonicalization behavior and rendering fallback policy, see [GLYPHS.md](GLYPHS.md).
 
 ## Texture File Formats
 
