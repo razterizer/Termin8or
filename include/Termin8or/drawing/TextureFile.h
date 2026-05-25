@@ -82,7 +82,7 @@ namespace t8
     static bool save(const Texture& tex, const std::string& file_path,
                      TextureFileFormat format = TextureFileFormat::Auto,
                      bool verbose = true,
-                     TxGlyphEncoding encoding_mode = TxGlyphEncoding::AsciiOnly,
+                     TxGlyphEncoding encoding_mode = TxGlyphEncoding::TryUnicodePreferredAndFallbackElseAsciiOnly,
                      AnsiSaveGlyphEncoding ansi_glyph_encoding = AnsiSaveGlyphEncoding::AutoPreserveGlyphs,
                      Color ansi_default_fg = Color16::Default,
                      Color ansi_default_bg = Color16::Transparent2)

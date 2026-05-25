@@ -212,7 +212,8 @@ namespace t8
       return true;
     }
     
-    static bool save_tx(const Texture& tex, const std::string& file_path, TxGlyphEncoding encoding_mode = TxGlyphEncoding::AsciiOnly)
+    static bool save_tx(const Texture& tex, const std::string& file_path,
+                        TxGlyphEncoding encoding_mode = TxGlyphEncoding::TryUnicodePreferredAndFallbackElseAsciiOnly)
     {
       std::vector<std::string> lines;
       
