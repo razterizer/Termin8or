@@ -152,12 +152,15 @@ For the full glyph validity rules, canonicalization behavior and rendering fallb
 
 ## Texture File Formats
 
-Short summary only:
-- `.tx`: native Termin8or texture format
-- `.ans/.ansi/.diz/.txt`: ANSI/CP437 style
-- `.utf8ans`: UTF-8 ANSI style
+Texture file format is normally selected from the file extension when `t8::TextureFileFormat::Auto` is used.
 
-Then link to format docs.
+| Extension | Format | Notes |
+| --- | --- | --- |
+| `.tx` | Native Termin8or texture format | Preserves texture size, glyphs, colors and materials. See [TX_FORMAT.md](TX_FORMAT.md). |
+| `.ans`, `.ansi`, `.diz`, `.txt` | ANSI-style text art | Defaults to CP437 glyph decoding unless a UTF-8 BOM is present. See [ANSI.md](ANSI.md). |
+| `.utf8ans` | UTF-8 ANSI-style text art | Treats glyph bytes as UTF-8 by default. See [ANSI.md](ANSI.md). |
+
+ANSI files can represent colors and glyphs directly, but Termin8or-specific fallback and material data may need sidecar files next to the ANSI file. If no `*.<ansi-ext>.fb` sidecar file exists, internal default fallback generation will be used instead.
 
 ## Compatibility Notes
 
