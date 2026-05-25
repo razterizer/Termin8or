@@ -32,6 +32,14 @@ The number of bytes (excluding padding) stored by a single textel (texture cell)
 
 So every textel is `(4 + 1) + 2*2 + 1 = 10 bytes`.
 
+Compare this with the former `Textel` before the Unicode feature was merged in into `main`:
+* `char ch` : `char` (1).
+* `Color16 fg_color` : `int` (often 4).
+* `Color16 bg_color` : `int` (often 4).
+* `int mat` : `int` (often 4).
+
+So 13 bytes. So with the new and richer Textel data is actually more compact by 3 bytes!
+
 ## Materials
 
 Materials are stored as `uint8_t` bytes in order to utilize the full positive range of the byte. In order to have a marker for "no material" sentinel `t8::texture::raw_mat_none = 0xFF` which means you have 255 available materials excluding this sentinel constant.
