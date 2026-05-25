@@ -105,6 +105,8 @@ auto gstr = "HP: "_gs + Glyph { U'♥', 'v' } + " "_gs + GlyphString::from_numbe
 `GlyphString` does not implicitly construct from `std::string` or `std::string_view`.
 Use `_gs` or `GlyphString::from_ascii()` for printable ASCII text, `GlyphString::from_utf8()` for UTF-8 text with fallback, and `GlyphString::from_number()` for numeric values.
 
+A `GlyphString` represents a single line of text. Do not use non-printable ASCII characters such as `\n` or `\r`; for multiline text, use `std::vector<GlyphString>` where appropriate.
+
 ### StyledString
 
 `StyledString` is defined in header `include/Termin8or/screen/StyledString.h` in the namespace `t8`.
