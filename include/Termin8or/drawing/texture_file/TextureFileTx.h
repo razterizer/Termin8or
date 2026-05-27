@@ -9,6 +9,7 @@
 #include "../Texture.h"
 #include <Core/TextIO.h>
 #include <Core/StringHelper.h>
+#include <sstream>
 
 
 namespace t8
