@@ -1,5 +1,80 @@
 # Release Notes
 
+## 3.0.0.6
+
+This release is a major Unicode/API upgrade for Termin8or. The core rendering model now supports Unicode-capable glyphs with strict ASCII fallbacks, while preserving the older ASCII-only path for simpler terminals and deterministic output.
+
+**Glyphs & Strings**
+- Added `t8::Glyph`, a small glyph object with a preferred `char32_t` code point and a printable ASCII fallback.
+- Added strict glyph invariants so invalid fallback states, non-printable ASCII preferred glyphs, and missing fallbacks are caught early.
+- Added `t8::GlyphString` for glyph-aware single-line strings.
+- Replaced ambiguous `GlyphString(std::string)` / `GlyphString(std::string_view)` construction with explicit factories such as `from_ascii()`, `from_utf8()`, and `from_number()`.
+- Added the `_gs` literal for ergonomic ASCII `GlyphString` construction.
+- Added tests for glyph-string construction, UTF-8 handling, and related edge cases.
+
+**Unicode Rendering**
+- Added Unicode-aware rendering support through `ScreenHandler<CharT>`, with `char` remaining ASCII-only and `char32_t` enabling preferred Unicode glyph output.
+- Added runtime ASCII fallback policy support via `AsciiFallbackPolicy`.
+- Added terminal/font-aware glyph coverage checks where possible, while keeping safe ASCII fallback behavior for unsupported glyphs.
+- Added Core-backed helpers for ASCII and printable-ASCII checks.
+
+**Textures**
+- Updated `Texture` / `Textel` handling to store glyphs rather than raw chars.
+- Separated raw stored texture materials from decoded material IDs:
+  - `raw_mat_none = 255`
+  - `mat_none = -1`
+  - added helpers for raw/decoded material conversion and checks.
+- Updated drawing, sprite, dynamics, and rigid-body code to use the clarified material semantics.
+- Fixed sprite line-segment default glyph initialization that could create invalid glyphs.
+
+**Texture File I/O**
+- Moved texture file loading/saving out of `Texture.h` into dedicated texture-file headers.
+- Added `TextureFile`, `TextureFileTx`, `TextureFileAnsi`, and common texture-file helpers.
+- Added format selection through `TextureFileFormat`.
+- Added new `.tx` format support for Unicode glyph serialization:
+  - `VER 3.0` supports bracketed glyph serialization with preferred Unicode code point and ASCII fallback.
+  - default `.tx` saving now uses a Unicode-preserving mode when needed.
+- Added texture file unit tests covering material conversion and `.tx` roundtrips.
+
+**ANSI / CP437 Import & Export**
+- Added ANSI-family load/save support for `.ans`, `.ansi`, `.diz`, `.txt`, and `.utf8ans`.
+- Added CP437 and UTF-8 ANSI loading, including UTF-8 BOM handling.
+- Added automatic load encoding selection:
+  - UTF-8 for BOM / `.utf8ans`.
+  - CP437 for ordinary ANSI files by default.
+- Added ANSI save encoding modes for preserving glyphs, preferring CP437, or forcing UTF-8/CP437.
+- Added CP437 Unicode conversion support, including low-byte graphical glyphs.
+- Added built-in ASCII fallbacks for common CP437/Unicode ANSI-art glyphs.
+- Added sidecar support for ANSI fallbacks (`.fb`) and materials (`.mat`).
+- Added support for a practical subset of ANSI SGR, cursor movement, save/restore cursor, erase, wrapping, DOS EOF, and SAUCE-related payload trimming.
+
+**UI & Widgets**
+- Updated glyph picker workflows for Unicode preferred glyphs and ASCII fallbacks.
+- Added fallback hex entry support for glyphs that are awkward to type directly.
+- Updated text box, string box, dialog, and message handling paths for stricter `GlyphString` semantics.
+- Added multiline message support for glyph-string based message handlers.
+- Added several dialog utility functions for clearing or querying picker/text-field state.
+
+**Engine & System**
+- Improved `GameEngine` lifecycle handling so `run()` owns initialization and data generation.
+- Added `GameEngine::set_allow_quitting()` so applications can block quitting while editing modal text input.
+- Improved keyboard/raw-mode and logging behavior by returning failure states instead of exiting abruptly.
+
+**Documentation**
+- Refreshed the main README.
+- Added dedicated documentation:
+  - `docs/GLYPHS.md`
+  - `docs/TEXTURES.md`
+  - `docs/TX_FORMAT.md`
+  - `docs/ANSI.md`
+  - `docs/MIGRATION_UTF8.md`
+
+**Breaking / Migration Notes**
+- Glyph fallbacks must be printable ASCII.
+- Non-printable ASCII code points are not valid preferred glyphs.
+- Texture material APIs now distinguish decoded material IDs from raw stored material bytes.
+- Older tools that only understand `.tx` versions up to `VER 2.1` will not understand Unicode glyph data saved as `VER 3.0`.
+
 ## 2.1.2.5
 - Fixed lagging version in released version.h issue.
 
@@ -47,4 +122,3 @@
 
 ## 1.0.0.0
 - First release.
-
