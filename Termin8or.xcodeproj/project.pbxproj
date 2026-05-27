@@ -11,6 +11,8 @@
 		070041C92FB5FECF0099D5E4 /* TextureFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 070041C82FB5FECA0099D5E4 /* TextureFile.h */; };
 		070041CC2FB603030099D5E4 /* TextureFileAnsi.h in Headers */ = {isa = PBXBuildFile; fileRef = 070041CB2FB602FB0099D5E4 /* TextureFileAnsi.h */; };
 		070041D02FB603880099D5E4 /* TextureFileCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 070041CF2FB603820099D5E4 /* TextureFileCommon.h */; };
+		070041DF2FC767FF0099D5E4 /* GlyphString_tests.h in Headers */ = {isa = PBXBuildFile; fileRef = 070041DE2FC767FF0099D5E4 /* GlyphString_tests.h */; };
+		070041E12FC7680C0099D5E4 /* TextureFile_tests.h in Headers */ = {isa = PBXBuildFile; fileRef = 070041E02FC7680C0099D5E4 /* TextureFile_tests.h */; };
 		07233B4F2EDBA7220022B60B /* RGBA.h in Headers */ = {isa = PBXBuildFile; fileRef = 07233B4E2EDBA71C0022B60B /* RGBA.h */; };
 		0774FE152F0EB17900B4D4FC /* Glyph.h in Headers */ = {isa = PBXBuildFile; fileRef = 0774FE142F0EB17400B4D4FC /* Glyph.h */; };
 		0774FE1D2F1E1CB000B4D4FC /* TermHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 0774FE1C2F1E1CA800B4D4FC /* TermHelper.h */; };
@@ -69,6 +71,8 @@
 		070041D42FBA1A5C0099D5E4 /* TX_FORMAT.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TX_FORMAT.md; sourceTree = "<group>"; };
 		070041D52FBA1A6B0099D5E4 /* ANSI.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ANSI.md; sourceTree = "<group>"; };
 		070041D62FBA1A970099D5E4 /* MIGRATION_UTF8.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = MIGRATION_UTF8.md; sourceTree = "<group>"; };
+		070041DE2FC767FF0099D5E4 /* GlyphString_tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GlyphString_tests.h; sourceTree = "<group>"; };
+		070041E02FC7680C0099D5E4 /* TextureFile_tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextureFile_tests.h; sourceTree = "<group>"; };
 		071CC3CA290465B3007B4B98 /* libTermin8or.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libTermin8or.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		07233B4D2ED6A56F0022B60B /* ScreenScaling_examples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ScreenScaling_examples.h; sourceTree = "<group>"; };
 		07233B4E2EDBA71C0022B60B /* RGBA.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGBA.h; sourceTree = "<group>"; };
@@ -404,6 +408,8 @@
 				07FDE97E2CA0C0F700116BA7 /* Rectangle_tests.h */,
 				07233B502EE23EAB0022B60B /* Color_tests.h */,
 				0774FE1B2F16E83400B4D4FC /* Glyph_tests.h */,
+				070041DE2FC767FF0099D5E4 /* GlyphString_tests.h */,
+				070041E02FC7680C0099D5E4 /* TextureFile_tests.h */,
 				07FDE9802CA0C4E100116BA7 /* unit_tests.cpp */,
 			);
 			path = Tests;
@@ -467,7 +473,9 @@
 				07BDBA8D2E741BEF002ACC96 /* Drawing.h in Headers */,
 				07BDBA8E2E741BEF002ACC96 /* Animation.h in Headers */,
 				07BDBA732E741B05002ACC96 /* Color.h in Headers */,
+				070041E12FC7680C0099D5E4 /* TextureFile_tests.h in Headers */,
 				07BDBAA32E741C83002ACC96 /* StringConversion.h in Headers */,
+				070041DF2FC767FF0099D5E4 /* GlyphString_tests.h in Headers */,
 				07233B4F2EDBA7220022B60B /* RGBA.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
