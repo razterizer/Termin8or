@@ -160,7 +160,7 @@ t8::TextureFile::save(tex, "sprite.tx");
 `TextureFileFormat::Auto` deduces the format from the extension:
 
 * `.tx` -> native Termin8or texture format.
-* `.ans`, `.ansi`, `.diz`, `.txt` -> ANSI-style text art.
+* `.ans`, `.ansi`, `.txt`, `.diz`, `.asc`, `.nfo` -> ANSI-style text art.
 * `.utf8ans` -> UTF-8 ANSI-style text art.
 
 The default `.tx` save mode is:
@@ -191,7 +191,7 @@ Saving uses:
 t8::AnsiSaveGlyphEncoding::AutoPreserveGlyphs
 ```
 
-This saves CP437 when all preferred glyphs can be represented as CP437; otherwise it saves UTF-8 with a BOM for `.ans`/`.ansi`/`.diz`/`.txt`.
+This saves CP437 when all preferred glyphs can be represented as CP437; otherwise it saves UTF-8 with a BOM for `.ans`/`.ansi`/`.txt`/`.diz`/`.asc`/`.nfo`.
 
 ANSI files may use sidecars:
 

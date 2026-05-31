@@ -12,8 +12,10 @@ The following extensions are treated as ANSI-style texture files:
 | --- | --- |
 | `.ans` | ANSI / CP437-style text art. |
 | `.ansi` | ANSI / CP437-style text art. |
-| `.diz` | ANSI / CP437-style text art. |
 | `.txt` | ANSI / CP437-style text art. |
+| `.diz` | ANSI / CP437-style text art. |
+| `.asc` | ANSI / CP437-style text art. |
+| `.nfo` | ANSI / CP437-style text art. |
 | `.utf8ans` | ANSI-style text art where glyph bytes are interpreted as UTF-8. |
 
 If a UTF-8 BOM is present at the beginning of the file, `Auto` loading treats the glyph data as UTF-8.
@@ -61,9 +63,9 @@ enum class t8::AnsiLoadGlyphEncoding
 | --- | --- |
 | UTF-8 BOM present | UTF-8 |
 | `.utf8ans` without BOM | UTF-8 |
-| `.ans`, `.ansi`, `.diz`, `.txt` without BOM | CP437 |
+| `.ans`, `.ansi`, `.txt`, `.diz`, `.asc`, `.nfo` without BOM | CP437 |
 
-If UTF-8 is requested for `.ans`, `.ansi`, `.diz` or `.txt` without a BOM, the loader warns in verbose mode. If CP437 is requested for a UTF-8 BOM file or a `.utf8ans` file, the loader also warns in verbose mode.
+If UTF-8 is requested for `.ans`, `.ansi`, `.txt`, `.diz`, `.asc` or `.nfo`  without a BOM, the loader warns in verbose mode. If CP437 is requested for a UTF-8 BOM file or a `.utf8ans` file, the loader also warns in verbose mode.
 
 ### CP437
 
@@ -254,12 +256,12 @@ enum class t8::AnsiSaveGlyphEncoding
 
 | Mode | Behavior |
 | --- | --- |
-| `AutoPreserveGlyphs` | For `.utf8ans`, save UTF-8. For `.ans`, `.ansi`, `.diz` and `.txt`, save CP437 if all preferred glyphs can map to CP437; otherwise save UTF-8 with BOM. |
+| `AutoPreserveGlyphs` | For `.utf8ans`, save UTF-8. For `.ans`, `.ansi`, `.txt`, `.diz`, `.asc` and `.nfo`, save CP437 if all preferred glyphs can map to CP437; otherwise save UTF-8 with BOM. |
 | `AutoPreferCP437` | For `.utf8ans`, save UTF-8. Otherwise prefer CP437 and use printable ASCII fallback for glyphs that cannot map to CP437. |
 | `UTF8` | Save UTF-8. For non-`.utf8ans` files, Termin8or adds a UTF-8 BOM. |
 | `CP437` | Save CP437. If any preferred glyph cannot map to CP437, saving fails. |
 
-When saving UTF-8 to `.utf8ans`, Termin8or does not add a BOM. When saving UTF-8 to `.ans`, `.ansi`, `.diz` or `.txt`, Termin8or adds a UTF-8 BOM so `Auto` loading can detect it.
+When saving UTF-8 to `.utf8ans`, Termin8or does not add a BOM. When saving UTF-8 to `.ans`, `.ansi`, `.txt`, `.diz`, `.asc` or `.nfo`, Termin8or adds a UTF-8 BOM so `Auto` loading can detect it.
 
 ### Colors On Save
 

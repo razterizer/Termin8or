@@ -134,7 +134,7 @@ There are now two namespaces: `t8` and `t8x`. `t8` contain the core features and
 * `drawing/Texture.h` (`t8`) : `Texture` and `Textel` data model. Stores glyphs, foreground colors, background colors and raw material IDs.
 * `drawing/TextureFile.h` (`t8`) : Public texture file I/O dispatcher. Deduces or accepts a `TextureFileFormat` and calls the format-specific loader/saver.
 * `drawing/texture_file/TextureFileTx.h` (`t8`) : Native `.tx` texture file load/save support.
-* `drawing/texture_file/TextureFileAnsi.h` (`t8`) : ANSI-art load/save support for `.ans`, `.ansi`, `.diz`, `.txt` and `.utf8ans`.
+* `drawing/texture_file/TextureFileAnsi.h` (`t8`) : ANSI-art load/save support for `.ans`, `.ansi`, `.txt`, `.diz`, `.asc`, `.nfo` and `.utf8ans`.
 * `drawing/texture_file/TextureFileCommon.h` (`t8`) : Shared texture file helpers.
 * `drawing/Gradient.h` (`t8x`) : Allows you to access a vector of values/objects using a normalized (0 to 1) t parameter. Useful for particles and color gradients.
 * `drawing/LineData.h` (`t8x`) : Helper for streaming line-oriented pixel data to `ScreenHandler`. Depends on `Pixel`. See below.
@@ -276,7 +276,7 @@ So I would say, it's fairly fast.
 Termin8or currently supports:
 
 * `.tx` : Native Termin8or texture format.
-* `.ans`, `.ansi`, `.diz`, `.txt` : ANSI/CP437-style text art (or UTF-8 encoded text art if UTF-8 BOM is available).
+* `.ans`, `.ansi`, `.txt`, `.diz`, `.asc`, `.nfo` : ANSI/CP437-style text art (or UTF-8 encoded text art if UTF-8 BOM is available).
 * `.utf8ans` : ANSI-style text art where glyph bytes are interpreted as UTF-8.
 
 ANSI import/export supports CP437 and UTF-8/BOM based workflows. Fallback and
