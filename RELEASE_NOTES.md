@@ -1,5 +1,11 @@
 # Release Notes
 
+## 3.0.1.7
+
+**ANSI / CP437 Import & Export**
+- Added ANSI-art load/save support for `.asc` and `.nfo` files.
+- Added unit test for auto-detection of ansi file extensions.
+
 ## 3.0.0.6
 
 This release is a major Unicode/API upgrade for Termin8or. The core rendering model now supports Unicode-capable glyphs with strict ASCII fallbacks, while preserving the older ASCII-only path for simpler terminals and deterministic output.
