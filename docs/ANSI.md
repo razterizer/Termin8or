@@ -65,7 +65,7 @@ enum class t8::AnsiLoadGlyphEncoding
 | `.utf8ans` without BOM | UTF-8 |
 | `.ans`, `.ansi`, `.txt`, `.diz`, `.asc`, `.nfo` without BOM | CP437 |
 
-If UTF-8 is requested for `.ans`, `.ansi`, `.txt`, `.diz`, `.asc` or `.nfo`  without a BOM, the loader warns in verbose mode. If CP437 is requested for a UTF-8 BOM file or a `.utf8ans` file, the loader also warns in verbose mode.
+If UTF-8 is requested for `.ans`, `.ansi`, `.txt`, `.diz`, `.asc` or `.nfo` without a BOM, the loader warns in verbose mode. If CP437 is requested for a UTF-8 BOM file or a `.utf8ans` file, the loader also warns in verbose mode.
 
 ### CP437
 
