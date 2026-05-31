@@ -104,10 +104,36 @@ namespace texture_file
     }
   }
 
+  void test_ansi_extension_auto_detection()
+  {
+    using namespace t8;
+
+    Texture tex { 1, 1 };
+    tex.set_textel_glyph(0, 0, Glyph { U'█', '#' });
+
+    for (const auto& ext : { "asc", "nfo", "ASC", "NFO" })
+    {
+      const auto path = (std::filesystem::temp_directory_path() /
+                         ("termin8or_ansi_extension_test." + std::string(ext))).string();
+
+      assert(TextureFile::save(tex, path, TextureFileFormat::Auto, false));
+
+      Texture loaded;
+      assert(TextureFile::load(loaded, path, false));
+
+      std::remove(path.c_str());
+      std::remove((path + ".fb").c_str());
+      std::remove((path + ".mat").c_str());
+
+      assert(loaded.size == tex.size);
+      assert(loaded.glyphs[0] == tex.glyphs[0]);
+    }
+  }
+
   void unit_tests()
   {
     test_material_encoding();
     test_tx_roundtrip_preserves_unicode_and_materials();
+    test_ansi_extension_auto_detection();
   }
 }
-
