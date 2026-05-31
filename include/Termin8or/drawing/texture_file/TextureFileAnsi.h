@@ -507,8 +507,8 @@ namespace t8
       
       // Cases:
       // :w (warning), :c (correct).
-      // *.ans, *.ansi (no BOM): Auto->CP437:c, UTF8:w, CP437:c
-      // *.ans, *.ansi (has BOM): Auto->UTF8:c, UTF8:c, CP437:w
+      // CP437 ANSI extensions (no BOM): Auto->CP437:c, UTF8:w, CP437:c
+      // CP437 ANSI extensions (has BOM): Auto->UTF8:c, UTF8:c, CP437:w
       // *.utf8ans (no BOM): Auto->UTF8:c, UTF8:c, CP437:w
       // *.utf8ans (has BOM): Auto->UTF8:c, UTF8:c, CP437:w (via BOM/CP437 conflict, not extension).
       auto ext = get_file_ext(file_path);
@@ -527,7 +527,7 @@ namespace t8
       {
         if (ext == "utf8ans")
           glyph_encoding = AnsiLoadGlyphEncoding::UTF8;
-        else // *.ans, *.ansi.
+        else // CP437 ANSI extensions.
           glyph_encoding = AnsiLoadGlyphEncoding::CP437;
       }
       else if (glyph_encoding == AnsiLoadGlyphEncoding::UTF8 && !utf8_bom)
@@ -888,7 +888,7 @@ namespace t8
       bool utf8_bom = false;
       // Cases:
       // :w (warning), :c (correct).
-      // *.ans, *.ansi: Auto->CP437, UTF8->BOM:c, CP437:c
+      // CP437 ANSI extensions: Auto->CP437, UTF8->BOM:c, CP437:c
       // *.utf8ans: Auto->UTF8, UTF8:c, CP437:w
       switch (ansi_glyph_encoding)
       {
