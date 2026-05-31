@@ -288,7 +288,7 @@ namespace t8
         return false;
       };
       
-      auto success = [this]()
+      auto success = [&]()
       {
         assert(valid_after_canonicalization());
         return true;
