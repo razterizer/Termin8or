@@ -37,7 +37,7 @@ namespace t8
   
   inline bool is_ext_ansi_cp437(const std::string& ext)
   {
-    return ext == "ans" || ext == "ansi" || ext == "txt" || ext == "diz" || ext == "asc" || ext =="nfo";
+    return ext == "ans" || ext == "ansi" || ext == "txt" || ext == "diz" || ext == "asc" || ext == "nfo";
   }
 
   class TextureFileAnsi
