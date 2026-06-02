@@ -32,6 +32,7 @@ namespace t8x
   class Label : public Widget
   {
     std::string text;
+    std::string text_orig;
     Style style;
     
   public:
@@ -39,6 +40,7 @@ namespace t8x
           int tab = 0, bool sel = false)
       : Widget(tab, sel)
       , text(label_text)
+      , text_orig(label_text)
       , style(label_style)
     {}
     
@@ -61,6 +63,16 @@ namespace t8x
     bool empty() const
     {
       return text.empty();
+    }
+    
+    void set_text(const std::string& new_text)
+    {
+      text = new_text;
+    }
+    
+    void reset_text()
+    {
+      text = text_orig;
     }
   };
 
