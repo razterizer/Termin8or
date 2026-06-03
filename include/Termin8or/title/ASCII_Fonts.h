@@ -118,6 +118,38 @@ namespace t8x
     return Color16::Transparent;
   }
   
+  std::optional<Font> parse_font(const std::string_view sv, int& idx)
+  {
+    if (idx >= sv.length())
+      return std::nullopt;
+    auto sv_sub = sv.substr(idx);
+    static constexpr char c_larry3d[] = "larry3d";
+    static constexpr char c_smslant[] = "smslant";
+    static constexpr char c_avatar[] = "avatar";
+    if (str::to_lower(sv_sub).starts_with(c_larry3d))
+    {
+      idx = str::lenI(c_larry3d);
+      return Font::Larry3D;
+    }
+    if (str::to_lower(sv_sub).starts_with(c_smslant))
+    {
+      idx = str::lenI(c_smslant);
+      return Font::SMSlant;
+    }
+    if (str::to_lower(sv_sub).starts_with(c_avatar))
+    {
+      idx = str::lenI(c_avatar);
+      return Font::Avatar;
+    }
+    return std::nullopt;
+  }
+  
+  std::optional<Font> parse_font(const std::string_view sv)
+  {
+    int idx = 0;
+    return parse_font(sv, idx);
+  }
+  
   // Add the env variable RUNNING_FROM_XCODE to the Run section of the current scheme:
   //   Product -> Scheme -> Edit Scheme... ->  Run (Debug) -> Arguments -> Environmental Variables -> + -> "RUNNING_FROM_XCODE", true.
   // Perhaps script this procedure in the future.
