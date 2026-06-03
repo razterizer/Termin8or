@@ -150,30 +150,6 @@ namespace t8x
     return parse_font(sv, idx);
   }
   
-  // Add the env variable RUNNING_FROM_XCODE to the Run section of the current scheme:
-  //   Product -> Scheme -> Edit Scheme... ->  Run (Debug) -> Arguments -> Environmental Variables -> + -> "RUNNING_FROM_XCODE", true.
-  // Perhaps script this procedure in the future.
-  std::string get_path_to_font_data(const std::string& exe_folder)
-  {
-#ifdef _WIN32
-    // Assume the font files are copied via post-build script to local bin / target folder.
-    // E.g. xcopy $(SolutionDir)\..\..\lib\Termin8or\fonts\* $(TargetDir)\fonts\ / Y
-    return folder::get_exe_dir() + "\\fonts\\";
-#else
-    std::string font_data_path;
-    const char* xcode_env = std::getenv("RUNNING_FROM_XCODE");
-    if (xcode_env != nullptr)
-      font_data_path = "../../../../../../../../Documents/xcode/lib/Termin8or/include/Termin8or/title/fonts";
-    else
-    {
-      //font_data_path = "../../lib/Termin8or/include/Termin8or/title/fonts";
-      font_data_path = folder::join_path({ exe_folder, "fonts" });
-    }
-      
-    return font_data_path;
-#endif
-  }
-
   FontDataColl load_font_data(const std::string& path_to_font_data)
   {
     FontDataColl font_data;
