@@ -508,5 +508,44 @@ namespace t8x
       sh.write_buffer_ordered();
     }
   }
+  
+  int calc_text_width(const FontDataColl& font_data, const std::string& text,
+                      Font font, const std::vector<int>& custom_kerning = {})
+  {
+    ScreenHandler<1, 1, char> sh_dummy;
+    ColorScheme colors_dummy;
+    int r = 0;
+    int c = 0;
+  
+    int width = 0;
+    int num_chars = static_cast<int>(text.size());
+    int num_custom_kernings = static_cast<int>(custom_kerning.size());
+    auto it_font = font_data.find(font);
+    if (it_font != font_data.end())
+    {
+      const auto& curr_font = it_font->second;
+      
+      auto ordered_text = sort_text(text, curr_font);
+      for (int ch_idx = 0; ch_idx < num_chars; ++ch_idx)
+      {
+        char ch_prev = ch_idx - 1 >= 0 ? text[ch_idx - 1] : -1;
+        char ch_curr = text[ch_idx];
+        char ch_next = ch_idx + 1 < num_chars ? text[ch_idx + 1] : -1;
+        int ck = 0;
+        if (ch_idx < num_custom_kernings)
+          ck = custom_kerning[ch_idx];
+        int ch_curr_order = ordered_text[ch_idx].second;
+        
+        width += draw_char(sh_dummy, curr_font, colors_dummy,
+          ch_prev, ch_curr, ch_next,
+          ch_curr_order,
+          r, c + width,
+          ck);
+      }
+
+      return width;
+    }
+    return -1;
+  }
 
 }
