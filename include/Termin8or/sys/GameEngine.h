@@ -75,7 +75,6 @@ namespace t8x
     Style you_won_line_1_style { Color16::DarkBlue, Color16::DarkCyan };
     
     LogMode log_mode = LogMode::None;
-    std::string xcode_log_path; // e.g. "../../../../../../../../Documents/xcode/Asciiroids/Asciiroids/bin/"
     std::string log_filename = "rec.txt";
     
     bool suppress_tty_output = false;
@@ -421,7 +420,7 @@ namespace t8x
       
       curr_rnd_seed = rnd::srand_time();
       
-      if (!t8x::setup_logging(m_params.log_mode, get_exe_folder(), m_params.xcode_log_path, m_params.log_filename, curr_rnd_seed))
+      if (!t8x::setup_logging(m_params.log_mode, get_exe_folder(), m_params.log_filename, curr_rnd_seed))
       {
         request_exit(EXIT_FAILURE);
         return;
