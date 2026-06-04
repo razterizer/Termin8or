@@ -658,21 +658,31 @@ namespace t8x
   template<int NR, int NC, typename CharT>
   void draw_texture(ScreenHandler<NR, NC, CharT>& sh,
                     int r, int c,
-                    const Texture& texture)
+                    const Texture& texture,
+                    const RC& tex_offset = { 0, 0 })
   {
-    draw_box_textured(sh,
-                      r - 1, c - 1, texture.size.r + 2, texture.size.c + 2,
-                      t8x::SolarDirection::Zenith,
-                      texture);
+    //draw_box_textured(sh,
+    //                  r - 1, c - 1, texture.size.r + 2, texture.size.c + 2,
+    //                  t8x::SolarDirection::Zenith,
+    //                  texture);
+    for (int r_idx = 0; r_idx < texture.size.r; ++r_idx)
+    {
+      for (int c_idx = 0; c_idx < texture.size.c; ++c_idx)
+      {
+        auto t = texture(r_idx + tex_offset.r, c_idx + tex_offset.c);
+        sh.write_buffer(t.glyph, r_idx + r, c_idx + c, t.get_style());
+      }
+    }
   }
   
   // #NOTE: "Unwalled box".
   template<int NR, int NC, typename CharT>
   void draw_texture(ScreenHandler<NR, NC, CharT>& sh,
                     const RC& pos,
-                    const Texture& texture)
+                    const Texture& texture,
+                    const RC& tex_offset = { 0, 0 })
   {
-    draw_texture(sh, pos.r, pos.c, texture);
+    draw_texture(sh, pos.r, pos.c, texture, tex_offset);
   }
   
   // E.g.
