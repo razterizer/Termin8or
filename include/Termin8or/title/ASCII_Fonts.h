@@ -120,7 +120,7 @@ namespace t8x
   
   std::optional<Font> parse_font(const std::string_view sv, int& idx)
   {
-    if (idx >= sv.length())
+    if (idx >= str::lenI(sv))
       return std::nullopt;
     auto sv_sub = sv.substr(idx);
     static constexpr char c_larry3d[] = "larry3d";
