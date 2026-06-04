@@ -497,6 +497,7 @@ namespace t8x
     }
   }
   
+  // #NOTE: Walled box. Meant to go with draw_box_outline().
   template<int NR, int NC, typename CharT>
   void draw_box(ScreenHandler<NR, NC, CharT>& sh,
                 const Rectangle& bb,
@@ -521,6 +522,7 @@ namespace t8x
   // r = 5, c = 6, len_r = 9, len_c = 7,
   // fill_texture.size.r = 9, fill_texture.size.c = 7,
   // shadow_texture.size.r = 9, shadow_texture.size.c = 6.
+  // #NOTE: Walled box. Meant to go with draw_box_outline().
   template<int NR, int NC, typename CharT>
   void draw_box_textured(ScreenHandler<NR, NC, CharT>& sh,
                          int r, int c, int len_r, int len_c,
@@ -632,6 +634,7 @@ namespace t8x
     }
   }
   
+  // #NOTE: Walled box. Meant to go with draw_box_outline().
   template<int NR, int NC, typename CharT>
   void draw_box_textured(ScreenHandler<NR, NC, CharT>& sh,
                          const Rectangle& bb,
@@ -649,6 +652,27 @@ namespace t8x
                       light_field,
                       is_underground,
                       tex_offset);
+  }
+  
+  // #NOTE: "Unwalled box".
+  template<int NR, int NC, typename CharT>
+  void draw_texture(ScreenHandler<NR, NC, CharT>& sh,
+                    int r, int c,
+                    const Texture& texture)
+  {
+    draw_box_textured(sh,
+                      r - 1, c - 1, texture.size.r + 2, texture.size.c + 2,
+                      t8x::SolarDirection::Zenith,
+                      texture);
+  }
+  
+  // #NOTE: "Unwalled box".
+  template<int NR, int NC, typename CharT>
+  void draw_texture(ScreenHandler<NR, NC, CharT>& sh,
+                    const RC& pos,
+                    const Texture& texture)
+  {
+    draw_texture(sh, pos.r, pos.c, texture);
   }
   
   // E.g.
