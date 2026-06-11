@@ -14,7 +14,7 @@
 ![Commit Activity](https://img.shields.io/github/commit-activity/t/razterizer/Termin8or)
 ![Last Commit](https://img.shields.io/github/last-commit/razterizer/Termin8or?color=blue)
 ![Contributors](https://img.shields.io/github/contributors/razterizer/Termin8or?color=blue)
-![Static Badge](https://img.shields.io/badge/ai_usage-some_advisory-lightblue)
+![Static Badge](https://img.shields.io/badge/ai_usage-some_(advisory_only)-lightblue)
 
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/razterizer/Termin8or/total)
 
