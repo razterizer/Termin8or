@@ -1,5 +1,9 @@
 # Release Notes
 
+## 3.0.2.8
+
+- Added support for [forge](https://github.com/razterizer/forge).
+
 ## 3.0.1.7
 
 **ANSI / CP437 Import & Export**
