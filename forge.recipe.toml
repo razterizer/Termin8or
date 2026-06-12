@@ -7,6 +7,9 @@ version = "3.0.1"
 [build]
 number = 7
 
+[release]
+build_number_format = "dotted"
+
 [version_header]
 path = "include/Termin8or/version/version.h"
 prefix = "TERMIN8OR"
