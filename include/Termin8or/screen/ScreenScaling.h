@@ -6,14 +6,8 @@
 //
 
 #pragma once
-#include "Color.h"
+#include "ScreenHandler.h"
 #include <map>
-
-namespace t8
-{
-  template<typename CharT>
-  struct BufferCell;
-}
 
 namespace t8x
 {
@@ -217,15 +211,18 @@ namespace t8x
     return buffer_new;
   }
 
+}
 
 // ////////////////////////////////////////////////
 
+namespace t8x::screen_scaling
+{
   template<int NRo, int NCo, int NRi, int NCi, typename CharT>
-  void screen_scaling::resample(const t8::ScreenHandler<NRi, NCi, CharT>& sh_src,
-                                       t8::ScreenHandler<NRo, NCo, CharT>& sh_dst)
+  void resample(const t8::ScreenHandler<NRi, NCi, CharT>& sh_src,
+                t8::ScreenHandler<NRo, NCo, CharT>& sh_dst)
   {
-    auto new_screen_buffer = resample_data<CharT, NRi, NCi, NRo, NCo>(sh_src.screen_buffer, 0);
+    auto new_screen_buffer =
+      t8x::resample_data<CharT, NRi, NCi, NRo, NCo>(sh_src.screen_buffer, 0);
     sh_dst.overwrite_data(new_screen_buffer);
   }
-  
 }
