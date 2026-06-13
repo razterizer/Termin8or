@@ -3,6 +3,7 @@
 ## 3.0.2.8
 
 - Added support for [forge](https://github.com/razterizer/forge).
+- Smoked out a lot of include and forward declare misses due to new cbox release build workflow job.
 
 ## 3.0.1.7
 
