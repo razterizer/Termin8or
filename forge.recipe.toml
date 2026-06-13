@@ -58,8 +58,7 @@ defines = ["DEBUG=1"]
 Core = { github = "razterizer/Core", version = "1.5.0+build.8" }
 [profile.Debug-pinned.build]
 configuration = "Debug"
-defines = ["DEBUG=1"]  
-
+defines = ["DEBUG=1"]
 
 # [profile.Debug.build]
 # configuration = "Debug"
@@ -67,3 +66,8 @@ defines = ["DEBUG=1"]
 
 # [profile.Release.build]
 # configuration = "Release"
+
+[profile.workflow-release.dependencies]
+Core = { github = "razterizer/Core", version = "1.5.0+build.8" }
+[profile.workflow-release.build]
+configuration = "Release"
