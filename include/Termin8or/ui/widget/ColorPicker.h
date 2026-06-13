@@ -18,6 +18,7 @@ namespace t8x
   using RC = t8::RC;
   using SpecialKey = t8::SpecialKey;
   using Color = t8::Color;
+  using Color16 = t8::Color16;
   template<int NR, int NC, typename CharT>
   using ScreenHandler = t8::ScreenHandler<NR, NC, CharT>;
 
