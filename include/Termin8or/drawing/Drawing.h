@@ -5,7 +5,12 @@
 #include "../screen/Glyph.h"
 #include "../drawing/Texture.h"
 
- 
+namespace t8
+{
+  template<int NR, int NC, typename CharT>
+  class ScreenHandler;
+}
+
 namespace t8x
 {
   using RC = t8::RC;
