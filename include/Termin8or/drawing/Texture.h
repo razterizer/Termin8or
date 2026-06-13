@@ -10,6 +10,7 @@
 #include "../geom/Rectangle.h"
 #include "../screen/Color.h"
 #include "../screen/Styles.h"
+#include "../screen/Glyph.h"
 
 
 namespace t8
