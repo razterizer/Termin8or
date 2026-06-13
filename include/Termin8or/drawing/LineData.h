@@ -1,5 +1,6 @@
 #pragma once
 #include "Pixel.h"
+#include "../screen/Color.h"
 
 namespace t8x
 {
