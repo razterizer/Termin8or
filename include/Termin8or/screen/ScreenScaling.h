@@ -11,6 +11,7 @@
 
 namespace t8x
 {
+  using Color = t8::Color;
 
   double clamp(double t) { return math::clamp(t, 0., 1.); }
   t8::RGBA clamp(const t8::RGBA& t)
