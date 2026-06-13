@@ -9,6 +9,12 @@
 #include "Color.h"
 #include <map>
 
+namespace t8
+{
+  template<typename CharT>
+  struct BufferCell;
+}
+
 namespace t8x
 {
   using Color = t8::Color;
