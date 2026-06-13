@@ -3,6 +3,7 @@
 #include <Core/bool_vector.h>
 #include "../screen/Styles.h"
 #include "../screen/Glyph.h"
+#include "../screen/GlyphString.h"
 #include "../drawing/Texture.h"
 
 namespace t8
