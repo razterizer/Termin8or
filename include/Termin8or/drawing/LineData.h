@@ -8,10 +8,10 @@ namespace t8x
   struct LineData
   {
     std::string str;
-    std::vector<Color> fg_colors;
-    std::vector<Color> bg_colors;
+    std::vector<t8::Color> fg_colors;
+    std::vector<t8::Color> bg_colors;
     
-    LineData(const std::string& s, const std::vector<Color>& fg, const std::vector<Color>& bg)
+    LineData(const std::string& s, const std::vector<t8::Color>& fg, const std::vector<t8::Color>& bg)
       : str(s), fg_colors(fg), bg_colors(bg) { }
     
     std::vector<Pixel> get_pixels() const
