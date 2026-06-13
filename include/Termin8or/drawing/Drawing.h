@@ -2,6 +2,7 @@
 #include <Core/MathUtils.h>
 #include <Core/bool_vector.h>
 #include "../screen/Styles.h"
+#include "../screen/Glyph.h"
 #include "../drawing/Texture.h"
 
  
