@@ -2,10 +2,10 @@
 
 [project]
 name = "Termin8or"
-version = "3.0.2"
+version = "3.0.3"
 
 [build]
-number = 8
+number = 9
 
 [release]
 build_number_format = "dotted"
@@ -20,6 +20,7 @@ cpp_std = 20
 sources = []
 public_headers = ["include/Termin8or/drawing/Animation.h", "include/Termin8or/drawing/Drawing.h", "include/Termin8or/drawing/Gradient.h", "include/Termin8or/drawing/LineData.h", "include/Termin8or/drawing/Pixel.h", "include/Termin8or/drawing/Texture.h", "include/Termin8or/drawing/TextureFile.h", "include/Termin8or/drawing/texture_file/TextureFileAnsi.h", "include/Termin8or/drawing/texture_file/TextureFileCommon.h", "include/Termin8or/drawing/texture_file/TextureFileTx.h", "include/Termin8or/geom/AABB.h", "include/Termin8or/geom/RC.h", "include/Termin8or/geom/Rectangle.h", "include/Termin8or/input/Keyboard.h", "include/Termin8or/input/KeyboardEnums.h", "include/Termin8or/physics/ParticleSystem.h", "include/Termin8or/physics/dynamics/CollisionHandler.h", "include/Termin8or/physics/dynamics/DynamicsSystem.h", "include/Termin8or/physics/dynamics/RigidBody.h", "include/Termin8or/screen/Ansi.h", "include/Termin8or/screen/Color.h", "include/Termin8or/screen/Glyph.h", "include/Termin8or/screen/GlyphString.h", "include/Termin8or/screen/RGBA.h", "include/Termin8or/screen/ScreenCommands.h", "include/Termin8or/screen/ScreenCommandsBasic.h", "include/Termin8or/screen/ScreenHandler.h", "include/Termin8or/screen/ScreenScaling.h", "include/Termin8or/screen/ScreenUtils.h", "include/Termin8or/screen/StyledString.h", "include/Termin8or/screen/Styles.h", "include/Termin8or/screen/TermHelper.h", "include/Termin8or/screen/Text.h", "include/Termin8or/sprite/SpriteHandler.h", "include/Termin8or/str/StringConversion.h", "include/Termin8or/sys/GameEngine.h", "include/Termin8or/sys/Logging.h", "include/Termin8or/title/ASCII_Fonts.h", "include/Termin8or/ui/MessageHandler.h", "include/Termin8or/ui/UI.h", "include/Termin8or/ui/widget/Button.h", "include/Termin8or/ui/widget/ButtonGroup.h", "include/Termin8or/ui/widget/ColorPicker.h", "include/Termin8or/ui/widget/Dialog.h", "include/Termin8or/ui/widget/GlyphPicker.h", "include/Termin8or/ui/widget/Label.h", "include/Termin8or/ui/widget/TextBox.h", "include/Termin8or/ui/widget/TextBoxDebug.h", "include/Termin8or/ui/widget/TextField.h", "include/Termin8or/ui/widget/Widget.h", "include/Termin8or/version/version.h"]
 include_dirs = ["Examples", "Tests", "include/Termin8or", "include/Termin8or/drawing", "include/Termin8or/drawing/texture_file", "include/Termin8or/geom", "include/Termin8or/input", "include/Termin8or/physics/dynamics", "include/Termin8or/screen", "include/Termin8or/sys", "include/Termin8or/ui", "include/Termin8or/ui/widget"]
+runtime_files = [{ source = "include/Termin8or/title/fonts", destination = "Termin8or/fonts" }]
 
 [target.examples]
 type = "executable"

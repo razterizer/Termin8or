@@ -1,5 +1,9 @@
 # Release Notes
 
+## 3.0.3.9
+
+- Exported FIGlet font data as Forge runtime assets under `Termin8or/fonts`, so consuming executables can stage the files transitively without copying them into their own repositories.
+
 ## 3.0.2.8
 
 - Added support for [forge](https://github.com/razterizer/forge).
