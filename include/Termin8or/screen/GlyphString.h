@@ -220,7 +220,7 @@ namespace t8
   namespace literals
   {
     // "_gs" produces an ASCII part (no CharT, no ScreenHandler needed).
-    inline GlyphString operator"" _gs(const char* s, size_t n)
+    inline GlyphString operator""_gs(const char* s, size_t n)
     {
       return GlyphString::from_ascii(std::string_view { s, n });
     }
