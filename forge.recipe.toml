@@ -42,6 +42,9 @@ test = true
 [dependencies.style.local-source]
 Core = { path = "../Core" }
 
+[dependencies.style.git-source]
+Core = { git = "https://github.com/razterizer/Core.git", commit = "3f9f712457427fddd5eb7c47960a4d7399477598" }
+
 [dependencies.style.github-package]
 Core = { github = "razterizer/Core", version = "1.5.0+build.8" }
 
