@@ -7,6 +7,9 @@ version = "3.0.3"
 [build]
 number = 9
 
+[defaults]
+style = "github-package"
+
 [release]
 build_number_format = "dotted"
 
@@ -36,37 +39,18 @@ sources = ["Tests/unit_tests.cpp"]
 dependencies = ["Termin8or"]
 test = true
 
-[dependencies]
+[dependencies.style.local-source]
 Core = { path = "../Core" }
 
-[profile.Release-dev.dependencies]
-Core = { path = "../Core" }
-[profile.Release-dev.build]
-configuration = "Release"
-
-[profile.Release-pinned.dependencies]
+[dependencies.style.github-package]
 Core = { github = "razterizer/Core", version = "1.5.0+build.8" }
-[profile.Release-pinned.build]
-configuration = "Release"
 
-[profile.Debug-dev.dependencies]
-Core = { path = "../Core" }
-[profile.Debug-dev.build]
-configuration = "Debug"
-defines = ["DEBUG=1"]  
-
-[profile.Debug-pinned.dependencies]
-Core = { github = "razterizer/Core", version = "1.5.0+build.8" }
-[profile.Debug-pinned.build]
+[build.config.debug]
 configuration = "Debug"
 defines = ["DEBUG=1"]
 
-# [profile.Debug.build]
-# configuration = "Debug"
-# defines = ["DEBUG=1"]
-
-# [profile.Release.build]
-# configuration = "Release"
+[build.config.release]
+configuration = "Release"
 
 [profile.workflow-release.dependencies]
 Core = { github = "razterizer/Core", version = "1.5.0+build.8" }
