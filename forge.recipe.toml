@@ -43,10 +43,10 @@ test = true
 Core = { path = "../Core" }
 
 [dependencies.style.git-source]
-Core = { git = "https://github.com/razterizer/Core.git", commit = "3f9f712457427fddd5eb7c47960a4d7399477598" }
+Core = { git = "https://github.com/razterizer/Core.git", commit = "2164a84e18fbb8fed18d318c7253f9a7a8d5c287" }
 
 [dependencies.style.github-package]
-Core = { github = "razterizer/Core", version = "1.5.0+build.8" }
+Core = { github = "razterizer/Core", version = "1.5.1+build.9" }
 
 [build.config.debug]
 configuration = "Debug"
@@ -56,6 +56,6 @@ defines = ["DEBUG=1"]
 configuration = "Release"
 
 [profile.workflow-release.dependencies]
-Core = { github = "razterizer/Core", version = "1.5.0+build.8" }
+Core = { github = "razterizer/Core", version = "1.5.1+build.9" }
 [profile.workflow-release.build]
 configuration = "Release"
