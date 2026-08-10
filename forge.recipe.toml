@@ -2,10 +2,10 @@
 
 [project]
 name = "Termin8or"
-version = "3.0.3"
+version = "3.0.4"
 
 [build]
-number = 9
+number = 10
 
 [defaults]
 style = "github-package"

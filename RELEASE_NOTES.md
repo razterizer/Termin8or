@@ -1,5 +1,9 @@
 # Release Notes
 
+## 3.0.4.10
+
+- Bumping Core to 1.5.1.9.
+
 ## 3.0.3.9
 
 - Exported FIGlet font data as Forge runtime assets under `Termin8or/fonts`, so consuming executables can stage the files transitively without copying them into their own repositories.
