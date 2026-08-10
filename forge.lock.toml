@@ -1,0 +1,10 @@
+format = 2
+
+[[dependency]]
+name = "Core"
+github = "razterizer/Core"
+package = "Core"
+version = "1.5.1+build.9"
+target = "any"
+url = "https://github.com/razterizer/Core/releases/download/release-1.5.1.9/Core-1.5.1+build.9-ho.cbox"
+sha256 = "10952ce69e75e265931a858931ef610f1a810853f11e3f3405a0d526545ba870"
